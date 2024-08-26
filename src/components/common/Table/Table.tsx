@@ -1,6 +1,5 @@
 import {useEffect, useMemo} from 'react';
 
-import CheckBox from '../CheckBox';
 import {PropsTable} from './interfaces';
 import clsx from 'clsx';
 import styles from './Table.module.scss';
@@ -53,6 +52,8 @@ function Table({data, column, onSetData}: PropsTable) {
 									[styles.textEnd]: v.textAlign == 'end',
 									[styles.textStart]: v.textAlign == 'start',
 									[styles.textCenter]: v.textAlign == 'center',
+									[styles.fixedLeft]: v.fixedLeft,
+									[styles.fixedRight]: v.fixedRight,
 								})}
 								key={i}
 							>
@@ -74,7 +75,13 @@ function Table({data, column, onSetData}: PropsTable) {
 					{data.map((v: any, i: number) => (
 						<tr key={i}>
 							{column.map((y: any, j: number) => (
-								<td key={j}>
+								<td
+									key={j}
+									className={clsx({
+										[styles.fixedLeft]: y.fixedLeft,
+										[styles.fixedRight]: y.fixedRight,
+									})}
+								>
 									<div
 										className={clsx(y.className, {
 											[styles.checkBox]: y.checkBox,
