@@ -1,0 +1,302 @@
+import React, {useEffect, useState} from 'react';
+
+import {IPriceTag, PropsMainPriceTagCurrent} from './interfaces';
+import styles from './MainPriceTagCurrent.module.scss';
+import Search from '~/components/common/Search';
+import {useRouter} from 'next/router';
+import FilterCustom from '~/components/common/FilterCustom';
+import {useQuery} from '@tanstack/react-query';
+import {
+	CONFIG_DESCENDING,
+	CONFIG_PAGING,
+	CONFIG_STATUS,
+	CONFIG_TYPE_FIND,
+	QUERY_KEY,
+	TYPE_PRODUCT,
+	TYPE_TRANSPORT,
+} from '~/constants/config/enum';
+import {httpRequest} from '~/services';
+import Button from '~/components/common/Button';
+import {PATH} from '~/constants/config';
+import icons from '~/constants/images/icons';
+import Image from 'next/image';
+import DataWrapper from '~/components/common/DataWrapper';
+import Noti from '~/components/common/DataWrapper/components/Noti';
+import Table from '~/components/common/Table';
+import wareServices from '~/services/wareServices';
+import Pagination from '~/components/common/Pagination';
+import priceTagServices from '~/services/priceTagServices';
+import {convertCoin} from '~/common/funcs/convertCoin';
+import Moment from 'react-moment';
+import IconCustom from '~/components/common/IconCustom';
+import {LuPencil} from 'react-icons/lu';
+import TagStatus from '~/components/common/TagStatus';
+import Popup from '~/components/common/Popup';
+import FormUpdatePriceTag from '../FormUpdatePriceTag';
+import Link from 'next/link';
+import {FaHistory} from 'react-icons/fa';
+
+function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
+	const router = useRouter();
+
+	const {_page, _pageSize, _keyword, _specUuid, _productTypeUuid, _transportType, _status} = router.query;
+
+	const [dataUpdate, setDataUpdate] = useState<IPriceTag | null>(null);
+
+	useEffect(() => {
+		router.replace(
+			{
+				query: {
+					...router.query,
+					_status: CONFIG_STATUS.HOAT_DONG,
+				},
+			},
+			undefined,
+			{
+				scroll: false,
+			}
+		);
+	}, []);
+
+	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listProductType({
+					page: 1,
+					pageSize: 100,
+					keyword: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listSpecifications = useQuery([QUERY_KEY.dropdown_quy_cach], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listSpecification({
+					page: 1,
+					pageSize: 100,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+					qualityUuid: '',
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listPriceTag = useQuery(
+		[QUERY_KEY.table_gia_tien_hang, _page, _pageSize, _keyword, _specUuid, _productTypeUuid, _transportType, _status],
+		{
+			queryFn: () =>
+				httpRequest({
+					isList: true,
+					http: priceTagServices.listPriceTag({
+						page: Number(_page) || 1,
+						pageSize: Number(_pageSize) || 20,
+						keyword: (_keyword as string) || '',
+						isPaging: CONFIG_PAGING.IS_PAGING,
+						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+						typeFind: CONFIG_TYPE_FIND.TABLE,
+						status: !!_status ? Number(_status) : null,
+						customerUuid: '',
+						specUuid: (_specUuid as string) || '',
+						productTypeUuid: (_productTypeUuid as string) || '',
+						priceTagUuid: '',
+						state: null,
+						transportType: Number(_transportType) || null,
+					}),
+				}),
+			select(data) {
+				return data;
+			},
+		}
+	);
+
+	return (
+		<div className={styles.container}>
+			<div className={styles.header}>
+				<div className={styles.main_search}>
+					<div className={styles.search}>
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo xưởng, NCC' />
+					</div>
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Quy cách'
+							query='_specUuid'
+							listFilter={listSpecifications?.data?.map((v: any) => ({
+								id: v?.uuid,
+								name: v?.name,
+							}))}
+						/>
+					</div>
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Loại gỗ'
+							query='_productTypeUuid'
+							listFilter={listProductType?.data?.map((v: any) => ({
+								id: v?.uuid,
+								name: v?.name,
+							}))}
+						/>
+					</div>
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Vận chuyển'
+							query='_transportType'
+							listFilter={[
+								{
+									id: TYPE_TRANSPORT.DUONG_BO,
+									name: 'Đường bộ',
+								},
+								{
+									id: TYPE_TRANSPORT.DUONG_THUY,
+									name: 'Đường thủy',
+								},
+							]}
+						/>
+					</div>
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Trạng thái'
+							query='_status'
+							listFilter={[
+								{
+									id: CONFIG_STATUS.BI_KHOA,
+									name: 'Bị khóa',
+								},
+								{
+									id: CONFIG_STATUS.HOAT_DONG,
+									name: 'Hoạt động',
+								},
+							]}
+						/>
+					</div>
+				</div>
+				<div>
+					<Button p_8_16 rounded_2 href={PATH.ThemGiaTien} icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}>
+						Thêm giá tiền
+					</Button>
+				</div>
+			</div>
+
+			<div className={styles.table}>
+				<DataWrapper
+					data={listPriceTag?.data?.items || []}
+					loading={listPriceTag?.isLoading}
+					noti={
+						<Noti
+							titleButton='Thêm giá tiền'
+							onClick={() => router.push('/gia-tien-hang/them-moi')}
+							des='Hiện tại chưa có giá tiền nào, thêm ngay?'
+						/>
+					}
+				>
+					<Table
+						data={listPriceTag?.data?.items || []}
+						column={[
+							{
+								title: 'STT',
+								render: (data: IPriceTag, index: number) => <>{index + 1}</>,
+							},
+							{
+								title: 'Nhà cung cấp',
+								render: (data: IPriceTag) => (
+									<Link href={`/nha-cung-cap/${data?.partnerUu?.uuid}`} className={styles.link}>
+										{data?.partnerUu?.name || '---'}
+									</Link>
+									// <Link href={`#`} className={styles.link}>
+									// 	{data?.partnerUu?.name || '---'}
+									// </Link>
+								),
+							},
+							{
+								title: 'Xưởng',
+								render: (data: IPriceTag) => <>{data?.customerUu?.name || '---'}</>,
+							},
+							{
+								title: 'Loại gỗ',
+								render: (data: IPriceTag) => <>{data?.productTypeUu?.name || '---'}</>,
+							},
+							{
+								title: 'Quy cách',
+								render: (data: IPriceTag) => <>{data?.specUu?.name || '---'}</>,
+							},
+							{
+								title: 'Vận chuyển',
+								render: (data: IPriceTag) => (
+									<>
+										{data?.transportType == TYPE_TRANSPORT.DUONG_BO && 'Đường bộ'}
+										{data?.transportType == TYPE_TRANSPORT.DUONG_THUY && 'Đường thủy'}
+									</>
+								),
+							},
+							{
+								title: 'Giá tiền',
+								render: (data: IPriceTag) => <>{convertCoin(data?.pricetagUu?.amount)} VND</>,
+							},
+							{
+								title: 'Trạng thái',
+								render: (data: IPriceTag) => <TagStatus status={data.state} />,
+							},
+							{
+								title: 'Ngày tạo',
+								render: (data: IPriceTag) =>
+									data.created ? <Moment date={data.created} format='HH:mm, DD/MM/YYYY' /> : '---',
+							},
+							{
+								title: 'Tác vụ',
+								render: (data: IPriceTag) => (
+									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+										<IconCustom
+											icon={<FaHistory fontSize={20} fontWeight={600} />}
+											tooltip='Xem lịch sử'
+											color='#777E90'
+											href={`/gia-tien-hang/lich-su?_customerUuid=${data?.customerUu?.uuid}&_specUuid=${data?.specUu?.uuid}&_productTypeUuid=${data?.productTypeUu?.uuid}&_transportType=${data?.transportType}`}
+										/>
+										<IconCustom
+											icon={<LuPencil size='22' />}
+											tooltip='Chỉnh sửa'
+											color='#777E90'
+											onClick={() => setDataUpdate(data)}
+										/>
+									</div>
+								),
+							},
+						]}
+					/>
+				</DataWrapper>
+				<Pagination
+					currentPage={Number(_page) || 1}
+					total={listPriceTag?.data?.pagination?.totalCount}
+					pageSize={Number(_pageSize) || 20}
+					dependencies={[_pageSize, _keyword, _specUuid, _productTypeUuid, _transportType, _status]}
+				/>
+			</div>
+
+			{/* Popup */}
+			<Popup open={!!dataUpdate} onClose={() => setDataUpdate(null)}>
+				<FormUpdatePriceTag dataUpdate={dataUpdate} onClose={() => setDataUpdate(null)} />
+			</Popup>
+		</div>
+	);
+}
+
+export default MainPriceTagCurrent;

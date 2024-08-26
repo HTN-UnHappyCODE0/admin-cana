@@ -1,0 +1,24 @@
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.main_search {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.search {
+	min-width: 296px;
+}
+
+.filter {
+	min-width: 220px;
+}
+
+.table {
+	margin-top: 24px;
+}

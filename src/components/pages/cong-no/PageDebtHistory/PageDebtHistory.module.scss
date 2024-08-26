@@ -1,0 +1,44 @@
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.main_search {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.search {
+	min-width: 296px;
+}
+
+.filter {
+	min-width: 220px;
+}
+
+.table {
+	margin-top: 24px;
+}
+
+.link {
+	font-weight: 600;
+	color: var(--primary);
+	transition: 0.3s;
+
+	&:hover {
+		opacity: 0.8;
+	}
+}
+
+.linkdetail {
+	color: #2d74ff;
+	cursor: pointer;
+}
+.icon_add {
+	cursor: pointer;
+	color: var(--blue);
+	text-decoration: underline;
+}

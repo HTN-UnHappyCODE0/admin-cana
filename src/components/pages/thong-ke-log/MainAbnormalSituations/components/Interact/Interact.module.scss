@@ -1,0 +1,36 @@
+.interact {
+    display: flex;
+    justify-items: center;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.container {
+    width: fit-content;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 4px;
+
+    &.SUBMIT {
+        color: #fff;
+        background: #2CAE39;
+
+        &:hover {
+            color: #2CAE39;
+            background: #fff;
+            cursor: pointer;
+        }
+    }
+
+    &.CANCEL {
+        color: #fff;
+        background: #F95B5B;
+
+        &:hover {
+            color: #F95B5B;
+            background: #fff;
+            cursor: pointer;
+        }
+    }
+}

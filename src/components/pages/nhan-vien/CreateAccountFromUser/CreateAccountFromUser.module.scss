@@ -1,0 +1,44 @@
+.container {
+	position: relative;
+	width: 533px;
+	padding: 20px;
+	border-radius: 2px;
+	background: var(--bg-light);
+
+	h4 {
+		color: var(--dark-2);
+		font-size: 24px;
+		font-weight: 600;
+	}
+
+	.groupBtnPopup {
+		margin-top: 16px;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.close {
+		position: absolute;
+		right: 32px;
+		top: 32px;
+		cursor: pointer;
+		user-select: none;
+		font-size: 24px;
+		color: var(--dark-2);
+		transition: 0.3s;
+
+		&:active {
+			transform: scale(0.9);
+		}
+	}
+}
+
+.p {
+	margin-bottom: 20px;
+	color: #777e90;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+}

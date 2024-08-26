@@ -1,0 +1,22 @@
+.container {
+	width: fit-content;
+	padding: 4px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	border-radius: 4px;
+
+	&.CHUA_KIEM_DUYET {
+        color: #fff;
+		background: #9757D7;
+	}
+
+	&.DA_DUYET {
+        color: #fff;
+		background: #2CAE39;
+	}
+
+	&.XU_LY_SAI {
+        color: #fff;
+		background: #F95B5B;
+	}
+}

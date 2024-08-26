@@ -1,0 +1,38 @@
+.header {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	justify-content: space-between;
+}
+
+.main_search {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.search {
+	min-width: 296px;
+}
+
+.filter {
+	min-width: 220px;
+}
+
+.table {
+	margin-top: 16px;
+}
+.text {
+	font-weight: 600;
+
+	&.create {
+		color: #2d74ff;
+	}
+	&.delete {
+		color: #d95656;
+	}
+	&.lock {
+		color: #2cae39;
+	}
+}

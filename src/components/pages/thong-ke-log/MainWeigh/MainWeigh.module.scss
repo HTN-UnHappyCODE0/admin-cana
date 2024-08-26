@@ -1,0 +1,62 @@
+.header {
+	display: flex;
+	align-items: center;
+}
+
+.main_search {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.search {
+	min-width: 320px;
+}
+
+.filter {
+	min-width: 100px;
+}
+
+.table {
+	margin-top: 16px;
+}
+
+.redText {
+	color: red;
+}
+
+.blueText {
+	color: blue;
+}
+
+.parameter {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	color: #777e90;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 600;
+	text-transform: uppercase;
+	span {
+		color: #171832;
+	}
+}
+
+.linkdetail {
+	color: #2d74ff;
+	cursor: pointer;
+}
+
+.linkdetail:hover {
+	text-decoration: underline;
+}
+
+.status {
+	font-weight: 600;
+
+	&.create {
+		color: #2a85ff;
+	}
+}
