@@ -71,12 +71,26 @@
 			width: 100%;
 		}
 	}
+
+	.checkbox {
+		cursor: pointer;
+		user-select: none;
+		margin-right: 8px;
+		width: 18px;
+		height: 18px;
+	}
 }
 
-.checkbox {
-	cursor: pointer;
-	user-select: none;
-	margin-right: 8px;
-	width: 18px;
-	height: 18px;
+.fixedRight {
+	position: sticky;
+	right: 0;
+	background-color: var(--primary);
+	z-index: 10;
+}
+
+.fixedLeft {
+	position: sticky;
+	left: 0;
+	background-color: var(--primary);
+	z-index: 10;
 }
