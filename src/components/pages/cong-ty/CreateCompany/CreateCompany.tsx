@@ -14,6 +14,7 @@ import commonServices from '~/services/commonServices';
 import companyServices from '~/services/companyServices';
 import {useRouter} from 'next/router';
 import Loading from '~/components/common/Loading';
+import {toastWarn} from '~/common/funcs/toast';
 // import regencyServices from '~/services/regencyServices';
 
 function CreateCompany({}: PropsCreateCompany) {
@@ -118,6 +119,15 @@ function CreateCompany({}: PropsCreateCompany) {
 	});
 
 	const handleSubmit = async () => {
+		if (!form.provinceId) {
+			return toastWarn({msg: 'Vui lòng chọn Tỉnh/Thành phố!'});
+		}
+		if (!form.districtId) {
+			return toastWarn({msg: 'Vui lòng chọn Quận/Huyện!'});
+		}
+		if (!form.townId) {
+			return toastWarn({msg: 'Vui lòng chọn Xã/Phường!'});
+		}
 		return fucnCreateCompany.mutate();
 	};
 

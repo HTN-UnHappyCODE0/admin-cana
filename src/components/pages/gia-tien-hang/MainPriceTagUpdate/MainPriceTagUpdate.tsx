@@ -195,7 +195,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 								render: (data: IPriceTagUpdate, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Nhà cung cấp',
+								title: 'Đối tác',
 								fixedLeft: true,
 								render: (data: IPriceTagUpdate) => (
 									<Link href={`/gia-tien-hang/gia-hang-chinh-sua/${data?.uuid}`} className={styles.link}>

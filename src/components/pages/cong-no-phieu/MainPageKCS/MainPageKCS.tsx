@@ -90,8 +90,8 @@ function MainPageKCS({}: PropsMainPageKCS) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
 					provinceIDOwer: '',
-					regencyUuid: listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Quản lý nhập hàng'])
-						? listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid
+					regencyUuid: listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Nhân viên thị trường'])
+						? listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid
 						: null,
 					regencyUuidExclude: '',
 				}),
@@ -198,11 +198,11 @@ function MainPageKCS({}: PropsMainPageKCS) {
 							},
 							{
 								title: 'Nhà cung cấp',
-								render: (data: IDebtBill) => <>{data?.fromUu?.partnerUu?.name}</>,
+								render: (data: IDebtBill) => <>{data?.fromUu?.partnerUu?.name || '---'}</>,
 							},
 							{
 								title: 'Người quản lý',
-								render: (data: IDebtBill) => <>{data?.fromUu?.userUu?.fullName}</>,
+								render: (data: IDebtBill) => <>{data?.fromUu?.userUu?.fullName || '---'}</>,
 							},
 							{
 								title: 'KL hàng (KG)',

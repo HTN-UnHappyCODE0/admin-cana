@@ -217,6 +217,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 									setForm((prev: any) => ({
 										...prev,
 										productTypeUuid: e.target.value,
+										specUuid: '',
 									}))
 								}
 								label={

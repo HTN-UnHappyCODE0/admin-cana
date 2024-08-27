@@ -26,13 +26,12 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import TagStatus from '~/components/common/TagStatus';
-import HeadlessTippy from '@tippyjs/react/headless';
 import Link from 'next/link';
 import {Edit2, Lock1, Personalcard, Trash, Unlock} from 'iconsax-react';
-import {BsThreeDots} from 'react-icons/bs';
 import Pagination from '~/components/common/Pagination';
 import Dialog from '~/components/common/Dialog';
 import partnerServices from '~/services/partnerServices';
+import IconCustom from '~/components/common/IconCustom';
 
 function MainPageWorkshop({}: PropsMainPageWorkshop) {
 	const router = useRouter();
@@ -209,52 +208,25 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 							{
 								title: 'Tác vụ',
 								fixedRight: true,
-								render: (data: any) =>
-									data?.status != STATUS_CUSTOMER.DA_XOA && (
-										<HeadlessTippy
-											interactive
-											visible={customerUuid == data?.uuid}
-											placement='bottom-end'
-											render={(attrs) => (
-												<div className={styles.mainOption}>
-													<Link
-														href={`${PATH.ChinhSuaXuong}?_customerUuid=${data?.uuid}`}
-														className={styles.item}
-													>
-														<div className={styles.icon}>
-															<Edit2 size={20} />
-														</div>
-														<p>Chỉnh sửa</p>
-													</Link>
-													<button
-														className={styles.item}
-														onClick={() => {
-															setDataStatusCustomer(data);
-														}}
-													>
-														<div className={styles.icon}>
-															{data?.status == STATUS_CUSTOMER.HOP_TAC ? (
-																<Lock1 size={20} />
-															) : (
-																<Unlock size={20} />
-															)}
-														</div>
-														<p>{data?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa xưởng' : 'Mở khóa xưởng'}</p>
-													</button>
-												</div>
-											)}
-											onClickOutside={() => setCustomerUuid('')}
-										>
-											<div
-												className={styles.btn}
-												onClick={() => {
-													setCustomerUuid(data.uuid);
-												}}
-											>
-												<BsThreeDots className={styles.dots} color='rgba(119, 126, 144, 1)' size={22} />
-											</div>
-										</HeadlessTippy>
-									),
+								render: (data: any) => (
+									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+										<IconCustom
+											edit
+											icon={<Edit2 fontSize={20} fontWeight={600} />}
+											tooltip='Chỉnh sửa'
+											color='#777E90'
+											href={`${PATH.ChinhSuaXuong}?_customerUuid=${data?.uuid}`}
+										/>
+
+										<IconCustom
+											lock
+											icon={data?.status == STATUS_CUSTOMER.HOP_TAC ? <Lock1 size={20} /> : <Unlock size={20} />}
+											tooltip={data?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa xưởng' : 'Mở khóa xưởng'}
+											color='#777E90'
+											onClick={() => setDataStatusCustomer(data)}
+										/>
+									</div>
+								),
 							},
 						]}
 					/>

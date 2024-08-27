@@ -485,6 +485,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 											provinceId: v?.matp,
 											districtId: '',
 											townId: '',
+											userUuid: '',
 										}))
 									}
 								/>

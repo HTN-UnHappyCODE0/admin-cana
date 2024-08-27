@@ -460,6 +460,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 											provinceId: v?.matp,
 											districtId: '',
 											townId: '',
+											userUuid: '',
 										}))
 									}
 								/>

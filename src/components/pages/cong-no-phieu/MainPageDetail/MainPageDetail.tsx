@@ -122,7 +122,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 				</div>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lượt' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu' />
 					</div>
 				</div>
 			</div>

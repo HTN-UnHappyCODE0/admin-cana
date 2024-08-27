@@ -48,7 +48,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm công ty' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm đối tác' />
 					</div>
 				</div>
 			</div>
@@ -63,11 +63,11 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 						data={listPartnerDebt?.data?.items || []}
 						column={[
 							{
-								title: 'Mã NCC',
+								title: 'Mã đối tác',
 								render: (data: IPartnerDebt) => <>{data?.code}</>,
 							},
 							{
-								title: 'Tên NCC',
+								title: 'Tên đốt tác',
 								fixedLeft: true,
 								render: (data: IPartnerDebt) => (
 									<Link href={`/nha-cung-cap/${data?.uuid}`} className={styles.link}>
@@ -76,7 +76,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 								),
 							},
 							{
-								title: 'Số xưởng',
+								title: 'Số NCC',
 								render: (data: IPartnerDebt) => <>{data?.countCustomer}</>,
 							},
 							{

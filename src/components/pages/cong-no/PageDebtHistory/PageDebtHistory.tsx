@@ -134,7 +134,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' />
 					</div>
-					<div className={styles.filter}>
+					{/* <div className={styles.filter}>
 						<FilterCustom
 							isSearch
 							name='Trạng thái'
@@ -144,7 +144,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 								{id: STATUS_TRANSACTION.BINH_THUONG, name: 'Bình thường'},
 							]}
 						/>
-					</div>
+					</div> */}
 				</div>
 			</div>
 
