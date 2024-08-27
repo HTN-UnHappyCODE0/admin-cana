@@ -222,7 +222,15 @@ function MainCreate({}: PropsMainCreate) {
 		if (today < birthDay) {
 			return toastWarn({msg: 'Ngày sinh không hợp lệ!'});
 		}
-
+		if (!form.provinceId) {
+			return toastWarn({msg: 'Vui lòng chọn Tỉnh/Thành phố!'});
+		}
+		if (!form.districtId) {
+			return toastWarn({msg: 'Vui lòng chọn Quận/Huyện!'});
+		}
+		if (!form.townId) {
+			return toastWarn({msg: 'Vui lòng chọn Xã/Phường!'});
+		}
 		return funCreateUser.mutate();
 	};
 

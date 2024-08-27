@@ -217,7 +217,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 								render: (data: IPriceTag, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Nhà cung cấp',
+								title: 'Đối tác',
 								fixedLeft: true,
 								render: (data: IPriceTag) => (
 									<Link href={`/nha-cung-cap/${data?.partnerUu?.uuid}`} className={styles.link}>

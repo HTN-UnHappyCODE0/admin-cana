@@ -145,7 +145,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					className={styles.header_title}
 				>
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
-					<p>Chi tiết nhà cung cấp {detailPartner?.name}</p>
+					<p>Chi tiết đối tác {detailPartner?.name}</p>
 				</Link>
 				<div className={styles.list_btn}>
 					<Button
@@ -230,7 +230,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					</colgroup>
 					<tr>
 						<td>
-							<span style={{marginRight: 6}}>Mã nhà cung cấp: </span>
+							<span style={{marginRight: 6}}>Mã đối tác: </span>
 							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
 						</td>
 						<td>
@@ -287,9 +287,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 			<div className={clsx('mt')}>
 				<div className={styles.btn_header}>
 					<div className={styles.main_table}>
-						<h1 className={styles.list_title}>
-							Danh sách xưởng thuộc nhà cung cấp ({listCustomer?.data?.pagination?.totalCount})
-						</h1>
+						<h1 className={styles.list_title}>Danh sách xưởng thuộc đối tác ({listCustomer?.data?.pagination?.totalCount})</h1>
 					</div>
 					<div>
 						<Button
@@ -298,7 +296,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 							rounded_2
 							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 						>
-							Thêm xưởng
+							Thêm đối tác
 						</Button>
 					</div>
 				</div>
@@ -397,8 +395,8 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 				title={detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa hoạt động' : 'Mở khóa hoạt động'}
 				note={
 					detailPartner?.status == CONFIG_STATUS.HOAT_DONG
-						? 'Bạn có chắc chắn muốn khóa hoạt động nhà cung cấp này?'
-						: 'Bạn có chắc chắn muốn mở khóa hoạt động nhà cung cấp này?'
+						? 'Bạn có chắc chắn muốn khóa hoạt động đối tác này?'
+						: 'Bạn có chắc chắn muốn mở khóa hoạt động đối tác này?'
 				}
 				onSubmit={funcChangeStatusPartner.mutate}
 			/>
