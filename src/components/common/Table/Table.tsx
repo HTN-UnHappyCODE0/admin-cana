@@ -1,10 +1,34 @@
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 
 import {PropsTable} from './interfaces';
 import clsx from 'clsx';
 import styles from './Table.module.scss';
 
 function Table({data, column, onSetData}: PropsTable) {
+	const myElementRef = useRef<any>(null);
+	const [isShowScroll, setIsShowScroll] = useState<boolean>(false);
+
+	const checkForHorizontalScroll = () => {
+		const element = myElementRef.current;
+		if (element.scrollWidth > element.clientWidth) {
+			setIsShowScroll(true);
+		} else {
+			setIsShowScroll(false);
+		}
+	};
+
+	useEffect(() => {
+		// Check scroll on component mount
+		checkForHorizontalScroll();
+
+		// Set up resize event listener
+		window.addEventListener('resize', checkForHorizontalScroll);
+
+		return () => {
+			window.removeEventListener('resize', checkForHorizontalScroll);
+		};
+	}, []);
+
 	/*---------- Handle CheckBox ----------*/
 	useEffect(() => {
 		onSetData &&
@@ -41,7 +65,7 @@ function Table({data, column, onSetData}: PropsTable) {
 	}, [data]);
 
 	return (
-		<div className={styles.container}>
+		<div ref={myElementRef} className={styles.container}>
 			<table>
 				<thead>
 					<tr>
@@ -52,8 +76,8 @@ function Table({data, column, onSetData}: PropsTable) {
 									[styles.textEnd]: v.textAlign == 'end',
 									[styles.textStart]: v.textAlign == 'start',
 									[styles.textCenter]: v.textAlign == 'center',
-									[styles.fixedLeft]: v.fixedLeft,
-									[styles.fixedRight]: v.fixedRight,
+									[styles.fixedLeft]: v.fixedLeft && isShowScroll,
+									[styles.fixedRight]: v.fixedRight && isShowScroll,
 								})}
 								key={i}
 							>
@@ -78,8 +102,8 @@ function Table({data, column, onSetData}: PropsTable) {
 								<td
 									key={j}
 									className={clsx({
-										[styles.fixedLeft]: y.fixedLeft,
-										[styles.fixedRight]: y.fixedRight,
+										[styles.fixedLeft]: y.fixedLeft && isShowScroll,
+										[styles.fixedRight]: y.fixedRight && isShowScroll,
 									})}
 								>
 									<div
