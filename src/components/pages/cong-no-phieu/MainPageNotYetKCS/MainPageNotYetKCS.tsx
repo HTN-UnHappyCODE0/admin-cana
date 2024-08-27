@@ -188,6 +188,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 							},
 							{
 								title: 'Trạng thái',
+								fixedLeft: true,
 								render: (data: IDebtBill) => (
 									<span style={{color: data.status === STATUS_BILL.DA_KCS ? 'blue' : 'red'}}>
 										{data?.status == STATUS_BILL.DA_CAN_CHUA_KCS && 'Chưa KCS'}
@@ -233,6 +234,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IDebtBill) => (
 									<Link href={`/cong-no-phieu/${data?.uuid}`} className={styles.linkdetail}>
 										Chi tiết

@@ -68,6 +68,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 							},
 							{
 								title: 'Tên NCC',
+								fixedLeft: true,
 								render: (data: IPartnerDebt) => (
 									<Link href={`/nha-cung-cap/${data?.uuid}`} className={styles.link}>
 										{data?.name}
@@ -97,6 +98,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 							},
 							{
 								title: 'Thanh toán gần nhất',
+								fixedRight: true,
 								render: (data: IPartnerDebt) => (
 									<>
 										{data?.lastTransaction ? (

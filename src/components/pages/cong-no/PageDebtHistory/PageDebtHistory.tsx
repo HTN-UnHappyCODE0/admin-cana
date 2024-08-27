@@ -163,6 +163,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							},
 							{
 								title: 'Mã giao dịch',
+								fixedLeft: true,
 								render: (data: ITransaction) => <>{data?.code || '---'}</>,
 							},
 							{
@@ -187,6 +188,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: ITransaction) => (
 									<Link href={`/cong-no/lich-su?_uuid=${data?.uuid}`} className={styles.linkdetail}>
 										Chi tiết
