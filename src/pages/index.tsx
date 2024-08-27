@@ -2,6 +2,7 @@ import Head from 'next/head';
 import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import WrapperContainer from '~/components/layouts/WrapperContainer';
+import MainDashboard from '~/components/pages/trang-chu/MainDashboard';
 
 export default function Home() {
 	return (
@@ -13,7 +14,7 @@ export default function Home() {
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<WrapperContainer bg={false}>
-				<div>Home page</div>
+				<MainDashboard />
 			</WrapperContainer>
 		</Fragment>
 	);
