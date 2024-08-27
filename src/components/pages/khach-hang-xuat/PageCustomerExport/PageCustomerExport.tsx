@@ -203,6 +203,7 @@ function PageCustomerExport({}: PropsPageCustomerExport) {
 							},
 							{
 								title: 'Tên khách hàng xuất',
+								fixedLeft: true,
 								render: (data: IPageCustomerExport) => (
 									<Link href={`/khach-hang-xuat/${data?.uuid}`} className={styles.link}>
 										{data?.name || '---'}
@@ -259,6 +260,7 @@ function PageCustomerExport({}: PropsPageCustomerExport) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IPageCustomerExport) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom

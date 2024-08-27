@@ -202,6 +202,7 @@ function MainPagePartner({}: PropsMainPagePartner) {
 							},
 							{
 								title: 'Tên NCC',
+								fixedLeft: true,
 								render: (data: IPartner) => (
 									<Link href={`/nha-cung-cap/${data?.uuid}`} className={styles.link}>
 										{data?.name || '---'}
@@ -259,6 +260,7 @@ function MainPagePartner({}: PropsMainPagePartner) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IPartner) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom

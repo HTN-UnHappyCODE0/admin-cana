@@ -81,6 +81,7 @@ function TableListTruck({}: PropsTableListTruck) {
 							},
 							{
 								title: 'Logo xe',
+								fixedLeft: true,
 								render: (data: any) => <>{data?.truckUu?.code}</>,
 							},
 							{

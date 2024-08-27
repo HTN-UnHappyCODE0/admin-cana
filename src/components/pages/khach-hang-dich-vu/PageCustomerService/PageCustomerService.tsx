@@ -203,6 +203,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 							},
 							{
 								title: 'Tên khách hàng dịch vụ',
+								fixedLeft: true,
 								render: (data: IPageCustomerService) => (
 									<Link href={`/khach-hang-dich-vu/${data?.uuid}`} className={styles.link}>
 										{data?.name || '---'}
@@ -259,6 +260,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IPageCustomerService) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom

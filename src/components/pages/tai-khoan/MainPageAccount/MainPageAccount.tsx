@@ -113,6 +113,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 							},
 							{
 								title: 'Mã người dùng',
+								fixedLeft: true,
 								render: (data: IAccount) => <>{data.user?.code || '---'}</>,
 							},
 							{
@@ -147,6 +148,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IAccount) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom

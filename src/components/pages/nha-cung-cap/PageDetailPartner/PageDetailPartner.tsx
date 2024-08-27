@@ -319,6 +319,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 								},
 								{
 									title: 'Tên xường',
+									fixedLeft: true,
 									render: (data: ICustomer) => (
 										<Link href={`/xuong/${data?.uuid}`} className={styles.link}>
 											{data?.name || '---'}
@@ -347,6 +348,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 								},
 								{
 									title: 'Tác vụ',
+									fixedRight: true,
 									render: (data: ICustomer) =>
 										data?.status != STATUS_CUSTOMER.DA_XOA && (
 											<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>

@@ -174,6 +174,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 							},
 							{
 								title: 'Tên xường',
+								fixedLeft: true,
 								render: (data: any) => (
 									<Link href={`/xuong/${data?.uuid}`} className={styles.link}>
 										{data?.name || '---'}
@@ -207,6 +208,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: any) =>
 									data?.status != STATUS_CUSTOMER.DA_XOA && (
 										<HeadlessTippy

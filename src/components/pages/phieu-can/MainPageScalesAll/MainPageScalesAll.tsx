@@ -314,6 +314,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 							},
 							{
 								title: 'Mã lô',
+								fixedLeft: true,
 								render: (data: ITableBillScale) => (
 									<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
 										{data?.code}

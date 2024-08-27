@@ -133,6 +133,7 @@ function MainPagePosition({}: PropsMainPagePosition) {
 							},
 							{
 								title: 'Tên chức vụ',
+								fixedLeft: true,
 								render: (data: IPosition) => <>{data?.name || '---'}</>,
 							},
 							{
@@ -179,6 +180,7 @@ function MainPagePosition({}: PropsMainPagePosition) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IPosition) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom
