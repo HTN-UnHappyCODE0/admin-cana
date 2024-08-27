@@ -171,6 +171,7 @@ function MainPage({}: PropsMainPage) {
 							},
 							{
 								title: 'Họ tên',
+								fixedLeft: true,
 								render: (data: IUser) => (
 									<Link href={`/nhan-vien/${data?.uuid}`} className={styles.link}>
 										{data?.fullName || '---'}
@@ -228,6 +229,7 @@ function MainPage({}: PropsMainPage) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IUser) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										{data?.account == null ? (

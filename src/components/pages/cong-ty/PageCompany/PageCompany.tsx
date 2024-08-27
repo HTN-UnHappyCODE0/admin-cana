@@ -135,6 +135,7 @@ function PageCompany({}: PropsPageCompany) {
 
 							{
 								title: 'Tên công ty',
+								fixedLeft: true,
 								render: (data: ICompany) => <>{data?.name || '---'}</>,
 							},
 
@@ -188,6 +189,7 @@ function PageCompany({}: PropsPageCompany) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: ICompany) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom

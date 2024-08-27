@@ -318,6 +318,7 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 								},
 								{
 									title: 'Tên xường',
+									fixedLeft: true,
 									render: (data: any) => (
 										<Link href={`/xuong/${data?.uuid}`} className={styles.link}>
 											{data?.name || '---'}
@@ -346,6 +347,7 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 								},
 								{
 									title: 'Tác vụ',
+									fixedRight: true,
 									render: (data: ICustomer) =>
 										data?.status != STATUS_CUSTOMER.DA_XOA && (
 											<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>

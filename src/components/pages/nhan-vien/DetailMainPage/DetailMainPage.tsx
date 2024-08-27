@@ -212,6 +212,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 									},
 									{
 										title: 'Tên khách hàng',
+										fixedLeft: true,
 										render: (data: ICustomer) => (
 											<Link href={`/khach-hang/${data?.uuid}`} className={styles.link}>
 												{data?.name || '---'}

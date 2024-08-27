@@ -271,6 +271,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 								},
 								{
 									title: 'Loại gỗ',
+									fixedLeft: true,
 									render: (data: any) => <>{data?.productTypeUu?.name}</>,
 								},
 								{
