@@ -218,6 +218,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 							},
 							{
 								title: 'Nhà cung cấp',
+								fixedLeft: true,
 								render: (data: IPriceTag) => (
 									<Link href={`/nha-cung-cap/${data?.partnerUu?.uuid}`} className={styles.link}>
 										{data?.partnerUu?.name || '---'}
@@ -263,6 +264,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 							},
 							{
 								title: 'Tác vụ',
+								fixedRight: true,
 								render: (data: IPriceTag) => (
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom
