@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {convertCoin} from '~/common/funcs/convertCoin';
 import clsx from 'clsx';
 
-function DetailBox({isConvert = true, value, link, name, action}: PropsDetailBox) {
+function DetailBox({isConvert = true, value, link, color, name, action}: PropsDetailBox) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.box_name}>
@@ -19,7 +19,9 @@ function DetailBox({isConvert = true, value, link, name, action}: PropsDetailBox
 
 			<div className={styles.action}>{action}</div>
 
-			<div className={clsx(styles.box_value, {[styles.check]: value < 0})}>{isConvert ? convertCoin(value) : value}</div>
+			<div style={{color: color}} className={clsx(styles.box_value, {[styles.check]: value < 0})}>
+				{isConvert ? convertCoin(value) : value}
+			</div>
 		</div>
 	);
 }

@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 
-import {PropsChartImportCompany} from './interfaces';
-import styles from './ChartImportCompany.module.scss';
+import {PropsChartExportCompany} from './interfaces';
+import styles from './ChartExportCompany.module.scss';
 
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts';
 import SelectFilterOption from '../SelectFilterOption';
 import SelectFilterDate from '../SelectFilterDate';
 import {convertCoin} from '~/common/funcs/convertCoin';
 
-function ChartImportCompany({}: PropsChartImportCompany) {
+function ChartExportCompany({}: PropsChartExportCompany) {
 	const data = [
 		{
 			name: '21/07/2024',
@@ -50,7 +50,7 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.head}>
-				<h3>Biểu đầu thống kê hàng nhập của tổng công ty</h3>
+				<h3>Biểu đầu thống kê hàng xuất của tổng công ty</h3>
 				<div className={styles.filter}>
 					<SelectFilterOption />
 					<SelectFilterDate />
@@ -100,4 +100,4 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 	);
 }
 
-export default ChartImportCompany;
+export default ChartExportCompany;
