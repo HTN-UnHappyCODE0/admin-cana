@@ -145,9 +145,9 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 					locationMap: '',
 				});
 				onClose();
-				queryClient.invalidateQueries([QUERY_KEY.chi_tiet_kho_hang_chinh, _id]);
-				queryClient.invalidateQueries([QUERY_KEY.chi_tiet_kho_hang_con, _id]);
-				queryClient.invalidateQueries([QUERY_KEY.table_kho_hang_chinh, _id]);
+				queryClient.invalidateQueries([QUERY_KEY.chi_tiet_kho_hang_chinh]);
+				queryClient.invalidateQueries([QUERY_KEY.table_kho_hang_chinh]);
+				queryClient.invalidateQueries([QUERY_KEY.chi_tiet_bai]);
 			}
 		},
 		onError(error) {

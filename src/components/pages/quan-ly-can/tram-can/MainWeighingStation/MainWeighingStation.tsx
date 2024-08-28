@@ -64,7 +64,7 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 					keyword: (_keyword as string) || '',
 					companyUuid: (_companyUuid as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
-					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					status: !!_status ? Number(_status) : null,
 				}),
