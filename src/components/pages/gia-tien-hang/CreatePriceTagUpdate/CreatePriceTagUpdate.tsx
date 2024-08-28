@@ -272,7 +272,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 							<Select
 								isSearch
 								name='customerUuid'
-								placeholder='Chọn xưởnhà cung cấpng'
+								placeholder='Chọn nhà cung cấp'
 								value={form?.customerUuid}
 								label={
 									<span>
