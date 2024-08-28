@@ -47,9 +47,9 @@ function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 		<Fragment>
 			<div className={styles.header}>
 				<div className={styles.main_search}>
-					<div className={styles.search}>
+					{/* <div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm' />
-					</div>
+					</div> */}
 
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' />
@@ -75,19 +75,19 @@ function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 							},
 
 							{
-								title: 'Khối lượng hàng nhập',
+								title: 'Trọng lượng hàng nhập',
 								render: (data: IDataTableHistoryWarehouse) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountIn)}</span>
 								),
 							},
 							{
-								title: 'Khối lượng hàng xuất',
+								title: 'Trọng lượng hàng xuất',
 								render: (data: IDataTableHistoryWarehouse) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountOut)}</span>
 								),
 							},
 							{
-								title: 'Khối lượng chuyển kho',
+								title: 'Trọng lượng chuyển kho',
 								render: (data: IDataTableHistoryWarehouse) => (
 									<span style={{color: '#2D74FF'}}>
 										{convertCoin(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}

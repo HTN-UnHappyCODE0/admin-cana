@@ -149,7 +149,7 @@ function DetailStorage({}: PropsDetailStorage) {
 			<div className={'mt'}>
 				<GridColumn col_4>
 					<DetailBox
-						name={'Tổng lượng hàng'}
+						name={'Tổng trọng lượng hàng'}
 						value={Number(detailStorage?.totalAmountMt)}
 						action={
 							<div className={styles.action}>
@@ -172,7 +172,7 @@ function DetailStorage({}: PropsDetailStorage) {
 						}
 					/>
 					<DetailBox
-						name={'Khối lượng nhập'}
+						name={'Trọng lượng nhập'}
 						value={Number(detailStorage?.totalAmountIn)}
 						action={
 							<div className={styles.action}>
@@ -189,7 +189,7 @@ function DetailStorage({}: PropsDetailStorage) {
 						}
 					/>
 					<DetailBox
-						name={'Khối lượng xuất'}
+						name={'Trọng lượng xuất'}
 						value={Number(detailStorage?.totalAmountOut)}
 						action={
 							<div className={styles.action}>
