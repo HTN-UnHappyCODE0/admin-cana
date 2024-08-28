@@ -101,12 +101,12 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 			<Form form={form} setForm={setForm}>
 				<div className={'mt'}>
 					<Input
-						placeholder='Nhập xưởng'
+						placeholder='Nhập nhà cung cấp'
 						name='customer'
 						readOnly={true}
 						label={
 							<span>
-								Xưởng <span style={{color: 'red'}}>*</span>
+								Nhà cung cấp <span style={{color: 'red'}}>*</span>
 							</span>
 						}
 					/>

@@ -111,7 +111,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Nhà cung cấp'
+							name='Đối tác'
 							query='_partnerUuid'
 							listFilter={listPartner?.data?.map((v: any) => ({
 								id: v?.uuid,
@@ -171,7 +171,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 								render: (data: ITransaction) => <Moment date={data?.created} format='DD/MM/YYYY' />,
 							},
 							{
-								title: 'Nhà cung cấp',
+								title: 'Đối tác',
 								render: (data: ITransaction) => <>{data?.partnerUu?.name}</>,
 							},
 							{

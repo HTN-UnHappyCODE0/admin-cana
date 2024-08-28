@@ -25,6 +25,8 @@ function FormChangePassword({onClose}: PropsFormChangePassword) {
 		confirmpassword: string;
 	}>({oldpassword: '', newpassword: '', confirmpassword: ''});
 
+	const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+
 	const funcChangePassword = useMutation({
 		mutationFn: () =>
 			httpRequest({
@@ -55,6 +57,11 @@ function FormChangePassword({onClose}: PropsFormChangePassword) {
 	const handleSubmit = async () => {
 		if (form.newpassword !== form.confirmpassword) {
 			return toastWarn({msg: 'Mật khẩu mới không khớp'});
+		}
+		if (!regex.test(form?.newpassword)) {
+			return toastWarn({
+				msg: 'Mật khẩu mới phải chứa ít nhất 6 ký tự, bao gồm chữ cái và số',
+			});
 		}
 		return funcChangePassword.mutate();
 	};

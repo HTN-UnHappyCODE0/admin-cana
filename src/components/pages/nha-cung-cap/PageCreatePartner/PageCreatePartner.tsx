@@ -139,7 +139,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Thêm mới nhà cung cấp thành công!',
+				msgSuccess: 'Thêm mới đối tác thành công!',
 				http: partnerServices.upsertPartner({
 					uuid: '',
 					name: form?.name,
@@ -203,8 +203,8 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm mới nhà cung cấp</h4>
-						<p>Điền đầy đủ các thông tin nhà cung cấp</p>
+						<h4>Thêm mới đối tác</h4>
+						<p>Điền đầy đủ các thông tin đối tác</p>
 					</div>
 					<div className={styles.right}>
 						<Button onClick={() => router.back()} p_10_24 rounded_2 grey_outline>
@@ -231,10 +231,10 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 								blur={true}
 								label={
 									<span>
-										Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
+										Tên đối tác <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='Nhập tên nhà cung cấp'
+								placeholder='Nhập tên đối tác'
 							/>
 						</div>
 						<Input

@@ -192,10 +192,10 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 						readOnly
 						name='customerName'
 						value={form.customerName}
-						placeholder='Nhập tên xưởng'
+						placeholder='Nhập tên nhà cung cấp'
 						label={
 							<span>
-								Tên xưởng <span style={{color: 'red'}}>*</span>
+								Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
 							</span>
 						}
 					/>

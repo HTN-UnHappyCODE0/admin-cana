@@ -9,15 +9,15 @@ export default function Page() {
 	return (
 		<Fragment>
 			<Head>
-				<title>Công nợ nhà cung cấp</title>
-				<meta name='description' content='Công nợ nhà cung cấp' />
+				<title>Công nợ đối tác</title>
+				<meta name='description' content='Công nợ đối tác' />
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<LayoutPages
 				listPages={[
 					{
-						title: 'Công nợ nhà cung cấp',
+						title: 'Công nợ đối tác',
 						url: PATH.CongNo,
 					},
 					// {

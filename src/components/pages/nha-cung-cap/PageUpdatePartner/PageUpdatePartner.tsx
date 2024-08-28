@@ -169,7 +169,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Cập nhật nhà cung cấp thành công!',
+				msgSuccess: 'Cập nhật đối tác thành công!',
 				http: partnerServices.upsertPartner({
 					uuid: _id as string,
 					name: form?.name,
@@ -219,8 +219,8 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Chỉnh sửa nhà cung cấp</h4>
-						<p>Điền đầy đủ các thông tin nhà cung cấp</p>
+						<h4>Chỉnh sửa đối tác</h4>
+						<p>Điền đầy đủ các thông tin đối tác</p>
 					</div>
 					<div className={styles.right}>
 						<Button onClick={() => router.back()} p_10_24 rounded_2 grey_outline>
@@ -247,10 +247,10 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 								blur={true}
 								label={
 									<span>
-										Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
+										Tên đối tác <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='Nhập tên nhà cung cấp'
+								placeholder='Nhập tên đối tác'
 							/>
 						</div>
 						<Input

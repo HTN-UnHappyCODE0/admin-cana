@@ -192,7 +192,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Thêm nhân xưởng thành công!',
+				msgSuccess: 'Thêm nhà cung cấp thành công!',
 				http: customerServices.upsertCustomer({
 					uuid: '',
 					transportType: form.transportType!,
@@ -240,7 +240,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
 		}
 		if (!form.partnerUuid) {
-			return toastWarn({msg: 'Vui lòng nhập tên xưởng!'});
+			return toastWarn({msg: 'Vui lòng nhập tên nhà cung cấp!'});
 		}
 		if (!form.director) {
 			return toastWarn({msg: 'Vui lòng nhập tên người đại diện!'});
@@ -255,8 +255,8 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm mới xưởng</h4>
-						<p>Điền đầy đủ các thông tin xưởng</p>
+						<h4>Thêm mới nhà cung cấp</h4>
+						<p>Điền đầy đủ các thông tin nhà cung cấp</p>
 					</div>
 					<div className={styles.right}>
 						<Button onClick={() => router.back()} p_10_24 rounded_2 grey_outline>
@@ -358,10 +358,10 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 							blur={true}
 							label={
 								<span>
-									Tên xưởng <span style={{color: 'red'}}>*</span>
+									Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên xưởng'
+							placeholder='Nhập tên nhà cung cấp'
 						/>
 						<div>
 							<Input
@@ -385,7 +385,15 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 							isSearch
 							readOnly={!!_partnerUuid}
 							name='partnerUuid'
-							placeholder='Chọn nhà cung cấp'
+							placeholder={
+								!!_partnerUuid
+									? 'Chọn Đối tác'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'Chọn Đối tác'
+									: TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'Chọn khách hàng xuất'
+									: 'Chọn khách hàng dịch vụ'
+							}
 							value={_partnerUuid || form?.partnerUuid}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
@@ -396,7 +404,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 							label={
 								<span>
 									{TYPE_PARTNER.NCC === Number(_typeCus)
-										? 'Thuộc nhà cung cấp'
+										? 'Thuộc Đối tác'
 										: TYPE_PARTNER.KH_XUAT === Number(_typeCus)
 										? 'Thuộc khách hàng xuất'
 										: 'Thuộc khách hàng dịch vụ'}

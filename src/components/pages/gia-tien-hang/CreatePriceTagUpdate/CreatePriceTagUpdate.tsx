@@ -272,11 +272,11 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 							<Select
 								isSearch
 								name='customerUuid'
-								placeholder='Chọn xưởng'
+								placeholder='Chọn xưởnhà cung cấpng'
 								value={form?.customerUuid}
 								label={
 									<span>
-										Xưởng <span style={{color: 'red'}}>*</span>
+										Nhà cung cấp <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -582,7 +582,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 						<div className={styles.filter}>
 							<FilterCustom
 								isSearch
-								name='Xưởng'
+								name='Nhà cung cấp'
 								query='_customerUuid'
 								listFilter={listCustomer?.data?.map((v: any) => ({
 									id: v?.uuid,

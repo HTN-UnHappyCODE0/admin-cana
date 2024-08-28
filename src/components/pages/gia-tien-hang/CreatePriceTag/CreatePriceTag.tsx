@@ -183,7 +183,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 			return toastWarn({msg: 'Vui lòng chọn giá tiền áp dụng!'});
 		}
 		if (listCustomerChecked.length === 0) {
-			return toastWarn({msg: 'Vui lòng chọn xưởng!'});
+			return toastWarn({msg: 'Vui lòng chọn nhà cung cấp!'});
 		}
 
 		return setOpenWarning(true);
@@ -317,12 +317,12 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 								showOverlay={false}
 								label={
 									<span>
-										Xưởng áp dụng <span style={{color: 'red'}}>*</span>
+										Nhà cung cấp áp dụng <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='Chọn xưởng'
-								title='Thêm xưởng'
-								description='Thêm và lựa chọn xưởng'
+								placeholder='Chọn nhà cung cấp'
+								title='Thêm nhà cung cấp'
+								description='Thêm và lựa chọn nhà cung cấp'
 								dataList={listCustomer?.data || []}
 								dataChecked={listCustomerChecked}
 								setDataChecked={setListCustomerChecked}
@@ -336,7 +336,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 								id='checkall'
 								checked={listCustomer?.data?.length == listCustomerChecked?.length}
 							/>
-							<label htmlFor='checkall'>Áp dụng cho tất cả xưởng </label>
+							<label htmlFor='checkall'>Áp dụng cho tất cả nhà cung cấp </label>
 						</div>
 					</div>
 				</div>

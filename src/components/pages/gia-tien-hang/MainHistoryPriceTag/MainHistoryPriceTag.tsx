@@ -74,7 +74,7 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 								render: (data: IPriceTag, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Xưởng',
+								title: 'Nhà cung cấp',
 								render: (data: IPriceTag) => <>{data?.customerUu?.name || '---'}</>,
 							},
 							{

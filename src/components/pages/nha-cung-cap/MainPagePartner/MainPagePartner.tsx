@@ -87,7 +87,7 @@ function MainPagePartner({}: PropsMainPagePartner) {
 		enabled: listRegency.isSuccess,
 	});
 
-	// Lấy danh sach nhà cung cấp
+	// Lấy danh sach đối tác
 	const listPartner = useQuery([QUERY_KEY.table_cong_ty, _page, _pageSize, _keyword, _status, _userUuid], {
 		queryFn: () =>
 			httpRequest({
@@ -176,7 +176,7 @@ function MainPagePartner({}: PropsMainPagePartner) {
 						rounded_2
 						icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 					>
-						Thêm nhà cung cấp
+						Thêm đối tác
 					</Button>
 				</div>
 			</div>
@@ -187,9 +187,9 @@ function MainPagePartner({}: PropsMainPagePartner) {
 					loading={listPartner?.isLoading}
 					noti={
 						<Noti
-							titleButton='Thêm nhà cung cấp'
+							titleButton='Thêm đối tác'
 							onClick={() => router.push(PATH.ThemMoiNhaCungCap)}
-							des='Hiện tại chưa có nhà cung cấp nào, thêm ngay?'
+							des='Hiện tại chưa có đối tác nào, thêm ngay?'
 						/>
 					}
 				>
@@ -197,11 +197,11 @@ function MainPagePartner({}: PropsMainPagePartner) {
 						data={listPartner?.data?.items || []}
 						column={[
 							{
-								title: 'Mã NCC',
+								title: 'Mã đối tác',
 								render: (data: IPartner) => <>{data?.code || '---'}</>,
 							},
 							{
-								title: 'Tên NCC',
+								title: 'Tên đối tác',
 								fixedLeft: true,
 								render: (data: IPartner) => (
 									<Link href={`/nha-cung-cap/${data?.uuid}`} className={styles.link}>
@@ -210,7 +210,7 @@ function MainPagePartner({}: PropsMainPagePartner) {
 								),
 							},
 							{
-								title: 'SL xưởng',
+								title: 'SL NCC',
 								render: (data: IPartner) => <>{data?.countCustomer}</>,
 							},
 							{
@@ -303,11 +303,11 @@ function MainPagePartner({}: PropsMainPagePartner) {
 				danger
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
-				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa nhà cung cấp' : 'Dùng nhà cung cấp'}
+				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa đối tác' : 'Dùng đối tác'}
 				note={
 					dataStatus?.status == CONFIG_STATUS.HOAT_DONG
-						? 'Bạn có chắc chắn muốn khóa nhà cung cấp này?'
-						: 'Bạn có chắc chắn muốn dùng nhà cung cấp này?'
+						? 'Bạn có chắc chắn muốn khóa đối tác này?'
+						: 'Bạn có chắc chắn muốn dùng đối tác này?'
 				}
 				onSubmit={funcChangeStatus.mutate}
 			/>

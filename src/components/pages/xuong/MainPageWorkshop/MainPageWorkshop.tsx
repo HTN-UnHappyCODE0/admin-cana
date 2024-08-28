@@ -113,12 +113,12 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên xưởng' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên NCC' />
 					</div>
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Nhà cung cấp'
+							name='Đối tác'
 							query='_partnerUuid'
 							listFilter={listPartner?.data?.map((v: any) => ({
 								id: v?.uuid,
@@ -153,7 +153,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 						rounded_2
 						icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 					>
-						Thêm xưởng
+						Thêm NCC
 					</Button>
 				</div>
 			</div>
@@ -162,17 +162,17 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 				<DataWrapper
 					data={listCustomer.data?.items || []}
 					loading={listCustomer.isLoading}
-					noti={<Noti disableButton des='Hiện tại chưa có xưởng nào!' />}
+					noti={<Noti disableButton des='Hiện tại chưa có NCC nào!' />}
 				>
 					<Table
 						data={listCustomer.data?.items || []}
 						column={[
 							{
-								title: 'Mã xưởng',
+								title: 'Mã NCC',
 								render: (data: any) => <>{data.code}</>,
 							},
 							{
-								title: 'Tên xường',
+								title: 'Tên NCC',
 								fixedLeft: true,
 								render: (data: any) => (
 									<Link href={`/xuong/${data?.uuid}`} className={styles.link}>
@@ -181,7 +181,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 								),
 							},
 							{
-								title: 'Tên NCC',
+								title: 'Tên đối tác',
 								render: (data: any) => <>{data.partnerUu?.name || '---'}</>,
 							},
 
@@ -221,7 +221,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 										<IconCustom
 											lock
 											icon={data?.status == STATUS_CUSTOMER.HOP_TAC ? <Lock1 size={20} /> : <Unlock size={20} />}
-											tooltip={data?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa xưởng' : 'Mở khóa xưởng'}
+											tooltip={data?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa NCC' : 'Mở khóa NCC'}
 											color='#777E90'
 											onClick={() => setDataStatusCustomer(data)}
 										/>
@@ -244,8 +244,8 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 					title={dataStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa hoạt động' : 'Mở khóa hoạt động'}
 					note={
 						dataStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC
-							? 'Bạn có chắc chắn muốn khóa hoạt động xưởng này?'
-							: 'Bạn có chắc chắn muốn mở khóa hoạt động xưởng này?'
+							? 'Bạn có chắc chắn muốn khóa hoạt động NCC này?'
+							: 'Bạn có chắc chắn muốn mở khóa hoạt động NCC này?'
 					}
 					onSubmit={funcChangeStatusCustomer.mutate}
 				/>

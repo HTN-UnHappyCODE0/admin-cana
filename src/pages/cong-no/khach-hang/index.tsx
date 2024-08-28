@@ -18,7 +18,7 @@ export default function Page() {
 			<LayoutPages
 				listPages={[
 					{
-						title: 'Công nợ nhà cung cấp',
+						title: 'Công nợ đối tác',
 						url: PATH.CongNo,
 					},
 					// {
