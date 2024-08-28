@@ -119,7 +119,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo xưởng, NCC' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo nhà cung cấp, đối tác' />
 					</div>
 					<div className={styles.filter}>
 						<FilterCustom
@@ -204,7 +204,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 								),
 							},
 							{
-								title: 'Xưởng',
+								title: 'Nhà cung cấp',
 								render: (data: IPriceTagUpdate) => <>{data?.customerUu?.name || '---'}</>,
 							},
 							{

@@ -211,7 +211,7 @@ function PageCustomerExport({}: PropsPageCustomerExport) {
 								),
 							},
 							{
-								title: 'SL xưởng',
+								title: 'SL nhà cung cấp',
 								render: (data: IPageCustomerExport) => <>{data?.countCustomer}</>,
 							},
 							{

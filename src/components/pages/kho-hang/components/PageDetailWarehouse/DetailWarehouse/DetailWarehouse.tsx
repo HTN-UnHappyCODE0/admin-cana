@@ -162,7 +162,7 @@ function DetailWarehouse({}: PropsDetailWarehouse) {
 								<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 								<div className={styles.note}>
 									<p>
-										Từ NCC: <span>{convertCoin(detailWarehouse?.amountIn!)}</span>
+										Từ đối tác: <span>{convertCoin(detailWarehouse?.amountIn!)}</span>
 									</p>
 									<p style={{marginTop: 2}}>
 										Từ kho: <span>{convertCoin(detailWarehouse?.amountChangeIn!)}</span>

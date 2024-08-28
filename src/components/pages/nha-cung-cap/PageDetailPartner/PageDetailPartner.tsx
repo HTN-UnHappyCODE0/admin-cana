@@ -209,7 +209,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 
 				<div className={clsx('mt')}>
 					<GridColumn col_5>
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='NCC' value={detailPartner?.countCustomer!} />
+						<ItemDashboard isLoading={isLoading} color='#3772FF' text='nhà cung cấp' value={detailPartner?.countCustomer!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu chưa KCS' value={detailPartner?.totalBillDemo!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu đã KCS' value={detailPartner?.totalBillKCS!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Số lần thu' value={detailPartner?.totalTransactionIn!} />
@@ -298,7 +298,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 							rounded_2
 							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 						>
-							Thêm đối tác
+							Thêm nhà cung cấp
 						</Button>
 					</div>
 				</div>
@@ -407,11 +407,11 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 				danger
 				open={!!dataChangeStatusCustomer}
 				onClose={() => setDataChangeStatusCustomer(null)}
-				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa xưởng' : 'Mở khóa xưởng'}
+				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa nhà cung cấp' : 'Mở khóa nhà cung cấp'}
 				note={
 					dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC
-						? 'Bạn có chắc chắn muốn khóa hoạt động xưởng này?'
-						: 'Bạn có chắc chắn muốn mở khóa hoạt động xưởng này?'
+						? 'Bạn có chắc chắn muốn khóa hoạt động nhà cung cấp này?'
+						: 'Bạn có chắc chắn muốn mở khóa hoạt động nhà cung cấp này?'
 				}
 				onSubmit={funcChangeStatusCustomer.mutate}
 			/>

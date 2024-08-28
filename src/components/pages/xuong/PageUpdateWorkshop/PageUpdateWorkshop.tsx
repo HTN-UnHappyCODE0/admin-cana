@@ -224,7 +224,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Chỉnh sửa xưởng thành công!',
+				msgSuccess: 'Chỉnh sửa nhà cung cấp thành công!',
 				http: customerServices.upsertCustomer({
 					uuid: _customerUuid as string,
 					transportType: form.transportType!,
@@ -281,8 +281,8 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Chỉnh sửa xưởng</h4>
-						<p>Điền đầy đủ các thông tin xưởng</p>
+						<h4>Chỉnh sửa nhà cung cấp</h4>
+						<p>Điền đầy đủ các thông tin nhà cung cấp</p>
 					</div>
 					<div className={styles.right}>
 						<Button onClick={() => router.back()} p_10_24 rounded_2 grey_outline>
@@ -379,7 +379,15 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 							isSearch
 							readOnly={true}
 							name='partnerUuid'
-							placeholder='Chọn nhà cung cấp'
+							placeholder={
+								!!_partnerUuid
+									? 'Chọn Đối tác'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'Chọn Đối tác'
+									: TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'Chọn khách hàng xuất'
+									: 'Chọn khách hàng dịch vụ'
+							}
 							value={_partnerUuid || form?.partnerUuid}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
@@ -390,7 +398,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 							label={
 								<span>
 									{TYPE_PARTNER.NCC === Number(_typeCus)
-										? 'Thuộc nhà cung cấp'
+										? 'Thuộc đối tác'
 										: TYPE_PARTNER.KH_XUAT === Number(_typeCus)
 										? 'Thuộc khách hàng xuất'
 										: 'Thuộc khách hàng dịch vụ'}{' '}
@@ -411,10 +419,10 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 							blur={true}
 							label={
 								<span>
-									Tên xưởng <span style={{color: 'red'}}>*</span>
+									Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên xưởng'
+							placeholder='Nhập tên nhà cung cấp'
 						/>
 						<div>
 							<Input

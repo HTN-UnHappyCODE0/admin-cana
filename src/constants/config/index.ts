@@ -193,7 +193,7 @@ export const Menu: {
 		title: 'Nhà cung cấp',
 		group: [
 			{title: 'Nhà cung cấp', icon: icons.xuong, path: PATH.Xuong},
-			{title: 'Danh sánh NCC', icon: icons.congty, path: PATH.NhaCungCap},
+			{title: 'Đối tác', icon: icons.congty, path: PATH.NhaCungCap},
 		],
 	},
 	{

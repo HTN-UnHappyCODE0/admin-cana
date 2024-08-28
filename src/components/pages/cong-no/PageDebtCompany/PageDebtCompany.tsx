@@ -57,7 +57,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 				<DataWrapper
 					data={listPartnerDebt?.data?.items || []}
 					loading={listPartnerDebt?.isLoading}
-					noti={<Noti disableButton={true} title='Dữ liệu trống!' des='Danh sách công nợ nhà cung cấp trống!' />}
+					noti={<Noti disableButton={true} title='Dữ liệu trống!' des='Danh sách công nợ đối tác trống!' />}
 				>
 					<Table
 						data={listPartnerDebt?.data?.items || []}

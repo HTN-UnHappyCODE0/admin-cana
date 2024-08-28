@@ -198,7 +198,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 						data={listPartner?.data?.items || []}
 						column={[
 							{
-								title: 'Mã KHX',
+								title: 'Mã KHDV',
 								render: (data: IPageCustomerService) => <>{data?.code || '---'}</>,
 							},
 							{
@@ -211,7 +211,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 								),
 							},
 							{
-								title: 'SL xưởng',
+								title: 'SL nhà cung cấp',
 								render: (data: IPageCustomerService) => <>{data?.countCustomer}</>,
 							},
 							{
