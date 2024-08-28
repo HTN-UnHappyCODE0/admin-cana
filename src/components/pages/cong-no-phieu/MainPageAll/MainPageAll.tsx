@@ -135,7 +135,7 @@ function MainPageAll({}: PropsMainPageAll) {
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Nhà cung cấp'
+							name='Đối tác'
 							query='_partnerUuid'
 							listFilter={listPartner?.data?.map((v: any) => ({
 								id: v?.uuid,
@@ -147,7 +147,7 @@ function MainPageAll({}: PropsMainPageAll) {
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Người quản lý'
+							name='Quản lý nhập liệu'
 							query='_userUuid'
 							listFilter={listUser?.data?.map((v: any) => ({
 								id: v?.uuid,
@@ -199,11 +199,11 @@ function MainPageAll({}: PropsMainPageAll) {
 								),
 							},
 							{
-								title: 'Nhà cung cấp',
+								title: 'Đối tác',
 								render: (data: IDebtBill) => <>{data?.fromUu?.partnerUu?.name || '---'}</>,
 							},
 							{
-								title: 'Người quản lý',
+								title: 'Quản lý nhập liệu',
 								render: (data: IDebtBill) => <>{data?.fromUu?.userUu?.fullName || '---'}</>,
 							},
 							{

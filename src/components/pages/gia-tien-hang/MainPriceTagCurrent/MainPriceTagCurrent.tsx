@@ -117,7 +117,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 						productTypeUuid: (_productTypeUuid as string) || '',
 						priceTagUuid: '',
 						state: null,
-						transportType: Number(_transportType) || null,
+						transportType: !!_transportType ? Number(_transportType) : null,
 					}),
 				}),
 			select(data) {
