@@ -105,7 +105,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 						specificationUuid: (_specificationUuid as string) || '',
 						timeStart: (_dateFrom as string) || null,
 						timeEnd: (_dateTo as string) || null,
-						transportType: Number(_transportType) || null,
+						transportType: !!_transportType ? Number(_transportType) : null,
 					}),
 				}),
 			select(data) {

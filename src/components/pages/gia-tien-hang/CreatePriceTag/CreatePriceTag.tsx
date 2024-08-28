@@ -70,7 +70,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 		},
 	});
 
-	const listSpecifications = useQuery([QUERY_KEY.dropdown_quy_cach], {
+	const listSpecifications = useQuery([QUERY_KEY.dropdown_quy_cach, form.productTypeUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -83,11 +83,13 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
 					qualityUuid: '',
+					productTypeUuid: form.productTypeUuid,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
+		enabled: !!form.productTypeUuid,
 	});
 
 	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
@@ -247,6 +249,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 									Quy cách <span style={{color: 'red'}}>*</span>
 								</span>
 							}
+							readOnly={!form.productTypeUuid}
 						>
 							{listSpecifications?.data?.map((value: any) => (
 								<Option key={value.uuid} title={value?.name} value={value?.uuid} />

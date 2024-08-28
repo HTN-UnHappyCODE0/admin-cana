@@ -275,7 +275,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 									render: (data: any) => <>{data?.productTypeUu?.name}</>,
 								},
 								{
-									title: 'Chất lượng',
+									title: 'Quốc gia',
 									render: (data: any) => <>{data?.qualityUu?.name}</>,
 								},
 								{

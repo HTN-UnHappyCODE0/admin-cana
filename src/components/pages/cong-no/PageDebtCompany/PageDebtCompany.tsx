@@ -67,7 +67,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 								render: (data: IPartnerDebt) => <>{data?.code}</>,
 							},
 							{
-								title: 'Tên đốt tác',
+								title: 'Tên đối tác',
 								fixedLeft: true,
 								render: (data: IPartnerDebt) => (
 									<Link href={`/nha-cung-cap/${data?.uuid}`} className={styles.link}>

@@ -164,7 +164,7 @@ export const Menu: {
 		title: 'Kế toán',
 		group: [
 			{title: 'Công nợ phiếu', icon: icons.phieuhang, path: PATH.CongNoPhieu, pathActive: '/cong-no-phieu'},
-			{title: 'Công nợ NCC', icon: icons.congno, path: PATH.CongNo, pathActive: '/cong-no'},
+			{title: 'Công nợ đối tác', icon: icons.congno, path: PATH.CongNo, pathActive: '/cong-no'},
 			{title: 'Giá tiền hàng', icon: icons.giatienhang, path: PATH.GiaTienHangHienTai, pathActive: PATH.GiaTien},
 			{title: 'Duyệt sản lượng', icon: icons.duyetsanluong, path: PATH.DuyetSanLuong, pathActive: PATH.DuyetSanLuong},
 		],
@@ -192,7 +192,7 @@ export const Menu: {
 	{
 		title: 'Nhà cung cấp',
 		group: [
-			{title: 'Xưởng', icon: icons.xuong, path: PATH.Xuong},
+			{title: 'Nhà cung cấp', icon: icons.xuong, path: PATH.Xuong},
 			{title: 'Danh sánh NCC', icon: icons.congty, path: PATH.NhaCungCap},
 		],
 	},
