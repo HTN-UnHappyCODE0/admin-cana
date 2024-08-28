@@ -1,42 +1,17 @@
-import React, {useState} from 'react';
+import React from 'react';
 
-import {PropsChartImportCompany} from './interfaces';
-import styles from './ChartImportCompany.module.scss';
+import {PropsChartExportCompany} from './interfaces';
+import styles from './ChartExportCompany.module.scss';
 
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer} from 'recharts';
 import SelectFilterOption from '../SelectFilterOption';
 import SelectFilterDate from '../SelectFilterDate';
 import {convertCoin} from '~/common/funcs/convertCoin';
 
-function ChartImportCompany({}: PropsChartImportCompany) {
+function ChartExportCompany({}: PropsChartExportCompany) {
 	const data = [
 		{
 			name: '21/07/2024',
-			'Tổng trọng lượng nhập hàng': 4000,
-		},
-		{
-			name: '22/07/2024',
-			'Tổng trọng lượng nhập hàng': 3000,
-		},
-		{
-			name: '23/07/2024',
-			'Tổng trọng lượng nhập hàng': 2000,
-		},
-		{
-			name: '24/07/2024',
-			'Tổng trọng lượng nhập hàng': 2780,
-		},
-		{
-			name: '25/07/2024',
-			'Tổng trọng lượng nhập hàng': 1890,
-		},
-		{
-			name: '26/07/2024',
-			'Tổng trọng lượng nhập hàng': 2390,
-		},
-		{
-			name: '27/07/2024',
-			'Tổng trọng lượng nhập hàng': 3490,
 			'Gỗ dăm keo': 4000,
 			'Gỗ dăm bạch đàn': 4000,
 		},
@@ -75,7 +50,7 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.head}>
-				<h3>Biểu đầu thống kê hàng nhập của tổng công ty</h3>
+				<h3>Biểu đầu thống kê hàng xuất của tổng công ty</h3>
 				<div className={styles.filter}>
 					<SelectFilterOption />
 					<SelectFilterDate />
@@ -116,7 +91,6 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 						<YAxis />
 						<Tooltip />
 						<CartesianGrid strokeDasharray='3 3' vertical={false} />
-						<Bar dataKey='Tổng trọng lượng nhập hàng' fill='#2A85FF' />
 						<Bar dataKey='Gỗ dăm keo' stackId='a' fill='#0EA5E9' />
 						<Bar dataKey='Gỗ dăm bạch đàn' stackId='a' fill='#FB923C' />
 					</BarChart>
@@ -126,4 +100,4 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 	);
 }
 
-export default ChartImportCompany;
+export default ChartExportCompany;
