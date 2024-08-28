@@ -202,14 +202,14 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 						<DateRangerCustom titleTime='Thời gian' />
 					</div>
 				</div>
-				{/* <div className={clsx('mt')}>
+				<div className={clsx('mt')}>
 					<div className={styles.parameter}>
 						<div>
 							TỔNG LƯỢNG HÀNG:{' '}
 							<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.pagination?.totalCount}</span>
 						</div>
 					</div>
-				</div> */}
+				</div>
 			</div>
 			<div className={styles.table}>
 				<DataWrapper
