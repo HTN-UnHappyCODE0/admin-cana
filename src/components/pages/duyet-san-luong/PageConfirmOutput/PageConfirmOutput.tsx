@@ -33,6 +33,7 @@ import Pagination from '~/components/common/Pagination';
 import batchBillServices from '~/services/batchBillServices';
 import IconCustom from '~/components/common/IconCustom';
 import {Eye, RefreshLeftSquare, TickCircle} from 'iconsax-react';
+import clsx from 'clsx';
 import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
 import Popup from '~/components/common/Popup';
@@ -201,6 +202,14 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 						<DateRangerCustom titleTime='Thời gian' />
 					</div>
 				</div>
+				{/* <div className={clsx('mt')}>
+					<div className={styles.parameter}>
+						<div>
+							TỔNG LƯỢNG HÀNG:{' '}
+							<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.pagination?.totalCount}</span>
+						</div>
+					</div>
+				</div> */}
 			</div>
 			<div className={styles.table}>
 				<DataWrapper
