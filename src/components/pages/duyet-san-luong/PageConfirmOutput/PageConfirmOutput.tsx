@@ -155,7 +155,6 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 
 	return (
 		<div className={styles.container}>
-			<button></button>
 			<Loading loading={fucnKTKConfirmBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
@@ -202,12 +201,12 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 						<DateRangerCustom titleTime='Thời gian' />
 					</div>
 				</div>
-				<div className={clsx('mt')}>
-					<div className={styles.parameter}>
-						<div>
-							TỔNG LƯỢNG HÀNG:{' '}
-							<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.pagination?.totalCount}</span>
-						</div>
+			</div>
+			<div className={clsx('mt')}>
+				<div className={styles.parameter}>
+					<div>
+						TỔNG LƯỢNG HÀNG:
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{'---'}</span>
 					</div>
 				</div>
 			</div>
@@ -215,7 +214,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 				<DataWrapper
 					data={listBatch?.data?.items || []}
 					loading={listBatch?.isLoading}
-					noti={<Noti des='Hiện tại chưa có phiếu cân nào!' disableButton />}
+					noti={<Noti des='Hiện tại chưa có lô nào!' disableButton />}
 				>
 					<Table
 						data={listBatch?.data?.items || []}

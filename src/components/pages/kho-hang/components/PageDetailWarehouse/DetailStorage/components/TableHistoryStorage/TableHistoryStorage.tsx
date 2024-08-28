@@ -34,8 +34,8 @@ function TableHistoryStorage({}: PropsTableHistoryStorage) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					status: null,
 					storageUuid: _id as string,
-					timeEnd: _dateFrom ? (_dateFrom as string) : null,
-					timeStart: _dateTo ? (_dateTo as string) : null,
+					timeEnd: _dateTo ? (_dateTo as string) : null,
+					timeStart: _dateFrom ? (_dateFrom as string) : null,
 				}),
 			}),
 		select(data) {
@@ -76,19 +76,19 @@ function TableHistoryStorage({}: PropsTableHistoryStorage) {
 							},
 
 							{
-								title: 'Khối lượng hàng nhập',
+								title: 'Trọng lượng hàng nhập',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountIn)}</span>
 								),
 							},
 							{
-								title: 'Khối lượng hàng xuất',
+								title: 'Trọng lượng hàng xuất',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountOut)}</span>
 								),
 							},
 							{
-								title: 'Khối lượng chuyển kho',
+								title: 'Trọng lượng chuyển kho',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>
 										{convertCoin(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}
