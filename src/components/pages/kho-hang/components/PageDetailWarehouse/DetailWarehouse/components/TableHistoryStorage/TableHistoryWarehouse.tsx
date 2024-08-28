@@ -33,8 +33,8 @@ function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					status: null,
 					warehouseUuid: _id as string,
-					timeEnd: _dateFrom ? (_dateFrom as string) : null,
-					timeStart: _dateTo ? (_dateTo as string) : null,
+					timeEnd: _dateTo ? (_dateTo as string) : null,
+					timeStart: _dateFrom ? (_dateFrom as string) : null,
 				}),
 			}),
 		select(data) {
