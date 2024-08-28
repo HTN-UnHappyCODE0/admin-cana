@@ -6,6 +6,7 @@ import GeneralStatistics from '../GeneralStatistics';
 import WarehouseStatistics from '../WarehouseStatistics';
 import ChartImportCompany from '../ChartImportCompany';
 import ChartExportCompany from '../ChartExportCompany';
+import ChartServiceCompany from '../ChartServiceCompany';
 
 function MainDashboard({}: PropsMainDashboard) {
 	return (
@@ -16,6 +17,7 @@ function MainDashboard({}: PropsMainDashboard) {
 			<WarehouseStatistics />
 			<ChartImportCompany />
 			<ChartExportCompany />
+			<ChartServiceCompany />
 		</div>
 	);
 }
