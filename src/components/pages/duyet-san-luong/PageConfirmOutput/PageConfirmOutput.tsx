@@ -45,7 +45,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 	const [uuidKTKConfirm, setUuidKTKConfirm] = useState<string>('');
 	const [uuidKTKReject, setUuidKTKReject] = useState<string>('');
 
-	const {_page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo} = router.query;
+	const {_page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo, _isBatch} = router.query;
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
 		queryFn: () =>
@@ -92,7 +92,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 	});
 
 	const listBatch = useQuery(
-		[QUERY_KEY.table_ktk_duyet_san_luong, _page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo],
+		[QUERY_KEY.table_ktk_duyet_san_luong, _page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo, _isBatch],
 		{
 			queryFn: () =>
 				httpRequest({
@@ -106,7 +106,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						scalesType: [],
 						customerUuid: (_customerUuid as string) || '',
-						isBatch: null,
+						isBatch: !!_isBatch ? Number(_isBatch) : null,
 						isCreateBatch: null,
 						productTypeUuid: (_productTypeUuid as string) || '',
 						specificationsUuid: '',
