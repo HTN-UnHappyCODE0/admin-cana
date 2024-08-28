@@ -68,7 +68,7 @@ export function getDateRange(range: number) {
 	}
 }
 
-export function getTextDateRange(range: number) {
+export function getTextDateRange(range: number | null) {
 	switch (range) {
 		case TYPE_DATE.TODAY:
 			return 'Hôm nay';
@@ -92,8 +92,11 @@ export function getTextDateRange(range: number) {
 		case TYPE_DATE.THIS_YEAR:
 			return 'Năm này';
 
+		case null:
+			return 'Tất cả';
+
 		default:
-			return '';
+			return 'Tất cả';
 	}
 }
 
