@@ -184,11 +184,11 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 						column={[
 							{
 								title: 'Mã lô',
+								fixedLeft: true,
 								render: (data: IDebtBill) => <>{data?.code}</>,
 							},
 							{
 								title: 'Trạng thái',
-								fixedLeft: true,
 								render: (data: IDebtBill) => (
 									<span style={{color: data.status === STATUS_BILL.DA_KCS ? 'blue' : 'red'}}>
 										{data?.status == STATUS_BILL.DA_CAN_CHUA_KCS && 'Chưa KCS'}

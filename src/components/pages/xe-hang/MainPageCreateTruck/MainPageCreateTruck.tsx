@@ -211,13 +211,14 @@ function MainPageCreateTruck({}: PropsMainPageCreateTruck) {
 								min={5}
 								max={255}
 								type='text'
+								isLicensePalate={true}
 								blur={true}
 								label={
 									<span>
 										Biển số <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='VD: 14B69699'
+								placeholder='VD: 43A-12345'
 							/>
 						</div>
 					</div>

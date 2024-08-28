@@ -238,12 +238,13 @@ function MainPageUpdateTruck({}: PropsMainPageUpdateTruck) {
 								max={255}
 								type='text'
 								blur={true}
+								isLicensePalate={true}
 								label={
 									<span>
 										Biển số <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='VD: 14B69699'
+								placeholder='VD: 43A-12345'
 							/>
 						</div>
 					</div>
