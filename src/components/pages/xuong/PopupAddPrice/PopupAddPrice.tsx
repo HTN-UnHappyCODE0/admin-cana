@@ -69,7 +69,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 		});
 	};
 
-	const listSpecifications = useQuery([QUERY_KEY.dropdown_quy_cach], {
+	const listSpecifications = useQuery([QUERY_KEY.dropdown_quy_cach, form.productTypeUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -82,11 +82,13 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
 					qualityUuid: '',
+					productTypeUuid: form.productTypeUuid,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
+		enabled: !!form.productTypeUuid,
 	});
 
 	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
@@ -210,6 +212,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 							setForm((prev: any) => ({
 								...prev,
 								productTypeUuid: e.target.value,
+								specUuid: '',
 							}))
 						}
 						label={
@@ -238,6 +241,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 								Quy cách <span style={{color: 'red'}}>*</span>
 							</span>
 						}
+						readOnly={!form.productTypeUuid}
 					>
 						{listSpecifications?.data?.map((value: any) => (
 							<Option key={value.uuid} title={value?.name} value={value?.uuid} />

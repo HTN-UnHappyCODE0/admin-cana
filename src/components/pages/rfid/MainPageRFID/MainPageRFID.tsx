@@ -211,9 +211,9 @@ function MainPageRFID({}: PropsMainPageRFID) {
 				danger
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
-				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa RFID' : 'Mở khóa RFID'}
+				title={dataStatus?.status == CONFIG_STATUS.BI_KHOA ? 'Mở khóa RFID' : 'Khóa RFID'}
 				note={
-					dataStatus?.status == CONFIG_STATUS.HOAT_DONG
+					dataStatus?.status == CONFIG_STATUS.BI_KHOA
 						? 'Bạn có chắc chắn muốn khóa RFID này?'
 						: 'Bạn có chắc chắn muốn mở khóa RFID này?'
 				}
