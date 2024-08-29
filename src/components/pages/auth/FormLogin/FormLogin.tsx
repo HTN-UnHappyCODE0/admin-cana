@@ -100,7 +100,7 @@ function FormLogin({}: PropsFormLogin) {
 		<div className={styles.container}>
 			<Loading loading={login.isLoading} />
 			<h4 className={styles.title}>Đăng nhập</h4>
-			<p className={styles.text}>Chào mừng bạn đến với hệ thống kế toán điện tử Thái Hưng</p>
+			<p className={styles.text}>Chào mừng bạn đến với hệ thống quản trị Thái Hưng</p>
 			<div className={styles.form}>
 				<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 					<Input
