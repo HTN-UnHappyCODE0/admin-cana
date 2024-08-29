@@ -40,7 +40,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _status, _dateFrom, _dateTo} = router.query;
+	const {_page, _pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _status, _dateFrom, _dateTo, _state} = router.query;
 
 	const [uuidPlay, setUuidPlay] = useState<string>('');
 	const [uuidStop, setUuidStop] = useState<string>('');
@@ -102,6 +102,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 			_status,
 			_dateFrom,
 			_dateTo,
+			_state,
 		],
 		{
 			queryFn: () =>
@@ -115,6 +116,16 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						scalesType: [],
+						state: !!_state
+							? [Number(_state)]
+							: [
+									STATE_BILL.NOT_CHECK,
+									STATE_BILL.QLK_REJECTED,
+									STATE_BILL.QLK_CHECKED,
+									STATE_BILL.KTK_REJECTED,
+									STATE_BILL.KTK_CHECKED,
+									STATE_BILL.END,
+							  ],
 						customerUuid: (_customerUuid as string) || '',
 						isBatch: !!_isBatch ? Number(_isBatch) : null,
 						isCreateBatch: null,
@@ -269,6 +280,37 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 					/>
 					<FilterCustom
 						isSearch
+						name='Xác nhận SL'
+						query='_state'
+						listFilter={[
+							{
+								id: STATE_BILL.NOT_CHECK,
+								name: 'Chưa duyệt',
+							},
+							{
+								id: STATE_BILL.QLK_REJECTED,
+								name: 'QLK duyệt lại',
+							},
+							{
+								id: STATE_BILL.QLK_CHECKED,
+								name: 'QLK đã duyệt',
+							},
+							{
+								id: STATE_BILL.KTK_REJECTED,
+								name: 'KTK duyệt lại',
+							},
+							{
+								id: STATE_BILL.KTK_CHECKED,
+								name: 'KTK đã duyệt',
+							},
+							{
+								id: STATE_BILL.END,
+								name: 'Kết thúc',
+							},
+						]}
+					/>
+					<FilterCustom
+						isSearch
 						name='Trạng thái'
 						query='_status'
 						listFilter={[
@@ -390,12 +432,12 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 								title: 'Xác nhận SL',
 								render: (data: ITableBillScale) => (
 									<p style={{fontWeight: 600, color: ''}}>
-										{data?.state == STATE_BILL.NOT_CHECK && 'Chưa duyệt'}
-										{data?.state == STATE_BILL.QLK_REJECTED && 'QLK duyệt lại'}
-										{data?.state == STATE_BILL.QLK_CHECKED && 'QLK đã duyệt'}
-										{data?.state == STATE_BILL.KTK_REJECTED && 'KTK duyệt lại'}
-										{data?.state == STATE_BILL.KTK_CHECKED && 'KTK đã duyệt'}
-										{data?.state == STATE_BILL.END && 'Kết thúc'}
+										{data?.state == STATE_BILL.NOT_CHECK && <span style={{color: '#FF6838'}}>Chưa duyệt</span>}
+										{data?.state == STATE_BILL.QLK_REJECTED && <span style={{color: '#6170E3'}}>QLK duyệt lại</span>}
+										{data?.state == STATE_BILL.QLK_CHECKED && <span style={{color: '#6FD195'}}>QLK đã duyệt</span>}
+										{data?.state == STATE_BILL.KTK_REJECTED && <span style={{color: '#FFAE4C'}}>KTK duyệt lại</span>}
+										{data?.state == STATE_BILL.KTK_CHECKED && <span style={{color: '#3CC3DF'}}>KTK đã duyệt</span>}
+										{data?.state == STATE_BILL.END && <span style={{color: '#D95656'}}>Kết thúc</span>}
 									</p>
 								),
 							},
@@ -478,7 +520,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 					currentPage={Number(_page) || 1}
 					pageSize={Number(_pageSize) || 20}
 					total={listBatch?.data?.pagination?.totalCount}
-					dependencies={[_pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _status, _dateFrom, _dateTo]}
+					dependencies={[_pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _status, _dateFrom, _dateTo, _state]}
 				/>
 			</div>
 

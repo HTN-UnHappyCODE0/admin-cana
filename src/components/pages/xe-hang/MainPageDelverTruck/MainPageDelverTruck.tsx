@@ -79,7 +79,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã xe hàng' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã xe hàng và biển số xe' />
 					</div>
 					<div className={styles.filter}>
 						<FilterCustom

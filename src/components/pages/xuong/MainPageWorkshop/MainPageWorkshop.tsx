@@ -27,17 +27,19 @@ import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import TagStatus from '~/components/common/TagStatus';
 import Link from 'next/link';
-import {Edit2, Lock1, Personalcard, Trash, Unlock} from 'iconsax-react';
+// import {Lock1, Personalcard, Trash, Unlock} from 'iconsax-react';
 import Pagination from '~/components/common/Pagination';
 import Dialog from '~/components/common/Dialog';
 import partnerServices from '~/services/partnerServices';
 import IconCustom from '~/components/common/IconCustom';
+import {LuPencil} from 'react-icons/lu';
+import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
 
 function MainPageWorkshop({}: PropsMainPageWorkshop) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const {_page, _pageSize, _status, _keyword, _partnerUuid} = router.query;
-	const [customerUuid, setCustomerUuid] = useState<string>('');
+	// const [customerUuid, setCustomerUuid] = useState<string>('');
 	const [dataStatusCustomer, setDataStatusCustomer] = useState<ICustomer | null>(null);
 
 	const listCustomer = useQuery([QUERY_KEY.table_khach_hang_doi_tac, _status, _keyword, _page, _pageSize, _partnerUuid], {
@@ -141,6 +143,10 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 									id: STATUS_CUSTOMER.HOP_TAC,
 									name: 'Hoạt động',
 								},
+								{
+									id: STATUS_CUSTOMER.DA_XOA,
+									name: 'Đã xóa',
+								},
 							]}
 						/>
 					</div>
@@ -212,18 +218,33 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom
 											edit
-											icon={<Edit2 fontSize={20} fontWeight={600} />}
+											icon={<LuPencil fontSize={20} fontWeight={600} />}
 											tooltip='Chỉnh sửa'
 											color='#777E90'
 											href={`${PATH.ChinhSuaXuong}?_customerUuid=${data?.uuid}`}
 										/>
 
-										<IconCustom
+										{/* <IconCustom
 											lock
 											icon={data?.status == STATUS_CUSTOMER.HOP_TAC ? <Lock1 size={20} /> : <Unlock size={20} />}
-											tooltip={data?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa NCC' : 'Mở khóa NCC'}
+											tooltip={data?.status == STATUS_CUSTOMER.HOP_TAC ? '' : ''}
 											color='#777E90'
 											onClick={() => setDataStatusCustomer(data)}
+										/> */}
+										<IconCustom
+											lock
+											icon={
+												data?.status == STATUS_CUSTOMER.HOP_TAC ? (
+													<HiOutlineLockClosed size='22' />
+												) : (
+													<HiOutlineLockOpen size='22' />
+												)
+											}
+											tooltip={data.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa NCC' : 'Mở khóa NCC'}
+											color='#777E90'
+											onClick={() => {
+												setDataStatusCustomer(data);
+											}}
 										/>
 									</div>
 								),
