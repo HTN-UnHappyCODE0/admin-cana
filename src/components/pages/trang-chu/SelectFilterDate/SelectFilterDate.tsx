@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import TippyHeadless from '@tippyjs/react/headless';
 import {ArrowDown2, Calendar} from 'iconsax-react';
@@ -7,17 +7,31 @@ import clsx from 'clsx';
 import {PropsSelectFilterDate} from './interfaces';
 import styles from './SelectFilterDate.module.scss';
 import FilterDateOption from './FilterDateOption';
-import {getTextDateRange} from '~/common/funcs/selectDate';
+import {getDateRange, getTextDateRange} from '~/common/funcs/selectDate';
 import Moment from 'react-moment';
+import {TYPE_DATE} from '~/constants/config/enum';
 
-function SelectFilterDate({}: PropsSelectFilterDate) {
+function SelectFilterDate({date, setDate, setTypeDate, typeDate, isOptionDateAll}: PropsSelectFilterDate) {
 	const [openDate, setOpenDate] = useState<boolean>(false);
 
-	const [typeDate, setTypeDate] = useState<number | null>(null);
-	const [date, setDate] = useState<{
-		from: Date | null;
-		to: Date | null;
-	} | null>(null);
+	useEffect(() => {
+		if (Number(typeDate) != TYPE_DATE.LUA_CHON) {
+			setDate(() => getDateRange(Number(typeDate))!);
+		} else {
+			if (!!date?.from && !!date.to) {
+				setDate(() => ({
+					from: date?.from,
+					to: date.to,
+				}));
+			}
+		}
+	}, [typeDate]);
+
+	useEffect(() => {
+		if (isOptionDateAll && !typeDate) {
+			setDate(() => getDateRange(TYPE_DATE.THIS_MONTH));
+		}
+	}, [isOptionDateAll, typeDate]);
 
 	return (
 		<TippyHeadless

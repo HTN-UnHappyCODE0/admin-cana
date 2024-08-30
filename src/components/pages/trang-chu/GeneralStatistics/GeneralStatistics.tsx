@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 
 import {PropsGeneralStatistics} from './interfaces';
 
@@ -6,10 +6,13 @@ import styles from './GeneralStatistics.module.scss';
 import {ChartSquare} from 'iconsax-react';
 import DetailBox from '~/components/common/DetailBox';
 import clsx from 'clsx';
+import {ContextDashbroad, IContextDashbroad} from '../MainDashboard/context';
 
 function GeneralStatistics({}: PropsGeneralStatistics) {
+	const context = useContext<IContextDashbroad>(ContextDashbroad);
+
 	return (
-		<div className={styles.container}>
+		<div className={clsx(styles.container, {[styles.active]: !context.partnerUuid})}>
 			<div className={styles.head}>
 				<div className={styles.icon}>
 					<ChartSquare size='28' color='#2A85FF' variant='Bold' />
