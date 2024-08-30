@@ -127,6 +127,7 @@ const batchBillServices = {
 	dashbroadBillIn: (
 		data: {
 			partnerUuid: string;
+			companyUuid: string;
 			typeFindDay: number;
 			timeStart: string;
 			timeEnd: string;
@@ -140,6 +141,7 @@ const batchBillServices = {
 	dashbroadBillOut: (
 		data: {
 			partnerUuid: string;
+			companyUuid: string;
 			typeFindDay: number;
 			timeStart: string;
 			timeEnd: string;
@@ -153,6 +155,7 @@ const batchBillServices = {
 	dashbroadBillService: (
 		data: {
 			partnerUuid: string;
+			companyUuid: string;
 			typeFindDay: number;
 			timeStart: string;
 			timeEnd: string;
