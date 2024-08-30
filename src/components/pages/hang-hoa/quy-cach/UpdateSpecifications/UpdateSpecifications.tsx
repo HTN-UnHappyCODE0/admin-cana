@@ -254,6 +254,7 @@ function UpdateSpecifications({}: PropsUpdateSpecifications) {
 							max={255}
 							type='text'
 							blur={true}
+							readOnly={true}
 							placeholder='Nhập tên'
 							label={
 								<span>
@@ -275,6 +276,7 @@ function UpdateSpecifications({}: PropsUpdateSpecifications) {
 										qualityUuid: e.target.value,
 									}))
 								}
+								readOnly={true}
 								label={
 									<span>
 										Quốc gia <span style={{color: 'red'}}>*</span>
@@ -297,6 +299,7 @@ function UpdateSpecifications({}: PropsUpdateSpecifications) {
 									productTypeUuid: e.target.value,
 								}))
 							}
+							readOnly={true}
 							label={
 								<span>
 									Loại gỗ <span style={{color: 'red'}}>*</span>
