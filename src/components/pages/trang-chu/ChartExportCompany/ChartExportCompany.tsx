@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 
 import {PropsChartExportCompany} from './interfaces';
 import styles from './ChartExportCompany.module.scss';
@@ -8,16 +8,27 @@ import SelectFilterOption from '../SelectFilterOption';
 import SelectFilterDate from '../SelectFilterDate';
 import {convertCoin} from '~/common/funcs/convertCoin';
 import {useQuery} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_PARTNER} from '~/constants/config/enum';
+import {
+	CONFIG_DESCENDING,
+	CONFIG_PAGING,
+	CONFIG_STATUS,
+	CONFIG_TYPE_FIND,
+	QUERY_KEY,
+	TYPE_DATE,
+	TYPE_PARTNER,
+} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import partnerServices from '~/services/partnerServices';
 import batchBillServices from '~/services/batchBillServices';
 import {timeSubmit} from '~/common/funcs/optionConvert';
 import moment from 'moment';
+import {ContextDashbroad, IContextDashbroad} from '../MainDashboard/context';
 
 function ChartExportCompany({}: PropsChartExportCompany) {
+	const context = useContext<IContextDashbroad>(ContextDashbroad);
+
 	const [partnerUuid, setPartnerUuid] = useState<string>('');
-	const [typeDate, setTypeDate] = useState<number | null>(null);
+	const [typeDate, setTypeDate] = useState<number | null>(TYPE_DATE.THIS_MONTH);
 	const [date, setDate] = useState<{
 		from: Date | null;
 		to: Date | null;
@@ -59,12 +70,13 @@ function ChartExportCompany({}: PropsChartExportCompany) {
 		},
 	});
 
-	useQuery([QUERY_KEY.thong_ke_tong_hang_xuat, partnerUuid, date?.from, date?.to], {
+	useQuery([QUERY_KEY.thong_ke_tong_hang_xuat, partnerUuid, context?.companyUuid, date], {
 		queryFn: () =>
 			httpRequest({
 				isData: true,
 				http: batchBillServices.dashbroadBillOut({
 					partnerUuid: partnerUuid,
+					companyUuid: context?.companyUuid,
 					typeFindDay: 0,
 					timeStart: timeSubmit(date?.from)!,
 					timeEnd: timeSubmit(date?.to, true)!,

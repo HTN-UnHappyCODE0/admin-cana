@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 
 import {PropsWarehouseStatistics} from './interfaces';
 import styles from './WarehouseStatistics.module.scss';
@@ -6,43 +6,55 @@ import clsx from 'clsx';
 import DetailBox from '~/components/common/DetailBox';
 import {PiSealWarningFill} from 'react-icons/pi';
 import {convertCoin} from '~/common/funcs/convertCoin';
+import {ContextDashbroad, IContextDashbroad} from '../MainDashboard/context';
 
-function WarehouseStatistics({}: PropsWarehouseStatistics) {
+function WarehouseStatistics({isLoading, infoCompany}: PropsWarehouseStatistics) {
+	const context = useContext<IContextDashbroad>(ContextDashbroad);
+
 	return (
-		<div className={styles.container}>
-			<h4 className={styles.title}>Tổng kho Cái Lân</h4>
-			<div className={clsx('mt', 'col_3')}>
-				<DetailBox name={'Tổng lượng hàng trong kho'} value={100} color='#2A85FF' />
+		<div
+			className={clsx(styles.container, {[styles.active]: context.companyUuid == infoCompany?.companyDTO?.uuid})}
+			onClick={() => context?.setCompanyUuid(infoCompany?.companyDTO?.uuid)}
+		>
+			<h4 className={styles.title}>{infoCompany?.companyDTO?.name}</h4>
+			<div className={clsx('mt', 'col_2')}>
 				<DetailBox
+					isLoading={isLoading}
 					name={'Hàng khô'}
-					value={100}
+					value={infoCompany?.weight?.totalAmountBdmt}
+					unit='BDMT'
 					action={
 						<div className={styles.action}>
 							<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 							<div className={styles.note}>
 								<p>
-									Đã KCS: <span>{convertCoin(1000)}</span>
+									Chuẩn: <span>{convertCoin(infoCompany?.weight?.amountBdmt)}</span>
 								</p>
 								<p style={{marginTop: 2}}>
-									Chưa KCS: <span>{convertCoin(1000)}</span>
+									Tạm tính: <span>{convertCoin(infoCompany?.weight?.amountBdmtDemo)}</span>
 								</p>
 							</div>
 						</div>
 					}
 				/>
 				<DetailBox
+					isLoading={isLoading}
 					name={'Tổng công nợ'}
-					value={100}
+					value={infoCompany?.debt?.totalDebt}
 					color='#FF6838'
+					unit='VND'
 					action={
 						<div className={styles.action}>
 							<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
-							<div className={styles.note}>
+							<div className={clsx(styles.note, styles.max)}>
 								<p>
-									Đã KCS: <span>{convertCoin(1000)}</span>
+									Chuẩn: <span>{convertCoin(infoCompany?.debt?.debtKCS)}</span>
 								</p>
 								<p style={{marginTop: 2}}>
-									Chưa KCS: <span>{convertCoin(1000)}</span>
+									Tạm tính: <span>{convertCoin(infoCompany?.debt?.debtDemo)}</span>
+								</p>
+								<p style={{marginTop: 2}}>
+									Dư đầu kỳ: <span>{convertCoin(infoCompany?.debt?.debtReal)}</span>
 								</p>
 							</div>
 						</div>

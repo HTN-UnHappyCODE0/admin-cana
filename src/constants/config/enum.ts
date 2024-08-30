@@ -123,6 +123,7 @@ export enum QUERY_KEY {
 	thong_ke_tong_hang_nhap,
 	thong_ke_tong_hang_xuat,
 	thong_ke_tong_hang_dich_vu,
+	thong_ke_trang_chu_admin,
 }
 
 export enum TYPE_DATE {

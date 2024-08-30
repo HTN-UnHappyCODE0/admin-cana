@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 
 import {PropsChartServiceCompany} from './interfaces';
 import styles from './ChartServiceCompany.module.scss';
@@ -22,8 +22,11 @@ import partnerServices from '~/services/partnerServices';
 import batchBillServices from '~/services/batchBillServices';
 import moment from 'moment';
 import {timeSubmit} from '~/common/funcs/optionConvert';
+import {ContextDashbroad, IContextDashbroad} from '../MainDashboard/context';
 
 function ChartServiceCompany({}: PropsChartServiceCompany) {
+	const context = useContext<IContextDashbroad>(ContextDashbroad);
+
 	const [partnerUuid, setPartnerUuid] = useState<string>('');
 	const [typeDate, setTypeDate] = useState<number | null>(TYPE_DATE.THIS_MONTH);
 	const [date, setDate] = useState<{
@@ -67,12 +70,13 @@ function ChartServiceCompany({}: PropsChartServiceCompany) {
 		},
 	});
 
-	useQuery([QUERY_KEY.thong_ke_tong_hang_dich_vu, partnerUuid, date?.from, date?.to], {
+	useQuery([QUERY_KEY.thong_ke_tong_hang_dich_vu, partnerUuid, context?.companyUuid, date], {
 		queryFn: () =>
 			httpRequest({
 				isData: true,
 				http: batchBillServices.dashbroadBillService({
 					partnerUuid: partnerUuid,
+					companyUuid: context?.companyUuid,
 					typeFindDay: 0,
 					timeStart: timeSubmit(date?.from)!,
 					timeEnd: timeSubmit(date?.to, true)!,
