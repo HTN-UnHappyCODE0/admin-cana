@@ -445,7 +445,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 					</div>
 					<div className={clsx('mt', styles.main_search)}>
 						<div className={styles.search}>
-							<Search placeholder='Tìm kiếm ...' keyName='_keyword' />
+							<Search placeholder='Tìm kiếm theo mã lô hàng...' keyName='_keyword' />
 						</div>
 						<div className={styles.filter}>
 							<DateRangerCustom titleTime='Thời gian' />
