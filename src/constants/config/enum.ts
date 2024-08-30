@@ -288,6 +288,13 @@ export enum STATUS_TRANSACTION {
 	BINH_THUONG,
 }
 
+export enum TYPE_DATE_SHOW {
+	HOUR,
+	DAY,
+	MONTH,
+	YEAR,
+}
+
 // COMON REGENCY
 export enum REGENCY_NAME {
 	'Nhân viên tài chính - kế toán' = '9',
