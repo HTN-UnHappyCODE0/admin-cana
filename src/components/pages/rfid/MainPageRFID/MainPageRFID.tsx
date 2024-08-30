@@ -11,7 +11,7 @@ import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import IconCustom from '~/components/common/IconCustom';
 import {LuPencil} from 'react-icons/lu';
-import {HiOutlineLockClosed} from 'react-icons/hi';
+import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
 import Pagination from '~/components/common/Pagination';
 import {useRouter} from 'next/router';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -186,8 +186,14 @@ function MainPageRFID({}: PropsMainPageRFID) {
 										/>
 										<IconCustom
 											lock
-											icon={<HiOutlineLockClosed size='22' />}
-											tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa RFID' : 'Dùng RFID'}
+											icon={
+												data?.status == CONFIG_STATUS.HOAT_DONG ? (
+													<HiOutlineLockClosed size='22' />
+												) : (
+													<HiOutlineLockOpen size='22' />
+												)
+											}
+											tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
 											color='#777E90'
 											onClick={() => {
 												setDataStatus(data);
