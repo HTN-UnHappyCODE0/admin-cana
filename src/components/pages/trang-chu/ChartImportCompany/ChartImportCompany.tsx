@@ -15,6 +15,7 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	TYPE_DATE,
+	TYPE_DATE_SHOW,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
@@ -85,7 +86,14 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 		onSuccess({data}) {
 			// Convert data chart
 			const dataConvert = data?.lstProductDay?.map((v: any) => {
-				const date = moment(v?.timeScale).format('DD/MM');
+				const date =
+					data?.typeShow == TYPE_DATE_SHOW.HOUR
+						? moment(v?.timeScale).format('HH:mm')
+						: data?.typeShow == TYPE_DATE_SHOW.DAY
+						? moment(v?.timeScale).format('DD/MM')
+						: data?.typeShow == TYPE_DATE_SHOW.MONTH
+						? moment(v?.timeScale).format('MM-YYYY')
+						: moment(v?.timeScale).format('YYYY');
 
 				const obj = v?.productDateWeightUu?.reduce((acc: any, item: any) => {
 					acc[item.productTypeUu.name] = item.weightMT;
