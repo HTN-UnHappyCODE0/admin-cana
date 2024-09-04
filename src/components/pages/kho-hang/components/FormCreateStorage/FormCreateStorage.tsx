@@ -230,33 +230,33 @@ function FormCreateStorage({draggedElements, onClose}: PropsFormCreateStorage) {
 						<div className={clsx('mt')}>
 							<TextArea max={5000} placeholder='Thêm mô tả' name='description' label={<span>Mô tả</span>} blur={true} />
 						</div>
-
-						<div className={styles.btn}>
-							<div>
-								<Button p_10_24 rounded_2 grey_outline onClick={onClose}>
-									Hủy bỏ
-								</Button>
-							</div>
-							<div>
-								<FormContext.Consumer>
-									{({isDone}) => (
-										<Button
-											disable={!isDone || !form.productUuid || !form.qualityUuid || !form.specificationsUuid}
-											p_10_24
-											rounded_2
-											primary
-										>
-											Lưu lại
-										</Button>
-									)}
-								</FormContext.Consumer>
-							</div>
-						</div>
-
-						<div className={styles.close} onClick={onClose}>
-							<IoClose />
-						</div>
 					</div>
+				</div>
+
+				<div className={styles.btn}>
+					<div>
+						<Button p_10_24 rounded_2 grey_outline onClick={onClose}>
+							Hủy bỏ
+						</Button>
+					</div>
+					<div>
+						<FormContext.Consumer>
+							{({isDone}) => (
+								<Button
+									disable={!isDone || !form.productUuid || !form.qualityUuid || !form.specificationsUuid}
+									p_10_24
+									rounded_2
+									primary
+								>
+									Lưu lại
+								</Button>
+							)}
+						</FormContext.Consumer>
+					</div>
+				</div>
+
+				<div className={styles.close} onClick={onClose}>
+					<IoClose />
 				</div>
 			</Form>
 		</div>

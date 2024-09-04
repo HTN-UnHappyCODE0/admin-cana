@@ -61,6 +61,7 @@ function TableListStorage({}: PropsTableListStorage) {
 						},
 						{
 							title: 'Tên kho hàng',
+							fixedLeft: true,
 							render: (data: IDataListStorage) => <span>{data?.name || '---'}</span>,
 						},
 						{
@@ -80,15 +81,16 @@ function TableListStorage({}: PropsTableListStorage) {
 							render: (data: IDataListStorage) => <span style={{color: '#2A85FF'}}>{convertCoin(data?.totalAmountMt)}</span>,
 						},
 						{
-							title: 'Trọng lượng nhập',
+							title: 'Khối lượng nhập',
 							render: (data: IDataListStorage) => <span>{convertCoin(data?.totalAmountIn) || 0}</span>,
 						},
 						{
-							title: 'Trọng lượng xuất',
+							title: 'Khối lượng xuất',
 							render: (data: IDataListStorage) => <span>{convertCoin(data?.totalAmountOut) || 0}</span>,
 						},
 						{
 							title: 'Tác vụ',
+							fixedRight: true,
 							render: (data: IDataListStorage) => (
 								<Link href={`/kho-hang/${data?.uuid}?_storage=true`} className={styles.linkdetail}>
 									Chi tiết

@@ -184,99 +184,103 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 	return (
 		<div className={styles.container}>
 			<Loading loading={fucnAddSpecCustomer.isLoading} />
-			<h4 className={styles.title}>Thêm loại gỗ</h4>
-			<Form form={form} setForm={setForm}>
-				<div className='mt'>
-					<Input
-						readOnly
-						name='customerName'
-						value={form.customerName}
-						placeholder='Nhập tên nhà cung cấp'
-						label={
-							<span>
-								Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-					/>
-				</div>
-				<div className={clsx('mt')}>
-					<Select
-						isSearch
-						name='productTypeUuid'
-						value={form.productTypeUuid}
-						placeholder='Lựa chọn loại gỗ'
-						onChange={(e: any) =>
-							setForm((prev: any) => ({
-								...prev,
-								productTypeUuid: e.target.value,
-								specUuid: '',
-							}))
-						}
-						label={
-							<span>
-								Loại gỗ<span style={{color: 'red'}}>*</span>
-							</span>
-						}
-					>
-						{listProductType?.data?.map((value: any) => (
-							<Option key={value.uuid} title={value.name} value={value.uuid} />
-						))}
-					</Select>
-					<Select
-						isSearch
-						name='specUuid'
-						placeholder='Lựa chọn quy cách'
-						value={form.specUuid}
-						onChange={(e: any) =>
-							setForm((prev: any) => ({
-								...prev,
-								specUuid: e.target.value,
-							}))
-						}
-						label={
-							<span>
-								Quy cách <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-						readOnly={!form.productTypeUuid}
-					>
-						{listSpecifications?.data?.map((value: any) => (
-							<Option key={value.uuid} title={value?.name} value={value?.uuid} />
-						))}
-					</Select>
-					<Select
-						isSearch
-						name='transportType'
-						placeholder='Hình thức vận chuyển'
-						value={form.transportType}
-						label={
-							<span>
-								Hình thức vận chuyển <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-					>
-						<Option
-							title='Đường bộ'
-							value={'0'}
-							onClick={() =>
-								setForm((prev: any) => ({
-									...prev,
-									transportType: '0',
-								}))
-							}
-						/>
-						<Option
-							title='Đường thủy'
-							value={'1'}
-							onClick={() =>
-								setForm((prev: any) => ({
-									...prev,
-									transportType: '1',
-								}))
-							}
-						/>
-					</Select>
 
+			<Form form={form} setForm={setForm}>
+				<div className={styles.wrapper}>
+					<h4 className={styles.title}>Thêm loại gỗ</h4>
+					<div className={clsx('mt', styles.main_form)}>
+						<div className='mt'>
+							<Input
+								readOnly
+								name='customerName'
+								value={form.customerName}
+								placeholder='Nhập tên nhà cung cấp'
+								label={
+									<span>
+										Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							/>
+						</div>
+						<div className={clsx('mt')}>
+							<Select
+								isSearch
+								name='productTypeUuid'
+								value={form.productTypeUuid}
+								placeholder='Lựa chọn loại gỗ'
+								onChange={(e: any) =>
+									setForm((prev: any) => ({
+										...prev,
+										productTypeUuid: e.target.value,
+										specUuid: '',
+									}))
+								}
+								label={
+									<span>
+										Loại gỗ<span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								{listProductType?.data?.map((value: any) => (
+									<Option key={value.uuid} title={value.name} value={value.uuid} />
+								))}
+							</Select>
+							<Select
+								isSearch
+								name='specUuid'
+								placeholder='Lựa chọn quy cách'
+								value={form.specUuid}
+								onChange={(e: any) =>
+									setForm((prev: any) => ({
+										...prev,
+										specUuid: e.target.value,
+									}))
+								}
+								label={
+									<span>
+										Quy cách <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								readOnly={!form.productTypeUuid}
+							>
+								{listSpecifications?.data?.map((value: any) => (
+									<Option key={value.uuid} title={value?.name} value={value?.uuid} />
+								))}
+							</Select>
+							<Select
+								isSearch
+								name='transportType'
+								placeholder='Hình thức vận chuyển'
+								value={form.transportType}
+								label={
+									<span>
+										Hình thức vận chuyển <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								<Option
+									title='Đường bộ'
+									value={'0'}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											transportType: '0',
+										}))
+									}
+								/>
+								<Option
+									title='Đường thủy'
+									value={'1'}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											transportType: '1',
+										}))
+									}
+								/>
+							</Select>
+						</div>
+					</div>
 					<div className={'mt'}>
 						<SelectSearch
 							isConvertNumber={true}
@@ -294,6 +298,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 							placeholder='Nhập giá tiền'
 						/>
 					</div>
+
 					<div className='mt'>
 						<div className={styles.input_price}>
 							<input

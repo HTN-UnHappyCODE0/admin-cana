@@ -130,7 +130,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					partnerUUid: '',
 					userUuid: '',
-					status: STATUS_CUSTOMER.HOP_TAC,
+					status: null,
 					typeCus: TYPE_CUSTOMER.NHA_CUNG_CAP,
 					provinceId: '',
 					specUuid: '',
@@ -365,8 +365,8 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 							type='text'
 							isMoney
 							unit='KG'
-							label={<span>Tổng trọng lượng hàng</span>}
-							placeholder='Nhập tổng trọng lượng hàng'
+							label={<span>Tổng khối lượng hàng</span>}
+							placeholder='Nhập tổng khối lượng hàng'
 						/>
 						<DatePicker
 							readonly={true}

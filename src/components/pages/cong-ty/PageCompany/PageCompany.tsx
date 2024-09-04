@@ -43,7 +43,7 @@ function PageCompany({}: PropsPageCompany) {
 					pageSize: Number(_pageSize) || 20,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
-					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					status: !!_status ? Number(_status) : null,
 				}),
@@ -197,7 +197,7 @@ function PageCompany({}: PropsPageCompany) {
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
 											tooltip='Chỉnh sửa'
 											color='#777E90'
-											href={`/cong-ty-con/chinh-sua?_id=${data?.uuid}`}
+											href={`/cong-ty/chinh-sua?_id=${data?.uuid}`}
 										/>
 
 										<IconCustom

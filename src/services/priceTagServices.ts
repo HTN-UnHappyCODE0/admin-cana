@@ -25,6 +25,29 @@ const priceTagServices = {
 			cancelToken: tokenAxios,
 		});
 	},
+	listPriceTagHistory: (
+		data: {
+			pageSize: number;
+			page: number;
+			keyword: string;
+			status: CONFIG_STATUS | null;
+			isDescending: CONFIG_DESCENDING;
+			typeFind: CONFIG_TYPE_FIND;
+			isPaging: CONFIG_PAGING;
+			state: number | null;
+			customerUuid: string | null;
+			partnerUuid: string | null;
+			productTypeUuid: string | null;
+			transportType: number | null;
+			specUuid: string | null;
+			priceTagUuid: string;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/PriceTag/history-customer-spec-pricetag`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
 	listPriceTagDropDown: (
 		data: {
 			pageSize: number;
@@ -84,6 +107,8 @@ const priceTagServices = {
 		data: {
 			uuid: string;
 			priceTagUuid: string;
+			status: 0 | 1;
+			state: 0 | 1;
 		},
 		tokenAxios?: any
 	) => {

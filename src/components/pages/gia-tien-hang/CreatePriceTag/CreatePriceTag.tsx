@@ -40,10 +40,12 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 		specUuid: string;
 		transportType: number;
 		productTypeUuid: string;
+		state: CONFIG_STATE_SPEC_CUSTOMER;
 	}>({
 		specUuid: '',
 		productTypeUuid: '',
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
+		state: CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP,
 	});
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
@@ -152,7 +154,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 						{
 							specUuid: form.specUuid,
 							status: CONFIG_STATUS.HOAT_DONG,
-							state: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
+							state: form.state,
 							productTypeUuid: form.productTypeUuid,
 							transportType: form.transportType,
 							priceTagUuid: priceTag.id === '' ? String(priceTag.name) : priceTag.id,
@@ -314,7 +316,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 					<div className={clsx('mt', styles.group)}>
 						<div className={styles.btn}>
 							<ButtonSelectMany
-								showOverlay={false}
+								showOverlay={true}
 								label={
 									<span>
 										Nhà cung cấp áp dụng <span style={{color: 'red'}}>*</span>
@@ -337,6 +339,28 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 								checked={listCustomer?.data?.length == listCustomerChecked?.length}
 							/>
 							<label htmlFor='checkall'>Áp dụng cho tất cả nhà cung cấp </label>
+						</div>
+						<div className={clsx(styles.input_price, styles.checkbox_right)}>
+							<input
+								id={`state_spec_customer`}
+								name='state'
+								value={form.state}
+								type='checkbox'
+								className={styles.input}
+								checked={form?.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP}
+								onChange={() =>
+									setForm((prev) => ({
+										...prev,
+										state:
+											prev.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP
+												? CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP
+												: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
+									}))
+								}
+							/>
+							<label className={styles.label_check_box} htmlFor={`state_spec_customer`}>
+								Đang cung cấp
+							</label>
 						</div>
 					</div>
 				</div>

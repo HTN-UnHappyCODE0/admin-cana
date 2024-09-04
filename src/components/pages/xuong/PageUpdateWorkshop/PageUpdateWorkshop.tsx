@@ -398,10 +398,10 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 							label={
 								<span>
 									{TYPE_PARTNER.KH_XUAT === Number(_typeCus)
-										? 'Thuộc khách hàng xuất'
+										? 'Thuộc khách hàng xuất '
 										: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
-										? 'Thuộc khách hàng dịch vụ'
-										: 'Thuộc đối tác'}
+										? 'Thuộc khách hàng dịch vụ '
+										: 'Thuộc đối tác '}
 									<span style={{color: 'red'}}>*</span>
 								</span>
 							}

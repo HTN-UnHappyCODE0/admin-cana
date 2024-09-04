@@ -20,7 +20,7 @@ function WarehouseStatistics({isLoading, infoCompany}: PropsWarehouseStatistics)
 			<div className={clsx('mt', 'col_2')}>
 				<DetailBox
 					isLoading={isLoading}
-					name={'Hàng khô'}
+					name={'Khối lượng khô'}
 					value={infoCompany?.weight?.totalAmountBdmt}
 					unit='BDMT'
 					action={

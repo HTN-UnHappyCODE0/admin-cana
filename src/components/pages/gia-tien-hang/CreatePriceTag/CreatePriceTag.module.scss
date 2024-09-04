@@ -180,3 +180,26 @@ $font-size: 16px;
 		}
 	}
 }
+
+.input_price {
+	width: 200px !important;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+
+	.input {
+		cursor: pointer;
+		width: 18px;
+		height: 18px;
+	}
+
+	.label_check_box {
+		cursor: pointer;
+		user-select: none;
+		display: block;
+		color: #2f3643;
+		font-size: 16px;
+		font-weight: 500;
+	}
+}

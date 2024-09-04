@@ -230,11 +230,11 @@ function DetailCustomerService({}: PropsDetailCustomerService) {
 					</colgroup>
 					<tr>
 						<td>
-							<span style={{marginRight: 6}}>Mã khách hàng dịch vụ: </span>
+							<span style={{marginRight: 6}}>Mã khách hàng dịch vụ:</span>
 							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
 						</td>
 						<td>
-							<span style={{marginRight: 6}}>Người quản lý:</span> {detailPartner?.director || '---'}
+							<span style={{marginRight: 6}}>Người liên hệ:</span> {detailPartner?.director || '---'}
 						</td>
 					</tr>
 					<tr>
@@ -321,7 +321,7 @@ function DetailCustomerService({}: PropsDetailCustomerService) {
 									title: 'Tên xường',
 									fixedLeft: true,
 									render: (data: any) => (
-										<Link href={`/xuong/${data?.uuid}`} className={styles.link}>
+										<Link href={`/xuong/${data?.uuid}?_typeCus=${TYPE_PARTNER.KH_DICH_VU}`} className={styles.link}>
 											{data?.name || '---'}
 										</Link>
 									),

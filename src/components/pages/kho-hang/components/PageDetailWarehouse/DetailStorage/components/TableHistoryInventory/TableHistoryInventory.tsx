@@ -61,10 +61,11 @@ function TableHistoryInventory({}: PropsTableHistoryInventory) {
 						},
 						{
 							title: 'Kho bãi ',
+							fixedLeft: true,
 							render: (data: IInventory) => <span>{data?.storageUu?.name || '---'}</span>,
 						},
 						{
-							title: 'Trọng lượng ban đầu (KG)',
+							title: 'Khối lượng ban đầu (KG)',
 							render: (data: IInventory) => <span>{convertCoin(data?.totalAmount) || 0}</span>,
 						},
 
@@ -78,6 +79,7 @@ function TableHistoryInventory({}: PropsTableHistoryInventory) {
 						},
 						{
 							title: 'Tác vụ',
+							fixedRight: true,
 							render: (data: IInventory) => (
 								<Link href={`${router.asPath}&_uuidInventory=${data?.uuid}`} className={styles.linkdetail}>
 									Chi tiết

@@ -63,6 +63,7 @@ function TableCustomer({setTotalCustomer}: PropsTableCustomer) {
 						},
 						{
 							title: 'Khách hàng',
+							fixedLeft: true,
 							render: (data: IDataTableCustomerStorage) => <span>{data?.customerUu?.name || '---'}</span>,
 						},
 
@@ -90,6 +91,7 @@ function TableCustomer({setTotalCustomer}: PropsTableCustomer) {
 						},
 						{
 							title: 'Tác vụ',
+							fixedRight: true,
 							render: (data: IDataTableCustomerStorage) => (
 								<Link href={`/xuong/${data?.customerUu?.uuid}`} className={styles.linkdetail}>
 									Chi tiết

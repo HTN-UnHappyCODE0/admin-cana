@@ -93,10 +93,10 @@ function TableDetail({}: PropsTableDetail) {
 						<div className={styles.search}>
 							<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu' />
 						</div>
-						<div className={clsx(styles.checkbox_right)}>
+						{/* <div className={clsx(styles.checkbox_right)}>
 							<input type='checkbox' id='can-lan-1' onChange={handleChangeCheckBox} />
 							<label htmlFor='can-lan-1'>Chỉ hiển thị cân lần 1 </label>
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>
