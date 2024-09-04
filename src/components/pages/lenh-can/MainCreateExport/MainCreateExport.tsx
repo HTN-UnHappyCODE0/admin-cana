@@ -183,9 +183,20 @@ function MainCreateExport({}: PropsMainCreateExport) {
 					qualityUuid: '',
 				}),
 			}),
+		onSuccess(data) {
+			if (data) {
+				setForm((prev) => ({
+					...prev,
+					fromUuid: data?.[0]?.uuid || '',
+					productTypeUuid: data?.[0]?.productUu?.uuid || '',
+					specificationsUuid: data?.[0]?.specificationsUu?.uuid || '',
+				}));
+			}
+		},
 		select(data) {
 			return data;
 		},
+
 		enabled: !!form.warehouseUuid,
 	});
 

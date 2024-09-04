@@ -176,6 +176,14 @@ function MainCreateTransfer({}: PropsMainCreateTransfer) {
 					warehouseUuid: form.warehouseFromUuid,
 				}),
 			}),
+		onSuccess(data) {
+			if (data) {
+				setForm((prev) => ({
+					...prev,
+					fromUuid: data?.[0]?.uuid || '',
+				}));
+			}
+		},
 		select(data) {
 			return data;
 		},
@@ -200,6 +208,14 @@ function MainCreateTransfer({}: PropsMainCreateTransfer) {
 					specificationsUuid: '',
 				}),
 			}),
+		onSuccess(data) {
+			if (data) {
+				setForm((prev) => ({
+					...prev,
+					toUuid: data?.[0]?.uuid || '',
+				}));
+			}
+		},
 		select(data) {
 			return data;
 		},
