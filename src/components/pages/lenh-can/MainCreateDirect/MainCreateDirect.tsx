@@ -603,7 +603,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 							isMoney
 							unit='KG'
 							label={<span>Khối lượng dự kiến</span>}
-							placeholder='Nhập trọng lượng dự kiến'
+							placeholder='Nhập khối lượng dự kiến'
 						/>
 						<DatePicker
 							label={

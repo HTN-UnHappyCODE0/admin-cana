@@ -489,7 +489,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 											),
 										},
 										{
-											title: 'Trọng lượng hàng (kg)',
+											title: 'Khối lượng hàng (kg)',
 											render: (data: any) => <>{convertCoin(data?.weightTotal)}</>,
 										},
 										{
@@ -672,7 +672,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 											),
 										},
 										{
-											title: 'Trọng lượng hàng (kg)',
+											title: 'Khối lượng hàng (kg)',
 											render: (data: any) => <>{convertCoin(data?.weightTotal)}</>,
 										},
 										{

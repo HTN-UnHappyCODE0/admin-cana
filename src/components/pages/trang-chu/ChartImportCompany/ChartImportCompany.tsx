@@ -152,7 +152,7 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 							uuid: v?.uuid,
 							name: v?.name,
 						}))}
-						placeholder='Tất cả nhà cung cấp'
+						placeholder='Tất cả đối tác'
 					/>
 					<SelectFilterDate isOptionDateAll={true} date={date} setDate={setDate} typeDate={typeDate} setTypeDate={setTypeDate} />
 				</div>

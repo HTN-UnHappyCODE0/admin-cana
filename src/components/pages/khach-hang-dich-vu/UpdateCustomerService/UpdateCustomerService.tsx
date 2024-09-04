@@ -319,10 +319,10 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 							blur={true}
 							label={
 								<span>
-									Người đại diện <span style={{color: 'red'}}>*</span>
+									Người liên hệ <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên người đại diện (cho khách hàng)'
+							placeholder='Nhập tên người liên hệ (cho khách hàng)'
 						/>
 						<Select
 							isSearch

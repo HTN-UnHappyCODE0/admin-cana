@@ -28,14 +28,13 @@
 	cursor: pointer;
 	width: fit-content;
 	height: fit-content;
-	z-index: 100;
 	transition: 0.3s;
 
 	&:hover {
 		.icon_warn {
 			opacity: 0.6;
 		}
-
+		z-index: 100;
 		.note {
 			display: block;
 		}

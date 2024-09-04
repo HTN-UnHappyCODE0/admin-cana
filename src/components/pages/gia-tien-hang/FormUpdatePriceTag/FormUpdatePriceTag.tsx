@@ -4,7 +4,15 @@ import {PropsFormUpdatePriceTag} from './interfaces';
 import styles from './FormUpdatePriceTag.module.scss';
 import {IoClose} from 'react-icons/io5';
 import Form, {Input} from '~/components/common/Form';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_TRANSPORT} from '~/constants/config/enum';
+import {
+	CONFIG_DESCENDING,
+	CONFIG_PAGING,
+	CONFIG_STATE_SPEC_CUSTOMER,
+	CONFIG_STATUS,
+	CONFIG_TYPE_FIND,
+	QUERY_KEY,
+	TYPE_TRANSPORT,
+} from '~/constants/config/enum';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {httpRequest} from '~/services';
 import priceTagServices from '~/services/priceTagServices';
@@ -12,6 +20,7 @@ import SelectSearch from '~/components/common/SelectSearch';
 import Button from '~/components/common/Button';
 import {toastWarn} from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
+import clsx from 'clsx';
 
 function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 	const queryClient = useQueryClient();
@@ -22,6 +31,7 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 		productType: '',
 		spec: '',
 		transport: '',
+		state: CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP,
 	});
 
 	const listPriceTag = useQuery([QUERY_KEY.dropdown_gia_tien_hang], {
@@ -55,6 +65,7 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 						: dataUpdate?.transportType == TYPE_TRANSPORT.DUONG_THUY
 						? 'Đường thủy'
 						: '---',
+				state: dataUpdate?.state,
 			});
 			setPriceTag({
 				id: dataUpdate?.pricetagUu?.uuid || '',
@@ -72,6 +83,8 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 				http: priceTagServices.updatePricetagToCustomer({
 					uuid: dataUpdate?.uuid!,
 					priceTagUuid: priceTag.id === '' ? String(priceTag.name) : priceTag.id,
+					state: form.state,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		onSuccess(data) {
@@ -97,49 +110,53 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 	return (
 		<div className={styles.container}>
 			<Loading loading={fucnUpdateSpecification.isLoading} />
-			<h4 className={styles.title}>Chỉnh sửa giá tiền hàng</h4>
 			<Form form={form} setForm={setForm}>
-				<div className={'mt'}>
-					<Input
-						placeholder='Nhập nhà cung cấp'
-						name='customer'
-						readOnly={true}
-						label={
-							<span>
-								Nhà cung cấp <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-					/>
-					<Input
-						placeholder='Loại gỗ'
-						name='productType'
-						readOnly={true}
-						label={
-							<span>
-								Loại gỗ <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-					/>
-					<Input
-						placeholder='Quy cách'
-						name='spec'
-						readOnly={true}
-						label={
-							<span>
-								Quy cách <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-					/>
-					<Input
-						placeholder='Phương thức vận chuyển'
-						name='transport'
-						readOnly={true}
-						label={
-							<span>
-								Phương thức vận chuyển <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-					/>
+				<div className={styles.wrapper}>
+					<h4 className={styles.title}>Chỉnh sửa giá tiền hàng</h4>
+					<div className={clsx('mt', styles.main_form)}>
+						<div className={'mt'}>
+							<Input
+								placeholder='Nhập nhà cung cấp'
+								name='customer'
+								readOnly={true}
+								label={
+									<span>
+										Nhà cung cấp <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							/>
+							<Input
+								placeholder='Loại gỗ'
+								name='productType'
+								readOnly={true}
+								label={
+									<span>
+										Loại gỗ <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							/>
+							<Input
+								placeholder='Quy cách'
+								name='spec'
+								readOnly={true}
+								label={
+									<span>
+										Quy cách <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							/>
+							<Input
+								placeholder='Phương thức vận chuyển'
+								name='transport'
+								readOnly={true}
+								label={
+									<span>
+										Phương thức vận chuyển <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							/>
+						</div>
+					</div>
 					<div className={'mt'}>
 						<SelectSearch
 							isConvertNumber={true}
@@ -156,6 +173,30 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 							}
 							placeholder='Nhập giá tiền'
 						/>
+					</div>
+					<div className='mt'>
+						<div className={styles.input_price}>
+							<input
+								id={`state_spec_customer`}
+								name='state'
+								value={form.state}
+								type='checkbox'
+								className={styles.input}
+								checked={form?.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP}
+								onChange={() =>
+									setForm((prev: any) => ({
+										...prev,
+										state:
+											prev.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP
+												? CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP
+												: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
+									}))
+								}
+							/>
+							<label className={styles.label_check_box} htmlFor={`state_spec_customer`}>
+								Đang cung cấp
+							</label>
+						</div>
 					</div>
 				</div>
 				<div className={styles.control}>

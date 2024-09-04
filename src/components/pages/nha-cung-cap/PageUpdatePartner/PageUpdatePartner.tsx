@@ -319,10 +319,10 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							blur={true}
 							label={
 								<span>
-									Người đại diện <span style={{color: 'red'}}>*</span>
+									Người liên hệ <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên người đại diện'
+							placeholder='Nhập tên người liên hệ'
 						/>
 						<Select
 							isSearch

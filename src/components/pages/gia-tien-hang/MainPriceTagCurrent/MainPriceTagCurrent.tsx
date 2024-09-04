@@ -9,6 +9,7 @@ import {useQuery} from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
+	CONFIG_STATE_SPEC_CUSTOMER,
 	CONFIG_STATUS,
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
@@ -35,11 +36,12 @@ import Popup from '~/components/common/Popup';
 import FormUpdatePriceTag from '../FormUpdatePriceTag';
 import Link from 'next/link';
 import {FaHistory} from 'react-icons/fa';
+import TagStatusSpecCustomer from '../../xuong/TagStatusSpecCustomer';
 
 function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _specUuid, _productTypeUuid, _transportType, _status} = router.query;
+	const {_page, _pageSize, _keyword, _specUuid, _productTypeUuid, _state, _transportType, _status} = router.query;
 
 	const [dataUpdate, setDataUpdate] = useState<IPriceTag | null>(null);
 
@@ -99,7 +101,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 	});
 
 	const listPriceTag = useQuery(
-		[QUERY_KEY.table_gia_tien_hang, _page, _pageSize, _keyword, _specUuid, _productTypeUuid, _transportType, _status],
+		[QUERY_KEY.table_gia_tien_hang, _page, _pageSize, _keyword, _specUuid, _productTypeUuid, _state, _transportType, _status],
 		{
 			queryFn: () =>
 				httpRequest({
@@ -116,7 +118,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 						specUuid: (_specUuid as string) || '',
 						productTypeUuid: (_productTypeUuid as string) || '',
 						priceTagUuid: '',
-						state: null,
+						state: !!_state ? Number(_state) : null,
 						transportType: !!_transportType ? Number(_transportType) : null,
 					}),
 				}),
@@ -175,16 +177,16 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Trạng thái'
-							query='_status'
+							name='Cung cấp'
+							query='_state'
 							listFilter={[
 								{
-									id: CONFIG_STATUS.BI_KHOA,
-									name: 'Bị khóa',
+									id: CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP,
+									name: 'Có thể cung cấp',
 								},
 								{
-									id: CONFIG_STATUS.HOAT_DONG,
-									name: 'Hoạt động',
+									id: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
+									name: 'Đang cung cấp',
 								},
 							]}
 						/>
@@ -217,20 +219,21 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 								render: (data: IPriceTag, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Đối tác',
+								title: 'Nhà cung cấp',
 								fixedLeft: true,
+								render: (data: IPriceTag) => (
+									<Link href={`/xuong/${data?.customerUu?.uuid}`} className={styles.link}>
+										{data?.customerUu?.name || '---'}
+									</Link>
+								),
+							},
+							{
+								title: 'Đối tác',
 								render: (data: IPriceTag) => (
 									<Link href={`/nha-cung-cap/${data?.partnerUu?.uuid}`} className={styles.link}>
 										{data?.partnerUu?.name || '---'}
 									</Link>
-									// <Link href={`#`} className={styles.link}>
-									// 	{data?.partnerUu?.name || '---'}
-									// </Link>
 								),
-							},
-							{
-								title: 'Nhà cung cấp',
-								render: (data: IPriceTag) => <>{data?.customerUu?.name || '---'}</>,
 							},
 							{
 								title: 'Loại gỗ',
@@ -254,8 +257,8 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 								render: (data: IPriceTag) => <>{convertCoin(data?.pricetagUu?.amount)} VND</>,
 							},
 							{
-								title: 'Trạng thái',
-								render: (data: IPriceTag) => <TagStatus status={data.state} />,
+								title: 'Cung cấp',
+								render: (data: any) => <TagStatusSpecCustomer status={data.state} />,
 							},
 							{
 								title: 'Ngày tạo',

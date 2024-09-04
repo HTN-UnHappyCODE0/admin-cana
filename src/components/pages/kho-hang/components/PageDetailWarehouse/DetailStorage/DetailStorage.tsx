@@ -149,7 +149,7 @@ function DetailStorage({}: PropsDetailStorage) {
 			<div className={'mt'}>
 				<GridColumn col_4>
 					<DetailBox
-						name={'Tổng trọng lượng hàng'}
+						name={'Tổng khối lượng quy khô'}
 						value={Number(detailStorage?.totalAmountMt)}
 						action={
 							<div className={styles.action}>
@@ -172,14 +172,14 @@ function DetailStorage({}: PropsDetailStorage) {
 						}
 					/>
 					<DetailBox
-						name={'Trọng lượng nhập'}
+						name={'Khối lượng nhập'}
 						value={Number(detailStorage?.totalAmountIn)}
 						action={
 							<div className={styles.action}>
 								<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 								<div className={styles.note}>
 									<p>
-										Từ đối tác: <span>{convertCoin(detailStorage?.amountIn!)}</span>
+										Từ nhà cung cấp: <span>{convertCoin(detailStorage?.amountIn!)}</span>
 									</p>
 									<p style={{marginTop: 2}}>
 										Từ kho: <span>{convertCoin(detailStorage?.amountChangeIn!)}</span>
@@ -189,14 +189,14 @@ function DetailStorage({}: PropsDetailStorage) {
 						}
 					/>
 					<DetailBox
-						name={'Trọng lượng xuất'}
+						name={'Khối lượng xuất'}
 						value={Number(detailStorage?.totalAmountOut)}
 						action={
 							<div className={styles.action}>
 								<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 								<div className={styles.note}>
 									<p>
-										Khách hàng: <span>{detailStorage?.amountOut}</span>
+										Khách hàng xuất: <span>{detailStorage?.amountOut}</span>
 									</p>
 									<p style={{marginTop: 2}}>
 										Xuất kho: <span>{detailStorage?.amountChangeOut}</span>
@@ -258,7 +258,7 @@ function DetailStorage({}: PropsDetailStorage) {
 					</tr>
 					<tr>
 						<td>
-							<span>Tổng khách hàng:</span>
+							<span>Tổng nhà cung cấp:</span>
 							<span style={{marginLeft: '6px', color: '#2A85FF'}}>{totalCustomer}</span>
 						</td>
 						<td rowSpan={3} className={styles.description}>
@@ -319,7 +319,7 @@ function DetailStorage({}: PropsDetailStorage) {
 						{
 							pathname: router.pathname,
 							query: null,
-							title: 'Lịch sử khách hàng',
+							title: 'Lịch sử nhà cung cấp',
 						},
 						{
 							pathname: router.pathname,

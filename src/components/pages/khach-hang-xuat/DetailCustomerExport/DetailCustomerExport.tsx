@@ -326,10 +326,10 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 									render: (data: any) => <>{data.code}</>,
 								},
 								{
-									title: 'Tên xường',
+									title: 'Tên NCC',
 									fixedLeft: true,
 									render: (data: any) => (
-										<Link href={`/xuong/${data?.uuid}`} className={styles.link}>
+										<Link href={`/xuong/${data?.uuid}?_typeCus=${TYPE_PARTNER.KH_XUAT}`} className={styles.link}>
 											{data?.name || '---'}
 										</Link>
 									),

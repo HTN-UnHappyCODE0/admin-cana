@@ -29,7 +29,7 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 			queryFn: () =>
 				httpRequest({
 					isList: true,
-					http: priceTagServices.listPriceTag({
+					http: priceTagServices.listPriceTagHistory({
 						page: Number(_page) || 1,
 						pageSize: Number(_pageSize) || 20,
 						keyword: '',
@@ -43,6 +43,7 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 						priceTagUuid: '',
 						state: null,
 						transportType: Number(_transportType) || null,
+						partnerUuid: '',
 					}),
 				}),
 			select(data) {
@@ -64,7 +65,7 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 				<DataWrapper
 					data={historyPriceTag?.data?.items || []}
 					loading={historyPriceTag?.isLoading}
-					noti={<Noti disableButton title='Dữ liệu trống!' des='Hiện tại chưa có lịch sử   giá tiền nào, thêm ngay?' />}
+					noti={<Noti disableButton title='Dữ liệu trống!' des='Hiện tại chưa có lịch sử giá tiền nào, thêm ngay?' />}
 				>
 					<Table
 						data={historyPriceTag?.data?.items || []}

@@ -43,7 +43,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_id, _page, _pageSize} = router.query;
+	const {_id, _page, _typeCus, _pageSize} = router.query;
 
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
@@ -131,7 +131,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 							light_outline
 							p_8_16
 							bold
-							href={`/xuong/chinh-sua?_customerUuid=${detailCustomer?.uuid}`}
+							href={`/xuong/chinh-sua?_customerUuid=${detailCustomer?.uuid}&_typeCus=${_typeCus}`}
 							icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
 						>
 							Chỉnh sửa
@@ -301,10 +301,10 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 									title: 'Cung cấp',
 									render: (data: any) => <TagStatusSpecCustomer status={data.state} />,
 								},
-								{
-									title: 'Trạng thái',
-									render: (data: any) => <TagStatus status={data.status} />,
-								},
+								// {
+								// 	title: 'Trạng thái',
+								// 	render: (data: any) => <TagStatus status={data.status} />,
+								// },
 							]}
 						/>
 					</DataWrapper>
