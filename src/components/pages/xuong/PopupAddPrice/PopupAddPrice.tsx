@@ -147,7 +147,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 							state: form?.state,
 							productTypeUuid: form.productTypeUuid,
 							transportType: Number(form.transportType),
-							priceTagUuid: priceTag.id === '' ? String(priceTag.name) : priceTag.id,
+							priceTagUuid: !priceTag.id && !priceTag.name ? '0' : priceTag.id === '' ? String(priceTag.name) : priceTag.id,
 						},
 					],
 					customerUuid: [_id as string],
@@ -176,9 +176,6 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 		}
 		if (!form.productTypeUuid) {
 			return toastWarn({msg: 'Vui lòng chọn loại gỗ!'});
-		}
-		if (priceTag.name === undefined || priceTag.name === '') {
-			return toastWarn({msg: 'Vui lòng chọn giá tiền áp dụng!'});
 		}
 
 		return fucnAddSpecCustomer.mutate();
@@ -329,13 +326,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 						</Button>
 					</div>
 					<div>
-						<Button
-							disable={!form.specUuid || !form.productTypeUuid || !priceTag.name}
-							p_8_24
-							rounded_2
-							primary
-							onClick={handleSubmit}
-						>
+						<Button disable={!form.specUuid || !form.productTypeUuid} p_8_24 rounded_2 primary onClick={handleSubmit}>
 							Xác nhận
 						</Button>
 					</div>

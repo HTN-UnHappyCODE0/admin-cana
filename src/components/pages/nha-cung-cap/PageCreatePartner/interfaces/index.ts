@@ -14,4 +14,5 @@ export interface IFormCreatePartner {
 	townId: string;
 	address: string;
 	description: string;
+	companyUuid: string;
 }

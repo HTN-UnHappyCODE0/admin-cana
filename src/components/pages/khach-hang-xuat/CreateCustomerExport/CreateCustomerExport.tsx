@@ -25,6 +25,7 @@ import Button from '~/components/common/Button';
 import clsx from 'clsx';
 import Select, {Option} from '~/components/common/Select';
 import TextArea from '~/components/common/Form/components/TextArea';
+import companyServices from '~/services/companyServices';
 
 function CreateCustomerExport({}: PropsCreateCustomerExport) {
 	const router = useRouter();
@@ -43,6 +44,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 		director: '',
 		bankName: '',
 		bankAccount: '',
+		companyUuid: '',
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -109,6 +111,26 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 			return data;
 		},
 	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 20,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const listUser = useQuery([QUERY_KEY.dropdown_nguoi_quan_ly_nhap_hang], {
 		queryFn: () =>
 			httpRequest({
@@ -156,6 +178,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 					bankName: form?.bankName,
 					bankAccount: form?.bankAccount,
 					type: TYPE_PARTNER.KH_XUAT,
+					companyUuid: form?.companyUuid,
 				}),
 			}),
 		onSuccess(data) {
@@ -174,6 +197,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 					director: '',
 					bankName: '',
 					bankAccount: '',
+					companyUuid: '',
 				});
 				router.back();
 			}
@@ -220,23 +244,42 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 					</div>
 				</div>
 				<div className={styles.form}>
+					<Input
+						name='name'
+						value={form.name || ''}
+						isRequired
+						min={5}
+						max={255}
+						blur={true}
+						label={
+							<span>
+								Tên khách hàng <span style={{color: 'red'}}>*</span>
+							</span>
+						}
+						placeholder='Nhập tên khách hàng'
+					/>
 					<div className={clsx('mt', 'col_2')}>
-						<div>
-							<Input
-								name='name'
-								value={form.name || ''}
-								isRequired
-								min={5}
-								max={255}
-								blur={true}
-								label={
-									<span>
-										Tên khách hàng <span style={{color: 'red'}}>*</span>
-									</span>
-								}
-								placeholder='Nhập tên khách hàng'
-							/>
-						</div>
+						<Select
+							isSearch
+							name='companyUuid'
+							placeholder='Chọn công ty'
+							value={form?.companyUuid}
+							onChange={(e: any) =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: e.target.value,
+								}))
+							}
+							label={
+								<span>
+									Công ty <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
 						<Input
 							name='taxCode'
 							value={form.taxCode || ''}

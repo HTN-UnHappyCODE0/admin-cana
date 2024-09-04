@@ -210,6 +210,10 @@ function MainPagePartner({}: PropsMainPagePartner) {
 								),
 							},
 							{
+								title: 'Thuộc công ty',
+								render: (data: IPartner) => <>{data?.companyUu?.name || '---'}</>,
+							},
+							{
 								title: 'SL NCC',
 								render: (data: IPartner) => <>{data?.countCustomer}</>,
 							},

@@ -79,7 +79,7 @@ function PageCompany({}: PropsPageCompany) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên công ty' />
 					</div>
 
 					<div className={styles.filter}>

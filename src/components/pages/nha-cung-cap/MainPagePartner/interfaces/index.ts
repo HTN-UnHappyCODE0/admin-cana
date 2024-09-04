@@ -34,4 +34,10 @@ export interface IPartner {
 	debtDemo: number;
 	debtReal: number;
 	type: number;
+	companyUu: {
+		code: string;
+		name: string;
+		status: number;
+		uuid: string;
+	};
 }

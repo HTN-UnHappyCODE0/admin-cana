@@ -211,6 +211,10 @@ function PageCustomerService({}: PropsPageCustomerService) {
 								),
 							},
 							{
+								title: 'Thuộc công ty',
+								render: (data: IPageCustomerService) => <>{data?.companyUu?.name || '---'}</>,
+							},
+							{
 								title: 'SL nhà cung cấp',
 								render: (data: IPageCustomerService) => <>{data?.countCustomer}</>,
 							},

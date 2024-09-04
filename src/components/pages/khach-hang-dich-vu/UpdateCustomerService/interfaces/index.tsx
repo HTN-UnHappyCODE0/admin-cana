@@ -14,4 +14,5 @@ export interface IUpdateCustomerService {
 	townId: string;
 	address: string;
 	description: string;
+	companyUuid: string;
 }

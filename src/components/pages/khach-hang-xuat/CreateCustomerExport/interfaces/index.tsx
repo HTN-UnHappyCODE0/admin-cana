@@ -14,4 +14,5 @@ export interface IFormCreateCustomerExport {
 	townId: string;
 	address: string;
 	description: string;
+	companyUuid: string;
 }
