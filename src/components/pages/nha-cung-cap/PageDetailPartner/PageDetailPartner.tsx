@@ -230,11 +230,20 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					</colgroup>
 					<tr>
 						<td>
+							<span style={{marginRight: 6}}>Tên đối tác: </span>
+							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.name || '---'}</span>
+						</td>
+						<td>
+							<span style={{marginRight: 6}}>Thuộc công ty:</span> {detailPartner?.companyUu?.name || '---'}
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<span style={{marginRight: 6}}>Mã đối tác: </span>
 							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
 						</td>
 						<td>
-							<span style={{marginRight: 6}}>Người quản lý:</span> {detailPartner?.director || '---'}
+							<span style={{marginRight: 6}}>Người liên hệ:</span> {detailPartner?.director || '---'}
 						</td>
 					</tr>
 					<tr>

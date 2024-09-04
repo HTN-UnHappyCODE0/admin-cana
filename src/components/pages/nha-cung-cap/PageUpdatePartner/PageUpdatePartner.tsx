@@ -25,6 +25,7 @@ import clsx from 'clsx';
 import Select, {Option} from '~/components/common/Select';
 import TextArea from '~/components/common/Form/components/TextArea';
 import {IDetailPartner} from '../PageDetailPartner/interfaces';
+import companyServices from '~/services/companyServices';
 
 function PageUpdatePartner({}: PropsPageUpdatePartner) {
 	const router = useRouter();
@@ -46,6 +47,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 		director: '',
 		bankName: '',
 		bankAccount: '',
+		companyUuid: '',
 	});
 
 	useQuery<IDetailPartner>([QUERY_KEY.chi_tiet_doi_tac, _id], {
@@ -70,6 +72,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 				director: data?.director || '',
 				bankName: data?.bankName || '',
 				bankAccount: data?.bankAccount || '',
+				companyUuid: data?.companyUu?.uuid || '',
 			});
 		},
 		enabled: !!_id,
@@ -81,6 +84,25 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 				isDropdown: true,
 				http: commonServices.listProvince({
 					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 20,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
@@ -236,23 +258,44 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					</div>
 				</div>
 				<div className={styles.form}>
+					<Input
+						name='name'
+						value={form.name || ''}
+						isRequired
+						min={5}
+						max={255}
+						blur={true}
+						label={
+							<span>
+								Tên đối tác <span style={{color: 'red'}}>*</span>
+							</span>
+						}
+						placeholder='Nhập tên đối tác'
+					/>
 					<div className={clsx('mt', 'col_2')}>
-						<div>
-							<Input
-								name='name'
-								value={form.name || ''}
-								isRequired
-								min={5}
-								max={255}
-								blur={true}
-								label={
-									<span>
-										Tên đối tác <span style={{color: 'red'}}>*</span>
-									</span>
-								}
-								placeholder='Nhập tên đối tác'
-							/>
-						</div>
+						<Select
+							isSearch
+							name='companyUuid'
+							placeholder='Chọn công ty'
+							readOnly={true}
+							value={form?.companyUuid}
+							onChange={(e: any) =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: e.target.value,
+								}))
+							}
+							label={
+								<span>
+									Công ty <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
+
 						<Input
 							name='taxCode'
 							value={form.taxCode || ''}
@@ -329,7 +372,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 								value={form.bankName || ''}
 								max={255}
 								label={<span>Ngân hàng</span>}
-								placeholder='Nhập Ngân hàng'
+								placeholder='Nhập ngân hàng'
 							/>
 						</div>
 						<Input

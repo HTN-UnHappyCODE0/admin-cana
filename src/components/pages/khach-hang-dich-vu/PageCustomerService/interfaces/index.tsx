@@ -34,4 +34,10 @@ export interface IPageCustomerService {
 	debtDemo: number;
 	debtReal: number;
 	type: number;
+	companyUu: {
+		code: string;
+		name: string;
+		status: number;
+		uuid: string;
+	};
 }

@@ -229,11 +229,20 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 					</colgroup>
 					<tr>
 						<td>
+							<span style={{marginRight: 6}}>Tên khách hàng xuất: </span>
+							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.name || '---'}</span>
+						</td>
+						<td>
+							<span style={{marginRight: 6}}>Thuộc công ty:</span> {detailPartner?.companyUu?.name || '---'}
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<span style={{marginRight: 6}}>Mã khách hàng xuất: </span>
 							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
 						</td>
 						<td>
-							<span style={{marginRight: 6}}>Người quản lý:</span> {detailPartner?.director || '---'}
+							<span style={{marginRight: 6}}>Người liên hệ:</span> {detailPartner?.director || '---'}
 						</td>
 					</tr>
 					<tr>
@@ -297,7 +306,7 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 							rounded_2
 							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 						>
-							Thêm nhà nhà cung cấp
+							Thêm nhà cung cấp
 						</Button>
 					</div>
 				</div>

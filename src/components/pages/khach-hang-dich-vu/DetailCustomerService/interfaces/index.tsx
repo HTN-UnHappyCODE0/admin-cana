@@ -38,6 +38,12 @@ export interface IDetailCustomerService {
 	totalBillKCS: number;
 	totalTransactionIn: number;
 	totalTransactionOut: number;
+	companyUu: {
+		code: string;
+		name: string;
+		status: number;
+		uuid: string;
+	};
 }
 
 export interface IUserOwnerUu {
