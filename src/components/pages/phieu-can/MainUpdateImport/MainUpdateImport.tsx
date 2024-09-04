@@ -83,7 +83,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					transportType: data?.transportType,
 					isSift: data?.isSift,
 					specificationsUuid: data?.specificationsUu?.uuid,
-					warehouseUuid: '',
+					warehouseUuid: data?.toUu?.parentUu?.uuid || '',
 					productTypeUuid: data?.productTypeUu?.uuid,
 					documentId: data?.documentId,
 					description: data?.description,
@@ -115,25 +115,6 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 			}
 		},
 		enabled: !!_id,
-	});
-
-	// Get warehouseUuid to storageUuid
-	useQuery([QUERY_KEY.chi_tiet_bai, form.toUuid], {
-		queryFn: () =>
-			httpRequest({
-				http: storageServices.detailStorage({
-					uuid: form.toUuid,
-				}),
-			}),
-		onSuccess(data) {
-			if (data) {
-				setForm((prev) => ({
-					...prev,
-					warehouseUuid: data?.warehouseUu?.uuid,
-				}));
-			}
-		},
-		enabled: !!form.toUuid,
 	});
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {

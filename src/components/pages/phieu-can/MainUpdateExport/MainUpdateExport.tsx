@@ -86,7 +86,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					weightIntent: convertCoin(data?.batchsUu?.weightIntent),
 					isSift: data?.isSift,
 					specificationsUuid: data?.specificationsUu?.uuid,
-					warehouseUuid: '',
+					warehouseUuid: data?.fromUu?.parentUu?.uuid || '',
 					productTypeUuid: data?.productTypeUu?.uuid,
 					documentId: data?.documentId,
 					description: data?.description,
@@ -116,25 +116,6 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 			}
 		},
 		enabled: !!_id,
-	});
-
-	// Get warehouseUuid to storageUuid
-	useQuery([QUERY_KEY.chi_tiet_bai, form.fromUuid], {
-		queryFn: () =>
-			httpRequest({
-				http: storageServices.detailStorage({
-					uuid: form.fromUuid,
-				}),
-			}),
-		onSuccess(data) {
-			if (data) {
-				setForm((prev) => ({
-					...prev,
-					warehouseUuid: data?.warehouseUu?.uuid,
-				}));
-			}
-		},
-		enabled: !!form.fromUuid,
 	});
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
