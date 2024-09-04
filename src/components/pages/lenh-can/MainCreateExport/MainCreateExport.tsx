@@ -47,7 +47,7 @@ function MainCreateExport({}: PropsMainCreateExport) {
 	const [form, setForm] = useState<IFormCreateExport>({
 		shipUuid: '',
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
-		timeIntend: '',
+		timeIntend: new Date(),
 		weightIntent: 0,
 		isSift: TYPE_SIFT.KHONG_CAN_SANG,
 		specificationsUuid: '',
@@ -261,6 +261,9 @@ function MainCreateExport({}: PropsMainCreateExport) {
 	});
 
 	const handleSubmit = async () => {
+		const today = new Date(timeSubmit(new Date())!);
+		const timeIntend = new Date(form.timeIntend);
+
 		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipUuid) {
 			return toastWarn({msg: 'Vui lòng chọn tàu!'});
 		}
@@ -282,13 +285,9 @@ function MainCreateExport({}: PropsMainCreateExport) {
 		if (listTruckChecked.length == 0) {
 			return toastWarn({msg: 'Vui lòng chọn xe hàng!'});
 		}
-		if (form.timeIntend) {
-			const today = new Date(timeSubmit(new Date())!);
-			const timeIntend = new Date(form.timeIntend);
 
-			if (today > timeIntend) {
-				return toastWarn({msg: 'Ngày dự kiến không hợp lệ!'});
-			}
+		if (today > timeIntend) {
+			return toastWarn({msg: 'Ngày dự kiến không hợp lệ!'});
 		}
 
 		return fucnCreateBatchBill.mutate();
@@ -660,7 +659,11 @@ function MainCreateExport({}: PropsMainCreateExport) {
 							placeholder='Nhập trọng lượng dự kiến'
 						/>
 						<DatePicker
-							label={<span>Ngày dự kiến</span>}
+							label={
+								<span>
+									Ngày dự kiến <span style={{color: 'red'}}>*</span>
+								</span>
+							}
 							value={form.timeIntend}
 							onSetValue={(date) =>
 								setForm((prev: any) => ({
