@@ -77,10 +77,12 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 	const handleSubmit = async () => {
 		const imgs = images?.map((v: any) => v?.file);
 
-		if (!!form.amountKcs) {
-			if (form.dryness < 0 || form.dryness > 100) {
-				return toastWarn({msg: 'Độ khô không hợp lệ!'});
-			}
+		if (imgs.length == 0) {
+			return toastWarn({msg: 'Vui lòng chọn ảnh!'});
+		}
+
+		if ((!!form.amountKcs && form.dryness < 0) || form.dryness > 100) {
+			return toastWarn({msg: 'Độ khô không hợp lệ!'});
 		}
 
 		const dataImage = await httpRequest({

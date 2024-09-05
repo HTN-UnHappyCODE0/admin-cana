@@ -281,8 +281,8 @@ function DetailStorage({}: PropsDetailStorage) {
 									placement='top'
 									render={(attrs) => (
 										<div className={styles.main_rule}>
-											{detailStorage?.listSpecValue?.map((v) => (
-												<div key={v?.criteriaUu?.uuid} className={styles.item}>
+											{detailStorage?.listSpecValue?.map((v, i) => (
+												<div key={i} className={styles.item}>
 													<p>{v?.criteriaUu?.title}</p>
 													<p style={{color: '#2D74FF', fontWeight: 600}}>
 														<span style={{marginRight: 4}}>
