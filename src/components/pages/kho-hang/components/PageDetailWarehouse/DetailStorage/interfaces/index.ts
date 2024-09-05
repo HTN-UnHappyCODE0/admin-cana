@@ -38,6 +38,7 @@ export interface IDetailStorage {
 	amountOut: number;
 	amountChangeIn: number;
 	amountChangeOut: number;
+	totalAmountBdmt: number;
 	locationMap: string;
 	uuid: string;
 	countCustomer: number;

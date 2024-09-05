@@ -298,7 +298,7 @@ function DetailCustomerService({}: PropsDetailCustomerService) {
 							rounded_2
 							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 						>
-							Thêm nhà nhà cung cấp
+							Thêm nhà cung cấp
 						</Button>
 					</div>
 				</div>
@@ -314,11 +314,11 @@ function DetailCustomerService({}: PropsDetailCustomerService) {
 							data={listCustomer.data?.items || []}
 							column={[
 								{
-									title: 'Mã nhà cung cấp',
+									title: 'Mã NCC',
 									render: (data: any) => <>{data.code}</>,
 								},
 								{
-									title: 'Tên xường',
+									title: 'Tên NCC',
 									fixedLeft: true,
 									render: (data: any) => (
 										<Link href={`/xuong/${data?.uuid}?_typeCus=${TYPE_PARTNER.KH_DICH_VU}`} className={styles.link}>

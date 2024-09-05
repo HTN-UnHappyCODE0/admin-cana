@@ -44,7 +44,6 @@ function MainUpdateService({}: PropsMainUpdateService) {
 
 	const {_id} = router.query;
 
-	const [dataCustomer, setDataCustomer] = useState<any>({});
 	const [listTruckChecked, setListTruckChecked] = useState<any[]>([]);
 	const [listTruckBatchBill, setListTruckBatchBill] = useState<any[]>([]);
 
@@ -59,6 +58,7 @@ function MainUpdateService({}: PropsMainUpdateService) {
 		documentId: '',
 		description: '',
 		isPrint: 0,
+		customerUuid: '',
 	});
 
 	useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
@@ -81,6 +81,7 @@ function MainUpdateService({}: PropsMainUpdateService) {
 					documentId: data?.documentId,
 					description: data?.description,
 					isPrint: data?.isPrint,
+					customerUuid: data?.fromUu?.uuid,
 				});
 
 				setListTruckChecked(
@@ -96,17 +97,6 @@ function MainUpdateService({}: PropsMainUpdateService) {
 						name: v?.licensePalate,
 						code: v?.code,
 					}))
-				);
-				setDataCustomer(
-					data?.customerName
-						? {
-								id: '',
-								name: data?.customerName,
-						  }
-						: {
-								id: data?.fromUu?.uuid,
-								name: data?.fromUu?.name,
-						  }
 				);
 			}
 		},
@@ -217,9 +207,9 @@ function MainUpdateService({}: PropsMainUpdateService) {
 					productTypeUuid: form.productTypeUuid,
 					documentId: form.documentId,
 					description: form.description,
-					customerName: !dataCustomer?.id ? dataCustomer?.name : '',
-					fromUuid: dataCustomer?.id ? dataCustomer?.id : '',
-					toUuid: dataCustomer?.id ? dataCustomer?.id : '',
+					customerName: '',
+					fromUuid: form.customerUuid,
+					toUuid: form.customerUuid,
 					isPrint: form.isPrint,
 					lstTruckAddUuid: listTruckChecked
 						.filter((v) => !listTruckBatchBill.some((x) => v.uuid === x.uuid))
@@ -244,7 +234,7 @@ function MainUpdateService({}: PropsMainUpdateService) {
 		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipUuid) {
 			return toastWarn({msg: 'Vui lòng chọn tàu!'});
 		}
-		if (!dataCustomer?.id && !dataCustomer?.name) {
+		if (!form.customerUuid) {
 			return toastWarn({msg: 'Vui lòng chọn khách hàng!'});
 		}
 		if (!form.productTypeUuid) {
@@ -442,20 +432,32 @@ function MainUpdateService({}: PropsMainUpdateService) {
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
-						<SelectSearch
-							options={listCustomer?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: v?.name,
-							}))}
-							data={dataCustomer}
-							setData={setDataCustomer}
+						<Select
+							isSearch
+							name='customerUuid'
+							placeholder='Chọn khách hàng'
+							value={form?.customerUuid}
 							label={
 								<span>
-									Khách hàng <span style={{color: 'red'}}>*</span>
+									khách hàng <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập, chọn khách hàng'
-						/>
+						>
+							{listCustomer?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.name}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											customerUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+
 						<div>
 							<Select
 								isSearch

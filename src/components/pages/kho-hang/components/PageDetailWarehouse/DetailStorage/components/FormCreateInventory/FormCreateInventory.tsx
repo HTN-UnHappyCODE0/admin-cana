@@ -15,6 +15,7 @@ import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import Loading from '~/components/common/Loading';
 import {toastWarn} from '~/common/funcs/toast';
 import uploadImageService from '~/services/uploadService';
+import {price} from '~/common/funcs/convertCoin';
 
 function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 	const router = useRouter();
@@ -28,9 +29,13 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 	const [form, setForm] = useState<{
 		nameStorage: string;
 		decription: string;
+		amountKcs: number;
+		dryness: number;
 	}>({
 		nameStorage: nameStorage || '',
 		decription: '',
+		amountKcs: 0,
+		dryness: 0,
 	});
 
 	const fucnInventoryStorage = useMutation({
@@ -43,6 +48,8 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 					uuid: _id as string,
 					path: body.paths,
 					description: form.decription,
+					amountKcs: price(form.amountKcs),
+					dryness: Number(form.dryness),
 				}),
 			}),
 		onSuccess(data) {
@@ -50,6 +57,8 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 				setForm({
 					nameStorage: '',
 					decription: '',
+					amountKcs: 0,
+					dryness: 0,
 				});
 				setImages([]);
 				onClose();
@@ -67,6 +76,12 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 
 	const handleSubmit = async () => {
 		const imgs = images?.map((v: any) => v?.file);
+
+		if (!!form.amountKcs) {
+			if (form.dryness < 0 || form.dryness > 100) {
+				return toastWarn({msg: 'Độ khô không hợp lệ!'});
+			}
+		}
 
 		const dataImage = await httpRequest({
 			setLoading,
@@ -92,7 +107,7 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 					name='nameStorage'
 					isRequired
 					value={form.nameStorage || ''}
-					readOnly
+					readOnly={true}
 					min={5}
 					max={255}
 					type='text'
@@ -103,6 +118,30 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 							Kho bãi <span style={{color: 'red'}}> *</span>
 						</span>
 					}
+				/>
+
+				<Input
+					name='amountKcs'
+					value={form.amountKcs || ''}
+					max={255}
+					isMoney
+					unit='MT'
+					type='number'
+					blur={true}
+					placeholder='Nhập khối lượng còn lại'
+					label={<span>Khối lượng còn lại</span>}
+				/>
+
+				<Input
+					name='dryness'
+					value={form.dryness || ''}
+					readOnly={!form.amountKcs}
+					unit='%'
+					max={255}
+					type='number'
+					blur={true}
+					placeholder='Nhập độ khô'
+					label={<span>Độ khô</span>}
 				/>
 
 				<div className={clsx('mt')}>

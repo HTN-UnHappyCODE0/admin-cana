@@ -9,4 +9,5 @@ export interface IFormCreateService {
 	weightIntent: number;
 	documentId: string;
 	description: string;
+	customerUuid: string;
 }
