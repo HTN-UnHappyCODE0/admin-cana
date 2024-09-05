@@ -625,7 +625,6 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 											setForm((prev: any) => ({
 												...prev,
 												specificationsUuid: v?.specUu?.uuid,
-												toUuid: '',
 											}))
 										}
 									/>
