@@ -24,7 +24,7 @@ function PopupDeleteCustomer({uuid, onClose}: PropsPopupDeleteCustomer) {
 			return httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Xóa nhà cung cấp thành công',
+				msgSuccess: 'Xóa khách hàng thành công',
 				http: customerServices.deleteCustomer({
 					uuid: uuid!,
 					description: form.description,
@@ -51,7 +51,7 @@ function PopupDeleteCustomer({uuid, onClose}: PropsPopupDeleteCustomer) {
 				<IoHelpCircleOutline />
 			</div>
 
-			<p className={styles.note}>Bạn chắc chắn muốn nhà cung cấp này?</p>
+			<p className={styles.note}>Bạn chắc chắn muốn khách hàng này?</p>
 			<div className={clsx('mt')}>
 				<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 					<TextArea isRequired name='description' max={5000} blur placeholder='Nhập lý do xóa' />

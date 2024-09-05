@@ -224,7 +224,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Chỉnh sửa nhà cung cấp thành công!',
+				msgSuccess: `Chỉnh sửa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} thành công!`,
 				http: customerServices.upsertCustomer({
 					uuid: _customerUuid as string,
 					transportType: form.transportType!,
@@ -268,6 +268,9 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		if (!form.districtId) {
 			return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
 		}
+		if (!form.partnerUuid) {
+			return toastWarn({msg: `Vui lòng nhập tên ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}!`});
+		}
 		if (!form.townId) {
 			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
 		}
@@ -281,8 +284,8 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Chỉnh sửa nhà cung cấp</h4>
-						<p>Điền đầy đủ các thông tin nhà cung cấp</p>
+						<h4>Chỉnh sửa {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}</h4>
+						<p>Điền đầy đủ các thông tin {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}</p>
 					</div>
 					<div className={styles.right}>
 						<Button onClick={() => router.back()} p_10_24 rounded_2 grey_outline>
@@ -419,10 +422,10 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 							blur={true}
 							label={
 								<span>
-									Tên nhà cung cấp <span style={{color: 'red'}}>*</span>
+									Tên {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên nhà cung cấp'
+							placeholder={`Nhập tên ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}`}
 						/>
 						<div>
 							<Input

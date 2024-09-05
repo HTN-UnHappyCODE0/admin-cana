@@ -131,7 +131,7 @@ function MainUpdateService({}: PropsMainUpdateService) {
 					typeFind: CONFIG_TYPE_FIND.FILTER,
 					partnerUUid: '',
 					userUuid: '',
-					status: null,
+					status: STATUS_CUSTOMER.HOP_TAC,
 					typeCus: TYPE_CUSTOMER.DICH_VU,
 					provinceId: '',
 					specUuid: '',
