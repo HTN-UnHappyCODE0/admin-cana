@@ -120,7 +120,9 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 					className={styles.header_title}
 				>
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
-					<p>Chi tiết nhà cung cấp {detailCustomer?.code}</p>
+					<p>
+						Chi tiết {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} {detailCustomer?.code}
+					</p>
 				</Link>
 
 				{detailCustomer?.status != STATUS_CUSTOMER.DA_XOA && (
@@ -165,11 +167,11 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 					</colgroup>
 					<tr>
 						<td>
-							<span>Mã nhà cung cấp: </span>
+							<span>Mã {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}: </span>
 							<span style={{marginLeft: '6px', color: '#2A85FF'}}>{detailCustomer?.code || '---'}</span>
 						</td>
 						<td>
-							<span>Tên nhà cung cấp: </span>
+							<span>Tên {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}: </span>
 							<span style={{marginLeft: '6px', color: '#2A85FF'}}>{detailCustomer?.name || '---'}</span>
 						</td>
 					</tr>
@@ -321,11 +323,15 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 				danger
 				open={openChangeStatus}
 				onClose={() => setOpenChangeStatus(false)}
-				title={detailCustomer?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa nhà cung cấp' : 'Mở khóa nhà cung cấp'}
+				title={
+					detailCustomer?.status == CONFIG_STATUS.HOAT_DONG
+						? `Khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}`
+						: `Mở khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}`
+				}
 				note={
 					detailCustomer?.status == CONFIG_STATUS.HOAT_DONG
-						? 'Bạn có chắc chắn muốn khóa nhà cung cấp này?'
-						: 'Bạn có chắc chắn muốn mở khóa nhà cung cấp này?'
+						? `Bạn có chắc chắn muốn khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} này?`
+						: `Bạn có chắc chắn muốn mở khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} này?`
 				}
 				onSubmit={fucnChangeStatus.mutate}
 			/>

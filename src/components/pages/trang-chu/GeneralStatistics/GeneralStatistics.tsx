@@ -21,13 +21,7 @@ function GeneralStatistics({isLoading, debt, weight}: PropsGeneralStatistics) {
 			</div>
 			<div className={styles.main}>
 				<div className={styles.left}>
-					<DetailBox
-						isLoading={isLoading}
-						name={'Tổng lượng hàng khô'}
-						value={weight?.totalAmountBdmt}
-						color='#2A85FF'
-						unit='BDMT'
-					/>
+					<DetailBox isLoading={isLoading} name={'Khối lượng khô'} value={weight?.totalAmountBdmt} color='#2A85FF' unit='BDMT' />
 					<div className={clsx('mt', 'col_2')}>
 						<DetailBox isLoading={isLoading} name={'Khô tạm tính'} value={weight?.amountBdmtDemo} unit='BDMT' />
 						<DetailBox isLoading={isLoading} name={'Khô chuẩn'} value={weight?.amountBdmt} unit='BDMT' />

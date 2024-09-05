@@ -208,7 +208,7 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 
 				<div className={clsx('mt')}>
 					<GridColumn col_5>
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Nhà cung cấp' value={detailPartner?.countCustomer!} />
+						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Khách hàng' value={detailPartner?.countCustomer!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu chưa KCS' value={detailPartner?.totalBillDemo!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu đã KCS' value={detailPartner?.totalBillKCS!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Số lần thu' value={detailPartner?.totalTransactionIn!} />
@@ -296,7 +296,7 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 				<div className={styles.btn_header}>
 					<div className={styles.main_table}>
 						<h1 className={styles.list_title}>
-							Danh sách nhà cung cấp thuộc khách hàng xuất ({listCustomer?.data?.pagination?.totalCount})
+							Danh sách khách hàng thuộc khách hàng xuất ({listCustomer?.data?.pagination?.totalCount})
 						</h1>
 					</div>
 					<div>
@@ -306,7 +306,7 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 							rounded_2
 							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 						>
-							Thêm nhà cung cấp
+							Thêm khách hàng
 						</Button>
 					</div>
 				</div>
@@ -316,17 +316,17 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 					<DataWrapper
 						data={listCustomer.data?.items || []}
 						loading={listCustomer.isLoading}
-						noti={<Noti disableButton des='Hiện tại chưa có nhà cung cấp nào!' />}
+						noti={<Noti disableButton des='Hiện tại chưa có khách hàng nào!' />}
 					>
 						<Table
 							data={listCustomer.data?.items || []}
 							column={[
 								{
-									title: 'Mã nhà cung cấp',
+									title: 'Mã khách hàng',
 									render: (data: any) => <>{data.code}</>,
 								},
 								{
-									title: 'Tên NCC',
+									title: 'Tên khách hàng',
 									fixedLeft: true,
 									render: (data: any) => (
 										<Link href={`/xuong/${data?.uuid}?_typeCus=${TYPE_PARTNER.KH_XUAT}`} className={styles.link}>
@@ -415,11 +415,11 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 				danger
 				open={!!dataChangeStatusCustomer}
 				onClose={() => setDataChangeStatusCustomer(null)}
-				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa nhà cung cấp' : 'Mở khóa nhà cung cấp'}
+				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa khách hàng' : 'Mở khóa khách hàng'}
 				note={
 					dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC
-						? 'Bạn có chắc chắn muốn khóa hoạt động nhà cung cấp này?'
-						: 'Bạn có chắc chắn muốn mở khóa hoạt động nhà cung cấp này?'
+						? 'Bạn có chắc chắn muốn khóa hoạt động khách hàng này?'
+						: 'Bạn có chắc chắn muốn mở khóa hoạt động khách hàng này?'
 				}
 				onSubmit={funcChangeStatusCustomer.mutate}
 			/>
