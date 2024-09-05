@@ -131,7 +131,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					partnerUUid: '',
 					userUuid: '',
-					status: STATUS_CUSTOMER.HOP_TAC,
+					status: null,
 					typeCus: TYPE_CUSTOMER.KH_XUAT,
 					provinceId: '',
 					specUuid: '',

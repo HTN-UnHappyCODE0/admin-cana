@@ -59,14 +59,14 @@ function TableHistoryInventory({}: PropsTableHistoryInventory) {
 							title: 'STT',
 							render: (data: IInventory, index: number) => <>{index + 1}</>,
 						},
+
 						{
-							title: 'Kho bãi ',
-							fixedLeft: true,
-							render: (data: IInventory) => <span>{data?.storageUu?.name || '---'}</span>,
+							title: 'Khối lượng ban đầu (BDMT)',
+							render: (data: IInventory) => <span>{convertCoin(data?.totalAmountBefore) || 0}</span>,
 						},
 						{
-							title: 'Khối lượng ban đầu (KG)',
-							render: (data: IInventory) => <span>{convertCoin(data?.totalAmount) || 0}</span>,
+							title: 'Khối lượng còn lại (BDMT)',
+							render: (data: IInventory) => <span>{convertCoin(data?.totalAmountAfter) || 0}</span>,
 						},
 
 						{

@@ -11,4 +11,5 @@ export interface IFormUpdateService {
 	weightIntent: number | string;
 	documentId: string;
 	description: string;
+	customerUuid: string;
 }

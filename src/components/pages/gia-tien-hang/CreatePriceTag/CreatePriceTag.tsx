@@ -45,7 +45,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 		specUuid: '',
 		productTypeUuid: '',
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
-		state: CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP,
+		state: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
 	});
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {

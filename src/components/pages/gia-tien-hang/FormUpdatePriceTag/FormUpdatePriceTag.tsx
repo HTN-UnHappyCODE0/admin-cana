@@ -31,7 +31,7 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 		productType: '',
 		spec: '',
 		transport: '',
-		state: CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP,
+		state: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
 	});
 
 	const listPriceTag = useQuery([QUERY_KEY.dropdown_gia_tien_hang], {

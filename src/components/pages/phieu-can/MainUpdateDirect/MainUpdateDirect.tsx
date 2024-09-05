@@ -126,7 +126,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					partnerUUid: '',
 					userUuid: '',
-					status: STATUS_CUSTOMER.HOP_TAC,
+					status: null,
 					typeCus: TYPE_CUSTOMER.NHA_CUNG_CAP,
 					provinceId: '',
 					specUuid: '',

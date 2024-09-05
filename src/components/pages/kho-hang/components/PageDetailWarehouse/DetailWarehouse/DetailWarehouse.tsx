@@ -179,10 +179,10 @@ function DetailWarehouse({}: PropsDetailWarehouse) {
 								<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 								<div className={styles.note}>
 									<p>
-										Khách hàng xuất: <span>{detailWarehouse?.amountOut}</span>
+										Khách hàng xuất: <span>{convertCoin(detailWarehouse?.amountOut!)}</span>
 									</p>
 									<p style={{marginTop: 2}}>
-										Chuyển kho: <span>{detailWarehouse?.amountChangeOut}</span>
+										Chuyển kho: <span>{convertCoin(detailWarehouse?.amountChangeOut!)}</span>
 									</p>
 								</div>
 							</div>

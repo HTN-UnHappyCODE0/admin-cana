@@ -41,7 +41,6 @@ import shipServices from '~/services/shipServices';
 function MainCreateService({}: PropsMainCreateService) {
 	const router = useRouter();
 
-	const [dataCustomer, setDataCustomer] = useState<any>({});
 	const [listTruckChecked, setListTruckChecked] = useState<any[]>([]);
 
 	const [form, setForm] = useState<IFormCreateService>({
@@ -51,6 +50,7 @@ function MainCreateService({}: PropsMainCreateService) {
 		weightIntent: 0,
 		productTypeUuid: '',
 		documentId: '',
+		customerUuid: '',
 		description: '',
 		isPrint: 0,
 	});
@@ -159,9 +159,9 @@ function MainCreateService({}: PropsMainCreateService) {
 					productTypeUuid: form.productTypeUuid,
 					documentId: form.documentId,
 					description: form.description,
-					customerName: !dataCustomer?.id ? dataCustomer?.name : '',
-					fromUuid: dataCustomer?.id ? dataCustomer?.id : '',
-					toUuid: dataCustomer?.id ? dataCustomer?.id : '',
+					customerName: '',
+					fromUuid: form.customerUuid,
+					toUuid: form.customerUuid,
 					isPrint: form.isPrint,
 					lstTruckAddUuid: listTruckChecked?.map((v) => v.uuid),
 					lstTruckRemoveUuid: [],
@@ -185,11 +185,10 @@ function MainCreateService({}: PropsMainCreateService) {
 		if (today > timeIntend) {
 			return toastWarn({msg: 'Ngày dự kiến không hợp lệ!'});
 		}
-
 		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipUuid) {
 			return toastWarn({msg: 'Vui lòng chọn tàu!'});
 		}
-		if (!dataCustomer?.id && !dataCustomer?.name) {
+		if (!form.customerUuid) {
 			return toastWarn({msg: 'Vui lòng chọn khách hàng!'});
 		}
 		if (!form.productTypeUuid) {
@@ -379,20 +378,32 @@ function MainCreateService({}: PropsMainCreateService) {
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
-						<SelectSearch
-							options={listCustomer?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: v?.name,
-							}))}
-							data={dataCustomer}
-							setData={setDataCustomer}
+						<Select
+							isSearch
+							name='customerUuid'
+							placeholder='Chọn khách hàng'
+							value={form?.customerUuid}
 							label={
 								<span>
 									Khách hàng <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập, chọn khách hàng'
-						/>
+						>
+							{listCustomer?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.name}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											customerUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+
 						<div>
 							<Select
 								isSearch
