@@ -243,6 +243,9 @@ function MainUpdateService({}: PropsMainUpdateService) {
 		if (listTruckChecked.length == 0) {
 			return toastWarn({msg: 'Vui lòng chọn xe hàng!'});
 		}
+		if (!form.timeIntend) {
+			return toastWarn({msg: 'Vui lòng chọn ngày dự kiến!'});
+		}
 		if (form.timeIntend) {
 			const today = new Date(timeSubmit(new Date())!);
 			const timeIntend = new Date(form.timeIntend);
@@ -499,7 +502,11 @@ function MainUpdateService({}: PropsMainUpdateService) {
 					</div>
 					<div className={clsx('mt', 'col_2')}>
 						<DatePicker
-							label={<span>Ngày dự kiến</span>}
+							label={
+								<span>
+									Ngày dự kiến <span style={{color: 'red'}}>*</span>
+								</span>
+							}
 							value={form.timeIntend}
 							onSetValue={(date) =>
 								setForm((prev: any) => ({

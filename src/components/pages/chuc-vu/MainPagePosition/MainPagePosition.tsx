@@ -85,7 +85,7 @@ function MainPagePosition({}: PropsMainPagePosition) {
 				<div className={styles.header}>
 					<div className={styles.main_search}>
 						<div className={styles.search}>
-							<Search keyName='_keyword' placeholder='Tìm kiếm...' />
+							<Search keyName='_keyword' placeholder='Tìm kiếm theo tên chức vụ' />
 						</div>
 						<div className={styles.filter}>
 							<FilterCustom

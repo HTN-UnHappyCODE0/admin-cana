@@ -5,7 +5,7 @@ import styles from './PopupAddPrice.module.scss';
 import clsx from 'clsx';
 import Button from '~/components/common/Button';
 import {IoClose} from 'react-icons/io5';
-import Form, {Input} from '~/components/common/Form';
+import Form, {FormContext, Input} from '~/components/common/Form';
 import Select, {Option} from '~/components/common/Select';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {
@@ -185,7 +185,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 		<div className={styles.container}>
 			<Loading loading={fucnAddSpecCustomer.isLoading} />
 
-			<Form form={form} setForm={setForm}>
+			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.wrapper}>
 					<h4 className={styles.title}>Thêm loại gỗ</h4>
 					<div className={clsx('mt', styles.main_form)}>
@@ -323,23 +323,28 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 							</label>
 						</div>
 					</div>
-				</div>
-				<div className={styles.control}>
-					<div>
-						<Button p_8_24 rounded_2 grey_outline onClick={onClose}>
-							Hủy bỏ
-						</Button>
+
+					<div className={styles.control}>
+						<div>
+							<Button p_8_24 rounded_2 grey_outline onClick={onClose}>
+								Hủy bỏ
+							</Button>
+						</div>
+						<div>
+							<FormContext.Consumer>
+								{({isDone}) => (
+									<Button disable={!isDone} p_10_24 rounded_2 primary>
+										Xác nhận
+									</Button>
+								)}
+							</FormContext.Consumer>
+						</div>
 					</div>
-					<div>
-						<Button disable={!form.specUuid || !form.productTypeUuid} p_8_24 rounded_2 primary onClick={handleSubmit}>
-							Xác nhận
-						</Button>
-					</div>
-				</div>
-				<div className={styles.icon_close} onClick={onClose}>
-					<IoClose size={24} color='#23262F' />
 				</div>
 			</Form>
+			<div className={styles.icon_close} onClick={onClose}>
+				<IoClose size={24} color='#23262F' />
+			</div>
 		</div>
 	);
 }

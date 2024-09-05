@@ -16,13 +16,12 @@ import Loading from '~/components/common/Loading';
 function FormUpdatePosition({dataUpdate, onClose}: PropsFormUpdatePosition) {
 	const queryClient = useQueryClient();
 
-	const [form, setForm] = useState<IFormUpdatePosition>({uuid: '', time: '', name: '', description: ''});
+	const [form, setForm] = useState<IFormUpdatePosition>({uuid: '', name: '', description: ''});
 
 	useEffect(() => {
 		if (dataUpdate) {
 			setForm({
 				uuid: dataUpdate.uuid || '',
-				time: dataUpdate.time || '',
 				name: dataUpdate.name || '',
 				description: dataUpdate.description || '',
 			});
@@ -37,7 +36,6 @@ function FormUpdatePosition({dataUpdate, onClose}: PropsFormUpdatePosition) {
 				msgSuccess: 'Cập nhật chức vụ thành công!',
 				http: regencyServices.upsertRegency({
 					uuid: form.uuid,
-					time: form.time,
 					name: form.name,
 					description: form.description,
 				}),
@@ -48,7 +46,6 @@ function FormUpdatePosition({dataUpdate, onClose}: PropsFormUpdatePosition) {
 				onClose();
 				setForm({
 					uuid: '',
-					time: '',
 					name: '',
 					description: '',
 				});

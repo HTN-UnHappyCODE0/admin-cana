@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {PropsFormCreateInventory} from './interfaces';
 import styles from './FormCreateInventory.module.scss';
-import Form, {Input} from '~/components/common/Form';
+import Form, {FormContext, Input} from '~/components/common/Form';
 import clsx from 'clsx';
 import TextArea from '~/components/common/Form/components/TextArea';
 import Button from '~/components/common/Button';
@@ -103,86 +103,92 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 	return (
 		<div className={styles.container}>
 			<Loading loading={fucnInventoryStorage.isLoading || loading} />
-			<h4>Kiểm kê</h4>
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
-				<Input
-					name='nameStorage'
-					isRequired
-					value={form.nameStorage || ''}
-					readOnly={true}
-					min={5}
-					max={255}
-					type='text'
-					blur={true}
-					placeholder='Chọn kho bãi'
-					label={
-						<span>
-							Kho bãi <span style={{color: 'red'}}> *</span>
-						</span>
-					}
-				/>
+				<div className={styles.wrapper}>
+					<h4>Kiểm kê</h4>
+					<div className={clsx(styles.main_form)}>
+						<Input
+							name='nameStorage'
+							isRequired
+							value={form.nameStorage || ''}
+							readOnly={true}
+							min={5}
+							max={255}
+							type='text'
+							blur={true}
+							placeholder='Chọn kho bãi'
+							label={
+								<span>
+									Kho bãi <span style={{color: 'red'}}> *</span>
+								</span>
+							}
+						/>
 
-				<Input
-					name='amountKcs'
-					value={form.amountKcs || ''}
-					max={255}
-					isMoney
-					unit='MT'
-					type='number'
-					blur={true}
-					placeholder='Nhập khối lượng còn lại'
-					label={<span>Khối lượng còn lại</span>}
-				/>
+						<Input
+							name='amountKcs'
+							value={form.amountKcs || ''}
+							type='text'
+							isMoney
+							unit='MT'
+							placeholder='Nhập khối lượng còn lại'
+							label={<span>Khối lượng còn lại</span>}
+						/>
 
-				<Input
-					name='dryness'
-					value={form.dryness || ''}
-					readOnly={!form.amountKcs}
-					unit='%'
-					max={255}
-					type='number'
-					blur={true}
-					placeholder='Nhập độ khô'
-					label={<span>Độ khô</span>}
-				/>
+						<Input
+							name='dryness'
+							value={form.dryness || ''}
+							readOnly={!form.amountKcs}
+							unit='%'
+							type='number'
+							blur={true}
+							placeholder='Nhập độ khô'
+							label={<span>Độ khô</span>}
+						/>
 
-				<div className={clsx('mt')}>
-					<TextArea
-						max={5000}
-						placeholder='Thêm mô tả'
-						name='decription'
-						label={
-							<span>
-								Mô tả <span style={{color: 'red'}}> *</span>
-							</span>
-						}
-						blur={true}
-					/>
-				</div>
-				<div className='mt'>
-					<div className={styles.image_upload}>
-						Chọn ảnh <span style={{color: 'red'}}> *</span>
+						<div className={clsx('mt')}>
+							<TextArea
+								max={5000}
+								placeholder='Thêm mô tả'
+								name='decription'
+								label={
+									<span>
+										Mô tả <span style={{color: 'red'}}> *</span>
+									</span>
+								}
+								blur={true}
+							/>
+						</div>
+
+						<div className='mt'>
+							<div className={styles.image_upload}>
+								Chọn ảnh <span style={{color: 'red'}}> *</span>
+							</div>
+							<UploadMultipleFile images={images} setImages={setImages} />
+						</div>
 					</div>
-					<UploadMultipleFile images={images} setImages={setImages} />
-				</div>
 
-				<div className={styles.btn}>
-					<div>
-						<Button p_10_24 rounded_2 grey_outline onClick={onClose}>
-							Hủy bỏ
-						</Button>
+					<div className={styles.control}>
+						<div>
+							<Button p_10_24 rounded_2 grey_outline onClick={onClose}>
+								Hủy bỏ
+							</Button>
+						</div>
+						<div>
+							<FormContext.Consumer>
+								{({isDone}) => (
+									<Button disable={!isDone} p_10_24 rounded_2 primary>
+										Xác nhận
+									</Button>
+								)}
+							</FormContext.Consumer>
+						</div>
 					</div>
-					<div>
-						<Button p_10_24 rounded_2 primary>
-							Cập nhật
-						</Button>
-					</div>
-				</div>
-
-				<div className={styles.close} onClick={onClose}>
-					<IoClose />
 				</div>
 			</Form>
+
+			<div className={styles.close} onClick={onClose}>
+				<IoClose />
+			</div>
 		</div>
 	);
 }

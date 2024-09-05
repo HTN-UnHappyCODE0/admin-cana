@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {PropsFormUpdatePriceTag} from './interfaces';
 import styles from './FormUpdatePriceTag.module.scss';
 import {IoClose} from 'react-icons/io5';
-import Form, {Input} from '~/components/common/Form';
+import Form, {FormContext, Input} from '~/components/common/Form';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -110,7 +110,7 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 	return (
 		<div className={styles.container}>
 			<Loading loading={fucnUpdateSpecification.isLoading} />
-			<Form form={form} setForm={setForm}>
+			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.wrapper}>
 					<h4 className={styles.title}>Chỉnh sửa giá tiền hàng</h4>
 					<div className={clsx('mt', styles.main_form)}>
@@ -198,17 +198,22 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 							</label>
 						</div>
 					</div>
-				</div>
-				<div className={styles.control}>
-					<div>
-						<Button p_8_24 rounded_2 grey_outline onClick={onClose}>
-							Hủy bỏ
-						</Button>
-					</div>
-					<div>
-						<Button p_8_24 rounded_2 primary onClick={handleSubmit}>
-							Lưu lại
-						</Button>
+
+					<div className={styles.control}>
+						<div>
+							<Button p_8_24 rounded_2 grey_outline onClick={onClose}>
+								Hủy bỏ
+							</Button>
+						</div>
+						<div>
+							<FormContext.Consumer>
+								{({isDone}) => (
+									<Button disable={!isDone} p_10_24 rounded_2 primary>
+										Xác nhận
+									</Button>
+								)}
+							</FormContext.Consumer>
+						</div>
 					</div>
 				</div>
 			</Form>

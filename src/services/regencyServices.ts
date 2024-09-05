@@ -31,7 +31,6 @@ const regencyServices = {
 	},
 	upsertRegency: (
 		data: {
-			time: string;
 			uuid: string;
 			name: string;
 			description: string;

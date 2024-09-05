@@ -34,11 +34,10 @@
 }
 
 .control {
-	margin-top: 16px;
+	margin-top: 20px;
 	display: flex;
-	align-items: center;
+	gap: 12px;
 	justify-content: flex-end;
-	gap: 10px;
 }
 
 .input_price {
