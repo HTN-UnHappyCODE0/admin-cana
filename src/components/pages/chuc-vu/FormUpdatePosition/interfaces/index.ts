@@ -7,7 +7,6 @@ export interface PropsFormUpdatePosition {
 
 export interface IFormUpdatePosition {
 	uuid: string;
-	time: string;
 	name: string;
 	description: string;
 }

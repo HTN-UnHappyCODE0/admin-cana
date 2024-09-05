@@ -26,7 +26,6 @@ function FormCreatePosition({onClose}: PropsFormCreatePosition) {
 				msgSuccess: 'Thêm chức vụ thành công!',
 				http: regencyServices.upsertRegency({
 					uuid: '',
-					time: '',
 					name: form.name,
 					description: form.description,
 				}),
