@@ -37,8 +37,9 @@ import Loading from '~/components/common/Loading';
 import IconCustom from '~/components/common/IconCustom';
 import {RiDeleteBin5Line} from 'react-icons/ri';
 import Popup from '~/components/common/Popup';
-import PopupDeleteCustomer from '../../xuong/PopupDeleteCustomer';
+
 import ItemDashboard from '../../trang-chu/ItemDashboard';
+import PopupDeleteCustomer from '../PopupDeleteCustomer';
 
 function PageDetailPartner({}: PropsPageDetailPartner) {
 	const router = useRouter();
@@ -209,7 +210,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 
 				<div className={clsx('mt')}>
 					<GridColumn col_5>
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Khách hàng' value={detailPartner?.countCustomer!} />
+						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Nhà cung cấp' value={detailPartner?.countCustomer!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu chưa KCS' value={detailPartner?.totalBillDemo!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu đã KCS' value={detailPartner?.totalBillKCS!} />
 						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Số lần thu' value={detailPartner?.totalTransactionIn!} />
@@ -297,7 +298,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 				<div className={styles.btn_header}>
 					<div className={styles.main_table}>
 						<h1 className={styles.list_title}>
-							Danh sách khách hàng thuộc đối tác ({listCustomer?.data?.pagination?.totalCount})
+							Danh sách nhà cung cấp thuộc đối tác ({listCustomer?.data?.pagination?.totalCount})
 						</h1>
 					</div>
 					<div>
@@ -307,7 +308,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 							rounded_2
 							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 						>
-							Thêm khách hàng
+							Thêm nhà cung cấp
 						</Button>
 					</div>
 				</div>
@@ -317,17 +318,17 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					<DataWrapper
 						data={listCustomer.data?.items || []}
 						loading={listCustomer.isLoading}
-						noti={<Noti disableButton des='Hiện tại chưa có khách hàng nào!' />}
+						noti={<Noti disableButton des='Hiện tại chưa có nhà cung cấp nào!' />}
 					>
 						<Table
 							data={listCustomer.data?.items || []}
 							column={[
 								{
-									title: 'Mã khách hàng',
+									title: 'Mã nhà cung cấp',
 									render: (data: ICustomer) => <>{data.code}</>,
 								},
 								{
-									title: 'Tên khách hàng',
+									title: 'Tên nhà cung cấp',
 									fixedLeft: true,
 									render: (data: ICustomer) => (
 										<Link href={`/xuong/${data?.uuid}?_typeCus=${TYPE_PARTNER.NCC}`} className={styles.link}>
@@ -416,11 +417,11 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 				danger
 				open={!!dataChangeStatusCustomer}
 				onClose={() => setDataChangeStatusCustomer(null)}
-				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa khách hàng' : 'Mở khóa khách hàng'}
+				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa nhà cung cấp' : 'Mở khóa nhà cung cấp'}
 				note={
 					dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC
-						? 'Bạn có chắc chắn muốn khóa hoạt động khách hàng này?'
-						: 'Bạn có chắc chắn muốn mở khóa hoạt động khách hàng này?'
+						? 'Bạn có chắc chắn muốn khóa hoạt động nhà cung cấp này?'
+						: 'Bạn có chắc chắn muốn mở khóa hoạt động nhà cung cấp này?'
 				}
 				onSubmit={funcChangeStatusCustomer.mutate}
 			/>

@@ -58,6 +58,7 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 		toUuid: '',
 		isPrint: 0,
 		transportType: TYPE_TRANSPORT.DUONG_BO,
+		code: '',
 	});
 
 	useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
@@ -84,6 +85,7 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 					toUuid: data?.toUu?.uuid,
 					warehouseFromUuid: data?.fromUu?.parentUu?.uuid || '',
 					warehouseToUuid: data?.toUu?.parentUu?.uuid || '',
+					code: data?.code,
 				});
 
 				setListTruckChecked(
@@ -352,7 +354,7 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Chỉnh sửa lệnh cân chuyển kho dự kiến</h4>
+						<h4>Chỉnh sửa lệnh cân chuyển kho dự kiến #{form.code}</h4>
 						<p>Điền đầy đủ các thông tin lệnh cân chuyển kho dự kiến</p>
 					</div>
 					<div className={styles.right}>

@@ -94,7 +94,7 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 		},
 	});
 
-	const listSpecification = useQuery([QUERY_KEY.dropdown_quy_cach, form.qualityUuid], {
+	const listSpecification = useQuery([QUERY_KEY.dropdown_quy_cach, form.qualityUuid, form.productUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -107,12 +107,13 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
 					qualityUuid: form?.qualityUuid,
+					productTypeUuid: form?.productUuid,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!form.qualityUuid,
+		enabled: !!form.qualityUuid && !!form.productUuid,
 	});
 
 	const fucnCreateStorage = useMutation({
@@ -186,12 +187,6 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 						name='productUuid'
 						placeholder='Chọn loại gỗ'
 						value={form?.productUuid}
-						onChange={(e: any) =>
-							setForm((prev: any) => ({
-								...prev,
-								productUuid: e.target.value,
-							}))
-						}
 						label={
 							<span>
 								Thuộc loại gỗ <span style={{color: 'red'}}>*</span>
@@ -199,17 +194,28 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 						}
 					>
 						{listProduct?.data?.map((v: any) => (
-							<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							<Option
+								key={v?.uuid}
+								value={v?.uuid}
+								title={v?.name}
+								onClick={() =>
+									setForm((prev: any) => ({
+										...prev,
+										productUuid: v.uuid,
+										specificationsUuid: '',
+									}))
+								}
+							/>
 						))}
 					</Select>
 					<Select
 						isSearch
 						name='qualityUuid'
-						placeholder='Chọn chất lượng'
+						placeholder='Chọn quốc gia'
 						value={form?.qualityUuid}
 						label={
 							<span>
-								Thuộc chất lượng <span style={{color: 'red'}}>*</span>
+								Thuộc quốc gia <span style={{color: 'red'}}>*</span>
 							</span>
 						}
 					>

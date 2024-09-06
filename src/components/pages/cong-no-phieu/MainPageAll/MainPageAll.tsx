@@ -167,10 +167,10 @@ function MainPageAll({}: PropsMainPageAll) {
 						TỔNG LÔ HÀNG: <span style={{color: '#2D74FF', marginLeft: 4}}>{listDebtBill?.data?.pagination?.totalCount}</span>
 					</div>
 					<div>
-						TỔNG CÔNG TẠM TÍNH: <span style={{marginLeft: 4}}>{convertCoin(listDebtBill?.data?.debtDemo)} VND</span>
+						TỔNG CÔNG NỢ TẠM TÍNH: <span style={{marginLeft: 4}}>{convertCoin(listDebtBill?.data?.debtDemo)} VND</span>
 					</div>
 					<div>
-						TỔNG CÔNG CHUẨN: <span style={{marginLeft: 4}}>{convertCoin(listDebtBill?.data?.debtReal)} VND</span>
+						TỔNG CÔNG NỢ CHUẨN: <span style={{marginLeft: 4}}>{convertCoin(listDebtBill?.data?.debtReal)} VND</span>
 					</div>
 				</div>
 			</div>
