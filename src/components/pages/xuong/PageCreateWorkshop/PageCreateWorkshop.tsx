@@ -255,8 +255,26 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm mới {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}</h4>
-						<p>Điền đầy đủ các thông tin {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}</p>
+						<h4>
+							Thêm mới{' '}
+							{TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+								? 'khách hàng'
+								: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+								? 'khách hàng'
+								: TYPE_PARTNER.NCC === Number(_typeCus)
+								? 'nhà cung cấp'
+								: 'nhà cung cấp'}
+						</h4>
+						<p>
+							Điền đầy đủ các thông tin{' '}
+							{TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+								? 'khách hàng'
+								: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+								? 'khách hàng'
+								: TYPE_PARTNER.NCC === Number(_typeCus)
+								? 'nhà cung cấp'
+								: 'nhà cung cấp'}
+						</p>
 					</div>
 					<div className={styles.right}>
 						<Button onClick={() => router.back()} p_10_24 rounded_2 grey_outline>
@@ -386,13 +404,13 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 							readOnly={!!_partnerUuid}
 							name='partnerUuid'
 							placeholder={
-								!!_partnerUuid
-									? 'Chọn Đối tác'
-									: TYPE_PARTNER.NCC === Number(_typeCus)
-									? 'Chọn Đối tác'
+								TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'Chọn đối tác'
 									: TYPE_PARTNER.KH_XUAT === Number(_typeCus)
 									? 'Chọn khách hàng xuất'
-									: 'Chọn khách hàng dịch vụ'
+									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+									? 'Chọn khách hàng dịch vụ'
+									: 'Chọn nhà cung cấp'
 							}
 							value={_partnerUuid || form?.partnerUuid}
 							onChange={(e: any) =>
@@ -407,7 +425,9 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 										? 'Thuộc Đối tác'
 										: TYPE_PARTNER.KH_XUAT === Number(_typeCus)
 										? 'Thuộc khách hàng xuất'
-										: 'Thuộc khách hàng dịch vụ'}
+										: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+										? 'Thuộc khách hàng dịch vụ'
+										: 'Thuộc nhà cung cấp'}
 									<span style={{color: 'red'}}>*</span>
 								</span>
 							}

@@ -340,7 +340,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 								<div className={styles.item_table}>
 									<p>Thời gian cập nhật:</p>
 									<span>
-										{detailBatchBill?.updatedTime ? (
+										{!!detailBatchBill?.accountUpdateUu && detailBatchBill?.updatedTime ? (
 											<Moment date={detailBatchBill?.updatedTime} format='HH:mm, DD/MM/YYYY' />
 										) : (
 											'---'

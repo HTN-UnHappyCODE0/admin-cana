@@ -23,12 +23,15 @@ import TagStatus from '~/components/common/TagStatus';
 import {getTextAddress} from '~/common/funcs/optionConvert';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
+import TippyHeadless from '@tippyjs/react/headless';
+import Tippy from '@tippyjs/react';
 function DetailMainPage({}: PropsDetailMainPage) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
 	const {_id, _page, _pageSize, _status} = router.query;
 	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
+	const [uuidDescription, setUuidDescription] = useState<string>('');
 
 	const {data: detailUser} = useQuery<IUserDetail>([QUERY_KEY.chi_tiet_nhan_vien, _id], {
 		queryFn: () =>
@@ -235,10 +238,39 @@ function DetailMainPage({}: PropsDetailMainPage) {
 										title: 'Email',
 										render: (data: ICustomer) => <>{data?.email || '---'}</>,
 									},
-
 									{
 										title: 'Ghi chú',
-										render: (data: ICustomer) => <>{data?.description || '---'}</>,
+										render: (data: ICustomer) => (
+											<TippyHeadless
+												maxWidth={'100%'}
+												interactive
+												onClickOutside={() => setUuidDescription('')}
+												visible={uuidDescription == data?.uuid}
+												placement='bottom'
+												render={(attrs) => (
+													<div className={styles.main_description}>
+														<p>{data?.description}</p>
+													</div>
+												)}
+											>
+												<Tippy content='Xem chi tiết ghi chú'>
+													<p
+														onClick={() => {
+															if (!data.description) {
+																return;
+															} else {
+																setUuidDescription(uuidDescription ? '' : data.uuid);
+															}
+														}}
+														className={clsx(styles.description, {
+															[styles.active]: uuidDescription == data.uuid,
+														})}
+													>
+														{data?.description || '---'}
+													</p>
+												</Tippy>
+											</TippyHeadless>
+										),
 									},
 								]}
 							/>

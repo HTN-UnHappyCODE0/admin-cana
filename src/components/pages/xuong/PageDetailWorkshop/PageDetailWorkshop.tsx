@@ -16,6 +16,7 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	STATUS_CUSTOMER,
+	TYPE_PARTNER,
 	TYPE_SIFT,
 	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
@@ -121,7 +122,15 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 				>
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
 					<p>
-						Chi tiết {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} {detailCustomer?.code}
+						Chi tiết{' '}
+						{TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+							? 'khách hàng'
+							: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+							? 'khách hàng'
+							: TYPE_PARTNER.NCC === Number(_typeCus)
+							? 'nhà cung cấp'
+							: 'nhà cung cấp'}{' '}
+						{detailCustomer?.code}
 					</p>
 				</Link>
 
@@ -167,11 +176,31 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 					</colgroup>
 					<tr>
 						<td>
-							<span>Mã {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}: </span>
+							<span>
+								Mã{' '}
+								{TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'nhà cung cấp'
+									: 'nhà cung cấp'}
+								:{' '}
+							</span>
 							<span style={{marginLeft: '6px', color: '#2A85FF'}}>{detailCustomer?.code || '---'}</span>
 						</td>
 						<td>
-							<span>Tên {!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}: </span>
+							<span>
+								Tên{' '}
+								{TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'nhà cung cấp'
+									: 'nhà cung cấp'}
+								:{' '}
+							</span>
 							<span style={{marginLeft: '6px', color: '#2A85FF'}}>{detailCustomer?.name || '---'}</span>
 						</td>
 					</tr>
@@ -250,7 +279,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 								rounded_2
 								onClick={() => setOpenCreate(true)}
 							>
-								Thêm loại hàng
+								Thêm loại gỗ
 							</Button>
 						</div>
 					)}
@@ -325,13 +354,45 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 				onClose={() => setOpenChangeStatus(false)}
 				title={
 					detailCustomer?.status == CONFIG_STATUS.HOAT_DONG
-						? `Khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}`
-						: `Mở khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'}`
+						? `Khóa ${
+								TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'nhà cung cấp'
+									: 'nhà cung cấp'
+						  }`
+						: `Mở khóa ${
+								TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'nhà cung cấp'
+									: 'nhà cung cấp'
+						  }`
 				}
 				note={
 					detailCustomer?.status == CONFIG_STATUS.HOAT_DONG
-						? `Bạn có chắc chắn muốn khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} này?`
-						: `Bạn có chắc chắn muốn mở khóa ${!!_typeCus ? 'khách hàng' : 'nhà cung cấp'} này?`
+						? `Bạn có chắc chắn muốn khóa ${
+								TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'nhà cung cấp'
+									: 'nhà cung cấp'
+						  } này?`
+						: `Bạn có chắc chắn muốn mở khóa ${
+								TYPE_PARTNER.KH_XUAT === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
+									? 'khách hàng'
+									: TYPE_PARTNER.NCC === Number(_typeCus)
+									? 'nhà cung cấp'
+									: 'nhà cung cấp'
+						  } này?`
 				}
 				onSubmit={fucnChangeStatus.mutate}
 			/>

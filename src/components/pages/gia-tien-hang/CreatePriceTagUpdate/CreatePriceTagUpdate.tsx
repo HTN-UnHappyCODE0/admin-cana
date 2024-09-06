@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {PropsCreatePriceTagUpdate} from './interfaces';
+import {IFormCreatePriceTagUpdate, PropsCreatePriceTagUpdate} from './interfaces';
 import styles from './CreatePriceTagUpdate.module.scss';
 import Button from '~/components/common/Button';
 import Form from '~/components/common/Form';
@@ -465,23 +465,24 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 										{
 											title: 'STT',
 											checkBox: true,
-											render: (data: any, index: number) => <>{index + 1}</>,
+											render: (data: IFormCreatePriceTagUpdate, index: number) => <>{index + 1}</>,
 										},
 										{
 											title: 'Mã lô hàng',
-											render: (data: any) => <>{data?.code}</>,
+											fixedLeft: true,
+											render: (data: IFormCreatePriceTagUpdate) => <>{data?.code}</>,
 										},
 										{
 											title: 'Loại gỗ',
-											render: (data: any) => <>{data?.productTypeUu?.name}</>,
+											render: (data: IFormCreatePriceTagUpdate) => <>{data?.productTypeUu?.name}</>,
 										},
 										{
 											title: 'Quy cách',
-											render: (data: any) => <>{data?.specificationsUu?.name || '---'}</>,
+											render: (data: IFormCreatePriceTagUpdate) => <>{data?.specificationsUu?.name || '---'}</>,
 										},
 										{
 											title: 'Vận chuyển',
-											render: (data: any) => (
+											render: (data: IFormCreatePriceTagUpdate) => (
 												<>
 													{data?.transportType == TYPE_TRANSPORT.DUONG_BO && 'Đường bộ'}
 													{data?.transportType == TYPE_TRANSPORT.DUONG_THUY && 'Đường thủy'}
@@ -490,11 +491,15 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 										},
 										{
 											title: 'Khối lượng hàng (kg)',
-											render: (data: any) => <>{convertCoin(data?.weightTotal)}</>,
+											render: (data: IFormCreatePriceTagUpdate) => <>{convertCoin(data?.weightTotal)}</>,
 										},
 										{
 											title: 'Giá tiền (VND)',
-											render: (data: any) => <>{convertCoin(data?.moneyTotal)}</>,
+											render: (data: IFormCreatePriceTagUpdate) => <>{convertCoin(data?.pricetagUu?.amount)}</>,
+										},
+										{
+											title: 'Tổng giá tiền hàng (VND)',
+											render: (data: IFormCreatePriceTagUpdate) => <>{convertCoin(data?.moneyTotal)}</>,
 										},
 									]}
 								/>

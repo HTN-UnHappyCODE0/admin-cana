@@ -19,4 +19,6 @@ export interface IFormUpdateExport {
 	weightTotal: number | string;
 	timeStart: string | null;
 	timeEnd: string | null;
+	code: string;
+	isBatch: number;
 }

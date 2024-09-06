@@ -60,6 +60,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		fromUuid: '',
 		toUuid: '',
 		isPrint: 0,
+		code: '',
 	});
 
 	useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
@@ -87,6 +88,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					documentId: data?.documentId,
 					shipUuid: data?.batchsUu?.shipUu?.uuid || '',
 					shipOutUuid: data?.batchsUu?.shipOutUu?.uuid || '',
+					code: data?.code,
 				});
 
 				setListTruckChecked(
@@ -316,7 +318,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Chỉnh sửa lệnh cân xuất thẳng dự kiến</h4>
+						<h4>Chỉnh sửa lệnh cân xuất thẳng dự kiến #{form.code}</h4>
 						<p>Điền đầy đủ các thông tin lệnh cân xuất thẳng dự kiến</p>
 					</div>
 					<div className={styles.right}>

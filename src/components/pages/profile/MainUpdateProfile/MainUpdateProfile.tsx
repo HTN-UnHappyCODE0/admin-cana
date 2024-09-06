@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 
 import {IFormUpdate, PropsMainUpdateProfile} from './interfaces';
 import styles from './MainUpdateProfile.module.scss';
@@ -18,14 +18,13 @@ import commonServices from '~/services/commonServices';
 import {toastWarn} from '~/common/funcs/toast';
 import moment from 'moment';
 import {useRouter} from 'next/router';
-import DialogWarning from '~/components/common/DialogWarning';
 import Loading from '~/components/common/Loading';
 import {timeSubmit} from '~/common/funcs/optionConvert';
 import AvatarChange from '~/components/common/AvatarChange';
 import {useSelector} from 'react-redux';
 import {RootState, store} from '~/redux/store';
 import {setInfoUser} from '~/redux/reducer/user';
-import icons from '~/constants/images/icons';
+import uploadImageService from '~/services/uploadService';
 
 function MainUpdateProfile({}: PropsMainUpdateProfile) {
 	const router = useRouter();
@@ -35,7 +34,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 	const {infoUser} = useSelector((state: RootState) => state.user);
 
 	const [file, setFile] = useState<any>(null);
-	const [openWarning, setOpenWarning] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const [form, setForm] = useState<IFormUpdate>({
 		fullName: '',
@@ -55,7 +54,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 		provinceOwnerId: '',
 	});
 
-	const {data: userDetails} = useQuery([QUERY_KEY.chi_tiet_nhan_vien], {
+	useQuery([QUERY_KEY.chi_tiet_nhan_vien], {
 		queryFn: () =>
 			httpRequest({
 				http: userServices.detailUser({
@@ -192,7 +191,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 	});
 
 	const funUpdateUser = useMutation({
-		mutationFn: () =>
+		mutationFn: (body: {path: string}) =>
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
@@ -208,7 +207,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 					accountUsername: '',
 					regencyUuid: form.regencyUuid,
 					sex: form.sex,
-					linkImage: '',
+					linkImage: body.path,
 					ownerUuid:
 						form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid
 							? form.ownerUuid
@@ -222,11 +221,11 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 							: '',
 				}),
 			}),
-		onSuccess(data) {
+		onSuccess(data, variables) {
 			if (data) {
 				store.dispatch(
 					setInfoUser({
-						avatar: infoUser?.avatar || '',
+						avatar: variables?.path || '',
 						regencyUuid: infoUser?.regencyUuid || '',
 						userUuid: infoUser?.userUuid || '',
 						uuid: infoUser?.uuid || '',
@@ -242,45 +241,43 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 		},
 	});
 
-	const isReadOnly = useMemo(() => {
-		return !!(form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid);
-	}, [form.regencyUuid, listRegency]);
-
 	const handleSubmit = async () => {
+		const today = new Date(timeSubmit(new Date())!);
+		const birthDay = new Date(form.birthDay);
+
 		if (!form.regencyUuid) {
 			return toastWarn({msg: 'Vui lòng chọn chức vụ!'});
 		}
 		if (!form.birthDay) {
 			return toastWarn({msg: 'Vui lòng chọn ngày sinh!'});
 		}
-		if (isReadOnly) {
-			if (!form.provinceOwnerId) {
-				return toastWarn({msg: 'Vui lòng chọn khu vực quản lý!'});
-			}
-			if (!form.ownerUuid) {
-				return toastWarn({msg: 'Vui lòng chọn người quản lý!'});
-			}
-		}
-		const today = new Date(timeSubmit(new Date())!);
-		const birthDay = new Date(form.birthDay);
 
 		if (today < birthDay) {
 			return toastWarn({msg: 'Ngày sinh không hợp lệ!'});
 		}
 
-		if (
-			form.provinceOwnerId != userDetails?.provinceOwner?.uuid &&
-			form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid
-		) {
-			return setOpenWarning(true);
+		if (!!file) {
+			const dataImage = await httpRequest({
+				setLoading,
+				isData: true,
+				http: uploadImageService.uploadSingleImage(file),
+			});
+
+			if (dataImage?.error?.code == 0) {
+				return funUpdateUser.mutate({
+					path: dataImage.data,
+				});
+			} else {
+				return toastWarn({msg: 'Upload ảnh thất bại!'});
+			}
 		} else {
-			return funUpdateUser.mutate();
+			return funUpdateUser.mutate({path: infoUser?.avatar || ''});
 		}
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funUpdateUser.isLoading} />
+			<Loading loading={funUpdateUser.isLoading || loading} />
 
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
@@ -302,11 +299,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 					</div>
 				</div>
 				<div className={'mt'}>
-					<AvatarChange
-						path={form.linkImage ? `${process.env.NEXT_PUBLIC_IMAGE}/${form?.linkImage}` : icons.avatarDefault}
-						name='avatar'
-						onSetFile={(file) => setFile(file)}
-					/>
+					<AvatarChange path='' name='avatar' onSetFile={(file) => setFile(file)} />
 				</div>
 				<div className={clsx('col_2', 'mt')}>
 					<Input
@@ -326,6 +319,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 					<Select
 						isSearch
 						name='regencyUuid'
+						readOnly={true}
 						placeholder='Chọn chức vụ'
 						value={form?.regencyUuid}
 						label={
@@ -356,7 +350,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 						<Select
 							isSearch
 							name='ownerUuid'
-							readOnly={isReadOnly == false}
+							readOnly={true}
 							placeholder='Chọn người quản lý'
 							value={form?.ownerUuid}
 							onChange={(e: any) =>
@@ -365,7 +359,11 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 									ownerUuid: e.target.value,
 								}))
 							}
-							label={<span>Người quản lý</span>}
+							label={
+								<span>
+									Người quản lý <span style={{color: 'red'}}>*</span>
+								</span>
+							}
 						>
 							{listUserManager?.data?.map((v: any) => (
 								<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
@@ -376,9 +374,13 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 						isSearch
 						name='provinceOwnerId'
 						value={form.provinceOwnerId}
-						readOnly={isReadOnly == false}
+						readOnly={true}
 						placeholder='Khu vực quản lý'
-						label={<span>Khu vực quản lý</span>}
+						label={
+							<span>
+								Khu vực quản lý <span style={{color: 'red'}}>*</span>
+							</span>
+						}
 					>
 						{listProvinceOwner?.data?.map((v: any) => (
 							<Option
@@ -403,7 +405,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 						placeholder='Chọn tỉnh/thành phố'
 						label={
 							<span>
-								Tỉnh/Thành phố<span style={{color: 'red'}}>*</span>
+								Tỉnh/Thành phố <span style={{color: 'red'}}>*</span>
 							</span>
 						}
 					>
@@ -431,7 +433,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 							placeholder='Chọn quận/huyện'
 							label={
 								<span>
-									Quận/Huyện<span style={{color: 'red'}}>*</span>
+									Quận/Huyện <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -458,7 +460,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 						placeholder='Chọn xã/phường'
 						label={
 							<span>
-								Xã/phường<span style={{color: 'red'}}>*</span>
+								Xã/phường <span style={{color: 'red'}}>*</span>
 							</span>
 						}
 					>
@@ -485,7 +487,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 						icon={true}
 						label={
 							<span>
-								Ngày sinh<span style={{color: 'red'}}>*</span>
+								Ngày sinh <span style={{color: 'red'}}>*</span>
 							</span>
 						}
 						placeholder='Chọn ngày sinh'
@@ -501,7 +503,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 					/>
 					<div className={styles.gennder}>
 						<label>
-							Giới tính<span style={{color: 'red'}}>*</span>
+							Giới tính <span style={{color: 'red'}}>*</span>
 						</label>
 						<div className={styles.group_radio}>
 							<div className={styles.item_radio}>
@@ -558,7 +560,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 							max={255}
 							label={
 								<span>
-									Email<span style={{color: 'red'}}>*</span>
+									Email <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 							placeholder='Nhập Email'
@@ -574,7 +576,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 							blur={true}
 							label={
 								<span>
-									Số điện thoại<span style={{color: 'red'}}>*</span>
+									Số điện thoại <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 							placeholder='Nhập số điện thoại'
@@ -586,16 +588,6 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 					<TextArea max={5000} placeholder='Nhập ghi chú' name='description' label={<span>Ghi chú</span>} blur={true} />
 				</div>
 			</Form>
-			<DialogWarning
-				warn
-				open={openWarning}
-				onClose={() => setOpenWarning(false)}
-				title={'Cảnh báo!'}
-				note={
-					'Khi bạn thay đổi khu vực quản lý, toàn bộ dữ liệu của nhân viên sẽ được chuyển sang khu vực mới. Bạn có chắc chắn muốn thay đổi không?'
-				}
-				onSubmit={funUpdateUser.mutate}
-			/>
 		</div>
 	);
 }
