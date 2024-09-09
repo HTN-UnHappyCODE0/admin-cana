@@ -107,3 +107,13 @@ export function getFromToBatchBill(data: {
 		to: '---',
 	};
 }
+
+export function convertWeight(weight: number | null) {
+	if (!weight) {
+		return 0;
+	}
+
+	const weightConver = weight / 1000;
+
+	return weightConver.toFixed(2);
+}
