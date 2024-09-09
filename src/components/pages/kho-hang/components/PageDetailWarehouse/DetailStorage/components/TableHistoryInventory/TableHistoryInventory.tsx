@@ -9,12 +9,12 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import Link from 'next/link';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import styles from './TableHistoryInventory.module.scss';
 import Moment from 'react-moment';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Popup from '~/components/common/Popup';
 import PopupTableHistoryInventory from '../PopupTableHistoryInventory';
+import {convertCoin} from '~/common/funcs/convertCoin';
 
 function TableHistoryInventory({}: PropsTableHistoryInventory) {
 	const router = useRouter();
@@ -61,11 +61,11 @@ function TableHistoryInventory({}: PropsTableHistoryInventory) {
 						},
 
 						{
-							title: 'Khối lượng ban đầu (BDMT)',
+							title: 'Tổng lượng quy khô ban đầu (tấn)',
 							render: (data: IInventory) => <span>{convertCoin(data?.totalAmountBefore) || 0}</span>,
 						},
 						{
-							title: 'Khối lượng còn lại (BDMT)',
+							title: 'Tổng lượng quy khô còn lại (tấn)',
 							render: (data: IInventory) => <span>{convertCoin(data?.totalAmountAfter) || 0}</span>,
 						},
 

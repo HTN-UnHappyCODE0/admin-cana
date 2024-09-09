@@ -333,7 +333,7 @@ function MainSpecification({}: PropsMainSpecification) {
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL hàng (KG)',
+								title: 'TL hàng (Tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{

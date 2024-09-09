@@ -15,6 +15,8 @@ function FormPassword({}: PropsFormPassword) {
 
 	const {open, ...rest} = router.query;
 
+	const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+
 	const context = useContext<IContextForgotPassword>(ContextForgotPassword);
 
 	const handleSubmit = () => {

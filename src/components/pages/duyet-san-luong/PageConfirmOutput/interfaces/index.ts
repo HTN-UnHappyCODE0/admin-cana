@@ -110,4 +110,6 @@ export interface ITableBillScale {
 	uuid: string;
 	currentShift: number;
 	countWs: number;
+	weightBdmt: number;
+	drynessAvg: number;
 }

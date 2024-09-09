@@ -452,7 +452,7 @@ function MainDryness({}: PropsMainDryness) {
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL hàng (KG)',
+								title: 'TL hàng (Tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{

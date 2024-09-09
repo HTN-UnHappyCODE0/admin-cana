@@ -205,8 +205,12 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 			<div className={clsx('mt')}>
 				<div className={styles.parameter}>
 					<div>
-						TỔNG LƯỢNG HÀNG:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{'---'}</span>
+						TỔNG LƯỢNG HÀNG TƯƠI:
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.amountMt || 0} </span>(Tấn)
+					</div>
+					<div>
+						TỔNG LƯỢNG HÀNG QUY KHÔ:
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.amountBdmt || 0} </span>(Tấn)
 					</div>
 				</div>
 			</div>
@@ -292,8 +296,16 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								),
 							},
 							{
-								title: 'KL hàng (KG)',
+								title: 'Khối lượng tươi (Tấn)',
 								render: (data: ITableBillScale) => <>{convertCoin(data?.weightTotal) || 0}</>,
+							},
+							{
+								title: 'Độ khô (%)',
+								render: (data: ITableBillScale) => <>{convertCoin(data?.drynessAvg) || '---'}</>,
+							},
+							{
+								title: 'Khối lượng quy khô (Tấn)',
+								render: (data: ITableBillScale) => <>{convertCoin(data?.weightBdmt) || '---'}</>,
 							},
 							{
 								title: 'Xác nhận SL',
