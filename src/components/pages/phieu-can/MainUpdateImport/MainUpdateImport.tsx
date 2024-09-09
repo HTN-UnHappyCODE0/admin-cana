@@ -87,7 +87,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					specificationsUuid: data?.specificationsUu?.uuid,
 					warehouseUuid: data?.toUu?.parentUu?.uuid || '',
 					productTypeUuid: data?.productTypeUu?.uuid,
-					documentId: data?.documentId,
+					documentId: data?.documentId || '',
 					description: data?.description,
 					fromUuid: data?.fromUu?.uuid,
 					toUuid: data?.toUu?.uuid,
@@ -158,14 +158,14 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					status: CONFIG_STATUS.HOAT_DONG,
 					state: 1,
-					customerUuid: form.fromUuid,
 					priceTagUuid: '',
+					customerUuid: form.fromUuid,
 					productTypeUuid: '',
 					specUuid: '',
 				}),
 			}),
 		onSuccess(data) {
-			if (data) {
+			if (data && !form.productTypeUuid && !form.specificationsUuid) {
 				const listspecUu: any[] = [...new Map(data?.map((v: any) => [v?.specUu?.uuid, v])).values()];
 				const listProductTypeUu: any[] = [...new Map(data?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()];
 
@@ -651,6 +651,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 										setForm((prev: any) => ({
 											...prev,
 											productTypeUuid: v?.productTypeUu?.uuid,
+											toUuid: '',
 										}))
 									}
 								/>
@@ -677,6 +678,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 											setForm((prev: any) => ({
 												...prev,
 												specificationsUuid: v?.specUu?.uuid,
+												toUuid: '',
 											}))
 										}
 									/>

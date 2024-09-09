@@ -171,14 +171,14 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					status: CONFIG_STATUS.HOAT_DONG,
 					state: 1,
-					customerUuid: form.fromUuid,
 					priceTagUuid: '',
+					customerUuid: form.fromUuid,
 					productTypeUuid: '',
 					specUuid: '',
 				}),
 			}),
 		onSuccess(data) {
-			if (data) {
+			if (data && !form.productTypeUuid && !form.specificationsUuid) {
 				const listspecUu: any[] = [...new Map(data?.map((v: any) => [v?.specUu?.uuid, v])).values()];
 				const listProductTypeUu: any[] = [...new Map(data?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()];
 
