@@ -156,23 +156,24 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 								}
 							/>
 						</div>
-					</div>
-					<div className={'mt'}>
-						<SelectSearch
-							isConvertNumber={true}
-							options={listPriceTag?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: String(v?.amount),
-							}))}
-							data={priceTag}
-							setData={setPriceTag}
-							label={
-								<span>
-									Giá tiền áp dụng <span style={{color: 'red'}}>*</span>
-								</span>
-							}
-							placeholder='Nhập giá tiền'
-						/>
+
+						<div className={'mt'}>
+							<SelectSearch
+								isConvertNumber={true}
+								options={listPriceTag?.data?.map((v: any) => ({
+									id: v?.uuid,
+									name: String(v?.amount),
+								}))}
+								data={priceTag}
+								setData={setPriceTag}
+								label={
+									<span>
+										Giá tiền áp dụng <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập giá tiền'
+							/>
+						</div>
 					</div>
 					<div className='mt'>
 						<div className={styles.input_price}>
