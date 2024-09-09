@@ -236,6 +236,14 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 					warehouseUuid: form.warehouseFromUuid,
 				}),
 			}),
+		onSuccess(data) {
+			if (data && !form?.fromUuid) {
+				setForm((prev) => ({
+					...prev,
+					fromUuid: data?.[0]?.uuid || '',
+				}));
+			}
+		},
 		select(data) {
 			return data;
 		},
@@ -254,12 +262,22 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
-					productUuid: '',
 					qualityUuid: '',
+					productUuid: form.productTypeUuid,
+					specificationsUuid: form.specificationsUuid,
 					warehouseUuid: form.warehouseToUuid,
-					specificationsUuid: '',
 				}),
 			}),
+		onSuccess(data) {
+			if (data) {
+				setForm((prev) => ({
+					...prev,
+					toUuid: data?.filter((x: any) => x?.uuid != form?.fromUuid)?.[0]?.uuid || '',
+					productTypeUuid: data?.filter((x: any) => x?.uuid != form?.fromUuid)?.[0]?.productUu?.uuid,
+					specificationsUuid: data?.filter((x: any) => x?.uuid != form?.fromUuid)?.[0]?.specificationsUu?.uuid,
+				}));
+			}
+		},
 		select(data) {
 			return data;
 		},
@@ -633,6 +651,8 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 											...prev,
 											warehouseToUuid: v?.uuid,
 											toUuid: '',
+											specificationsUuid: '',
+											productTypeUuid: '',
 										}))
 									}
 								/>

@@ -232,9 +232,9 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
-					specificationsUuid: '',
 					warehouseUuid: form.warehouseUuid,
-					productUuid: '',
+					specificationsUuid: form.specificationsUuid,
+					productUuid: form.productTypeUuid,
 					qualityUuid: '',
 				}),
 			}),
@@ -619,6 +619,8 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 											...prev,
 											warehouseUuid: v?.uuid,
 											fromUuid: '',
+											specificationsUuid: '',
+											productTypeUuid: '',
 										}))
 									}
 								/>
