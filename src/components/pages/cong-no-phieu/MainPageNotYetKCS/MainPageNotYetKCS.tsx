@@ -205,7 +205,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 								render: (data: IDebtBill) => <>{data?.fromUu?.userUu?.fullName || '---'}</>,
 							},
 							{
-								title: 'KL hàng (KG)',
+								title: 'KL hàng (Tấn)',
 								render: (data: IDebtBill) => <>{convertCoin(data?.weightTotal)}</>,
 							},
 							{

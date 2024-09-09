@@ -305,7 +305,7 @@ function MainPageUpdateTruck({}: PropsMainPageUpdateTruck) {
 								value={form.averageWeight || ''}
 								type='text'
 								isMoney
-								unit='KG'
+								unit='Tấn'
 								blur={true}
 								label={<span>Khối lượng trung bình</span>}
 								placeholder='Nhập khối lượng trung bình'
@@ -317,7 +317,7 @@ function MainPageUpdateTruck({}: PropsMainPageUpdateTruck) {
 								value={form.minWeight || ''}
 								type='text'
 								isMoney
-								unit='KG'
+								unit='Tấn'
 								blur={true}
 								label={
 									<span>
@@ -333,7 +333,7 @@ function MainPageUpdateTruck({}: PropsMainPageUpdateTruck) {
 							value={form.maxWeight || ''}
 							type='text'
 							isMoney
-							unit='KG'
+							unit='Tấn'
 							blur={true}
 							label={
 								<span>

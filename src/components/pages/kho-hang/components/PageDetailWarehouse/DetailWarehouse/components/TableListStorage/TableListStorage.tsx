@@ -77,17 +77,21 @@ function TableListStorage({}: PropsTableListStorage) {
 						// 	render: (data: IDataListStorage) => <span>{data?.countCustomer || 0}</span>,
 						// },
 						{
-							title: 'Tổng lượng hàng',
+							title: 'Tổng lượng tươi (Tấn)',
+							render: (data: IDataListStorage) => <span style={{color: '#2A85FF'}}>{convertCoin(data?.totalAmountMt)}</span>,
+						},
+						{
+							title: 'Tổng lượng quy khô (Tấn)',
 							render: (data: IDataListStorage) => (
 								<span style={{color: '#2A85FF'}}>{convertCoin(data?.totalAmountBdmt)}</span>
 							),
 						},
 						{
-							title: 'Khối lượng nhập',
+							title: 'Khối lượng quy khô nhập (Tấn)',
 							render: (data: IDataListStorage) => <span>{convertCoin(data?.totalAmountIn) || 0}</span>,
 						},
 						{
-							title: 'Khối lượng xuất',
+							title: 'Lượng quy khô xuất (Tấn)',
 							render: (data: IDataListStorage) => <span>{convertCoin(data?.totalAmountOut) || 0}</span>,
 						},
 						{

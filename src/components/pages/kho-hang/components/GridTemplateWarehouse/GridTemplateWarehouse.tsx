@@ -9,10 +9,10 @@ import {MdAdd, MdOutlineRotateRight} from 'react-icons/md';
 import {calculateDimensions} from '~/common/funcs/convertPositonStorage';
 import {useRouter} from 'next/router';
 import {IoClose} from 'react-icons/io5';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
 import Tippy from '@tippyjs/react';
+import {convertCoin} from '~/common/funcs/convertCoin';
 
 function GridTemplateWarehouse({isUpdate = true, arrayDisabledGrid, draggedElements = [], setDraggedElements}: PropsGridTemplateWarehouse) {
 	const numCols = 10;

@@ -149,15 +149,15 @@ function TableDetail({}: PropsTableDetail) {
 								render: (data: IWeightSession) => <>{data?.specificationsUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL lần 1 (KG)',
+								title: 'TL lần 1 (Tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weight1?.weight)}</>,
 							},
 							{
-								title: 'TL lần 2 (KG)',
+								title: 'TL lần 2 (Tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weight2?.weight || 0)}</>,
 							},
 							{
-								title: 'TL hàng (KG)',
+								title: 'TL hàng (Tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal || 0)}</>,
 							},
 							{

@@ -6,8 +6,8 @@ import {useQuery} from '@tanstack/react-query';
 import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import wareServices from '~/services/wareServices';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import {WEIGHT_WAREHOUSE} from '~/constants/config';
+import {convertCoin} from '~/common/funcs/convertCoin';
 
 function NoteSpecWarehouse({isUpdate, numberElement}: PropsNoteSpecWarehouse) {
 	const listSpecifications = useQuery([QUERY_KEY.quy_cach_postion_storage], {
@@ -42,8 +42,8 @@ function NoteSpecWarehouse({isUpdate, numberElement}: PropsNoteSpecWarehouse) {
 
 			{isUpdate && (
 				<div className={styles.des}>
-					<p>1 đơn vị ô = {convertCoin(WEIGHT_WAREHOUSE)} KG</p>
-					<p>KL kho tạm tính: {convertCoin(WEIGHT_WAREHOUSE * numberElement!)} KG</p>
+					<p>1 đơn vị ô = {convertCoin(WEIGHT_WAREHOUSE)} Tấn</p>
+					<p>KL kho tạm tính: {convertCoin(WEIGHT_WAREHOUSE * numberElement!)} Tấn</p>
 				</div>
 			)}
 		</div>

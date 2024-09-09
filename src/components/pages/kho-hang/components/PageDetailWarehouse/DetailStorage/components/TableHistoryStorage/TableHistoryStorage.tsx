@@ -4,17 +4,16 @@ import {IDataTableHistoryStorage, PropsTableHistoryStorage} from './interfaces';
 import styles from './TableHistoryStorage.module.scss';
 import {useRouter} from 'next/router';
 import DataWrapper from '~/components/common/DataWrapper';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
 import Table from '~/components/common/Table';
-import Search from '~/components/common/Search';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import {useQuery} from '@tanstack/react-query';
 import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import storageServices from '~/services/storageServices';
+import {convertCoin} from '~/common/funcs/convertCoin';
 
 function TableHistoryStorage({}: PropsTableHistoryStorage) {
 	const router = useRouter();
@@ -76,19 +75,19 @@ function TableHistoryStorage({}: PropsTableHistoryStorage) {
 							},
 
 							{
-								title: 'Khối lượng hàng nhập',
+								title: 'Tổng lượng quy khô nhập (Tấn)',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountIn)}</span>
 								),
 							},
 							{
-								title: 'Khối lượng hàng xuất',
+								title: 'Tổng lượng quy khô xuất (Tấn)',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountOut)}</span>
 								),
 							},
 							{
-								title: 'Khối lượng chuyển kho',
+								title: 'Tổng lượng quy khô chuyển kho (Tấn)',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>
 										{convertCoin(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}
