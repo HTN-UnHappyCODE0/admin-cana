@@ -1,6 +1,7 @@
 .container {
 	position: relative;
 	width: 520px;
+	max-height: 90vh;
 	border-radius: 2px;
 	padding: 32px;
 	background-color: var(--bg-light);
@@ -64,7 +65,7 @@
 }
 
 .wrapper {
-	max-height: 90vh;
+	max-height: 85vh;
 	display: flex;
 	flex-direction: column;
 }
