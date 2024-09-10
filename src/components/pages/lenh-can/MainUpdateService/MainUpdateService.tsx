@@ -496,7 +496,7 @@ function MainUpdateService({}: PropsMainUpdateService) {
 							value={form.weightIntent || ''}
 							type='text'
 							isMoney
-							unit='Tấn'
+							unit='tấn'
 							label={<span>Khối lượng dự kiến</span>}
 							placeholder='Nhập khối lượng dự kiến'
 						/>

@@ -75,19 +75,19 @@ function TableHistoryStorage({}: PropsTableHistoryStorage) {
 							},
 
 							{
-								title: 'Tổng lượng quy khô nhập (Tấn)',
+								title: 'Tổng lượng quy khô nhập (tấn)',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountIn)}</span>
 								),
 							},
 							{
-								title: 'Tổng lượng quy khô xuất (Tấn)',
+								title: 'Tổng lượng quy khô xuất (tấn)',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountOut)}</span>
 								),
 							},
 							{
-								title: 'Tổng lượng quy khô chuyển kho (Tấn)',
+								title: 'Tổng lượng quy khô chuyển kho (tấn)',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>
 										{convertCoin(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}

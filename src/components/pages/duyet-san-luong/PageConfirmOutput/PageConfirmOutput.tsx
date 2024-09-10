@@ -206,11 +206,11 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 				<div className={styles.parameter}>
 					<div>
 						TỔNG LƯỢNG HÀNG TƯƠI:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.amountMt || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.amountMt || 0} </span>(tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG HÀNG QUY KHÔ:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.amountBdmt || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{listBatch?.data?.amountBdmt || 0} </span>(tấn)
 					</div>
 				</div>
 			</div>
@@ -296,7 +296,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								),
 							},
 							{
-								title: 'Khối lượng tươi (Tấn)',
+								title: 'Khối lượng tươi (tấn)',
 								render: (data: ITableBillScale) => <>{convertCoin(data?.weightTotal) || 0}</>,
 							},
 							{
@@ -304,7 +304,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								render: (data: ITableBillScale) => <>{convertCoin(data?.drynessAvg) || '---'}</>,
 							},
 							{
-								title: 'Khối lượng quy khô (Tấn)',
+								title: 'Khối lượng quy khô (tấn)',
 								render: (data: ITableBillScale) => <>{convertCoin(data?.weightBdmt) || '---'}</>,
 							},
 							{
