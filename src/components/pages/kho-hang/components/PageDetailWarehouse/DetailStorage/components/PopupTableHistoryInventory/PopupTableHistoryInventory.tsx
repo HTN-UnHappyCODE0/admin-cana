@@ -66,7 +66,7 @@ function PopupTableHistoryInventory({onClose}: PropsPopupTableHistoryInventory) 
 								</li>
 							</ul>
 						</td>
-						<td className={styles.right}>{<SliderDebt listImage={[detailHistoryInventory?.path!]} />}</td>
+						<td className={styles.right}>{<SliderDebt listImage={detailHistoryInventory?.path || []} />}</td>
 					</tr>
 				</tbody>
 			</table>
