@@ -410,7 +410,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 									? 'Chọn khách hàng xuất'
 									: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
 									? 'Chọn khách hàng dịch vụ'
-									: 'Chọn nhà cung cấp'
+									: 'Chọn đối tác'
 							}
 							value={_partnerUuid || form?.partnerUuid}
 							onChange={(e: any) =>
@@ -427,7 +427,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 										? 'Thuộc khách hàng xuất'
 										: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
 										? 'Thuộc khách hàng dịch vụ'
-										: 'Thuộc nhà cung cấp'}
+										: 'Thuộc đối tác'}
 									<span style={{color: 'red'}}>*</span>
 								</span>
 							}

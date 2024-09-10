@@ -295,7 +295,7 @@ function MainBillSend({}: PropsMainBillSend) {
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL hàng (Tấn)',
+								title: 'TL hàng (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
