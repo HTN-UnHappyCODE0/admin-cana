@@ -18,6 +18,7 @@ import styles from './ItemTableWarehouse.module.scss';
 import {PropsItemTableWarehouse} from './interfaces';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function ItemTableWarehouse({order, dataWarehouse, isParent = true, uuidParent = ''}: PropsItemTableWarehouse) {
 	const router = useRouter();
@@ -97,10 +98,10 @@ function ItemTableWarehouse({order, dataWarehouse, isParent = true, uuidParent =
 					{dataWarehouse?.name || '---'}
 				</Link>
 				<p className={styles.table_head_item}>{dataWarehouse?.storage ? dataWarehouse?.storage?.length : '---'}</p>
-				<p className={styles.table_head_item}>{dataWarehouse?.amountMt ? convertCoin(dataWarehouse?.amountMt) : 0}</p>
-				<p className={styles.table_head_item}>{dataWarehouse?.amountBdmt ? convertCoin(dataWarehouse?.amountBdmt) : 0}</p>
-				<p className={styles.table_head_item}>{dataWarehouse?.amountIn ? convertCoin(dataWarehouse?.amountIn) : 0}</p>
-				<p className={styles.table_head_item}>{dataWarehouse?.amountOut ? convertCoin(dataWarehouse?.amountOut) : 0}</p>
+				<p className={styles.table_head_item}>{dataWarehouse?.amountMt ? convertWeight(dataWarehouse?.amountMt) : 0}</p>
+				<p className={styles.table_head_item}>{dataWarehouse?.amountBdmt ? convertWeight(dataWarehouse?.amountBdmt) : 0}</p>
+				<p className={styles.table_head_item}>{dataWarehouse?.amountIn ? convertWeight(dataWarehouse?.amountIn) : 0}</p>
+				<p className={styles.table_head_item}>{dataWarehouse?.amountOut ? convertWeight(dataWarehouse?.amountOut) : 0}</p>
 				<div style={{width: '120px', paddingRight: '16px'}}>
 					<TagStatus status={dataWarehouse.status} />
 				</div>

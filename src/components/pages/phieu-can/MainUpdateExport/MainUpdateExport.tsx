@@ -396,7 +396,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 							value={form.weightTotal || ''}
 							type='text'
 							isMoney
-							unit='tấn'
+							unit='KG'
 							label={<span>Tổng khối lượng hàng</span>}
 							placeholder='Nhập tổng khối lượng hàng'
 						/>

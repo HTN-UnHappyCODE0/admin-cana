@@ -31,6 +31,7 @@ import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
 import FormUpdateStorage from '../../FormUpdateStorage';
 import Tippy from '@tippyjs/react';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function DetailStorage({}: PropsDetailStorage) {
 	const router = useRouter();
@@ -150,16 +151,16 @@ function DetailStorage({}: PropsDetailStorage) {
 				<GridColumn col_4>
 					<DetailBox
 						name={'Tổng khối lượng quy khô'}
-						value={Number(detailStorage?.totalAmountBdmt)}
+						value={convertWeight(detailStorage?.totalAmountBdmt!)}
 						action={
 							<div className={styles.action}>
 								<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 								<div className={styles.note}>
 									<p style={{marginTop: 2}}>
-										Chuẩn: <span>{convertCoin(detailStorage?.amountBdmt!)}</span>
+										Chuẩn: <span>{convertWeight(detailStorage?.amountBdmt!)}</span>
 									</p>
 									<p style={{marginTop: 2}}>
-										Tạm tính: <span>{convertCoin(detailStorage?.amountBdmtDemo!)}</span>
+										Tạm tính: <span>{convertWeight(detailStorage?.amountBdmtDemo!)}</span>
 									</p>
 								</div>
 							</div>
@@ -167,16 +168,16 @@ function DetailStorage({}: PropsDetailStorage) {
 					/>
 					<DetailBox
 						name={'Khối lượng nhập'}
-						value={Number(detailStorage?.totalAmountIn)}
+						value={convertWeight(detailStorage?.totalAmountIn!)}
 						action={
 							<div className={styles.action}>
 								<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 								<div className={styles.note}>
 									<p>
-										Từ nhà cung cấp: <span>{convertCoin(detailStorage?.amountIn!)}</span>
+										Từ nhà cung cấp: <span>{convertWeight(detailStorage?.amountIn!)}</span>
 									</p>
 									<p style={{marginTop: 2}}>
-										Từ kho: <span>{convertCoin(detailStorage?.amountChangeIn!)}</span>
+										Từ kho: <span>{convertWeight(detailStorage?.amountChangeIn!)}</span>
 									</p>
 								</div>
 							</div>
@@ -184,16 +185,16 @@ function DetailStorage({}: PropsDetailStorage) {
 					/>
 					<DetailBox
 						name={'Khối lượng xuất'}
-						value={Number(detailStorage?.totalAmountOut)}
+						value={convertWeight(detailStorage?.totalAmountOut!)}
 						action={
 							<div className={styles.action}>
 								<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 								<div className={styles.note}>
 									<p>
-										Khách hàng xuất: <span>{convertCoin(detailStorage?.amountOut!)}</span>
+										Khách hàng xuất: <span>{convertWeight(detailStorage?.amountOut!)}</span>
 									</p>
 									<p style={{marginTop: 2}}>
-										Xuất kho: <span>{convertCoin(detailStorage?.amountChangeOut!)}</span>
+										Xuất kho: <span>{convertWeight(detailStorage?.amountChangeOut!)}</span>
 									</p>
 								</div>
 							</div>

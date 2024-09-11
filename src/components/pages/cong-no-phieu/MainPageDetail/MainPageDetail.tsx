@@ -18,6 +18,7 @@ import GridColumn from '~/components/layouts/GridColumn';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
 import ItemDashboard from '../ItemDashboard';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function MainPageDetail({}: PropsMainPageDetail) {
 	const router = useRouter();
@@ -145,7 +146,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 							},
 							{
 								title: 'KL hàng(tấn)',
-								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
+								render: (data: IWeightSession) => <>{convertWeight(data?.weightReal)}</>,
 							},
 							{
 								title: 'ĐK tạm tính',

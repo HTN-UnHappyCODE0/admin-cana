@@ -29,7 +29,7 @@ import batchBillServices from '~/services/batchBillServices';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import {convertCoin} from '~/common/funcs/convertCoin';
 import Pagination from '~/components/common/Pagination';
-import {timeSubmit} from '~/common/funcs/optionConvert';
+import {convertWeight, timeSubmit} from '~/common/funcs/optionConvert';
 import DatePicker from '~/components/common/DatePicker';
 import {toastWarn} from '~/common/funcs/toast';
 import Search from '~/components/common/Search';
@@ -491,7 +491,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 										},
 										{
 											title: 'Khối lượng hàng (tấn)',
-											render: (data: IFormCreatePriceTagUpdate) => <>{convertCoin(data?.weightTotal)}</>,
+											render: (data: IFormCreatePriceTagUpdate) => <>{convertWeight(data?.weightTotal)}</>,
 										},
 										{
 											title: 'Giá tiền (VND)',
@@ -678,7 +678,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 										},
 										{
 											title: 'Khối lượng hàng (tấn)',
-											render: (data: any) => <>{convertCoin(data?.weightTotal)}</>,
+											render: (data: any) => <>{convertWeight(data?.weightTotal)}</>,
 										},
 										{
 											title: 'Giá tiền (VND)',

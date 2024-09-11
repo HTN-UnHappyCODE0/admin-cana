@@ -7,6 +7,7 @@ import DetailBox from '~/components/common/DetailBox';
 import {PiSealWarningFill} from 'react-icons/pi';
 import {convertCoin} from '~/common/funcs/convertCoin';
 import {ContextDashbroad, IContextDashbroad} from '../MainDashboard/context';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function WarehouseStatistics({isLoading, infoCompany}: PropsWarehouseStatistics) {
 	const context = useContext<IContextDashbroad>(ContextDashbroad);
@@ -21,17 +22,17 @@ function WarehouseStatistics({isLoading, infoCompany}: PropsWarehouseStatistics)
 				<DetailBox
 					isLoading={isLoading}
 					name={'Khối lượng khô'}
-					value={infoCompany?.weight?.totalAmountBdmt}
+					value={convertWeight(infoCompany?.weight?.totalAmountBdmt)}
 					unit='BDMT'
 					action={
 						<div className={styles.action}>
 							<PiSealWarningFill size={20} color='#2D74FF' className={styles.icon_warn} />
 							<div className={styles.note}>
 								<p>
-									Chuẩn: <span>{convertCoin(infoCompany?.weight?.amountBdmt)}</span>
+									Chuẩn: <span>{convertWeight(infoCompany?.weight?.amountBdmt)}</span>
 								</p>
 								<p style={{marginTop: 2}}>
-									Tạm tính: <span>{convertCoin(infoCompany?.weight?.amountBdmtDemo)}</span>
+									Tạm tính: <span>{convertWeight(infoCompany?.weight?.amountBdmtDemo)}</span>
 								</p>
 							</div>
 						</div>
@@ -40,7 +41,7 @@ function WarehouseStatistics({isLoading, infoCompany}: PropsWarehouseStatistics)
 				<DetailBox
 					isLoading={isLoading}
 					name={'Tổng công nợ'}
-					value={infoCompany?.debt?.totalDebt}
+					value={convertCoin(infoCompany?.debt?.totalDebt)}
 					color='#FF6838'
 					unit='VND'
 					action={
