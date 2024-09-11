@@ -70,6 +70,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 		timeEnd: null,
 		timeStart: null,
 		code: '',
+		reason: '',
 		isBatch: TYPE_BATCH.CAN_LO,
 	});
 
@@ -103,6 +104,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					timeEnd: data?.timeEnd,
 					code: data?.code,
 					isBatch: data?.isBatch,
+					reason: '',
 				});
 
 				// SET LIST TRUCK
@@ -309,6 +311,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					isPrint: form.isPrint,
 					isBatch: form.isBatch,
 					shipOutUuid: '',
+					reason: form.reason,
 					lstTruckAddUuid: listTruckChecked
 						.filter((v) => !listTruckBatchBill.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
@@ -319,6 +322,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 			}),
 		onSuccess(data) {
 			if (data) {
+				setOpenWarning(false);
 				router.back();
 			}
 		},
@@ -352,7 +356,14 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 		}
 
 		return setOpenWarning(true);
-		// return fucnUpdateBatchBill.mutate();
+	};
+
+	const handleSubmitReason = async () => {
+		if (!form.reason) {
+			return toastWarn({msg: 'Vui lòng nhập lý do thay đổi!'});
+		}
+
+		return fucnUpdateBatchBill.mutate();
 	};
 
 	return (
@@ -784,11 +795,28 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 						<TextArea name='description' placeholder='Nhập ghi chú' max={5000} blur label={<span>Ghi chú</span>} />
 					</div>
 				</div>
+				<Popup
+					open={openWarning}
+					onClose={() => {
+						setOpenWarning(false);
+						setForm((prev) => ({
+							...prev,
+							reason: '',
+						}));
+					}}
+				>
+					<FormReasonUpdateBill
+						onSubmit={handleSubmitReason}
+						onClose={() => {
+							setOpenWarning(false);
+							setForm((prev) => ({
+								...prev,
+								reason: '',
+							}));
+						}}
+					/>
+				</Popup>
 			</Form>
-
-			<Popup open={openWarning} onClose={() => setOpenWarning(false)}>
-				<FormReasonUpdateBill onClose={() => setOpenWarning(false)} />
-			</Popup>
 		</div>
 	);
 }
