@@ -14,6 +14,7 @@ import {httpRequest} from '~/services';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import storageServices from '~/services/storageServices';
 import {convertCoin} from '~/common/funcs/convertCoin';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function TableHistoryStorage({}: PropsTableHistoryStorage) {
 	const router = useRouter();
@@ -77,27 +78,27 @@ function TableHistoryStorage({}: PropsTableHistoryStorage) {
 							{
 								title: 'Tổng lượng quy khô nhập (tấn)',
 								render: (data: IDataTableHistoryStorage) => (
-									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountIn)}</span>
+									<span style={{color: '#2D74FF'}}>{convertWeight(data?.amountIn)}</span>
 								),
 							},
 							{
 								title: 'Tổng lượng quy khô xuất (tấn)',
 								render: (data: IDataTableHistoryStorage) => (
-									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountOut)}</span>
+									<span style={{color: '#2D74FF'}}>{convertWeight(data?.amountOut)}</span>
 								),
 							},
 							{
 								title: 'Tổng lượng quy khô chuyển kho (tấn)',
 								render: (data: IDataTableHistoryStorage) => (
 									<span style={{color: '#2D74FF'}}>
-										{convertCoin(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}
+										{convertWeight(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}
 									</span>
 								),
 							},
 							// {
 							// 	title: 'Tổng hàng trong kho',
 							// 	render: (data: IDataTableHistoryStorage) => (
-							// 		<span style={{color: '#2D74FF'}}>{convertCoin(data?.totalAmount)}</span>
+							// 		<span style={{color: '#2D74FF'}}>{convertWeight(data?.totalAmount)}</span>
 							// 	),
 							// },
 						]}

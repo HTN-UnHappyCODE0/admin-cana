@@ -29,6 +29,7 @@ import {convertCoin} from '~/common/funcs/convertCoin';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Moment from 'react-moment';
 import partnerServices from '~/services/partnerServices';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function MainPageAll({}: PropsMainPageAll) {
 	const router = useRouter();
@@ -208,7 +209,7 @@ function MainPageAll({}: PropsMainPageAll) {
 							},
 							{
 								title: 'KL hàng (tấn)',
-								render: (data: IDebtBill) => <>{convertCoin(data?.weightTotal)}</>,
+								render: (data: IDebtBill) => <>{convertWeight(data?.weightTotal)}</>,
 							},
 							{
 								title: 'Quy cách',

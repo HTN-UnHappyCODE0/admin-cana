@@ -38,6 +38,7 @@ import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
 import Popup from '~/components/common/Popup';
 import PopupRejectBatchBill from '../PopupRejectBatchBill';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function PageConfirmOutput({}: PropsPageConfirmOutput) {
 	const router = useRouter();
@@ -297,7 +298,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 							},
 							{
 								title: 'Khối lượng tươi (tấn)',
-								render: (data: ITableBillScale) => <>{convertCoin(data?.weightTotal) || 0}</>,
+								render: (data: ITableBillScale) => <>{convertWeight(data?.weightTotal) || 0}</>,
 							},
 							{
 								title: 'Độ khô (%)',
@@ -305,7 +306,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 							},
 							{
 								title: 'Khối lượng quy khô (tấn)',
-								render: (data: ITableBillScale) => <>{convertCoin(data?.weightBdmt) || '---'}</>,
+								render: (data: ITableBillScale) => <>{convertWeight(data?.weightBdmt) || '---'}</>,
 							},
 							{
 								title: 'Xác nhận SL',

@@ -129,8 +129,8 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 							value={form.amountKcs || ''}
 							type='text'
 							isMoney
-							unit='MT'
-							placeholder='Nhập khối lượng còn lại'
+							unit='KG'
+							placeholder='Nhập khối lượng còn lại '
 							label={<span>Khối lượng còn lại</span>}
 						/>
 

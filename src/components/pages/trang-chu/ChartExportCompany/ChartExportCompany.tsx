@@ -21,7 +21,7 @@ import {
 import {httpRequest} from '~/services';
 import partnerServices from '~/services/partnerServices';
 import batchBillServices from '~/services/batchBillServices';
-import {timeSubmit} from '~/common/funcs/optionConvert';
+import {convertWeight, timeSubmit} from '~/common/funcs/optionConvert';
 import moment from 'moment';
 import {ContextDashbroad, IContextDashbroad} from '../MainDashboard/context';
 
@@ -159,13 +159,13 @@ function ChartExportCompany({}: PropsChartExportCompany) {
 			</div>
 			<div className={styles.head_data}>
 				<p className={styles.data_total}>
-					Tổng khối lượng xuất hàng: <span>{convertCoin(dataTotal?.totalWeight)}</span>
+					Tổng khối lượng xuất hàng: <span>{convertWeight(dataTotal?.totalWeight)}</span>
 				</p>
 				{dataTotal?.lstProductTotal?.map((v, i) => (
 					<div key={i} className={styles.data_item}>
 						<div style={{background: v?.colorShow}} className={styles.box_color}></div>
 						<p className={styles.data_total}>
-							{v?.name}: <span style={{color: '#171832'}}>{convertCoin(v?.weightMT)}</span>
+							{v?.name}: <span style={{color: '#171832'}}>{convertWeight(v?.weightMT)}</span>
 						</p>
 					</div>
 				))}

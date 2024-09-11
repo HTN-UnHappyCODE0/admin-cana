@@ -14,6 +14,7 @@ import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY} from '~/c
 import {httpRequest} from '~/services';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import warehouseServices from '~/services/warehouseServices';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 	const router = useRouter();
@@ -77,27 +78,27 @@ function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 							{
 								title: 'Tổng lượng quy khô nhập (tấn)',
 								render: (data: IDataTableHistoryWarehouse) => (
-									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountIn)}</span>
+									<span style={{color: '#2D74FF'}}>{convertWeight(data?.amountIn)}</span>
 								),
 							},
 							{
 								title: 'Tổng lượng quy khô xuất (tấn)',
 								render: (data: IDataTableHistoryWarehouse) => (
-									<span style={{color: '#2D74FF'}}>{convertCoin(data?.amountOut)}</span>
+									<span style={{color: '#2D74FF'}}>{convertWeight(data?.amountOut)}</span>
 								),
 							},
 							{
 								title: 'Tổng lượng quy khô chuyển kho (tấn)',
 								render: (data: IDataTableHistoryWarehouse) => (
 									<span style={{color: '#2D74FF'}}>
-										{convertCoin(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}
+										{convertWeight(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}
 									</span>
 								),
 							},
 							// {
 							// 	title: 'Tổng hàng trong kho',
 							// 	render: (data: IDataTableHistoryWarehouse) => (
-							// 		<span style={{color: '#2D74FF'}}>{convertCoin(data?.totalAmount)}</span>
+							// 		<span style={{color: '#2D74FF'}}>{convertWeight(data?.totalAmount)}</span>
 							// 	),
 							// },
 						]}

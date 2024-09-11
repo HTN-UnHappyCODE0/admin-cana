@@ -125,8 +125,8 @@ function ListWarehouse({}: PropsListWarehouse) {
 							<p style={{width: '120px', paddingRight: '16px'}}>Mã kho</p>
 							<p style={{width: '180px', paddingRight: '16px'}}>Tên kho</p>
 							<p className={styles.table_head_item}>Số kho con</p>
-							<p className={styles.table_head_item}>Sản lượng (MT)</p>
-							<p className={styles.table_head_item}>Sản lượng (BDMT)</p>
+							<p className={styles.table_head_item}>Sản lượng (tấn)</p>
+							<p className={styles.table_head_item}>Sản lượng (tấn)</p>
 							<p className={styles.table_head_item}>Nhập</p>
 							<p className={styles.table_head_item}>Xuất</p>
 							<p style={{width: '120px', paddingRight: '16px'}}>Trạng thái</p>

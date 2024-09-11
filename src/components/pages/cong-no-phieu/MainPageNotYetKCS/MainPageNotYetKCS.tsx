@@ -30,6 +30,7 @@ import {IDebtBill} from '../MainPageAll/interfaces';
 import Moment from 'react-moment';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import partnerServices from '~/services/partnerServices';
+import {convertWeight} from '~/common/funcs/optionConvert';
 
 function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 	const router = useRouter();
@@ -206,7 +207,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 							},
 							{
 								title: 'KL hàng (tấn)',
-								render: (data: IDebtBill) => <>{convertCoin(data?.weightTotal)}</>,
+								render: (data: IDebtBill) => <>{convertWeight(data?.weightTotal)}</>,
 							},
 							{
 								title: 'Quy cách',
