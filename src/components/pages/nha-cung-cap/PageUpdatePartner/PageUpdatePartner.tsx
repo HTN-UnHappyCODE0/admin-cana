@@ -208,6 +208,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					bankName: form?.bankName,
 					bankAccount: form?.bankAccount,
 					type: TYPE_PARTNER.NCC,
+					companyUuid: form?.companyUuid,
 				}),
 			}),
 		onSuccess(data) {
