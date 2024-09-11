@@ -143,7 +143,7 @@ function ChartServiceCompany({}: PropsChartServiceCompany) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.head}>
-				<h3>Biểu đầu thống kê hàng dịch vụ của tổng công ty</h3>
+				<h3>Biểu đồ thống kê hàng dịch vụ của tổng công ty</h3>
 				<div className={styles.filter}>
 					<SelectFilterOption
 						uuid={partnerUuid}
