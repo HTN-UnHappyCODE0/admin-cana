@@ -38,12 +38,15 @@ import {toastWarn} from '~/common/funcs/toast';
 import batchBillServices from '~/services/batchBillServices';
 import shipServices from '~/services/shipServices';
 import {IDetailBatchBill} from '../../lenh-can/MainDetailBill/interfaces';
+import Popup from '~/components/common/Popup';
+import FormReasonUpdateBill from '../FormReasonUpdateBill';
 
 function MainUpdateExport({}: PropsMainUpdateExport) {
 	const router = useRouter();
 
 	const {_id} = router.query;
 
+	const [openWarning, setOpenWarning] = useState<boolean>(false);
 	const [listTruckChecked, setListTruckChecked] = useState<any[]>([]);
 	const [listTruckBatchBill, setListTruckBatchBill] = useState<any[]>([]);
 
@@ -348,7 +351,8 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 			return toastWarn({msg: 'Vui lòng chọn xe hàng!'});
 		}
 
-		return fucnUpdateBatchBill.mutate();
+		return setOpenWarning(true);
+		// return fucnUpdateBatchBill.mutate();
 	};
 
 	return (
@@ -781,6 +785,10 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					</div>
 				</div>
 			</Form>
+
+			<Popup open={openWarning} onClose={() => setOpenWarning(false)}>
+				<FormReasonUpdateBill onClose={() => setOpenWarning(false)} />
+			</Popup>
 		</div>
 	);
 }
