@@ -9,6 +9,10 @@ import fancyTimeFormat from '~/common/funcs/fancyTimeFormat';
 import Button from '~/components/common/Button';
 import {useRouter} from 'next/router';
 import {obfuscateEmail} from '~/common/funcs/optionConvert';
+import {useMutation} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
+import accountServices from '~/services/accountServices';
+import Loading from '~/components/common/Loading';
 
 function FormOTP({}: PropsFormOTP) {
 	const TIME_OTP = 60;
@@ -19,8 +23,8 @@ function FormOTP({}: PropsFormOTP) {
 	const context = useContext<IContextForgotPassword>(ContextForgotPassword);
 
 	const [countDown, setCoutDown] = useState<number>(TIME_OTP);
+	const [resetOtp, setResetOtp] = useState<boolean>(false);
 
-	// Đếm ngược thời gian gửi lại code
 	useEffect(() => {
 		if (countDown > 0) {
 			const time = setTimeout(() => {
@@ -30,23 +34,69 @@ function FormOTP({}: PropsFormOTP) {
 		}
 	}, [countDown]);
 
+	// Gửi lại OTP
+	const funcSendOTP = useMutation({
+		mutationFn: () => {
+			return httpRequest({
+				showMessageFailed: true,
+				showMessageSuccess: true,
+				msgSuccess: 'Mã OTP đã được gửi đến email của bạn',
+				http: accountServices.sendOTP({
+					email: context?.form?.email!,
+				}),
+			});
+		},
+		onSuccess(data) {
+			if (data) {
+				setCoutDown(TIME_OTP);
+			}
+		},
+	});
+
+	// FUCN submit OTP
+	const funcSubmitOTP = useMutation({
+		mutationFn: () => {
+			return httpRequest({
+				showMessageFailed: true,
+				showMessageSuccess: true,
+				msgSuccess: 'Xác thực thành công',
+				http: accountServices.enterOTP({
+					email: context?.form?.email!,
+					otp: context?.form?.otp!,
+				}),
+			});
+		},
+		onSuccess(data) {
+			if (data) {
+				context?.setType(1);
+				router.replace(
+					{
+						query: rest,
+					},
+					undefined,
+					{scroll: false}
+				);
+			}
+		},
+	});
+
 	const handleSendcode = () => {
-		setCoutDown(TIME_OTP);
+		// Reset OTP
+		setResetOtp(!resetOtp);
+
+		return funcSendOTP.mutate();
 	};
 
 	const handleSubmit = () => {
-		context?.setType(1);
-		router.replace(
-			{
-				query: rest,
-			},
-			undefined,
-			{scroll: false}
-		);
+		// Reset OTP
+		setResetOtp(!resetOtp);
+
+		return funcSubmitOTP.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
+			<Loading loading={funcSendOTP.isLoading || funcSubmitOTP.isLoading} />
 			<h4 className={styles.title}>Xác thực mã OTP</h4>
 			<p className={styles.text}>
 				Một mã xác thực đã được gửi cho bạn qua địa chỉ email: <span>{obfuscateEmail(context?.form?.email!)}</span>

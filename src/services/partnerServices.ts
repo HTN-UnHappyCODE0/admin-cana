@@ -49,7 +49,7 @@ const partnerServices = {
 			userOwenerUuid: string;
 			bankName: string;
 			bankAccount: string;
-			companyUuid?: string;
+			companyUuid: string;
 		},
 		tokenAxios?: any
 	) => {
