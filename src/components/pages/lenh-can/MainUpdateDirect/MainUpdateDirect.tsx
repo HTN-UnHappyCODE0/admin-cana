@@ -270,7 +270,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					lstTruckRemoveUuid: listTruckBatchBill
 						.filter((v) => !listTruckChecked.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
-					reason: form.reason,
+					// reason: form.reason,
 				}),
 			}),
 		onSuccess(data) {
@@ -314,14 +314,6 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 			if (today > timeIntend) {
 				return toastWarn({msg: 'Ngày dự kiến không hợp lệ!'});
 			}
-		}
-
-		return setOpenWarning(true);
-	};
-
-	const handleSubmitReason = async () => {
-		if (!form.reason) {
-			return toastWarn({msg: 'Vui lòng nhập lý do thay đổi!'});
 		}
 
 		return fucnUpdateBatchBill.mutate();
@@ -729,27 +721,6 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 						<TextArea name='description' placeholder='Nhập ghi chú' max={5000} blur label={<span>Ghi chú</span>} />
 					</div>
 				</div>
-				<Popup
-					open={openWarning}
-					onClose={() => {
-						setOpenWarning(false);
-						setForm((prev) => ({
-							...prev,
-							reason: '',
-						}));
-					}}
-				>
-					<FormReasonUpdateBill
-						onSubmit={handleSubmitReason}
-						onClose={() => {
-							setOpenWarning(false);
-							setForm((prev) => ({
-								...prev,
-								reason: '',
-							}));
-						}}
-					/>
-				</Popup>
 			</Form>
 		</div>
 	);
