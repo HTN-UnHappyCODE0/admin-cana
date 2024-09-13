@@ -80,9 +80,9 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 		if (imgs.length == 0) {
 			return toastWarn({msg: 'Vui lòng chọn ảnh!'});
 		}
-		if (!form.amountKcs) {
-			return toastWarn({msg: 'Vui lòng nhập khối lượng còn lại!'});
-		}
+		// if (!form.amountKcs) {
+		// 	return toastWarn({msg: 'Vui lòng nhập khối lượng còn lại!'});
+		// }
 
 		if ((!!form.amountKcs && form.dryness < 0) || form.dryness > 100) {
 			return toastWarn({msg: 'Độ khô không hợp lệ!'});

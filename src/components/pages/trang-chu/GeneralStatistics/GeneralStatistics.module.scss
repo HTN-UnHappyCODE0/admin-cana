@@ -42,9 +42,13 @@
 }
 
 .left {
-	background: #86a8ea;
+	background-image: url('./../../../../../public/static/images/bgleft.png');
+	background-size: cover;
+	background-position: center;
 }
 
 .right {
-	background: #92eb9b;
+	background-image: url('./../../../../../public/static/images/bgright.png');
+	background-size: cover;
+	background-position: center;
 }

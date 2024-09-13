@@ -188,6 +188,7 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 							<Select
 								isSearch
 								name='productUuid'
+								readOnly={true}
 								placeholder='Chọn loại gỗ'
 								value={form?.productUuid}
 								label={
@@ -214,6 +215,7 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 							<Select
 								isSearch
 								name='qualityUuid'
+								readOnly={true}
 								placeholder='Chọn quốc gia'
 								value={form?.qualityUuid}
 								label={
@@ -240,6 +242,7 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 							<Select
 								isSearch
 								name='specificationsUuid'
+								readOnly={true}
 								placeholder='Chọn quy cách'
 								value={form?.specificationsUuid}
 								label={
