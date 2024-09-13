@@ -70,7 +70,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		reason: '',
 	});
 
-	useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
+	const {data: detailBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
 		queryFn: () =>
 			httpRequest({
 				http: batchBillServices.detailBatchbill({
@@ -314,7 +314,16 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 			return toastWarn({msg: 'Vui lòng chọn xe hàng!'});
 		}
 
-		return setOpenWarning(true);
+		if (
+			form.toUuid != detailBill?.toUu?.uuid ||
+			form.fromUuid != detailBill?.fromUu?.uuid ||
+			form.productTypeUuid != detailBill?.productTypeUu?.uuid ||
+			form.specificationsUuid != detailBill?.specificationsUu?.uuid
+		) {
+			return setOpenWarning(true);
+		} else {
+			return fucnUpdateBatchBill.mutate();
+		}
 	};
 
 	const handleSubmitReason = async () => {

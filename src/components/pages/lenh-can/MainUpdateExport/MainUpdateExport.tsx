@@ -39,15 +39,12 @@ import {timeSubmit} from '~/common/funcs/optionConvert';
 import batchBillServices from '~/services/batchBillServices';
 import {IDetailBatchBill} from '../MainDetailBill/interfaces';
 import shipServices from '~/services/shipServices';
-import Popup from '~/components/common/Popup';
-import FormReasonUpdateBill from '../FormReasonUpdateBill';
 
 function MainUpdateExport({}: PropsMainUpdateExport) {
 	const router = useRouter();
 
 	const {_id} = router.query;
 
-	const [openWarning, setOpenWarning] = useState<boolean>(false);
 	const [listTruckChecked, setListTruckChecked] = useState<any[]>([]);
 	const [listTruckBatchBill, setListTruckBatchBill] = useState<any[]>([]);
 
@@ -310,12 +307,10 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					lstTruckRemoveUuid: listTruckBatchBill
 						.filter((v) => !listTruckChecked.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
-					// reason: form.reason,
 				}),
 			}),
 		onSuccess(data) {
 			if (data) {
-				setOpenWarning(false);
 				router.back();
 			}
 		},

@@ -35,15 +35,12 @@ import {IDetailBatchBill} from '../MainDetailBill/interfaces';
 import priceTagServices from '~/services/priceTagServices';
 import customerServices from '~/services/customerServices';
 import shipServices from '~/services/shipServices';
-import FormReasonUpdateBill from '../FormReasonUpdateBill';
-import Popup from '~/components/common/Popup';
 
 function MainUpdateDirect({}: PropsMainUpdateDirect) {
 	const router = useRouter();
 
 	const {_id} = router.query;
 
-	const [openWarning, setOpenWarning] = useState<boolean>(false);
 	const [listTruckChecked, setListTruckChecked] = useState<any[]>([]);
 	const [listTruckBatchBill, setListTruckBatchBill] = useState<any[]>([]);
 
@@ -270,12 +267,10 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					lstTruckRemoveUuid: listTruckBatchBill
 						.filter((v) => !listTruckChecked.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
-					// reason: form.reason,
 				}),
 			}),
 		onSuccess(data) {
 			if (data) {
-				setOpenWarning(false);
 				router.back();
 			}
 		},
