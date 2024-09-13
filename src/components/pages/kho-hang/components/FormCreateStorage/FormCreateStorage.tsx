@@ -69,7 +69,7 @@ function FormCreateStorage({draggedElements, onClose}: PropsFormCreateStorage) {
 		},
 	});
 
-	const listSpecification = useQuery([QUERY_KEY.dropdown_quy_cach, form.qualityUuid], {
+	const listSpecification = useQuery([QUERY_KEY.dropdown_quy_cach, form.qualityUuid, form.productUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -82,11 +82,13 @@ function FormCreateStorage({draggedElements, onClose}: PropsFormCreateStorage) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
 					qualityUuid: form?.qualityUuid,
+					productTypeUuid: form?.productUuid,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
+		enabled: !!form.qualityUuid && !!form.productUuid,
 	});
 
 	const fucnCreateStorage = useMutation({

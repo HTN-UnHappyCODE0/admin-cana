@@ -16,6 +16,7 @@ import {
 	STATUS_BILL,
 	TYPE_PRODUCT,
 	STATUS_CUSTOMER,
+	TYPE_CUSTOMER,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import {useMutation, useQuery} from '@tanstack/react-query';
@@ -77,7 +78,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 					partnerUUid: '',
 					userUuid: '',
 					status: STATUS_CUSTOMER.HOP_TAC,
-					typeCus: null,
+					typeCus: TYPE_CUSTOMER.NHA_CUNG_CAP,
 					provinceId: '',
 					specUuid: '',
 				}),
