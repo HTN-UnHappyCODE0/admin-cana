@@ -111,9 +111,9 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 		<div className={styles.container}>
 			<Loading loading={fucnUpdateSpecification.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
-				<div className={styles.wrapper}>
+				<div className={styles.main_form}>
 					<h4 className={styles.title}>Chỉnh sửa giá tiền hàng</h4>
-					<div className={clsx('mt', styles.main_form)}>
+					<div className={styles.main}>
 						<div className={'mt'}>
 							<Input
 								placeholder='Nhập nhà cung cấp'
@@ -174,29 +174,29 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 								placeholder='Nhập giá tiền'
 							/>
 						</div>
-					</div>
-					<div className='mt'>
-						<div className={styles.input_price}>
-							<input
-								id={`state_spec_customer`}
-								name='state'
-								value={form.state}
-								type='checkbox'
-								className={styles.input}
-								checked={form?.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP}
-								onChange={() =>
-									setForm((prev: any) => ({
-										...prev,
-										state:
-											prev.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP
-												? CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP
-												: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
-									}))
-								}
-							/>
-							<label className={styles.label_check_box} htmlFor={`state_spec_customer`}>
-								Đang cung cấp
-							</label>
+						<div className='mt'>
+							<div className={styles.input_price}>
+								<input
+									id={`state_spec_customer`}
+									name='state'
+									value={form.state}
+									type='checkbox'
+									className={styles.input}
+									checked={form?.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP}
+									onChange={() =>
+										setForm((prev: any) => ({
+											...prev,
+											state:
+												prev.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP
+													? CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP
+													: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
+										}))
+									}
+								/>
+								<label className={styles.label_check_box} htmlFor={`state_spec_customer`}>
+									Đang cung cấp
+								</label>
+							</div>
 						</div>
 					</div>
 
