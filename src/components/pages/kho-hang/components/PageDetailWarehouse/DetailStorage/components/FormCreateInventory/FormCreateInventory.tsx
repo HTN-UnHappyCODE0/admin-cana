@@ -75,6 +75,10 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 	});
 
 	const handleSubmit = async () => {
+		if (!form.decription) {
+			return toastWarn({msg: 'Vui lòng nhập mô tả!'});
+		}
+
 		const imgs = images?.map((v: any) => v?.file);
 
 		if (imgs.length == 0) {
