@@ -302,7 +302,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 							},
 							{
 								title: 'Độ khô (%)',
-								render: (data: ITableBillScale) => <>{convertCoin(data?.drynessAvg) || '---'}</>,
+								render: (data: ITableBillScale) => <>{data?.drynessAvg?.toFixed(3) || '---'}</>,
 							},
 							{
 								title: 'Khối lượng quy khô (tấn)',
