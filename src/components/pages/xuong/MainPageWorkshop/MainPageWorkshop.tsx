@@ -120,7 +120,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Đối tác'
+							name='Công ty'
 							query='_partnerUuid'
 							listFilter={listPartner?.data?.map((v: any) => ({
 								id: v?.uuid,
@@ -187,7 +187,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 								),
 							},
 							{
-								title: 'Tên đối tác',
+								title: 'Tên công ty',
 								render: (data: any) => <>{data.partnerUu?.name || '---'}</>,
 							},
 

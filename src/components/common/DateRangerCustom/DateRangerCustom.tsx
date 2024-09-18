@@ -62,7 +62,7 @@ function DateRangerCustom({titleTime, keyTypeDate = '_typeDate', keyDateForm = '
 				pathname: router.pathname,
 				query: {
 					...router.query,
-					[keyTypeDate]: TYPE_DATE.TODAY,
+					[keyTypeDate]: TYPE_DATE.THIS_WEEK,
 				},
 			},
 			undefined,

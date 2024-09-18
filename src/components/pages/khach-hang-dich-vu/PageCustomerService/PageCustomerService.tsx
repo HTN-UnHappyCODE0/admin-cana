@@ -211,7 +211,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 								),
 							},
 							{
-								title: 'Thuộc công ty',
+								title: 'KV cảng xuất khẩu',
 								render: (data: IPageCustomerService) => <>{data?.companyUu?.name || '---'}</>,
 							},
 							{

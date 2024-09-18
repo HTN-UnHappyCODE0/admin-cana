@@ -33,7 +33,7 @@ function PageCompany({}: PropsPageCompany) {
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<ICompany | null>(null);
 
-	// Lấy danh sách công ty
+	// Lấy danh sách KV cảng xuất khẩu
 	const listCompany = useQuery([QUERY_KEY.table_cong_ty, _page, _pageSize, _keyword, _status], {
 		queryFn: () =>
 			httpRequest({
@@ -79,7 +79,7 @@ function PageCompany({}: PropsPageCompany) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên công ty' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên KV cảng xuất khẩu' />
 					</div>
 
 					<div className={styles.filter}>
@@ -108,7 +108,7 @@ function PageCompany({}: PropsPageCompany) {
 						rounded_2
 						icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 					>
-						Thêm công ty
+						Thêm KV cảng xuất khẩu
 					</Button>
 				</div>
 			</div>
@@ -119,9 +119,9 @@ function PageCompany({}: PropsPageCompany) {
 					loading={listCompany?.isLoading}
 					noti={
 						<Noti
-							titleButton='Thêm công ty'
+							titleButton='Thêm KV cảng xuất khẩu'
 							onClick={() => router.push(PATH.ThemMoiCongTy)}
-							des='Hiện tại chưa có công ty nào, thêm ngay?'
+							des='Hiện tại chưa có KV cảng xuất khẩu nào, thêm ngay?'
 						/>
 					}
 				>
@@ -134,7 +134,7 @@ function PageCompany({}: PropsPageCompany) {
 							},
 
 							{
-								title: 'Tên công ty',
+								title: 'Tên KV cảng xuất khẩu',
 								fixedLeft: true,
 								render: (data: ICompany) => <>{data?.name || '---'}</>,
 							},
@@ -232,11 +232,11 @@ function PageCompany({}: PropsPageCompany) {
 				danger
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
-				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa công ty' : 'Dùng công ty'}
+				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa KV cảng xuất khẩu' : 'Dùng KV cảng xuất khẩu'}
 				note={
 					dataStatus?.status == CONFIG_STATUS.HOAT_DONG
-						? 'Bạn có chắc chắn muốn khóa công ty này?'
-						: 'Bạn có chắc chắn muốn dùng công ty này?'
+						? 'Bạn có chắc chắn muốn khóa KV cảng xuất khẩu này?'
+						: 'Bạn có chắc chắn muốn dùng KV cảng xuất khẩu này?'
 				}
 				onSubmit={funcChangeStatus.mutate}
 			/>

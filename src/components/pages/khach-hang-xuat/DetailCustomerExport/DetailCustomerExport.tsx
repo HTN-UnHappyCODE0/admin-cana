@@ -233,7 +233,7 @@ function DetailCustomerExport({}: PropsDetailCustomerExport) {
 							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.name || '---'}</span>
 						</td>
 						<td>
-							<span style={{marginRight: 6}}>Thuộc công ty:</span> {detailPartner?.companyUu?.name || '---'}
+							<span style={{marginRight: 6}}>KV cảng xuất khẩu:</span> {detailPartner?.companyUu?.name || '---'}
 						</td>
 					</tr>
 					<tr>

@@ -280,50 +280,50 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 								/>
 							</Select>
 						</div>
-					</div>
-					<div className={'mt'}>
-						<SelectSearch
-							isConvertNumber={true}
-							options={listPriceTag?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: String(v?.amount),
-							}))}
-							data={priceTag}
-							setData={setPriceTag}
-							label={
-								<span>
-									Giá tiền áp dụng <span style={{color: 'red'}}>*</span>
-								</span>
-							}
-							placeholder='Nhập giá tiền'
-						/>
-					</div>
 
-					<div className='mt'>
-						<div className={styles.input_price}>
-							<input
-								id={`state_spec_customer`}
-								name='state'
-								value={form.state}
-								type='checkbox'
-								className={styles.input}
-								checked={form?.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP}
-								onChange={() =>
-									setForm((prev) => ({
-										...prev,
-										state:
-											prev.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP
-												? CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP
-												: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
-									}))
+						<div className={'mt'}>
+							<SelectSearch
+								isConvertNumber={true}
+								options={listPriceTag?.data?.map((v: any) => ({
+									id: v?.uuid,
+									name: String(v?.amount),
+								}))}
+								data={priceTag}
+								setData={setPriceTag}
+								label={
+									<span>
+										Giá tiền áp dụng <span style={{color: 'red'}}>*</span>
+									</span>
 								}
+								placeholder='Nhập giá tiền'
 							/>
-							<label className={styles.label_check_box} htmlFor={`state_spec_customer`}>
-								Đang cung cấp
-							</label>
+						</div>
+
+						<div className='mt'>
+							<div className={styles.input_price}>
+								<input
+									id={`state_spec_customer`}
+									name='state'
+									value={form.state}
+									type='checkbox'
+									className={styles.input}
+									checked={form?.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP}
+									onChange={() =>
+										setForm((prev) => ({
+											...prev,
+											state:
+												prev.state == CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP
+													? CONFIG_STATE_SPEC_CUSTOMER.CHUA_CUNG_CAP
+													: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
+										}))
+									}
+								/>
+								<label className={styles.label_check_box} htmlFor={`state_spec_customer`}>
+									Đang cung cấp
+								</label>
+							</div>
 						</div>
 					</div>
-
 					<div className={styles.control}>
 						<div>
 							<Button p_8_24 rounded_2 grey_outline onClick={onClose}>

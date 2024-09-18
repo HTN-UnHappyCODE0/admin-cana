@@ -279,7 +279,7 @@ function UpdateCustomerExport({}: PropsUpdateCustomerExport) {
 							isSearch
 							name='companyUuid'
 							readOnly={true}
-							placeholder='Chọn công ty'
+							placeholder='Chọn KV cảng xuất khẩu'
 							value={form?.companyUuid}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
@@ -289,7 +289,7 @@ function UpdateCustomerExport({}: PropsUpdateCustomerExport) {
 							}
 							label={
 								<span>
-									Công ty <span style={{color: 'red'}}>*</span>
+									KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -302,11 +302,7 @@ function UpdateCustomerExport({}: PropsUpdateCustomerExport) {
 							value={form.taxCode || ''}
 							min={5}
 							max={255}
-							label={
-								<span>
-									Mã số thuế<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Mã số thuế</span>}
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>

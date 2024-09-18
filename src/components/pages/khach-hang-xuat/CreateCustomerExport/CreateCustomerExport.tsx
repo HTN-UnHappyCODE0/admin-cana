@@ -209,15 +209,6 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 	});
 
 	const handleSubmit = async () => {
-		if (!form.provinceId) {
-			return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
-		}
-		if (!form.districtId) {
-			return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
-		}
-		if (!form.townId) {
-			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
-		}
 		return fucnCreatePartner.mutate();
 	};
 
@@ -262,7 +253,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 						<Select
 							isSearch
 							name='companyUuid'
-							placeholder='Chọn công ty'
+							placeholder='Chọn KV cảng xuất khẩu'
 							value={form?.companyUuid}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
@@ -270,11 +261,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 									companyUuid: e.target.value,
 								}))
 							}
-							label={
-								<span>
-									Công ty <span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>KV cảng xuất khẩu</span>}
 						>
 							{listCompany?.data?.map((v: any) => (
 								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
@@ -285,11 +272,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 							value={form.taxCode || ''}
 							min={5}
 							max={255}
-							label={
-								<span>
-									Mã số thuế<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Mã số thuế</span>}
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
@@ -297,15 +280,10 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 						<Input
 							name='director'
 							value={form.director || ''}
-							isRequired
 							min={5}
 							max={255}
 							blur={true}
-							label={
-								<span>
-									Người liên hệ <span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Người liên hệ</span>}
 							placeholder='Nhập tên người liên hệ (cho khách hàng)'
 						/>
 						<Select
@@ -319,11 +297,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 									userOwenerUuid: e.target.value,
 								}))
 							}
-							label={
-								<span>
-									Quản lý mua hàng <span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Quản lý mua hàng</span>}
 						>
 							{listUser?.data?.map((v: any) => (
 								<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
@@ -337,15 +311,10 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 						<Input
 							name='phoneNumber'
 							value={form.phoneNumber || ''}
-							isRequired
 							isPhone
 							type='number'
 							blur={true}
-							label={
-								<span>
-									Số điện thoại<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Số điện thoại</span>}
 							placeholder='Nhập số điện thoại'
 						/>
 					</div>
@@ -375,11 +344,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 							name='provinceId'
 							value={form.provinceId}
 							placeholder='Chọn tỉnh/thành phố'
-							label={
-								<span>
-									Tỉnh/Thành phố<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Tỉnh/Thành phố</span>}
 						>
 							{listProvince?.data?.map((v: any) => (
 								<Option
@@ -403,11 +368,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 								name='districtId'
 								value={form.districtId}
 								placeholder='Chọn quận/huyện'
-								label={
-									<span>
-										Quận/Huyện<span style={{color: 'red'}}>*</span>
-									</span>
-								}
+								label={<span>Quận/Huyện</span>}
 							>
 								{listDistrict?.data?.map((v: any) => (
 									<Option
@@ -425,17 +386,7 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 								))}
 							</Select>
 						</div>
-						<Select
-							isSearch
-							name='townId'
-							value={form.townId}
-							placeholder='Chọn xã/phường'
-							label={
-								<span>
-									Xã/phường<span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
+						<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
 							{listTown?.data?.map((v: any) => (
 								<Option
 									key={v?.xaid}

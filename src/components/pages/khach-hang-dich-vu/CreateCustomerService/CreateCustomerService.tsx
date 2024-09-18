@@ -284,11 +284,7 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							value={form.taxCode || ''}
 							min={5}
 							max={255}
-							label={
-								<span>
-									Mã số thuế<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Mã số thuế</span>}
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>

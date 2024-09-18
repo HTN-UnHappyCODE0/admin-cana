@@ -277,7 +277,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 						<Select
 							isSearch
 							name='companyUuid'
-							placeholder='Chọn công ty'
+							placeholder='Chọn khu vực cảng xuất khẩu'
 							readOnly={true}
 							value={form?.companyUuid}
 							onChange={(e: any) =>
@@ -288,7 +288,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 							}
 							label={
 								<span>
-									Công ty <span style={{color: 'red'}}>*</span>
+									Khu vực cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -301,11 +301,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 							value={form.taxCode || ''}
 							min={5}
 							max={255}
-							label={
-								<span>
-									Mã số thuế<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Mã số thuế</span>}
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>

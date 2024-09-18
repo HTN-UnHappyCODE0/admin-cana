@@ -48,7 +48,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm đối tác' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm công ty' />
 					</div>
 				</div>
 			</div>
@@ -57,17 +57,17 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 				<DataWrapper
 					data={listPartnerDebt?.data?.items || []}
 					loading={listPartnerDebt?.isLoading}
-					noti={<Noti disableButton={true} title='Dữ liệu trống!' des='Danh sách công nợ đối tác trống!' />}
+					noti={<Noti disableButton={true} title='Dữ liệu trống!' des='Danh sách công nợ công ty trống!' />}
 				>
 					<Table
 						data={listPartnerDebt?.data?.items || []}
 						column={[
 							{
-								title: 'Mã đối tác',
+								title: 'Mã công ty',
 								render: (data: IPartnerDebt) => <>{data?.code}</>,
 							},
 							{
-								title: 'Tên đối tác',
+								title: 'Tên công ty',
 								fixedLeft: true,
 								render: (data: IPartnerDebt) => (
 									<Link href={`/nha-cung-cap/${data?.uuid}`} className={styles.link}>

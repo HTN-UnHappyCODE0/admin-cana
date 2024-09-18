@@ -146,7 +146,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					className={styles.header_title}
 				>
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
-					<p>Chi tiết đối tác {detailPartner?.name}</p>
+					<p>Chi tiết công ty {detailPartner?.name}</p>
 				</Link>
 				<div className={styles.list_btn}>
 					<Button
@@ -231,16 +231,16 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					</colgroup>
 					<tr>
 						<td>
-							<span style={{marginRight: 6}}>Tên đối tác: </span>
+							<span style={{marginRight: 6}}>Tên công ty: </span>
 							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.name || '---'}</span>
 						</td>
 						<td>
-							<span style={{marginRight: 6}}>Thuộc công ty:</span> {detailPartner?.companyUu?.name || '---'}
+							<span style={{marginRight: 6}}>KV cảng xuất khẩu:</span> {detailPartner?.companyUu?.name || '---'}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style={{marginRight: 6}}>Mã đối tác: </span>
+							<span style={{marginRight: 6}}>Mã công ty: </span>
 							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
 						</td>
 						<td>
@@ -298,7 +298,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 				<div className={styles.btn_header}>
 					<div className={styles.main_table}>
 						<h1 className={styles.list_title}>
-							Danh sách nhà cung cấp thuộc đối tác ({listCustomer?.data?.pagination?.totalCount})
+							Danh sách nhà cung cấp thuộc công ty ({listCustomer?.data?.pagination?.totalCount})
 						</h1>
 					</div>
 					<div>
@@ -407,8 +407,8 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 				title={detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa hoạt động' : 'Mở khóa hoạt động'}
 				note={
 					detailPartner?.status == CONFIG_STATUS.HOAT_DONG
-						? 'Bạn có chắc chắn muốn khóa hoạt động đối tác này?'
-						: 'Bạn có chắc chắn muốn mở khóa hoạt động đối tác này?'
+						? 'Bạn có chắc chắn muốn khóa hoạt động công ty này?'
+						: 'Bạn có chắc chắn muốn mở khóa hoạt động công ty này?'
 				}
 				onSubmit={funcChangeStatusPartner.mutate}
 			/>

@@ -105,7 +105,7 @@ function UpdateCompany({}: PropsUpdateCompany) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Cập nhật công ty thành công!',
+				msgSuccess: 'Cập nhật KV cảng xuất khẩu thành công!',
 				http: companyServices.upsertCompany({
 					uuid: _id as string,
 					name: form?.name,
@@ -144,8 +144,8 @@ function UpdateCompany({}: PropsUpdateCompany) {
 				{' '}
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Chỉnh sửa thông tin công ty</h4>
-						<p>Điền đầy đủ các thông tin công ty con</p>
+						<h4>Chỉnh sửa thông tin KV cảng xuất khẩu</h4>
+						<p>Điền đầy đủ các thông tin KV cảng xuất khẩu con</p>
 					</div>
 					<div className={styles.right}>
 						<Button href={PATH.CongTy} p_10_24 rounded_2 grey_outline>
@@ -172,10 +172,10 @@ function UpdateCompany({}: PropsUpdateCompany) {
 								max={255}
 								label={
 									<span>
-										Tên công ty <span style={{color: 'red'}}>*</span>
+										Tên KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='Nhập tên công ty'
+								placeholder='Nhập tên KV cảng xuất khẩu'
 							/>
 						</div>
 					</div>

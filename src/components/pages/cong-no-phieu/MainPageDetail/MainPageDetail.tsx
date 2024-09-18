@@ -113,7 +113,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 								unit='VND'
 							/>
 						)}
-						<ItemDashboard isLoading={isLoading} text='Đối tác' color='' value={detailDebtBill?.fromUu?.partnerUu?.name!} />
+						<ItemDashboard isLoading={isLoading} text='Công ty' color='' value={detailDebtBill?.fromUu?.partnerUu?.name!} />
 					</GridColumn>
 				</div>
 				<div className={styles.main_search}>

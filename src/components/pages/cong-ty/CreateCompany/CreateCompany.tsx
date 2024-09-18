@@ -81,7 +81,7 @@ function CreateCompany({}: PropsCreateCompany) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Thêm mới công ty thành công!',
+				msgSuccess: 'Thêm mới KV cảng xuất khẩu thành công!',
 				http: companyServices.upsertCompany({
 					uuid: '',
 					name: form?.name,
@@ -137,8 +137,8 @@ function CreateCompany({}: PropsCreateCompany) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm công ty</h4>
-						<p>Điền đầy đủ các thông tin công ty con</p>
+						<h4>Thêm KV cảng xuất khẩu</h4>
+						<p>Điền đầy đủ các thông tin KV cảng xuất khẩu con</p>
 					</div>
 					<div className={styles.right}>
 						<Button href={PATH.CongTy} p_10_24 rounded_2 grey_outline>
@@ -166,10 +166,10 @@ function CreateCompany({}: PropsCreateCompany) {
 								max={255}
 								label={
 									<span>
-										Tên công ty <span style={{color: 'red'}}>*</span>
+										Tên KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='Nhập tên công ty'
+								placeholder='Nhập tên KV cảng xuất khẩu'
 							/>
 						</div>
 					</div>

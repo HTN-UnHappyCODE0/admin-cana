@@ -160,7 +160,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Thêm mới đối tác thành công!',
+				msgSuccess: 'Thêm mới công ty thành công!',
 				http: partnerServices.upsertPartner({
 					uuid: '',
 					name: form?.name,
@@ -226,8 +226,8 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm mới đối tác</h4>
-						<p>Điền đầy đủ các thông tin đối tác</p>
+						<h4>Thêm mới công ty</h4>
+						<p>Điền đầy đủ các thông tin công ty</p>
 					</div>
 					<div className={styles.right}>
 						<Button onClick={() => router.back()} p_10_24 rounded_2 grey_outline>
@@ -252,16 +252,16 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 						blur={true}
 						label={
 							<span>
-								Tên đối tác <span style={{color: 'red'}}>*</span>
+								Tên công ty <span style={{color: 'red'}}>*</span>
 							</span>
 						}
-						placeholder='Nhập tên đối tác'
+						placeholder='Nhập tên công ty'
 					/>
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='companyUuid'
-							placeholder='Chọn công ty'
+							placeholder='Chọn khu vực cảng xuất khẩu'
 							value={form?.companyUuid}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
@@ -271,7 +271,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							}
 							label={
 								<span>
-									Công ty <span style={{color: 'red'}}>*</span>
+									Khu vực cảng xuất khẩu<span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -285,11 +285,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							value={form.taxCode || ''}
 							min={5}
 							max={255}
-							label={
-								<span>
-									Mã số thuế<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Mã số thuế</span>}
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
