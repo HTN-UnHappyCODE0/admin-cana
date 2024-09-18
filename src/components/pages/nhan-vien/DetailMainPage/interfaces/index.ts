@@ -39,12 +39,7 @@ export interface IUserDetail {
 	status: number;
 	code: string;
 	fullName: string;
-	provinceOwner: {
-		uuid: string;
-		code: string;
-		name: string;
-		warehouseUu: null;
-	};
+	provinceOwner: string;
 	uuid: string;
 }
 

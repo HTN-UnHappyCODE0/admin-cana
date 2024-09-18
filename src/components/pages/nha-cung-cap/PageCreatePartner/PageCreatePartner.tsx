@@ -247,9 +247,9 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 						name='name'
 						value={form.name || ''}
 						isRequired
-						min={5}
 						max={255}
 						blur={true}
+						isUppercase
 						label={
 							<span>
 								Tên công ty <span style={{color: 'red'}}>*</span>

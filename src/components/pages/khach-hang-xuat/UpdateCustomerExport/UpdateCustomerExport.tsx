@@ -264,7 +264,6 @@ function UpdateCustomerExport({}: PropsUpdateCustomerExport) {
 						name='name'
 						value={form.name || ''}
 						isRequired
-						min={5}
 						max={255}
 						blur={true}
 						label={

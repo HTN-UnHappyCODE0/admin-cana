@@ -192,7 +192,7 @@ function MainPageCreateTruck({}: PropsMainPageCreateTruck) {
 							name='trucktype'
 							value={form.trucktype || ''}
 							isRequired
-							min={5}
+							min={3}
 							max={255}
 							type='text'
 							blur={true}

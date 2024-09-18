@@ -198,7 +198,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 							<tr>
 								<td>
 									<span>Tỉnh thành quản lý: </span>
-									{detailUser?.provinceOwner?.name || '---'}
+									{detailUser?.provinceOwner || '---'}
 								</td>
 							</tr>
 						</table>
