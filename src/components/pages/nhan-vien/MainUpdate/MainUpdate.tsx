@@ -401,11 +401,7 @@ function MainUpdate({}: PropsMainUpdate) {
 							name='provinceId'
 							value={form.provinceId}
 							placeholder='Chọn tỉnh/thành phố'
-							label={
-								<span>
-									Tỉnh/Thành phố<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Tỉnh/Thành phố</span>}
 						>
 							{listProvince?.data?.map((v: any) => (
 								<Option
@@ -429,11 +425,7 @@ function MainUpdate({}: PropsMainUpdate) {
 								name='districtId'
 								value={form.districtId}
 								placeholder='Chọn quận/huyện'
-								label={
-									<span>
-										Quận/Huyện<span style={{color: 'red'}}>*</span>
-									</span>
-								}
+								label={<span>Quận/Huyện</span>}
 							>
 								{listDistrict?.data?.map((v: any) => (
 									<Option
@@ -451,17 +443,7 @@ function MainUpdate({}: PropsMainUpdate) {
 								))}
 							</Select>
 						</div>
-						<Select
-							isSearch
-							name='townId'
-							value={form.townId}
-							placeholder='Chọn xã/phường'
-							label={
-								<span>
-									Xã/phường<span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
+						<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
 							{listTown?.data?.map((v: any) => (
 								<Option
 									key={v?.xaid}

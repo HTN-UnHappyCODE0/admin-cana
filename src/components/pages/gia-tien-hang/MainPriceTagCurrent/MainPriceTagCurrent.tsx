@@ -133,7 +133,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo nhà cung cấp, đối tác' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo nhà cung cấp, công ty' />
 					</div>
 					<div className={styles.filter}>
 						<FilterCustom
@@ -228,7 +228,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 								),
 							},
 							{
-								title: 'Đối tác',
+								title: 'Công ty',
 								render: (data: IPriceTag) => (
 									<Link href={`/nha-cung-cap/${data?.partnerUu?.uuid}`} className={styles.link}>
 										{data?.partnerUu?.name || '---'}

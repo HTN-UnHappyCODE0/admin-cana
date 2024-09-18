@@ -174,7 +174,7 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 								render: (data: IScalesStation) => <>{data?.scalesMachine?.length || 0}</>,
 							},
 							{
-								title: 'Công ty',
+								title: 'KV cảng xuất khẩu',
 								render: (data: IScalesStation) => <>{data?.companyUu?.name}</>,
 							},
 							{

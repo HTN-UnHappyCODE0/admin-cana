@@ -119,7 +119,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo nhà cung cấp, đối tác' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo nhà cung cấp, công ty' />
 					</div>
 					<div className={styles.filter}>
 						<FilterCustom
@@ -195,7 +195,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 								render: (data: IPriceTagUpdate, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Đối tác',
+								title: 'Công ty',
 								fixedLeft: true,
 								render: (data: IPriceTagUpdate) => (
 									<Link href={`/gia-tien-hang/gia-hang-chinh-sua/${data?.uuid}`} className={styles.link}>

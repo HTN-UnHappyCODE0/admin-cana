@@ -126,7 +126,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		},
 	});
 
-	const listUser = useQuery([QUERY_KEY.dropdown_nhan_vien_thi_truong, form.provinceId], {
+	const listUser = useQuery([QUERY_KEY.dropdown_nhan_vien_thi_truong], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -138,7 +138,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
-					provinceIDOwer: form.provinceId,
+					provinceIDOwer: '',
 					regencyUuid: listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Nhân viên thị trường'])
 						? listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid
 						: null,
@@ -148,7 +148,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		select(data) {
 			return data;
 		},
-		enabled: listRegency.isSuccess && !!form.provinceId,
+		enabled: listRegency.isSuccess,
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -420,9 +420,9 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 							name='partnerUuid'
 							placeholder={
 								!!_partnerUuid
-									? 'Chọn đối tác'
+									? 'Chọn công ty'
 									: TYPE_PARTNER.NCC === Number(_typeCus)
-									? 'Chọn đối tác'
+									? 'Chọn công ty'
 									: TYPE_PARTNER.KH_XUAT === Number(_typeCus)
 									? 'Chọn khách hàng xuất'
 									: 'Chọn khách hàng dịch vụ'
@@ -440,7 +440,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 										? 'Thuộc khách hàng xuất '
 										: TYPE_PARTNER.KH_DICH_VU === Number(_typeCus)
 										? 'Thuộc khách hàng dịch vụ '
-										: 'Thuộc đối tác '}
+										: 'Thuộc công ty '}
 									<span style={{color: 'red'}}>*</span>
 								</span>
 							}

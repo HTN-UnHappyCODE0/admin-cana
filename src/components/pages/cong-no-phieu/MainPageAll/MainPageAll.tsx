@@ -136,7 +136,7 @@ function MainPageAll({}: PropsMainPageAll) {
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Đối tác'
+							name='Công ty'
 							query='_partnerUuid'
 							listFilter={listPartner?.data?.map((v: any) => ({
 								id: v?.uuid,
@@ -200,7 +200,7 @@ function MainPageAll({}: PropsMainPageAll) {
 								),
 							},
 							{
-								title: 'Đối tác',
+								title: 'Công ty',
 								render: (data: IDebtBill) => <>{data?.fromUu?.partnerUu?.name || '---'}</>,
 							},
 							{

@@ -14,7 +14,6 @@ import {toastWarn} from '~/common/funcs/toast';
 
 import regencyServices from '~/services/regencyServices';
 import userServices from '~/services/userServices';
-import AvatarChange from '~/components/common/AvatarChange';
 
 function CreateAccountFromUser({dataCreateAccount, onClose}: PropsCreateAccountFromUser) {
 	const [form, setForm] = useState<{
@@ -98,9 +97,6 @@ function CreateAccountFromUser({dataCreateAccount, onClose}: PropsCreateAccountF
 			<h4>Cấp tài khoản</h4>
 			<p className={styles.p}>Điền đầy đủ thông tin cân thiết</p>
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
-				<div className={'mt'}>
-					<AvatarChange path='' name='avatar' onSetFile={(file) => setFile(file)} />
-				</div>
 				<div className={'mt'}>
 					<Input
 						readOnly
