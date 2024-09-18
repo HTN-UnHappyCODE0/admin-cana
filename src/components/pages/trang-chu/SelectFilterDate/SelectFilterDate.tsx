@@ -56,7 +56,7 @@ function SelectFilterDate({date, setDate, setTypeDate, typeDate, isOptionDateAll
 					<Calendar size={16} color='#6F767E' />
 					<p>
 						<span style={{fontWeight: 600, marginRight: 4}}>Thời gian: </span>
-						{Number(typeDate) == 8 ? (
+						{Number(typeDate) == TYPE_DATE.LUA_CHON ? (
 							<span className={styles.value}>
 								<Moment date={date?.from!} format='DD/MM/YYYY' /> - <Moment date={date?.to!} format='DD/MM/YYYY' />
 							</span>

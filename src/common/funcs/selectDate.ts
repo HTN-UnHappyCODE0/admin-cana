@@ -63,6 +63,13 @@ export function getDateRange(range: number) {
 
 			return {from: firstDayOfYear, to: lastDayOfYear};
 
+		// 7 ngày trước
+		case TYPE_DATE.LAST_7_DAYS:
+			const firstDayLast7Days = new Date(today);
+			firstDayLast7Days.setDate(today.getDate() - 7);
+
+			return {from: firstDayLast7Days, to: today};
+
 		default:
 			return {from: null, to: null};
 	}
@@ -87,6 +94,9 @@ export function getTextDateRange(range: number | null) {
 
 		case TYPE_DATE.LAST_MONTH:
 			return 'Tháng trước';
+
+		case TYPE_DATE.LAST_7_DAYS:
+			return '7 ngày trước';
 
 		// Năm nay
 		case TYPE_DATE.THIS_YEAR:

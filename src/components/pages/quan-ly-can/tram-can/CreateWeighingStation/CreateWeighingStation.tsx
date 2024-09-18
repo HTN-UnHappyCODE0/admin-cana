@@ -133,7 +133,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 
 	const handleSubmit = async () => {
 		if (!form.companyUuid) {
-			return toastWarn({msg: 'Vui lòng chọn công ty!'});
+			return toastWarn({msg: 'Vui lòng chọn khu vực cảng xuất khẩu!'});
 		}
 		if (!form.provinceId) {
 			return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
@@ -196,7 +196,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 								isSearch
 								name='companyUuid'
 								value={form.companyUuid}
-								placeholder='Chọn công ty'
+								placeholder='Chọn khu vực cảng xuất khẩu'
 								onChange={(e) =>
 									setForm((prev: any) => ({
 										...prev,
@@ -205,7 +205,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 								}
 								label={
 									<span>
-										Thuộc công ty <span style={{color: 'red'}}>*</span>
+										Khu vực cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>

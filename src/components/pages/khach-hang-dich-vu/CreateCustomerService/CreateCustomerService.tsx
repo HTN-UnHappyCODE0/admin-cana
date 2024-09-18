@@ -247,7 +247,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 						name='name'
 						value={form.name || ''}
 						isRequired
-						min={5}
 						max={255}
 						blur={true}
 						label={
@@ -261,7 +260,7 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 						<Select
 							isSearch
 							name='companyUuid'
-							placeholder='Chọn công ty'
+							placeholder='Chọn khu vực cảng xuất khẩu'
 							value={form?.companyUuid}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
@@ -271,7 +270,7 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							}
 							label={
 								<span>
-									Công ty <span style={{color: 'red'}}>*</span>
+									Khu vực cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>

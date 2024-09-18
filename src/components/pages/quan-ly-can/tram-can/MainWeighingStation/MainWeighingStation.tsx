@@ -104,7 +104,7 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 					<div style={{minWidth: '240px'}}>
 						<FilterCustom
 							isSearch
-							name='Công ty'
+							name='KV cảng xuất khẩu'
 							query='_companyUuid'
 							listFilter={listCompany?.data?.map((v: any) => ({
 								id: v?.uuid,

@@ -13,12 +13,7 @@ export interface IUser {
 	account: any;
 	linkImage: string;
 	regencyUu: IRegencyUu;
-	provinceOwner: {
-		code: string;
-		name: string;
-		uuid: string;
-		warehouseUu: string | null;
-	};
+	provinceOwner: string;
 	status: number;
 	code: string;
 	fullName: string;

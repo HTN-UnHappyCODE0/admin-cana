@@ -263,7 +263,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 						name='name'
 						value={form.name || ''}
 						isRequired
-						min={5}
+						isUppercase
 						max={255}
 						blur={true}
 						label={

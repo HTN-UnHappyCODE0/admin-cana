@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 
 import {IFormCreate, PropsMainCreate} from './interfaces';
 import styles from './MainCreate.module.scss';
@@ -42,20 +42,6 @@ function MainCreate({}: PropsMainCreate) {
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listProvince({
-					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-	});
-
-	const listProvinceOwner = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho_quan_ly], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -198,7 +184,10 @@ function MainCreate({}: PropsMainCreate) {
 	});
 
 	const isReadOnly = useMemo(() => {
-		return !!(form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid);
+		return !!(
+			form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid ||
+			form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid
+		);
 	}, [form.regencyUuid, listRegency]);
 
 	const handleSubmit = async () => {
@@ -210,7 +199,7 @@ function MainCreate({}: PropsMainCreate) {
 		}
 		if (isReadOnly) {
 			if (!form.provinceOwnerId) {
-				return toastWarn({msg: 'Vui lòng chọn khu vực quản lý!'});
+				return toastWarn({msg: 'Vui lòng nhập khu vực quản lý!'});
 			}
 			if (!form.ownerUuid) {
 				return toastWarn({msg: 'Vui lòng chọn người quản lý!'});
@@ -292,56 +281,43 @@ function MainCreate({}: PropsMainCreate) {
 						</Select>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
-						<div>
-							<Select
-								isSearch
-								name='ownerUuid'
-								readOnly={isReadOnly == false}
-								placeholder='Chọn người quản lý'
-								value={form?.ownerUuid}
-								onChange={(e: any) =>
-									setForm((prev: any) => ({
-										...prev,
-										ownerUuid: e.target.value,
-									}))
-								}
-								label={
-									<span>
-										Người quản lý <span style={{color: 'red'}}>*</span>
-									</span>
-								}
-							>
-								{listUserManager?.data?.map((v: any) => (
-									<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
-								))}
-							</Select>
-						</div>
 						<Select
 							isSearch
-							name='provinceOwnerId'
-							value={form.provinceOwnerId}
+							name='ownerUuid'
 							readOnly={isReadOnly == false}
-							placeholder='Khu vực quản lý'
+							placeholder='Chọn người quản lý'
+							value={form?.ownerUuid}
+							onChange={(e: any) =>
+								setForm((prev: any) => ({
+									...prev,
+									ownerUuid: e.target.value,
+								}))
+							}
+							label={
+								<span>
+									Người quản lý <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listUserManager?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
+							))}
+						</Select>
+
+						<Input
+							name='provinceOwnerId'
+							value={form.provinceOwnerId || ''}
+							readOnly={isReadOnly == false}
+							min={5}
+							max={255}
+							blur={true}
 							label={
 								<span>
 									Khu vực quản lý <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-						>
-							{listProvinceOwner?.data?.map((v: any) => (
-								<Option
-									key={v?.matp}
-									value={v?.matp}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											provinceOwnerId: v?.matp,
-										}))
-									}
-								/>
-							))}
-						</Select>
+							placeholder='Nhập khu vực quản lý'
+						/>
 					</div>
 					<div className={clsx('mt', 'col_3')}>
 						<Select

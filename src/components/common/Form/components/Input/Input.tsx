@@ -103,6 +103,13 @@ function Input({
 			}));
 		}
 
+		if (props?.isUppercase) {
+			return data.setForm((prev: any) => ({
+				...prev,
+				[name]: value.toUpperCase(),
+			}));
+		}
+
 		return data.setForm((prev: any) => ({
 			...prev,
 			[name]: value,

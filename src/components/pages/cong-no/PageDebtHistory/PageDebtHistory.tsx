@@ -15,6 +15,7 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	STATUS_TRANSACTION,
+	TYPE_DATE,
 	TYPE_PARTNER,
 	TYPE_TRANSACTION,
 } from '~/constants/config/enum';
@@ -132,7 +133,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 						/>
 					</div>
 					<div className={styles.filter}>
-						<DateRangerCustom titleTime='Thời gian' />
+						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.LAST_7_DAYS} />
 					</div>
 					{/* <div className={styles.filter}>
 						<FilterCustom

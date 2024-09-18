@@ -20,6 +20,7 @@ import {
 	QUERY_KEY,
 	REGENCY_NAME,
 	STATUS_BILL,
+	TYPE_DATE,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
 import regencyServices from '~/services/regencyServices';
@@ -159,7 +160,7 @@ function MainPageKCS({}: PropsMainPageKCS) {
 					</div>
 
 					<div className={styles.filter}>
-						<DateRangerCustom titleTime='Thời gian' />
+						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.LAST_7_DAYS} />
 					</div>
 				</div>
 			</div>

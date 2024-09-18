@@ -263,7 +263,6 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 						name='name'
 						value={form.name || ''}
 						isRequired
-						min={5}
 						max={255}
 						blur={true}
 						label={
