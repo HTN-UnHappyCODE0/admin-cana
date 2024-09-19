@@ -20,12 +20,13 @@ import TagStatus from '~/components/common/TagStatus';
 import FilterCustom from '~/components/common/FilterCustom';
 import PopupUpdateAccount from '../PopupUpdateAccount';
 import Popup from '~/components/common/Popup';
+import regencyServices from '~/services/regencyServices';
 
 function MainPageAccount({}: PropsMainPageAccount) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _status, _roleUuid} = router.query;
+	const {_page, _pageSize, _keyword, _status, _roleUuid, _regencyUuid} = router.query;
 
 	const [dataStatus, setDataStatus] = useState<IAccount | null>(null);
 	const [dataUpdateAccount, setDataUpdateAccount] = useState<IAccount | null>(null);
@@ -47,6 +48,25 @@ function MainPageAccount({}: PropsMainPageAccount) {
 				setDataStatus(null);
 				queryClient.invalidateQueries([QUERY_KEY.table_tai_khoan]);
 			}
+		},
+	});
+
+	const listRegency = useQuery([QUERY_KEY.dropdown_chuc_vu], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: regencyServices.listRegency({
+					page: 1,
+					pageSize: 20,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
 		},
 	});
 
@@ -93,6 +113,18 @@ function MainPageAccount({}: PropsMainPageAccount) {
 									name: 'Bị khóa',
 								},
 							]}
+						/>
+					</div>
+
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Chức vụ'
+							query='_regencyUuid'
+							listFilter={listRegency?.data?.map((v: any) => ({
+								id: v?.uuid,
+								name: v?.name,
+							}))}
 						/>
 					</div>
 				</div>
