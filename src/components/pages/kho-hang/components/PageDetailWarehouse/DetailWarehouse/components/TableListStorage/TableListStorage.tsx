@@ -12,7 +12,6 @@ import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY} from '~/c
 import {httpRequest} from '~/services';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Link from 'next/link';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import storageServices from '~/services/storageServices';
 import {convertWeight} from '~/common/funcs/optionConvert';
 
@@ -66,17 +65,17 @@ function TableListStorage({}: PropsTableListStorage) {
 							render: (data: IDataListStorage) => <span>{data?.name || '---'}</span>,
 						},
 						{
+							title: 'Quốc gia',
+							render: (data: IDataListStorage) => <span>{data?.qualityUu?.name || '---'}</span>,
+						},
+						{
 							title: 'Loại hàng',
 							render: (data: IDataListStorage) => <span>{data?.productUu?.name || '---'}</span>,
 						},
 						{
-							title: 'Quốc gia',
-							render: (data: IDataListStorage) => <span>{data?.qualityUu?.name || '---'}</span>,
+							title: 'Quy cách',
+							render: (data: IDataListStorage) => <span>{data?.specificationsUu?.name || '---'}</span>,
 						},
-						// {
-						// 	title: 'Khách hàng',
-						// 	render: (data: IDataListStorage) => <span>{data?.countCustomer || 0}</span>,
-						// },
 						{
 							title: 'Tổng lượng tươi (tấn)',
 							render: (data: IDataListStorage) => (
