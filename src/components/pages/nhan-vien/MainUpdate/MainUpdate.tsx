@@ -229,10 +229,12 @@ function MainUpdate({}: PropsMainUpdate) {
 	});
 
 	const isReadOnly = useMemo(() => {
-		return !!(
-			form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid ||
-			form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid
-		);
+		return {
+			['Quản lý nhập hàng']:
+				form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid,
+			['Nhân viên thị trường']:
+				form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid,
+		};
 	}, [form.regencyUuid, listRegency]);
 
 	const handleSubmit = async () => {
@@ -242,14 +244,22 @@ function MainUpdate({}: PropsMainUpdate) {
 		if (!form.birthDay) {
 			return toastWarn({msg: 'Vui lòng chọn ngày sinh!'});
 		}
-		if (isReadOnly) {
-			if (!form.provinceOwnerId) {
-				return toastWarn({msg: 'Vui lòng nhập khu vực quản lý!'});
-			}
+		if (
+			form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid &&
+			!form.provinceOwnerId
+		) {
+			return toastWarn({msg: 'Vui lòng nhập khu vực quản lý!'});
+		}
+
+		if (form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid) {
 			if (!form.ownerUuid) {
 				return toastWarn({msg: 'Vui lòng chọn người quản lý!'});
 			}
+			if (!form.provinceOwnerId) {
+				return toastWarn({msg: 'Vui lòng nhập khu vực quản lý!'});
+			}
 		}
+
 		const today = new Date(timeSubmit(new Date())!);
 		const birthDay = new Date(form.birthDay);
 
@@ -338,7 +348,7 @@ function MainUpdate({}: PropsMainUpdate) {
 						<Select
 							isSearch
 							name='ownerUuid'
-							readOnly={isReadOnly == false}
+							readOnly={isReadOnly?.['Quản lý nhập hàng'] || !isReadOnly?.['Nhân viên thị trường']}
 							placeholder='Chọn người quản lý'
 							value={form?.ownerUuid}
 							onChange={(e: any) =>
@@ -360,7 +370,7 @@ function MainUpdate({}: PropsMainUpdate) {
 						<Input
 							name='provinceOwnerId'
 							value={form.provinceOwnerId || ''}
-							readOnly={isReadOnly == false}
+							readOnly={!isReadOnly?.['Quản lý nhập hàng'] && !isReadOnly?.['Nhân viên thị trường']}
 							min={5}
 							max={255}
 							blur={true}
