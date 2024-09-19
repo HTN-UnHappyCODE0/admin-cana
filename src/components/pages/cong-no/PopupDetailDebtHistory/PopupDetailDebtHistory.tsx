@@ -3,7 +3,6 @@ import {IDetailTransaction, PropsPopupDetailDebtHistory} from './interfaces';
 import styles from './PopupDetailDebtHistory.module.scss';
 import {IoClose} from 'react-icons/io5';
 import {useRouter} from 'next/router';
-import SliderDebt from '../SliderDebt';
 import {useQuery} from '@tanstack/react-query';
 import {QUERY_KEY, TYPE_TRANSACTION} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
@@ -11,6 +10,7 @@ import transactionServices from '~/services/transactionServices';
 import Moment from 'react-moment';
 import {convertCoin} from '~/common/funcs/convertCoin';
 import StatePaymentMode from '../StatePaymentMode';
+import SliderDebt from '~/components/common/SliderDebt';
 
 function PopupDetailDebtHistory({onClose}: PropsPopupDetailDebtHistory) {
 	const router = useRouter();
