@@ -7,10 +7,10 @@ import {useQuery} from '@tanstack/react-query';
 import {QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 
-import SliderDebt from '../SliderDebt';
 import storageServices from '~/services/storageServices';
 import Moment from 'react-moment';
 import {convertWeight} from '~/common/funcs/optionConvert';
+import SliderDebt from '~/components/common/SliderDebt';
 
 function PopupTableHistoryInventory({onClose}: PropsPopupTableHistoryInventory) {
 	const router = useRouter();

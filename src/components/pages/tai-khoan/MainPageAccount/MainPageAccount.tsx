@@ -21,12 +21,14 @@ import FilterCustom from '~/components/common/FilterCustom';
 import PopupUpdateAccount from '../PopupUpdateAccount';
 import Popup from '~/components/common/Popup';
 import regencyServices from '~/services/regencyServices';
+import ImageFill from '~/components/common/ImageFill';
+import Link from 'next/link';
 
 function MainPageAccount({}: PropsMainPageAccount) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _status, _roleUuid, _regencyUuid} = router.query;
+	const {_page, _pageSize, _keyword, _status, _regencyUuid} = router.query;
 
 	const [dataStatus, setDataStatus] = useState<IAccount | null>(null);
 	const [dataUpdateAccount, setDataUpdateAccount] = useState<IAccount | null>(null);
@@ -70,7 +72,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 		},
 	});
 
-	const listAccount = useQuery([QUERY_KEY.table_tai_khoan, _page, _pageSize, _keyword, _status, _roleUuid], {
+	const listAccount = useQuery([QUERY_KEY.table_tai_khoan, _page, _pageSize, _keyword, _status, _regencyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isList: true,
@@ -82,7 +84,8 @@ function MainPageAccount({}: PropsMainPageAccount) {
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					status: !!_status ? Number(_status) : null,
-					roleUuid: (_roleUuid as string) || '',
+					roleUuid: '',
+					regencyUuid: (_regencyUuid as string) || '',
 				}),
 			}),
 		select(data) {
@@ -146,18 +149,20 @@ function MainPageAccount({}: PropsMainPageAccount) {
 							{
 								title: 'Mã người dùng',
 								fixedLeft: true,
-								render: (data: IAccount) => <>{data.user?.code || '---'}</>,
+								render: (data: IAccount) => <p style={{fontWeight: 600}}>{data.user?.code || '---'}</p>,
 							},
 							{
 								title: 'Tên người dùng',
 								render: (data: IAccount) => (
 									<div className={styles.info}>
-										{/* <ImageFill
-											src={`${process.env.NEXT_PUBLIC_AVATAR}/${data.user?.linkImage}`}
+										<ImageFill
+											src={`${process.env.NEXT_PUBLIC_IMAGE}/${data.user?.linkImage}`}
 											alt='avatar'
 											className={styles.image}
-										/> */}
-										<p>{data.user?.fullName || '---'}</p>
+										/>
+										<Link className={styles.link} href={`/nhan-vien/${data?.user?.uuid}`}>
+											{data.user?.fullName || '---'}
+										</Link>
 									</div>
 								),
 							},
@@ -217,7 +222,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 					currentPage={Number(_page) || 1}
 					total={listAccount?.data?.pagination?.totalCount}
 					pageSize={Number(_pageSize) || 20}
-					dependencies={[_pageSize, _keyword, _status, _roleUuid]}
+					dependencies={[_pageSize, _keyword, _status, _regencyUuid]}
 				/>
 			</div>
 			<Popup open={!!dataUpdateAccount} onClose={() => setDataUpdateAccount(null)}>

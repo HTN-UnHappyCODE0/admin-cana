@@ -22,3 +22,26 @@
 .table {
 	margin-top: 24px;
 }
+
+.info {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.image {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+}
+
+.link {
+	font-weight: 600;
+	color: var(--primary);
+	transition: 0.3s;
+
+	&:hover {
+		opacity: 0.8;
+		text-decoration: underline;
+	}
+}

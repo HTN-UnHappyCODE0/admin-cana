@@ -12,6 +12,7 @@ const accountServices = {
 			typeFind: CONFIG_TYPE_FIND;
 			isPaging: CONFIG_PAGING;
 			roleUuid: string;
+			regencyUuid?: string;
 		},
 		tokenAxios?: any
 	) => {
