@@ -28,7 +28,7 @@ function FormUpdatePosition({dataUpdate, onClose}: PropsFormUpdatePosition) {
 		}
 	}, [dataUpdate]);
 
-	const fucnCreatePosition = useMutation({
+	const funcCreatePosition = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -58,13 +58,13 @@ function FormUpdatePosition({dataUpdate, onClose}: PropsFormUpdatePosition) {
 			return toastWarn({msg: 'Vui lòng nhập tên chức vụ!'});
 		}
 
-		return fucnCreatePosition.mutate();
+		return funcCreatePosition.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
 			<h4>Chỉnh sửa chức vụ</h4>
-			<Loading loading={fucnCreatePosition.isLoading} />
+			<Loading loading={funcCreatePosition.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<Input
 					type='text'

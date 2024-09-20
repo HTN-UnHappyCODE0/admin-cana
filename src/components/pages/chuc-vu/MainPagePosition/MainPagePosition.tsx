@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {IPosition, PropsMainPagePosition} from './interfaces';
 import styles from './MainPagePosition.module.scss';
 import Search from '~/components/common/Search';
@@ -28,6 +28,8 @@ import FormUpdatePosition from '../FormUpdatePosition';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
+import FlexLayout from '~/components/layouts/FlexLayout';
+import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
 function MainPagePosition({}: PropsMainPagePosition) {
 	const router = useRouter();
 
@@ -58,7 +60,7 @@ function MainPagePosition({}: PropsMainPagePosition) {
 		},
 	});
 
-	const fucnChangeStatus = useMutation({
+	const funcChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -79,145 +81,148 @@ function MainPagePosition({}: PropsMainPagePosition) {
 	});
 
 	return (
-		<div className={styles.container}>
-			<Loading loading={fucnChangeStatus.isLoading} />
-			<div className={styles.filter}>
-				<div className={styles.header}>
-					<div className={styles.main_search}>
-						<div className={styles.search}>
-							<Search keyName='_keyword' placeholder='Tìm kiếm theo tên chức vụ' />
+		<Fragment>
+			<FlexLayout>
+				<Loading loading={funcChangeStatus.isLoading} />
+				<div className={styles.filter}>
+					<div className={styles.header}>
+						<div className={styles.main_search}>
+							<div className={styles.search}>
+								<Search keyName='_keyword' placeholder='Tìm kiếm theo tên chức vụ' />
+							</div>
+							<div className={styles.filter}>
+								<FilterCustom
+									isSearch
+									name='Trạng thái'
+									query='_status'
+									listFilter={[
+										{
+											id: CONFIG_STATUS.HOAT_DONG,
+											name: 'Đang hoạt động',
+										},
+										{
+											id: CONFIG_STATUS.BI_KHOA,
+											name: 'Bị khóa',
+										},
+									]}
+								/>
+							</div>
 						</div>
-						<div className={styles.filter}>
-							<FilterCustom
-								isSearch
-								name='Trạng thái'
-								query='_status'
-								listFilter={[
-									{
-										id: CONFIG_STATUS.HOAT_DONG,
-										name: 'Đang hoạt động',
-									},
-									{
-										id: CONFIG_STATUS.BI_KHOA,
-										name: 'Bị khóa',
-									},
-								]}
-							/>
+						<div className={styles.btn} onClick={() => setOpenCreate(true)}>
+							<Button p_8_16 rounded_2 icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}>
+								Thêm chức vụ
+							</Button>
 						</div>
-					</div>
-					<div className={styles.btn} onClick={() => setOpenCreate(true)}>
-						<Button p_8_16 rounded_2 icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}>
-							Thêm chức vụ
-						</Button>
 					</div>
 				</div>
-			</div>
-			<div className={styles.table}>
-				<DataWrapper
-					data={listRegency?.data?.items || []}
-					loading={listRegency.isLoading}
-					noti={
-						<Noti
-							titleButton='Thêm chức vụ'
-							onClick={() => setOpenCreate(true)}
-							des='Hiện tại chưa có chức vụ nào, thêm ngay?'
-						/>
-					}
-				>
-					<Table
+				<FullColumnFlex>
+					<DataWrapper
 						data={listRegency?.data?.items || []}
-						column={[
-							{
-								title: 'STT',
-								render: (data: IPosition, index: number) => <>{index + 1}</>,
-							},
-							{
-								title: 'Tên chức vụ',
-								fixedLeft: true,
-								render: (data: IPosition) => <>{data?.name || '---'}</>,
-							},
-							{
-								title: 'Ghi chú',
-								render: (data: IPosition) => (
-									<TippyHeadless
-										maxWidth={'100%'}
-										interactive
-										onClickOutside={() => setUuidDescription('')}
-										visible={uuidDescription == data?.uuid}
-										placement='bottom'
-										render={(attrs) => (
-											<div className={styles.main_description}>
-												<p>{data?.description}</p>
-											</div>
-										)}
-									>
-										<Tippy content='Xem chi tiết mô tả'>
-											<p
-												onClick={() => {
-													if (!data.description) {
-														return;
-													} else {
-														setUuidDescription(uuidDescription ? '' : data.uuid);
-													}
-												}}
-												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
-											>
-												{data?.description || '---'}
-											</p>
-										</Tippy>
-									</TippyHeadless>
-								),
-							},
-							{
-								title: 'Thời gian tạo',
-								render: (data: IPosition) =>
-									data?.created ? <Moment date={data.created} format='HH:mm - DD/MM/YYYY' /> : '---',
-							},
+						loading={listRegency.isLoading}
+						noti={
+							<Noti
+								titleButton='Thêm chức vụ'
+								onClick={() => setOpenCreate(true)}
+								des='Hiện tại chưa có chức vụ nào, thêm ngay?'
+							/>
+						}
+					>
+						<Table
+							fixedHeader={true}
+							data={listRegency?.data?.items || []}
+							column={[
+								{
+									title: 'STT',
+									render: (data: IPosition, index: number) => <>{index + 1}</>,
+								},
+								{
+									title: 'Tên chức vụ',
+									fixedLeft: true,
+									render: (data: IPosition) => <>{data?.name || '---'}</>,
+								},
+								{
+									title: 'Ghi chú',
+									render: (data: IPosition) => (
+										<TippyHeadless
+											maxWidth={'100%'}
+											interactive
+											onClickOutside={() => setUuidDescription('')}
+											visible={uuidDescription == data?.uuid}
+											placement='bottom'
+											render={(attrs) => (
+												<div className={styles.main_description}>
+													<p>{data?.description}</p>
+												</div>
+											)}
+										>
+											<Tippy content='Xem chi tiết mô tả'>
+												<p
+													onClick={() => {
+														if (!data.description) {
+															return;
+														} else {
+															setUuidDescription(uuidDescription ? '' : data.uuid);
+														}
+													}}
+													className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
+												>
+													{data?.description || '---'}
+												</p>
+											</Tippy>
+										</TippyHeadless>
+									),
+								},
+								{
+									title: 'Thời gian tạo',
+									render: (data: IPosition) =>
+										data?.created ? <Moment date={data.created} format='HH:mm - DD/MM/YYYY' /> : '---',
+								},
 
-							{
-								title: 'Trạng thái',
-								render: (data: IPosition) => <TagStatus status={data.status} />,
-							},
-							{
-								title: 'Tác vụ',
-								fixedRight: true,
-								render: (data: IPosition) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-										<IconCustom
-											edit
-											icon={<LuPencil fontSize={20} fontWeight={600} />}
-											tooltip='Chỉnh sửa'
-											color='#777E90'
-											onClick={() => setDataUpdate(data)}
-										/>
-										<IconCustom
-											lock
-											icon={
-												data?.status == CONFIG_STATUS.HOAT_DONG ? (
-													<HiOutlineLockClosed size='22' />
-												) : (
-													<HiOutlineLockOpen size='22' />
-												)
-											}
-											tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-											color='#777E90'
-											onClick={() => {
-												setDataStatus(data);
-											}}
-										/>
-									</div>
-								),
-							},
-						]}
+								{
+									title: 'Trạng thái',
+									render: (data: IPosition) => <TagStatus status={data.status} />,
+								},
+								{
+									title: 'Tác vụ',
+									fixedRight: true,
+									render: (data: IPosition) => (
+										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+											<IconCustom
+												edit
+												icon={<LuPencil fontSize={20} fontWeight={600} />}
+												tooltip='Chỉnh sửa'
+												color='#777E90'
+												onClick={() => setDataUpdate(data)}
+											/>
+											<IconCustom
+												lock
+												icon={
+													data?.status == CONFIG_STATUS.HOAT_DONG ? (
+														<HiOutlineLockClosed size='22' />
+													) : (
+														<HiOutlineLockOpen size='22' />
+													)
+												}
+												tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+												color='#777E90'
+												onClick={() => {
+													setDataStatus(data);
+												}}
+											/>
+										</div>
+									),
+								},
+							]}
+						/>
+					</DataWrapper>
+					<Pagination
+						currentPage={Number(_page) || 1}
+						total={listRegency?.data?.pagination?.totalCount}
+						pageSize={Number(_pageSize) || 20}
+						dependencies={[_pageSize, _keyword, _status]}
 					/>
-				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					total={listRegency?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 20}
-					dependencies={[_pageSize, _keyword, _status]}
-				/>
-			</div>
+				</FullColumnFlex>
+			</FlexLayout>
 
 			<Popup open={openCreate} onClose={() => setOpenCreate(false)}>
 				<FormCreatePosition onClose={() => setOpenCreate(false)} />
@@ -236,9 +241,9 @@ function MainPagePosition({}: PropsMainPagePosition) {
 						? 'Bạn có chắc chắn muốn khóa hoạt động chức vụ này?'
 						: 'Bạn có chắc chắn muốn mở khóa hoạt động chức vụ này?'
 				}
-				onSubmit={fucnChangeStatus.mutate}
+				onSubmit={funcChangeStatus.mutate}
 			/>
-		</div>
+		</Fragment>
 	);
 }
 

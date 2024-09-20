@@ -281,7 +281,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		},
 	});
 
-	const fucnUpdateBatchBill = useMutation({
+	const funcUpdateBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -360,7 +360,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		) {
 			return setOpenWarning(true);
 		} else {
-			return fucnUpdateBatchBill.mutate();
+			return funcUpdateBatchBill.mutate();
 		}
 	};
 
@@ -369,12 +369,12 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 			return toastWarn({msg: 'Vui lòng nhập lý do thay đổi!'});
 		}
 
-		return fucnUpdateBatchBill.mutate();
+		return funcUpdateBatchBill.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnUpdateBatchBill.isLoading} />
+			<Loading loading={funcUpdateBatchBill.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

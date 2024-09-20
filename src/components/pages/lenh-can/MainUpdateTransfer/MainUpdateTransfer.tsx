@@ -279,7 +279,7 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 		enabled: !!form.warehouseToUuid,
 	});
 
-	const fucnUpdateBatchBill = useMutation({
+	const funcUpdateBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -354,12 +354,12 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 				return toastWarn({msg: 'Ngày dự kiến không hợp lệ!'});
 			}
 		}
-		return fucnUpdateBatchBill.mutate();
+		return funcUpdateBatchBill.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnUpdateBatchBill.isLoading} />
+			<Loading loading={funcUpdateBatchBill.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

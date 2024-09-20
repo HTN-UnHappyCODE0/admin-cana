@@ -36,7 +36,7 @@ function FormUpdateProductType({dataUpdateProductType, onClose}: PropsFormUpdate
 		});
 	}, [dataUpdateProductType]);
 
-	const fucnUpdateProductType = useMutation({
+	const funcUpdateProductType = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -76,12 +76,12 @@ function FormUpdateProductType({dataUpdateProductType, onClose}: PropsFormUpdate
 			});
 		}
 
-		return fucnUpdateProductType.mutate();
+		return funcUpdateProductType.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnUpdateProductType.isLoading} />
+			<Loading loading={funcUpdateProductType.isLoading} />
 			<h4>Chỉnh sửa loại gỗ</h4>
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={clsx('mb')}>

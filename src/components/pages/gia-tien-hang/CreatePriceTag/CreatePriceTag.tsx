@@ -143,7 +143,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 		}
 	};
 
-	const fucnAddSpecification = useMutation({
+	const funcAddSpecification = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -193,7 +193,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnAddSpecification.isLoading} />
+			<Loading loading={funcAddSpecification.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
@@ -374,7 +374,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 				onClose={() => setOpenWarning(false)}
 				onSubmit={() => {
 					setOpenWarning(false);
-					fucnAddSpecification.mutate();
+					funcAddSpecification.mutate();
 				}}
 			/>
 		</div>

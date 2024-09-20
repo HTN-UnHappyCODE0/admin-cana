@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {ICompany, PropsPageCompany} from './interfaces';
 import styles from './PageCompany.module.scss';
 import Search from '~/components/common/Search';
@@ -25,6 +25,8 @@ import companyServices from '~/services/companyServices';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
+import FlexLayout from '~/components/layouts/FlexLayout';
+import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
 function PageCompany({}: PropsPageCompany) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
@@ -74,160 +76,164 @@ function PageCompany({}: PropsPageCompany) {
 	});
 
 	return (
-		<div className={styles.container}>
-			<Loading loading={funcChangeStatus.isLoading} />
-			<div className={styles.header}>
-				<div className={styles.main_search}>
-					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên KV cảng xuất khẩu' />
+		<Fragment>
+			<FlexLayout>
+				<Loading loading={funcChangeStatus.isLoading} />
+				<div className={styles.header}>
+					<div className={styles.main_search}>
+						<div className={styles.search}>
+							<Search keyName='_keyword' placeholder='Tìm kiếm theo tên KV cảng xuất khẩu' />
+						</div>
+
+						<div className={styles.filter}>
+							<FilterCustom
+								isSearch
+								name='Trạng thái'
+								query='_status'
+								listFilter={[
+									{
+										id: CONFIG_STATUS.BI_KHOA,
+										name: 'Bị khóa',
+									},
+									{
+										id: CONFIG_STATUS.HOAT_DONG,
+										name: 'Hoạt động',
+									},
+								]}
+							/>
+						</div>
 					</div>
 
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Trạng thái'
-							query='_status'
-							listFilter={[
+					<div className={styles.btn}>
+						<Button
+							href={PATH.ThemMoiCongTy}
+							p_8_16
+							rounded_2
+							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
+						>
+							Thêm KV cảng xuất khẩu
+						</Button>
+					</div>
+				</div>
+
+				<FullColumnFlex>
+					<DataWrapper
+						data={listCompany?.data?.items || []}
+						loading={listCompany?.isLoading}
+						noti={
+							<Noti
+								titleButton='Thêm KV cảng xuất khẩu'
+								onClick={() => router.push(PATH.ThemMoiCongTy)}
+								des='Hiện tại chưa có KV cảng xuất khẩu nào, thêm ngay?'
+							/>
+						}
+					>
+						<Table
+							fixedHeader={true}
+							data={listCompany?.data?.items || []}
+							column={[
 								{
-									id: CONFIG_STATUS.BI_KHOA,
-									name: 'Bị khóa',
+									title: 'STT',
+									render: (data: ICompany, index: number) => <>{index + 1}</>,
+								},
+
+								{
+									title: 'Tên KV cảng xuất khẩu',
+									fixedLeft: true,
+									render: (data: ICompany) => <>{data?.name || '---'}</>,
+								},
+
+								{
+									title: 'Số điện thoại',
+									render: (data: ICompany) => <>{data?.phoneNumber || '---'}</>,
 								},
 								{
-									id: CONFIG_STATUS.HOAT_DONG,
-									name: 'Hoạt động',
+									title: 'Người liên hệ',
+									render: (data: ICompany) => <>{data?.dirrector || '---'}</>,
+								},
+								{
+									title: 'Địa chỉ chi tiết',
+									render: (data: ICompany) => <>{data?.address || '---'}</>,
+								},
+								{
+									title: 'Ghi chú',
+									render: (data: ICompany) => (
+										<TippyHeadless
+											maxWidth={'100%'}
+											interactive
+											onClickOutside={() => setUuidDescription('')}
+											visible={uuidDescription == data?.uuid}
+											placement='bottom'
+											render={(attrs) => (
+												<div className={styles.main_description}>
+													<p>{data?.description}</p>
+												</div>
+											)}
+										>
+											<Tippy content='Xem chi tiết mô tả'>
+												<p
+													onClick={() => {
+														if (!data.description) {
+															return;
+														} else {
+															setUuidDescription(uuidDescription ? '' : data.uuid);
+														}
+													}}
+													className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
+												>
+													{data?.description || '---'}
+												</p>
+											</Tippy>
+										</TippyHeadless>
+									),
+								},
+								{
+									title: 'Trạng thái',
+									render: (data: ICompany) => <TagStatus status={data.status} />,
+								},
+								{
+									title: 'Tác vụ',
+									fixedRight: true,
+									render: (data: ICompany) => (
+										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+											<IconCustom
+												edit
+												icon={<LuPencil fontSize={20} fontWeight={600} />}
+												tooltip='Chỉnh sửa'
+												color='#777E90'
+												href={`/cong-ty/chinh-sua?_id=${data?.uuid}`}
+											/>
+
+											<IconCustom
+												lock
+												icon={
+													data?.status == CONFIG_STATUS.HOAT_DONG ? (
+														<HiOutlineLockClosed size='22' />
+													) : (
+														<HiOutlineLockOpen size='22' />
+													)
+												}
+												tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+												color='#777E90'
+												onClick={() => {
+													setDataStatus(data);
+												}}
+											/>
+										</div>
+									),
 								},
 							]}
 						/>
-					</div>
-				</div>
-
-				<div className={styles.btn}>
-					<Button
-						href={PATH.ThemMoiCongTy}
-						p_8_16
-						rounded_2
-						icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
-					>
-						Thêm KV cảng xuất khẩu
-					</Button>
-				</div>
-			</div>
-
-			<div className={styles.table}>
-				<DataWrapper
-					data={listCompany?.data?.items || []}
-					loading={listCompany?.isLoading}
-					noti={
-						<Noti
-							titleButton='Thêm KV cảng xuất khẩu'
-							onClick={() => router.push(PATH.ThemMoiCongTy)}
-							des='Hiện tại chưa có KV cảng xuất khẩu nào, thêm ngay?'
-						/>
-					}
-				>
-					<Table
-						data={listCompany?.data?.items || []}
-						column={[
-							{
-								title: 'STT',
-								render: (data: ICompany, index: number) => <>{index + 1}</>,
-							},
-
-							{
-								title: 'Tên KV cảng xuất khẩu',
-								fixedLeft: true,
-								render: (data: ICompany) => <>{data?.name || '---'}</>,
-							},
-
-							{
-								title: 'Số điện thoại',
-								render: (data: ICompany) => <>{data?.phoneNumber || '---'}</>,
-							},
-							{
-								title: 'Người liên hệ',
-								render: (data: ICompany) => <>{data?.dirrector || '---'}</>,
-							},
-							{
-								title: 'Địa chỉ chi tiết',
-								render: (data: ICompany) => <>{data?.address || '---'}</>,
-							},
-							{
-								title: 'Ghi chú',
-								render: (data: ICompany) => (
-									<TippyHeadless
-										maxWidth={'100%'}
-										interactive
-										onClickOutside={() => setUuidDescription('')}
-										visible={uuidDescription == data?.uuid}
-										placement='bottom'
-										render={(attrs) => (
-											<div className={styles.main_description}>
-												<p>{data?.description}</p>
-											</div>
-										)}
-									>
-										<Tippy content='Xem chi tiết mô tả'>
-											<p
-												onClick={() => {
-													if (!data.description) {
-														return;
-													} else {
-														setUuidDescription(uuidDescription ? '' : data.uuid);
-													}
-												}}
-												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
-											>
-												{data?.description || '---'}
-											</p>
-										</Tippy>
-									</TippyHeadless>
-								),
-							},
-							{
-								title: 'Trạng thái',
-								render: (data: ICompany) => <TagStatus status={data.status} />,
-							},
-							{
-								title: 'Tác vụ',
-								fixedRight: true,
-								render: (data: ICompany) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-										<IconCustom
-											edit
-											icon={<LuPencil fontSize={20} fontWeight={600} />}
-											tooltip='Chỉnh sửa'
-											color='#777E90'
-											href={`/cong-ty/chinh-sua?_id=${data?.uuid}`}
-										/>
-
-										<IconCustom
-											lock
-											icon={
-												data?.status == CONFIG_STATUS.HOAT_DONG ? (
-													<HiOutlineLockClosed size='22' />
-												) : (
-													<HiOutlineLockOpen size='22' />
-												)
-											}
-											tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-											color='#777E90'
-											onClick={() => {
-												setDataStatus(data);
-											}}
-										/>
-									</div>
-								),
-							},
-						]}
+					</DataWrapper>
+					<Pagination
+						currentPage={Number(_page) || 1}
+						total={listCompany?.data?.pagination?.totalCount}
+						pageSize={Number(_pageSize) || 20}
+						dependencies={[_pageSize, _keyword, _status]}
 					/>
-				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					total={listCompany?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 20}
-					dependencies={[_pageSize, _keyword, _status]}
-				/>
-			</div>
+				</FullColumnFlex>
+			</FlexLayout>
+
 			<Dialog
 				danger
 				open={!!dataStatus}
@@ -240,7 +246,7 @@ function PageCompany({}: PropsPageCompany) {
 				}
 				onSubmit={funcChangeStatus.mutate}
 			/>
-		</div>
+		</Fragment>
 	);
 }
 

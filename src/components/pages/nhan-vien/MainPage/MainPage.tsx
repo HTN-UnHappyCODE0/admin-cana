@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {IUser, PropsMainPage} from './interfaces';
 import styles from './MainPage.module.scss';
 import Search from '~/components/common/Search';
@@ -30,6 +30,8 @@ import CreateAccountFromUser from '../CreateAccountFromUser';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
+import FlexLayout from '~/components/layouts/FlexLayout';
+import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
 function MainPage({}: PropsMainPage) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
@@ -82,7 +84,7 @@ function MainPage({}: PropsMainPage) {
 			},
 		}
 	);
-	const fucnChangeStatus = useMutation({
+	const funcChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -102,186 +104,197 @@ function MainPage({}: PropsMainPage) {
 		},
 	});
 	return (
-		<div className={styles.container}>
-			<Loading loading={fucnChangeStatus.isLoading} />
-			<div className={styles.header}>
-				<div className={styles.main_search}>
-					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên nhân viên ' />
+		<Fragment>
+			<FlexLayout>
+				<Loading loading={funcChangeStatus.isLoading} />
+				<div className={styles.header}>
+					<div className={styles.main_search}>
+						<div className={styles.search}>
+							<Search keyName='_keyword' placeholder='Tìm kiếm theo tên nhân viên ' />
+						</div>
+						<div className={styles.filter}>
+							<FilterCustom
+								isSearch
+								name='Chức vụ'
+								query='_regencyUuid'
+								listFilter={listRegency?.data?.map((v: any) => ({
+									id: v?.uuid,
+									name: v?.name,
+								}))}
+							/>
+						</div>
+						<div className={styles.filter}>
+							<FilterCustom
+								isSearch
+								name='Trạng thái'
+								query='_status'
+								listFilter={[
+									{
+										id: CONFIG_STATUS.HOAT_DONG,
+										name: 'Đang hoạt động',
+									},
+									{
+										id: CONFIG_STATUS.BI_KHOA,
+										name: 'Bị khóa',
+									},
+								]}
+							/>
+						</div>
 					</div>
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Chức vụ'
-							query='_regencyUuid'
-							listFilter={listRegency?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: v?.name,
-							}))}
-						/>
+					<div className={styles.btn}>
+						<Button
+							p_8_16
+							rounded_2
+							href={PATH.ThemNhanVien}
+							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
+						>
+							Thêm nhân viên
+						</Button>
 					</div>
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Trạng thái'
-							query='_status'
-							listFilter={[
+				</div>
+
+				<FullColumnFlex>
+					<DataWrapper
+						data={listUserStaff?.data?.items || []}
+						loading={listUserStaff.isLoading}
+						noti={
+							<Noti
+								titleButton='Thêm nhân viên'
+								onClick={() => router.push(PATH.ThemNhanVien)}
+								des='Hiện tại chưa có nhân viên nào, thêm ngay?'
+							/>
+						}
+					>
+						<Table
+							fixedHeader={true}
+							data={listUserStaff?.data?.items || []}
+							column={[
 								{
-									id: CONFIG_STATUS.HOAT_DONG,
-									name: 'Đang hoạt động',
+									title: 'STT',
+									render: (data: IUser, index: number) => <>{index + 1}</>,
 								},
 								{
-									id: CONFIG_STATUS.BI_KHOA,
-									name: 'Bị khóa',
+									title: 'Họ tên',
+									fixedLeft: true,
+									render: (data: IUser) => (
+										<Link href={`/nhan-vien/${data?.uuid}`} className={styles.link}>
+											{data?.fullName || '---'}
+										</Link>
+									),
+								},
+								{
+									title: 'Chức vụ',
+									render: (data: IUser) => <>{data?.regencyUu?.name || '---'}</>,
+								},
+								{
+									title: 'Số điện thoại',
+									render: (data: IUser) => <>{data?.phoneNumber || '---'}</>,
+								},
+								{
+									title: 'Email',
+									render: (data: IUser) => <>{data?.email || '---'}</>,
+								},
+
+								{
+									title: 'Ghi chú',
+									render: (data: IUser) => (
+										<TippyHeadless
+											maxWidth={'100%'}
+											interactive
+											onClickOutside={() => setUuidDescription('')}
+											visible={uuidDescription == data?.uuid}
+											placement='bottom'
+											render={(attrs) => (
+												<div className={styles.main_description}>
+													<p>{data?.description}</p>
+												</div>
+											)}
+										>
+											<Tippy content='Xem chi tiết mô tả'>
+												<p
+													onClick={() => {
+														if (!data.description) {
+															return;
+														} else {
+															setUuidDescription(uuidDescription ? '' : data.uuid);
+														}
+													}}
+													className={clsx(styles.description, {
+														[styles.active]: uuidDescription == data.uuid,
+													})}
+												>
+													{data?.description || '---'}
+												</p>
+											</Tippy>
+										</TippyHeadless>
+									),
+								},
+								{
+									title: 'Trạng thái',
+									render: (data: IUser) => <TagStatus status={data.status} />,
+								},
+								{
+									title: 'Tác vụ',
+									fixedRight: true,
+									render: (data: IUser) => (
+										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+											{data?.account == null ? (
+												<IconCustom
+													edit
+													icon={<UserAdd fontSize={20} fontWeight={600} />}
+													tooltip='Cấp tài khoản'
+													color='#777E90'
+													onClick={() => {
+														setDataCreateAccount(data);
+													}}
+												/>
+											) : (
+												<IconCustom
+													create
+													icon={<TickCircle size='23' />}
+													tooltip='Đã cấp tài khoản'
+													color='#35c244'
+												/>
+											)}
+
+											<IconCustom
+												edit
+												icon={<LuPencil fontSize={20} fontWeight={600} />}
+												tooltip='Chỉnh sửa'
+												color='#777E90'
+												href={`/nhan-vien/chinh-sua?_id=${data?.uuid}`}
+											/>
+
+											<IconCustom
+												lock
+												icon={
+													data?.status == CONFIG_STATUS.HOAT_DONG ? (
+														<HiOutlineLockClosed size='22' />
+													) : (
+														<HiOutlineLockOpen size='22' />
+													)
+												}
+												tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+												color='#777E90'
+												onClick={() => {
+													setDataStatus(data);
+												}}
+											/>
+										</div>
+									),
 								},
 							]}
 						/>
-					</div>
-				</div>
-				<div className={styles.btn}>
-					<Button
-						p_8_16
-						rounded_2
-						href={PATH.ThemNhanVien}
-						icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
-					>
-						Thêm nhân viên
-					</Button>
-				</div>
-			</div>
-
-			<div className={styles.table}>
-				<DataWrapper
-					data={listUserStaff?.data?.items || []}
-					loading={listUserStaff.isLoading}
-					noti={
-						<Noti
-							titleButton='Thêm nhân viên'
-							onClick={() => router.push(PATH.ThemNhanVien)}
-							des='Hiện tại chưa có nhân viên nào, thêm ngay?'
-						/>
-					}
-				>
-					<Table
-						data={listUserStaff?.data?.items || []}
-						column={[
-							{
-								title: 'STT',
-								render: (data: IUser, index: number) => <>{index + 1}</>,
-							},
-							{
-								title: 'Họ tên',
-								fixedLeft: true,
-								render: (data: IUser) => (
-									<Link href={`/nhan-vien/${data?.uuid}`} className={styles.link}>
-										{data?.fullName || '---'}
-									</Link>
-								),
-							},
-							{
-								title: 'Chức vụ',
-								render: (data: IUser) => <>{data?.regencyUu?.name || '---'}</>,
-							},
-							{
-								title: 'Số điện thoại',
-								render: (data: IUser) => <>{data?.phoneNumber || '---'}</>,
-							},
-							{
-								title: 'Email',
-								render: (data: IUser) => <>{data?.email || '---'}</>,
-							},
-
-							{
-								title: 'Ghi chú',
-								render: (data: IUser) => (
-									<TippyHeadless
-										maxWidth={'100%'}
-										interactive
-										onClickOutside={() => setUuidDescription('')}
-										visible={uuidDescription == data?.uuid}
-										placement='bottom'
-										render={(attrs) => (
-											<div className={styles.main_description}>
-												<p>{data?.description}</p>
-											</div>
-										)}
-									>
-										<Tippy content='Xem chi tiết mô tả'>
-											<p
-												onClick={() => {
-													if (!data.description) {
-														return;
-													} else {
-														setUuidDescription(uuidDescription ? '' : data.uuid);
-													}
-												}}
-												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
-											>
-												{data?.description || '---'}
-											</p>
-										</Tippy>
-									</TippyHeadless>
-								),
-							},
-							{
-								title: 'Trạng thái',
-								render: (data: IUser) => <TagStatus status={data.status} />,
-							},
-							{
-								title: 'Tác vụ',
-								fixedRight: true,
-								render: (data: IUser) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-										{data?.account == null ? (
-											<IconCustom
-												edit
-												icon={<UserAdd fontSize={20} fontWeight={600} />}
-												tooltip='Cấp tài khoản'
-												color='#777E90'
-												onClick={() => {
-													setDataCreateAccount(data);
-												}}
-											/>
-										) : (
-											<IconCustom create icon={<TickCircle size='23' />} tooltip='Đã cấp tài khoản' color='#35c244' />
-										)}
-
-										<IconCustom
-											edit
-											icon={<LuPencil fontSize={20} fontWeight={600} />}
-											tooltip='Chỉnh sửa'
-											color='#777E90'
-											href={`/nhan-vien/chinh-sua?_id=${data?.uuid}`}
-										/>
-
-										<IconCustom
-											lock
-											icon={
-												data?.status == CONFIG_STATUS.HOAT_DONG ? (
-													<HiOutlineLockClosed size='22' />
-												) : (
-													<HiOutlineLockOpen size='22' />
-												)
-											}
-											tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-											color='#777E90'
-											onClick={() => {
-												setDataStatus(data);
-											}}
-										/>
-									</div>
-								),
-							},
-						]}
+					</DataWrapper>
+					<Pagination
+						currentPage={Number(_page) || 1}
+						total={listUserStaff?.data?.pagination?.totalCount}
+						pageSize={Number(_pageSize) || 20}
+						dependencies={[_pageSize, _keyword, _status, _regencyUuid, _regencyUuidExclude, _provinceIDOwer]}
 					/>
-				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					total={listUserStaff?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 20}
-					dependencies={[_pageSize, _keyword, _status, _regencyUuid, _regencyUuidExclude, _provinceIDOwer]}
-				/>
-			</div>
+				</FullColumnFlex>
+			</FlexLayout>
+
 			<Popup open={!!dataCreateAccount} onClose={() => setDataCreateAccount(null)}>
 				<CreateAccountFromUser dataCreateAccount={dataCreateAccount} onClose={() => setDataCreateAccount(null)} />
 			</Popup>
@@ -296,9 +309,9 @@ function MainPage({}: PropsMainPage) {
 						? 'Bạn có chắc chắn muốn khóa hoạt động nhân viên này?'
 						: 'Bạn có chắc chắn muốn mở khóa hoạt động nhân viên này?'
 				}
-				onSubmit={fucnChangeStatus.mutate}
+				onSubmit={funcChangeStatus.mutate}
 			/>
-		</div>
+		</Fragment>
 	);
 }
 

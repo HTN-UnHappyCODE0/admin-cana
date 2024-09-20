@@ -60,7 +60,7 @@ function MainProductType({}: PropsMainProductType) {
 		},
 	});
 
-	const fucnChangeStatus = useMutation({
+	const funcChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -82,7 +82,7 @@ function MainProductType({}: PropsMainProductType) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnChangeStatus.isLoading} />
+			<Loading loading={funcChangeStatus.isLoading} />
 			<div className={styles.filter}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -271,7 +271,7 @@ function MainProductType({}: PropsMainProductType) {
 						? 'Bạn có chắc chắn muốn khóa loại gỗ này?'
 						: 'Bạn có chắc chắn muốn mở khóa loại gỗ này?'
 				}
-				onSubmit={fucnChangeStatus.mutate}
+				onSubmit={funcChangeStatus.mutate}
 			/>
 		</div>
 	);

@@ -50,7 +50,7 @@ function DetailWarehouse({}: PropsDetailWarehouse) {
 		enabled: !!_id,
 	});
 
-	const fucnChangeStatusWarehouse = useMutation({
+	const funcChangeStatusWarehouse = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -75,7 +75,7 @@ function DetailWarehouse({}: PropsDetailWarehouse) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnChangeStatusWarehouse.isLoading} />
+			<Loading loading={funcChangeStatusWarehouse.isLoading} />
 			<div className={styles.header}>
 				<Link
 					href={PATH.Home}
@@ -301,7 +301,7 @@ function DetailWarehouse({}: PropsDetailWarehouse) {
 						? 'Bạn có chắc chắn muốn khóa kho hàng này?'
 						: 'Bạn có chắc chắn muốn mở khóa kho hàng này?'
 				}
-				onSubmit={fucnChangeStatusWarehouse.mutate}
+				onSubmit={funcChangeStatusWarehouse.mutate}
 			/>
 		</div>
 	);

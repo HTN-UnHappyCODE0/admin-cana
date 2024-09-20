@@ -154,7 +154,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 		}
 	);
 
-	const fucnStartBatchBill = useMutation({
+	const funcStartBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -175,7 +175,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 		},
 	});
 
-	const fucnStopBatchBill = useMutation({
+	const funcStopBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -196,7 +196,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 		},
 	});
 
-	const fucnQLKConfirmBatchBill = useMutation({
+	const funcQLKConfirmBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -238,7 +238,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnStartBatchBill.isLoading || fucnStopBatchBill.isLoading || fucnQLKConfirmBatchBill.isLoading} />
+			<Loading loading={funcStartBatchBill.isLoading || funcStopBatchBill.isLoading || funcQLKConfirmBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -531,7 +531,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 				title='Bắt đầu cân'
 				note='Bạn có muốn thực hiện thao tác cân cho phiếu cân này không?'
 				onClose={() => setUuidPlay('')}
-				onSubmit={fucnStartBatchBill.mutate}
+				onSubmit={funcStartBatchBill.mutate}
 			/>
 
 			{/* Kết thúc cân */}
@@ -541,7 +541,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 				title='Kết thúc cân'
 				note='Bạn có muốn thực hiện thao tác kết thúc cho phiếu cân này không?'
 				onClose={() => setUuidStop('')}
-				onSubmit={fucnStopBatchBill.mutate}
+				onSubmit={funcStopBatchBill.mutate}
 			/>
 
 			{/* Quản lý kho duyệt */}
@@ -551,7 +551,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 				title='QLK duyệt sản lượng'
 				note='Bạn có muốn thực hiện thao tác duyệt sản lượng cho phiếu cân này không?'
 				onClose={() => setUuidQLKConfirm('')}
-				onSubmit={fucnQLKConfirmBatchBill.mutate}
+				onSubmit={funcQLKConfirmBatchBill.mutate}
 			/>
 		</div>
 	);

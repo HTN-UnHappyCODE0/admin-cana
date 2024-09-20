@@ -100,7 +100,7 @@ function UpdateCompany({}: PropsUpdateCompany) {
 		enabled: !!form?.districtId,
 	});
 
-	const fucnUpdateCompany = useMutation({
+	const funcUpdateCompany = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -135,11 +135,11 @@ function UpdateCompany({}: PropsUpdateCompany) {
 	});
 
 	const handleSubmit = async () => {
-		return fucnUpdateCompany.mutate();
+		return funcUpdateCompany.mutate();
 	};
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnUpdateCompany.isLoading} />
+			<Loading loading={funcUpdateCompany.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				{' '}
 				<div className={styles.header}>

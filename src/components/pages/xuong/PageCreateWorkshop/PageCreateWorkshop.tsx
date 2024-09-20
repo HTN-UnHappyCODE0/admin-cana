@@ -187,7 +187,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 		},
 	});
 
-	const fucnCreateCustomer = useMutation({
+	const funcCreateCustomer = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -246,12 +246,12 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 			return toastWarn({msg: 'Vui lòng nhập tên người đại diện!'});
 		}
 
-		return fucnCreateCustomer.mutate();
+		return funcCreateCustomer.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnCreateCustomer.isLoading} />
+			<Loading loading={funcCreateCustomer.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

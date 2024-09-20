@@ -1,14 +1,14 @@
 .header {
 	display: flex;
 	align-items: center;
-	flex-wrap: wrap;
-	gap: 12px;
 	justify-content: space-between;
+	margin-bottom: 24px;
 }
 
 .main_search {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 	gap: 12px;
 }
 
@@ -20,9 +20,6 @@
 	min-width: 220px;
 }
 
-.table {
-	margin-top: 24px;
-}
 .link {
 	font-weight: 700;
 	color: var(--primary);

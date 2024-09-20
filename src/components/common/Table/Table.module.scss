@@ -1,10 +1,30 @@
 .container {
-	overflow-x: auto;
 	padding-bottom: 4px;
-	scrollbar-color: #ccc #fff;
+	overflow: auto;
+
+	&.fixedHeader {
+		max-height: calc(100% - 48px); // height 100% - height Pagination
+
+		thead {
+			position: sticky;
+			top: 0;
+			z-index: 11;
+		}
+	}
 
 	&::-webkit-scrollbar {
-		height: 10px;
+		width: 12px;
+		height: 12px;
+	}
+
+	/* Track */
+	&::-webkit-scrollbar-track {
+		background: #f8f8f8;
+	}
+
+	/* Handle */
+	&::-webkit-scrollbar-thumb {
+		background: #ccc;
 	}
 
 	table,
