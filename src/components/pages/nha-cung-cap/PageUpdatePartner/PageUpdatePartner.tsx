@@ -224,15 +224,15 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 	});
 
 	const handleSubmit = async () => {
-		if (!form.provinceId) {
-			return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
-		}
-		if (!form.districtId) {
-			return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
-		}
-		if (!form.townId) {
-			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
-		}
+		// if (!form.provinceId) {
+		// 	return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
+		// }
+		// if (!form.districtId) {
+		// 	return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
+		// }
+		// if (!form.townId) {
+		// 	return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
+		// }
 		return fucnUpdatePartner.mutate();
 	};
 
@@ -388,11 +388,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							name='provinceId'
 							value={form.provinceId}
 							placeholder='Chọn tỉnh/thành phố'
-							label={
-								<span>
-									Tỉnh/Thành phố<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Tỉnh/Thành phố</span>}
 						>
 							{listProvince?.data?.map((v: any) => (
 								<Option
@@ -416,11 +412,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 								name='districtId'
 								value={form.districtId}
 								placeholder='Chọn quận/huyện'
-								label={
-									<span>
-										Quận/Huyện<span style={{color: 'red'}}>*</span>
-									</span>
-								}
+								label={<span>Quận/Huyện</span>}
 							>
 								{listDistrict?.data?.map((v: any) => (
 									<Option
@@ -438,17 +430,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 								))}
 							</Select>
 						</div>
-						<Select
-							isSearch
-							name='townId'
-							value={form.townId}
-							placeholder='Chọn xã/phường'
-							label={
-								<span>
-									Xã/phường<span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
+						<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
 							{listTown?.data?.map((v: any) => (
 								<Option
 									key={v?.xaid}
