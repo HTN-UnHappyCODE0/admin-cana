@@ -186,7 +186,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 		enabled: listRegency.isSuccess,
 	});
 
-	const fucnUpdatePartner = useMutation({
+	const funcUpdatePartner = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -233,12 +233,12 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 		if (!form.townId) {
 			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
 		}
-		return fucnUpdatePartner.mutate();
+		return funcUpdatePartner.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnUpdatePartner.isLoading} />
+			<Loading loading={funcUpdatePartner.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

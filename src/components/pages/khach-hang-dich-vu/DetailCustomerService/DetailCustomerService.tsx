@@ -39,6 +39,8 @@ import Popup from '~/components/common/Popup';
 import PopupDeleteCustomer from '../../xuong/PopupDeleteCustomer';
 import {RiDeleteBin5Line} from 'react-icons/ri';
 import ItemDashboard from '../../trang-chu/ItemDashboard';
+import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
+import FlexLayout from '~/components/layouts/FlexLayout';
 
 function DetailCustomerService({}: PropsDetailCustomerService) {
 	const router = useRouter();
@@ -134,183 +136,200 @@ function DetailCustomerService({}: PropsDetailCustomerService) {
 
 	return (
 		<Fragment>
-			<Loading loading={funcChangeStatusPartner.isLoading} />
-			<div className={styles.header}>
-				<Link
-					href={PATH.NhaCungCap}
-					onClick={(e) => {
-						e.preventDefault();
-						window.history.back();
-					}}
-					className={styles.header_title}
-				>
-					<IoArrowBackOutline fontSize={20} fontWeight={600} />
-					<p>Chi tiết khách hàng dịch vụ: {detailPartner?.name}</p>
-				</Link>
-				<div className={styles.list_btn}>
-					<Button
-						rounded_2
-						w_fit
-						light_outline
-						p_8_16
-						bold
-						href={`/khach-hang-dich-vu/chinh-sua?_id=${detailPartner?.uuid}`}
-						icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
+			<FlexLayout>
+				<Loading loading={funcChangeStatusPartner.isLoading} />
+				<div className={styles.header}>
+					<Link
+						href={PATH.NhaCungCap}
+						onClick={(e) => {
+							e.preventDefault();
+							window.history.back();
+						}}
+						className={styles.header_title}
 					>
-						Chỉnh sửa
-					</Button>
-
-					<Button
-						rounded_2
-						w_fit
-						light_outline
-						p_8_16
-						bold
-						icon={
-							detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? (
-								<HiOutlineLockClosed color='#23262F' fontSize={18} fontWeight={600} />
-							) : (
-								<HiOutlineLockOpen color='#23262F' fontSize={18} fontWeight={600} />
-							)
-						}
-						onClick={() => setOpenChangeStatus(true)}
-					>
-						{detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-					</Button>
-				</div>
-			</div>
-			<div>
-				<div className={clsx('mt')}>
-					<GridColumn col_4>
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Công nợ tạm tính'
-							value={detailPartner?.debtDemo!}
-							unit='VND'
-						/>
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Công nợ chuẩn'
-							value={detailPartner?.debtReal!}
-							unit='VND'
-						/>
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Tổng công nợ'
-							value={detailPartner?.debtDemo! + detailPartner?.debtReal!}
-							unit='VND'
-						/>
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Tổng tiền thuế' value={detailPartner?.tax} unit='VND' />
-					</GridColumn>
-				</div>
-
-				<div className={clsx('mt')}>
-					<GridColumn col_5>
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Khách hàng' value={detailPartner?.countCustomer!} />
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu chưa KCS' value={detailPartner?.totalBillDemo!} />
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu đã KCS' value={detailPartner?.totalBillKCS!} />
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Số lần thu' value={detailPartner?.totalTransactionIn!} />
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Số lần chi'
-							value={detailPartner?.totalTransactionOut!}
-						/>
-					</GridColumn>
-				</div>
-			</div>
-			<div className={clsx('mt')}>
-				<table className={styles.container}>
-					<colgroup>
-						<col style={{width: '50%'}} />
-						<col style={{width: '50%'}} />
-					</colgroup>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Mã khách hàng dịch vụ:</span>
-							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
-						</td>
-						<td>
-							<span style={{marginRight: 6}}>Người liên hệ:</span> {detailPartner?.director || '---'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Mã số thuế:</span> {detailPartner?.taxCode || '---'}
-						</td>
-						<td>
-							<span style={{marginRight: 6}}>Địa chỉ:</span>
-							{getTextAddress(detailPartner?.detailAddress, detailPartner?.address)}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Số điện thoại: </span>
-							{detailPartner?.phoneNumber || '---'}
-						</td>
-						<td>
-							<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-								<span style={{marginRight: 6}}>Trạng thái: </span>
-								<span>
-									<TagStatus status={detailPartner?.status as CONFIG_STATUS} />
-								</span>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Ngân hàng:</span>
-							{detailPartner?.bankName || '---'}
-						</td>
-						<td rowSpan={4} className={styles.description}>
-							<span style={{marginRight: 6}}>Mô tả:</span>
-							{detailPartner?.description || '---'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Email: </span>
-							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.email || '---'}</span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Số tài khoản: </span>
-							{detailPartner?.bankAccount || '---'}
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div className={clsx('mt')}>
-				<div className={styles.btn_header}>
-					<div className={styles.main_table}>
-						<h1 className={styles.list_title}>
-							Danh sách khách hàng thuộc khách hàng dịch vụ ({listCustomer?.data?.pagination?.totalCount})
-						</h1>
-					</div>
-					<div>
+						<IoArrowBackOutline fontSize={20} fontWeight={600} />
+						<p>Chi tiết khách hàng dịch vụ: {detailPartner?.name}</p>
+					</Link>
+					<div className={styles.list_btn}>
 						<Button
-							href={`${PATH.ThemMoiXuong}?_partnerUuid=${_id}&_typeCus=${TYPE_PARTNER.KH_DICH_VU}`}
-							p_8_16
 							rounded_2
-							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
+							w_fit
+							light_outline
+							p_8_16
+							bold
+							href={`/khach-hang-dich-vu/chinh-sua?_id=${detailPartner?.uuid}`}
+							icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
 						>
-							Thêm khách hàng
+							Chỉnh sửa
+						</Button>
+
+						<Button
+							rounded_2
+							w_fit
+							light_outline
+							p_8_16
+							bold
+							icon={
+								detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? (
+									<HiOutlineLockClosed color='#23262F' fontSize={18} fontWeight={600} />
+								) : (
+									<HiOutlineLockOpen color='#23262F' fontSize={18} fontWeight={600} />
+								)
+							}
+							onClick={() => setOpenChangeStatus(true)}
+						>
+							{detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
 						</Button>
 					</div>
 				</div>
-			</div>
-			<div className={clsx('mt')}>
-				<div className={styles.table}>
+				<div>
+					<div className={clsx('mt')}>
+						<GridColumn col_4>
+							<ItemDashboard
+								isLoading={isLoading}
+								color='#3772FF'
+								text='Công nợ tạm tính'
+								value={detailPartner?.debtDemo!}
+								unit='VND'
+							/>
+							<ItemDashboard
+								isLoading={isLoading}
+								color='#3772FF'
+								text='Công nợ chuẩn'
+								value={detailPartner?.debtReal!}
+								unit='VND'
+							/>
+							<ItemDashboard
+								isLoading={isLoading}
+								color='#3772FF'
+								text='Tổng công nợ'
+								value={detailPartner?.debtDemo! + detailPartner?.debtReal!}
+								unit='VND'
+							/>
+							<ItemDashboard
+								isLoading={isLoading}
+								color='#3772FF'
+								text='Tổng tiền thuế'
+								value={detailPartner?.tax}
+								unit='VND'
+							/>
+						</GridColumn>
+					</div>
+
+					<div className={clsx('mt')}>
+						<GridColumn col_5>
+							<ItemDashboard isLoading={isLoading} color='#3772FF' text='Khách hàng' value={detailPartner?.countCustomer!} />
+							<ItemDashboard
+								isLoading={isLoading}
+								color='#3772FF'
+								text='Phiếu chưa KCS'
+								value={detailPartner?.totalBillDemo!}
+							/>
+							<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu đã KCS' value={detailPartner?.totalBillKCS!} />
+							<ItemDashboard
+								isLoading={isLoading}
+								color='#3772FF'
+								text='Số lần thu'
+								value={detailPartner?.totalTransactionIn!}
+							/>
+							<ItemDashboard
+								isLoading={isLoading}
+								color='#3772FF'
+								text='Số lần chi'
+								value={detailPartner?.totalTransactionOut!}
+							/>
+						</GridColumn>
+					</div>
+				</div>
+				<div className={clsx('mt')}>
+					<table className={styles.container}>
+						<colgroup>
+							<col style={{width: '50%'}} />
+							<col style={{width: '50%'}} />
+						</colgroup>
+						<tr>
+							<td>
+								<span style={{marginRight: 6}}>Mã khách hàng dịch vụ:</span>
+								<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
+							</td>
+							<td>
+								<span style={{marginRight: 6}}>Người liên hệ:</span> {detailPartner?.director || '---'}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span style={{marginRight: 6}}>Mã số thuế:</span> {detailPartner?.taxCode || '---'}
+							</td>
+							<td>
+								<span style={{marginRight: 6}}>Địa chỉ:</span>
+								{getTextAddress(detailPartner?.detailAddress, detailPartner?.address)}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span style={{marginRight: 6}}>Số điện thoại: </span>
+								{detailPartner?.phoneNumber || '---'}
+							</td>
+							<td>
+								<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+									<span style={{marginRight: 6}}>Trạng thái: </span>
+									<span>
+										<TagStatus status={detailPartner?.status as CONFIG_STATUS} />
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span style={{marginRight: 6}}>Ngân hàng:</span>
+								{detailPartner?.bankName || '---'}
+							</td>
+							<td rowSpan={4} className={styles.description}>
+								<span style={{marginRight: 6}}>Mô tả:</span>
+								{detailPartner?.description || '---'}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span style={{marginRight: 6}}>Email: </span>
+								<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.email || '---'}</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span style={{marginRight: 6}}>Số tài khoản: </span>
+								{detailPartner?.bankAccount || '---'}
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div className={clsx('mt', 'mb')}>
+					<div className={styles.btn_header}>
+						<div className={styles.main_table}>
+							<h1 className={styles.list_title}>
+								Danh sách khách hàng thuộc khách hàng dịch vụ ({listCustomer?.data?.pagination?.totalCount})
+							</h1>
+						</div>
+						<div>
+							<Button
+								href={`${PATH.ThemMoiXuong}?_partnerUuid=${_id}&_typeCus=${TYPE_PARTNER.KH_DICH_VU}`}
+								p_8_16
+								rounded_2
+								icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
+							>
+								Thêm khách hàng
+							</Button>
+						</div>
+					</div>
+				</div>
+				<FullColumnFlex>
 					<DataWrapper
 						data={listCustomer.data?.items || []}
 						loading={listCustomer.isLoading}
 						noti={<Noti disableButton des='Hiện tại chưa có khách hàng nào!' />}
 					>
 						<Table
+							fixedHeader={true}
 							data={listCustomer.data?.items || []}
 							column={[
 								{
@@ -388,8 +407,8 @@ function DetailCustomerService({}: PropsDetailCustomerService) {
 						pageSize={Number(_pageSize) || 20}
 						dependencies={[_pageSize, _id]}
 					/>
-				</div>
-			</div>
+				</FullColumnFlex>
+			</FlexLayout>
 			<Dialog
 				danger
 				open={openChangeStatus}

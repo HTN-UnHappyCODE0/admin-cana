@@ -76,7 +76,7 @@ function CreateCompany({}: PropsCreateCompany) {
 		},
 		enabled: !!form?.districtId,
 	});
-	const fucnCreateCompany = useMutation({
+	const funcCreateCompany = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -128,12 +128,12 @@ function CreateCompany({}: PropsCreateCompany) {
 		if (!form.townId) {
 			return toastWarn({msg: 'Vui lòng chọn Xã/Phường!'});
 		}
-		return fucnCreateCompany.mutate();
+		return funcCreateCompany.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnCreateCompany.isLoading} />
+			<Loading loading={funcCreateCompany.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

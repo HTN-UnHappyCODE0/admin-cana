@@ -155,7 +155,7 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 		enabled: listRegency.isSuccess,
 	});
 
-	const fucnCreatePartner = useMutation({
+	const funcCreatePartner = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -217,12 +217,12 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 		if (!form.townId) {
 			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
 		}
-		return fucnCreatePartner.mutate();
+		return funcCreatePartner.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnCreatePartner.isLoading} />
+			<Loading loading={funcCreatePartner.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

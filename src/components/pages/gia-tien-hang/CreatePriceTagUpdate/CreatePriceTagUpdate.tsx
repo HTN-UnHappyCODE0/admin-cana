@@ -197,7 +197,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 		enabled: !!form.customerUuid && !!form.productUuid,
 	});
 
-	const fucnFixPricetag = useMutation({
+	const funcFixPricetag = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -245,13 +245,13 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 			}
 		}
 
-		return fucnFixPricetag.mutate();
+		return funcFixPricetag.mutate();
 	};
 	console.log({form});
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnFixPricetag.isLoading} />
+			<Loading loading={funcFixPricetag.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

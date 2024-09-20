@@ -38,7 +38,7 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 		dryness: 0,
 	});
 
-	const fucnInventoryStorage = useMutation({
+	const funcInventoryStorage = useMutation({
 		mutationFn: (body: {paths: string[]}) =>
 			httpRequest({
 				showMessageFailed: true,
@@ -99,7 +99,7 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 		});
 
 		if (dataImage?.error?.code == 0) {
-			return fucnInventoryStorage.mutate({
+			return funcInventoryStorage.mutate({
 				paths: dataImage.items,
 			});
 		} else {
@@ -109,7 +109,7 @@ function FormCreateInventory({onClose, nameStorage}: PropsFormCreateInventory) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnInventoryStorage.isLoading || loading} />
+			<Loading loading={funcInventoryStorage.isLoading || loading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.wrapper}>
 					<h4>Kiểm kê</h4>

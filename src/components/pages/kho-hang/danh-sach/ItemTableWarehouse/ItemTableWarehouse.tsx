@@ -27,7 +27,7 @@ function ItemTableWarehouse({order, dataWarehouse, isParent = true, uuidParent =
 	const [openArrow, setOpenArrow] = useState<boolean>(true);
 	const [dataStatus, setDataStatus] = useState<any | null>(null);
 
-	const fucnChangeStatusWarehouse = useMutation({
+	const funcChangeStatusWarehouse = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -47,7 +47,7 @@ function ItemTableWarehouse({order, dataWarehouse, isParent = true, uuidParent =
 		},
 	});
 
-	const fucnChangeStatusStorage = useMutation({
+	const funcChangeStatusStorage = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -69,15 +69,15 @@ function ItemTableWarehouse({order, dataWarehouse, isParent = true, uuidParent =
 
 	const handleChangeStatus = async () => {
 		if (isParent) {
-			return fucnChangeStatusWarehouse.mutate();
+			return funcChangeStatusWarehouse.mutate();
 		} else {
-			return fucnChangeStatusStorage.mutate();
+			return funcChangeStatusStorage.mutate();
 		}
 	};
 
 	return (
 		<Fragment>
-			<Loading loading={fucnChangeStatusStorage.isLoading || fucnChangeStatusWarehouse.isLoading} />
+			<Loading loading={funcChangeStatusStorage.isLoading || funcChangeStatusWarehouse.isLoading} />
 			<div className={clsx(styles.container, {[styles.isChild]: !isParent})}>
 				<div style={{width: '44px', paddingRight: '16px'}} className={styles.box_arrow} onClick={() => setOpenArrow(!openArrow)}>
 					{isParent && (

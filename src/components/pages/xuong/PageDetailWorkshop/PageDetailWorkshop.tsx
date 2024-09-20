@@ -62,7 +62,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 		enabled: !!_id,
 	});
 
-	const fucnChangeStatus = useMutation({
+	const funcChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -110,7 +110,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnChangeStatus.isLoading} />
+			<Loading loading={funcChangeStatus.isLoading} />
 			<div className={styles.header}>
 				<Link
 					href={'#'}
@@ -394,7 +394,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 									: 'nhà cung cấp'
 						  } này?`
 				}
-				onSubmit={fucnChangeStatus.mutate}
+				onSubmit={funcChangeStatus.mutate}
 			/>
 
 			<Popup open={openCreate} onClose={() => setOpenCreate(false)}>

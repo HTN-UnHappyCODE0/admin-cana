@@ -4,7 +4,7 @@ import {PropsTable} from './interfaces';
 import clsx from 'clsx';
 import styles from './Table.module.scss';
 
-function Table({data, column, onSetData}: PropsTable) {
+function Table({data, column, onSetData, fixedHeader = false}: PropsTable) {
 	const myElementRef = useRef<any>(null);
 	const [isShowScroll, setIsShowScroll] = useState<boolean>(false);
 
@@ -65,7 +65,7 @@ function Table({data, column, onSetData}: PropsTable) {
 	}, [data]);
 
 	return (
-		<div ref={myElementRef} className={styles.container}>
+		<div ref={myElementRef} className={clsx(styles.container, {[styles.fixedHeader]: fixedHeader})}>
 			<table>
 				<thead>
 					<tr>

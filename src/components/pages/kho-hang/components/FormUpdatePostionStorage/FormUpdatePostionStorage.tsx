@@ -136,7 +136,7 @@ function FormUpdatePostionStorage({draggedElements, onClose}: PropsFormUpdatePos
 		},
 	});
 
-	const fucnCreateStorage = useMutation({
+	const funcCreateStorage = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -174,12 +174,12 @@ function FormUpdatePostionStorage({draggedElements, onClose}: PropsFormUpdatePos
 	});
 
 	const handleSubmit = async () => {
-		return fucnCreateStorage.mutate();
+		return funcCreateStorage.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnCreateStorage.isLoading} />
+			<Loading loading={funcCreateStorage.isLoading} />
 			<h4>Cập nhật vị trí kho hàng</h4>
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={clsx('mt')}>

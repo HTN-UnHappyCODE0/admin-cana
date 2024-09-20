@@ -180,7 +180,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 		},
 	});
 
-	const fucnCreateBatchBill = useMutation({
+	const funcCreateBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -251,12 +251,12 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 			return toastWarn({msg: 'Ngày dự kiến không hợp lệ!'});
 		}
 
-		return fucnCreateBatchBill.mutate();
+		return funcCreateBatchBill.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnCreateBatchBill.isLoading} />
+			<Loading loading={funcCreateBatchBill.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>

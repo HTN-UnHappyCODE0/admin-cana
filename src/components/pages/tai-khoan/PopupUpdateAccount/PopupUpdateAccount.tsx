@@ -65,9 +65,9 @@ function PopupUpdateAccount({dataUpdateAccount, onClose}: PropsPopupUpdateAccoun
 			<h4>Chỉnh sửa tài khoản</h4>
 			<p className={styles.p}>Điền đầy đủ thông tin cân thiết</p>
 			<Form form={form} setForm={setForm}>
-				<div className={'mt'}>
+				{/* <div className={'mt'}>
 					<AvatarChange path='' name='avatar' onSetFile={(file) => setFile(file)} />
-				</div>
+				</div> */}
 				<div className={'mt'}>
 					<Input
 						readOnly

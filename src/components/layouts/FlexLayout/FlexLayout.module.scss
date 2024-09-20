@@ -1,0 +1,20 @@
+@import '../../../styles/variables';
+
+.container {
+	position: relative;
+	height: calc(100vh - 24px - 24px - 60px);
+	display: flex;
+	flex-direction: column;
+}
+
+@media (max-width: $widthTablet) {
+	.container {
+		height: calc(100vh - 16px - 16px - 60px);
+	}
+}
+
+@media (max-width: $widthMobile) {
+	.container {
+		height: calc(100vh - 8px - 8px - 60px);
+	}
+}

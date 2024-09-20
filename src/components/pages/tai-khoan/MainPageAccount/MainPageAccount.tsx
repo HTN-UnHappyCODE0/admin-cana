@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {IAccount, PropsMainPageAccount} from './interfaces';
 import styles from './MainPageAccount.module.scss';
 import Search from '~/components/common/Search';
@@ -23,6 +23,8 @@ import Popup from '~/components/common/Popup';
 import regencyServices from '~/services/regencyServices';
 import ImageFill from '~/components/common/ImageFill';
 import Link from 'next/link';
+import FlexLayout from '~/components/layouts/FlexLayout';
+import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
 
 function MainPageAccount({}: PropsMainPageAccount) {
 	const router = useRouter();
@@ -33,7 +35,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 	const [dataStatus, setDataStatus] = useState<IAccount | null>(null);
 	const [dataUpdateAccount, setDataUpdateAccount] = useState<IAccount | null>(null);
 
-	const fucnChangeStatus = useMutation({
+	const funcChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -94,137 +96,140 @@ function MainPageAccount({}: PropsMainPageAccount) {
 	});
 
 	return (
-		<div className={styles.container}>
-			<Loading loading={fucnChangeStatus.isLoading} />
-			<div className={styles.header}>
-				<div className={styles.main_search}>
-					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên người dùng' />
+		<Fragment>
+			<FlexLayout>
+				<Loading loading={funcChangeStatus.isLoading} />
+				<div className={styles.header}>
+					<div className={styles.main_search}>
+						<div className={styles.search}>
+							<Search keyName='_keyword' placeholder='Tìm kiếm theo tên người dùng' />
+						</div>
+						<div className={styles.filter}>
+							<FilterCustom
+								isSearch
+								name='Trạng thái'
+								query='_status'
+								listFilter={[
+									{
+										id: CONFIG_STATUS.HOAT_DONG,
+										name: 'Đang hoạt động',
+									},
+									{
+										id: CONFIG_STATUS.BI_KHOA,
+										name: 'Bị khóa',
+									},
+								]}
+							/>
+						</div>
+
+						<div className={styles.filter}>
+							<FilterCustom
+								isSearch
+								name='Chức vụ'
+								query='_regencyUuid'
+								listFilter={listRegency?.data?.map((v: any) => ({
+									id: v?.uuid,
+									name: v?.name,
+								}))}
+							/>
+						</div>
 					</div>
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Trạng thái'
-							query='_status'
-							listFilter={[
+				</div>
+
+				<FullColumnFlex>
+					<DataWrapper
+						data={listAccount?.data?.items || []}
+						loading={listAccount.isLoading}
+						noti={<Noti disableButton titleButton='Thêm người dùng' des='Hiện tại chưa có người dùng nào' />}
+					>
+						<Table
+							fixedHeader={true}
+							data={listAccount?.data?.items || []}
+							column={[
 								{
-									id: CONFIG_STATUS.HOAT_DONG,
-									name: 'Đang hoạt động',
+									title: 'STT',
+									render: (data: IAccount, index: number) => <>{index + 1}</>,
 								},
 								{
-									id: CONFIG_STATUS.BI_KHOA,
-									name: 'Bị khóa',
+									title: 'Mã người dùng',
+									render: (data: IAccount) => <p style={{fontWeight: 600}}>{data.user?.code || '---'}</p>,
+								},
+								{
+									title: 'Tên người dùng',
+									fixedLeft: true,
+									render: (data: IAccount) => (
+										<div className={styles.info}>
+											<ImageFill
+												src={`${process.env.NEXT_PUBLIC_IMAGE}/${data.user?.linkImage}`}
+												alt='avatar'
+												className={styles.image}
+											/>
+											<Link className={styles.link} href={`/nhan-vien/${data?.user?.uuid}`}>
+												{data.user?.fullName || '---'}
+											</Link>
+										</div>
+									),
+								},
+								{
+									title: 'Tên tài khoản',
+									render: (data: IAccount) => <>{data?.username || '---'}</>,
+								},
+								{
+									title: 'Số điện thoại',
+									render: (data: IAccount) => <>{data.user?.phoneNumber || '---'}</>,
+								},
+
+								{
+									title: 'Chức vụ',
+									render: (data: IAccount) => <>{data.user?.regencyUu?.name || '---'}</>,
+								},
+								{
+									title: 'Trạng thái',
+									render: (data: IAccount) => <TagStatus status={data.status} />,
+								},
+								{
+									title: 'Tác vụ',
+									fixedRight: true,
+									render: (data: IAccount) => (
+										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+											<IconCustom
+												edit
+												icon={<LuPencil fontSize={20} fontWeight={600} />}
+												tooltip='Chỉnh sửa'
+												color='#777E90'
+												onClick={() => {
+													setDataUpdateAccount(data);
+												}}
+											/>
+											<IconCustom
+												lock
+												icon={
+													data?.status == CONFIG_STATUS.HOAT_DONG ? (
+														<HiOutlineLockClosed size='22' />
+													) : (
+														<HiOutlineLockOpen size='22' />
+													)
+												}
+												tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+												color='#777E90'
+												onClick={() => {
+													setDataStatus(data);
+												}}
+											/>
+										</div>
+									),
 								},
 							]}
 						/>
-					</div>
-
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Chức vụ'
-							query='_regencyUuid'
-							listFilter={listRegency?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: v?.name,
-							}))}
-						/>
-					</div>
-				</div>
-			</div>
-
-			<div className={styles.table}>
-				<DataWrapper
-					data={listAccount?.data?.items || []}
-					loading={listAccount.isLoading}
-					noti={<Noti disableButton titleButton='Thêm người dùng' des='Hiện tại chưa có người dùng nào' />}
-				>
-					<Table
-						data={listAccount?.data?.items || []}
-						column={[
-							{
-								title: 'STT',
-								render: (data: IAccount, index: number) => <>{index + 1}</>,
-							},
-							{
-								title: 'Mã người dùng',
-								fixedLeft: true,
-								render: (data: IAccount) => <p style={{fontWeight: 600}}>{data.user?.code || '---'}</p>,
-							},
-							{
-								title: 'Tên người dùng',
-								render: (data: IAccount) => (
-									<div className={styles.info}>
-										<ImageFill
-											src={`${process.env.NEXT_PUBLIC_IMAGE}/${data.user?.linkImage}`}
-											alt='avatar'
-											className={styles.image}
-										/>
-										<Link className={styles.link} href={`/nhan-vien/${data?.user?.uuid}`}>
-											{data.user?.fullName || '---'}
-										</Link>
-									</div>
-								),
-							},
-							{
-								title: 'Tên tài khoản',
-								render: (data: IAccount) => <>{data?.username || '---'}</>,
-							},
-							{
-								title: 'Số điện thoại',
-								render: (data: IAccount) => <>{data.user?.phoneNumber || '---'}</>,
-							},
-
-							{
-								title: 'Chức vụ',
-								render: (data: IAccount) => <>{data.user?.regencyUu?.name || '---'}</>,
-							},
-							{
-								title: 'Trạng thái',
-								render: (data: IAccount) => <TagStatus status={data.status} />,
-							},
-							{
-								title: 'Tác vụ',
-								fixedRight: true,
-								render: (data: IAccount) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-										<IconCustom
-											edit
-											icon={<LuPencil fontSize={20} fontWeight={600} />}
-											tooltip='Chỉnh sửa'
-											color='#777E90'
-											onClick={() => {
-												setDataUpdateAccount(data);
-											}}
-										/>
-										<IconCustom
-											lock
-											icon={
-												data?.status == CONFIG_STATUS.HOAT_DONG ? (
-													<HiOutlineLockClosed size='22' />
-												) : (
-													<HiOutlineLockOpen size='22' />
-												)
-											}
-											tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-											color='#777E90'
-											onClick={() => {
-												setDataStatus(data);
-											}}
-										/>
-									</div>
-								),
-							},
-						]}
+					</DataWrapper>
+					<Pagination
+						currentPage={Number(_page) || 1}
+						total={listAccount?.data?.pagination?.totalCount}
+						pageSize={Number(_pageSize) || 20}
+						dependencies={[_pageSize, _keyword, _status, _regencyUuid]}
 					/>
-				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					total={listAccount?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 20}
-					dependencies={[_pageSize, _keyword, _status, _regencyUuid]}
-				/>
-			</div>
+				</FullColumnFlex>
+			</FlexLayout>
 			<Popup open={!!dataUpdateAccount} onClose={() => setDataUpdateAccount(null)}>
 				<PopupUpdateAccount dataUpdateAccount={dataUpdateAccount} onClose={() => setDataUpdateAccount(null)} />
 			</Popup>
@@ -239,9 +244,9 @@ function MainPageAccount({}: PropsMainPageAccount) {
 						? 'Bạn có chắc chắn muốn khóa hoạt động tài khoản này?'
 						: 'Bạn có chắc chắn muốn mở khóa hoạt động tài khoản này?'
 				}
-				onSubmit={fucnChangeStatus.mutate}
+				onSubmit={funcChangeStatus.mutate}
 			/>
-		</div>
+		</Fragment>
 	);
 }
 

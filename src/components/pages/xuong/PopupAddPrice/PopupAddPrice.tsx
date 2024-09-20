@@ -133,7 +133,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 		},
 	});
 
-	const fucnAddSpecCustomer = useMutation({
+	const funcAddSpecCustomer = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -178,12 +178,12 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 			return toastWarn({msg: 'Vui lòng chọn loại gỗ!'});
 		}
 
-		return fucnAddSpecCustomer.mutate();
+		return funcAddSpecCustomer.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnAddSpecCustomer.isLoading} />
+			<Loading loading={funcAddSpecCustomer.isLoading} />
 
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.wrapper}>

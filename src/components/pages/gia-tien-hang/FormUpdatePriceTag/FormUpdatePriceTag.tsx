@@ -74,7 +74,7 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 		}
 	}, [dataUpdate]);
 
-	const fucnUpdateSpecification = useMutation({
+	const funcUpdateSpecification = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -104,12 +104,12 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 			return toastWarn({msg: 'Không tìm thấy giá thay đổi!'});
 		}
 
-		return fucnUpdateSpecification.mutate();
+		return funcUpdateSpecification.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnUpdateSpecification.isLoading} />
+			<Loading loading={funcUpdateSpecification.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.main_form}>
 					<h4 className={styles.title}>Chỉnh sửa giá tiền hàng</h4>

@@ -126,7 +126,7 @@ function MainPageBillService({}: PropsMainPageBillService) {
 			},
 		}
 	);
-	const fucnStartBatchBill = useMutation({
+	const funcStartBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -148,7 +148,7 @@ function MainPageBillService({}: PropsMainPageBillService) {
 	});
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnStartBatchBill.isLoading} />
+			<Loading loading={funcStartBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -369,7 +369,7 @@ function MainPageBillService({}: PropsMainPageBillService) {
 				title='Bắt đầu cân'
 				note='Bạn có muốn thực hiện thao tác cân cho phiếu cân này không?'
 				onClose={() => setUuidPlay('')}
-				onSubmit={fucnStartBatchBill.mutate}
+				onSubmit={funcStartBatchBill.mutate}
 			/>
 			<Popup open={!!billUuid} onClose={() => setBilldUuid(null)}>
 				<PopupDeleteBill uuid={billUuid} onClose={() => setBilldUuid(null)} />

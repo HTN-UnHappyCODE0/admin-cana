@@ -25,6 +25,8 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react';
+import FlexLayout from '~/components/layouts/FlexLayout';
+import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
 function DetailMainPage({}: PropsDetailMainPage) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
@@ -71,7 +73,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 		enabled: !!_id,
 	});
 
-	const fucnChangeStatus = useMutation({
+	const funcChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -92,198 +94,199 @@ function DetailMainPage({}: PropsDetailMainPage) {
 		},
 	});
 	return (
-		<div>
-			<Fragment>
-				<Loading loading={fucnChangeStatus.isLoading} />
-				<div>
-					<div className={styles.header}>
-						<Link href={PATH.NhanVien} className={styles.header_title}>
-							<IoArrowBackOutline fontSize={20} fontWeight={600} />
-							<p>Chi tiết nhân viên: {detailUser?.fullName}</p>
-						</Link>
+		<Fragment>
+			<Loading loading={funcChangeStatus.isLoading} />
+			<FlexLayout>
+				<div className={styles.header}>
+					<Link href={PATH.NhanVien} className={styles.header_title}>
+						<IoArrowBackOutline fontSize={20} fontWeight={600} />
+						<p>Chi tiết nhân viên: {detailUser?.fullName}</p>
+					</Link>
 
-						<div className={styles.list_btn}>
-							<Button
-								rounded_2
-								w_fit
-								light_outline
-								p_8_16
-								bold
-								icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
-								onClick={() => router.push(`${PATH.NhanVien}/chinh-sua?_id=${detailUser?.uuid}`)}
-							>
-								Chỉnh sửa
-							</Button>
+					<div className={styles.list_btn}>
+						<Button
+							rounded_2
+							w_fit
+							light_outline
+							p_8_16
+							bold
+							icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
+							onClick={() => router.push(`${PATH.NhanVien}/chinh-sua?_id=${detailUser?.uuid}`)}
+						>
+							Chỉnh sửa
+						</Button>
 
-							<Button
-								rounded_2
-								w_fit
-								light_outline
-								p_8_16
-								bold
-								icon={
-									detailUser?.status == CONFIG_STATUS.HOAT_DONG ? (
-										<HiOutlineLockClosed color='#23262F' fontSize={18} fontWeight={600} />
-									) : (
-										<HiOutlineLockOpen color='#23262F' fontSize={18} fontWeight={600} />
-									)
-								}
-								onClick={() => setOpenChangeStatus(true)}
-							>
-								{detailUser?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-							</Button>
-						</div>
+						<Button
+							rounded_2
+							w_fit
+							light_outline
+							p_8_16
+							bold
+							icon={
+								detailUser?.status == CONFIG_STATUS.HOAT_DONG ? (
+									<HiOutlineLockClosed color='#23262F' fontSize={18} fontWeight={600} />
+								) : (
+									<HiOutlineLockOpen color='#23262F' fontSize={18} fontWeight={600} />
+								)
+							}
+							onClick={() => setOpenChangeStatus(true)}
+						>
+							{detailUser?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+						</Button>
 					</div>
-					<div className={clsx('mt')}>
-						<table className={styles.container}>
-							<colgroup>
-								<col style={{width: '50%'}} />
-								<col style={{width: '50%'}} />
-							</colgroup>
-							<tr>
-								<td>
-									<span>Mã nhân viên: </span>
-									{detailUser?.code || '---'}
-								</td>
-								<td>
-									<span>Vai trò: </span> {'---'}
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span>Chức vụ: </span>
-									{detailUser?.regencyUu?.name || '---'}
-								</td>
-								<td>
-									<span>Người quản lý: </span>
-									{detailUser?.userOwnerUu?.fullName || '---'}
-								</td>
-							</tr>
+				</div>
+				<div className={clsx('mt')}>
+					<table className={styles.container}>
+						<colgroup>
+							<col style={{width: '50%'}} />
+							<col style={{width: '50%'}} />
+						</colgroup>
+						<tr>
+							<td>
+								<span>Mã nhân viên: </span>
+								{detailUser?.code || '---'}
+							</td>
+							<td>
+								<span>Vai trò: </span> {'---'}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span>Chức vụ: </span>
+								{detailUser?.regencyUu?.name || '---'}
+							</td>
+							<td>
+								<span>Người quản lý: </span>
+								{detailUser?.userOwnerUu?.fullName || '---'}
+							</td>
+						</tr>
 
-							<tr>
-								<td>
-									<span>Email: </span> <span style={{color: 'var(--primary)'}}>{detailUser?.email || '---'}</span>
-								</td>
-								{/* <td>
+						<tr>
+							<td>
+								<span>Email: </span> <span style={{color: 'var(--primary)'}}>{detailUser?.email || '---'}</span>
+							</td>
+							{/* <td>
 									<span>Người tạo:</span> {'---'}
 								</td> */}
-								<td>
-									<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-										<span>Trạng thái: </span>
-										<span>
-											<TagStatus status={detailUser?.status as CONFIG_STATUS} />
-										</span>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span>Giới tính: </span> {detailUser?.sex == GENDER.NAM ? 'Nam' : 'Nữ' || '---'}
-								</td>
-								<td>
-									<span>Ngày sinh: </span>
-									<Moment date={detailUser?.birthDay || '---'} format='DD/MM/YYYY' />
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span>Số điện thoại: </span>
-									{detailUser?.phoneNumber || '---'}
-								</td>
-								<td rowSpan={2} className={styles.description}>
-									<span>Ghi chú: </span>
-									{detailUser?.description || '---'}
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span>Tỉnh thành quản lý: </span>
-									{detailUser?.provinceOwner || '---'}
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div>
-						<h2 className={clsx('mt', 'mb')}> Danh sách khách hàng quản lý</h2>
-						<DataWrapper data={listCustomer?.data?.items || []} loading={listCustomer.isLoading} noti={<Noti disableButton />}>
-							<Table
-								data={listCustomer?.data?.items || []}
-								column={[
-									{
-										title: 'Mã khách hàng',
-										render: (data: ICustomer) => <>{data?.code || '---'}</>,
-									},
-									{
-										title: 'Tên khách hàng',
-										fixedLeft: true,
-										render: (data: ICustomer) => (
-											<Link href={`/khach-hang/${data?.uuid}`} className={styles.link}>
-												{data?.name || '---'}
-											</Link>
-										),
-									},
-									{
-										title: 'Thuộc công ty',
-										render: (data: ICustomer) => <>{data?.partnerUu?.name || '---'}</>,
-									},
-									{
-										title: 'Khu vực',
-										render: (data: ICustomer) => <>{getTextAddress(data.detailAddress, data.address)}</>,
-									},
-									{
-										title: 'Số điện thoại',
-										render: (data: ICustomer) => <>{data?.phoneNumber || '---'}</>,
-									},
-									{
-										title: 'Email',
-										render: (data: ICustomer) => <>{data?.email || '---'}</>,
-									},
-									{
-										title: 'Ghi chú',
-										render: (data: ICustomer) => (
-											<TippyHeadless
-												maxWidth={'100%'}
-												interactive
-												onClickOutside={() => setUuidDescription('')}
-												visible={uuidDescription == data?.uuid}
-												placement='bottom'
-												render={(attrs) => (
-													<div className={styles.main_description}>
-														<p>{data?.description}</p>
-													</div>
-												)}
-											>
-												<Tippy content='Xem chi tiết ghi chú'>
-													<p
-														onClick={() => {
-															if (!data.description) {
-																return;
-															} else {
-																setUuidDescription(uuidDescription ? '' : data.uuid);
-															}
-														}}
-														className={clsx(styles.description, {
-															[styles.active]: uuidDescription == data.uuid,
-														})}
-													>
-														{data?.description || '---'}
-													</p>
-												</Tippy>
-											</TippyHeadless>
-										),
-									},
-								]}
-							/>
-						</DataWrapper>
-					</div>
+							<td>
+								<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+									<span>Trạng thái: </span>
+									<span>
+										<TagStatus status={detailUser?.status as CONFIG_STATUS} />
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span>Giới tính: </span> {detailUser?.sex == GENDER.NAM ? 'Nam' : 'Nữ' || '---'}
+							</td>
+							<td>
+								<span>Ngày sinh: </span>
+								<Moment date={detailUser?.birthDay || '---'} format='DD/MM/YYYY' />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span>Số điện thoại: </span>
+								{detailUser?.phoneNumber || '---'}
+							</td>
+							<td rowSpan={2} className={styles.description}>
+								<span>Ghi chú: </span>
+								{detailUser?.description || '---'}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span>Tỉnh thành quản lý: </span>
+								{detailUser?.provinceOwner || '---'}
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<h2 className={clsx('mt', 'mb')}> Danh sách khách hàng quản lý</h2>
+				<FullColumnFlex>
+					<DataWrapper data={listCustomer?.data?.items || []} loading={listCustomer.isLoading} noti={<Noti disableButton />}>
+						<Table
+							fixedHeader={true}
+							data={listCustomer?.data?.items || []}
+							column={[
+								{
+									title: 'Mã khách hàng',
+									render: (data: ICustomer) => <>{data?.code || '---'}</>,
+								},
+								{
+									title: 'Tên khách hàng',
+									fixedLeft: true,
+									render: (data: ICustomer) => (
+										<Link href={`/khach-hang/${data?.uuid}`} className={styles.link}>
+											{data?.name || '---'}
+										</Link>
+									),
+								},
+								{
+									title: 'Thuộc công ty',
+									render: (data: ICustomer) => <>{data?.partnerUu?.name || '---'}</>,
+								},
+								{
+									title: 'Khu vực',
+									render: (data: ICustomer) => <>{getTextAddress(data.detailAddress, data.address)}</>,
+								},
+								{
+									title: 'Số điện thoại',
+									render: (data: ICustomer) => <>{data?.phoneNumber || '---'}</>,
+								},
+								{
+									title: 'Email',
+									render: (data: ICustomer) => <>{data?.email || '---'}</>,
+								},
+								{
+									title: 'Ghi chú',
+									render: (data: ICustomer) => (
+										<TippyHeadless
+											maxWidth={'100%'}
+											interactive
+											onClickOutside={() => setUuidDescription('')}
+											visible={uuidDescription == data?.uuid}
+											placement='bottom'
+											render={(attrs) => (
+												<div className={styles.main_description}>
+													<p>{data?.description}</p>
+												</div>
+											)}
+										>
+											<Tippy content='Xem chi tiết ghi chú'>
+												<p
+													onClick={() => {
+														if (!data.description) {
+															return;
+														} else {
+															setUuidDescription(uuidDescription ? '' : data.uuid);
+														}
+													}}
+													className={clsx(styles.description, {
+														[styles.active]: uuidDescription == data.uuid,
+													})}
+												>
+													{data?.description || '---'}
+												</p>
+											</Tippy>
+										</TippyHeadless>
+									),
+								},
+							]}
+						/>
+					</DataWrapper>
 					<Pagination
 						currentPage={Number(_page) || 1}
 						pageSize={Number(_pageSize) || 20}
 						total={listCustomer?.data?.pagination?.totalCount}
 						dependencies={[_pageSize]}
 					/>
-				</div>
-			</Fragment>
+				</FullColumnFlex>
+			</FlexLayout>
+
 			<Dialog
 				danger
 				open={openChangeStatus}
@@ -294,9 +297,9 @@ function DetailMainPage({}: PropsDetailMainPage) {
 						? 'Bạn có chắc chắn muốn khóa hoạt động chức vụ này?'
 						: 'Bạn có chắc chắn muốn mở khóa hoạt động chức vụ này?'
 				}
-				onSubmit={fucnChangeStatus.mutate}
+				onSubmit={funcChangeStatus.mutate}
 			/>
-		</div>
+		</Fragment>
 	);
 }
 

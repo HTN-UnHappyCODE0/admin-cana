@@ -57,7 +57,7 @@ function DetailStorage({}: PropsDetailStorage) {
 		enabled: !!_id,
 	});
 
-	const fucnChangeStatusStorage = useMutation({
+	const funcChangeStatusStorage = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -79,7 +79,7 @@ function DetailStorage({}: PropsDetailStorage) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnChangeStatusStorage.isLoading} />
+			<Loading loading={funcChangeStatusStorage.isLoading} />
 			<div className={styles.header}>
 				<Link
 					href={PATH.Home}
@@ -345,7 +345,7 @@ function DetailStorage({}: PropsDetailStorage) {
 						? 'Bạn có chắc chắn muốn khóa kho hàng này?'
 						: 'Bạn có chắc chắn muốn mở khóa kho hàng này?'
 				}
-				onSubmit={fucnChangeStatusStorage.mutate}
+				onSubmit={funcChangeStatusStorage.mutate}
 			/>
 
 			<Popup

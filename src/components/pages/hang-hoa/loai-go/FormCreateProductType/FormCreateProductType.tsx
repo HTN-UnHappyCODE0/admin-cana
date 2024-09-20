@@ -24,7 +24,7 @@ function FormCreateProductType({onClose}: PropsFormCreateProductType) {
 		colorShow: string;
 	}>({name: '', description: '', colorShow: '#16DBCC', productType: TYPE_PRODUCT.CONG_TY});
 
-	const fucnCreateProductType = useMutation({
+	const funcCreateProductType = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -57,12 +57,12 @@ function FormCreateProductType({onClose}: PropsFormCreateProductType) {
 	});
 
 	const handleSubmit = () => {
-		return fucnCreateProductType.mutate();
+		return funcCreateProductType.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnCreateProductType.isLoading} />
+			<Loading loading={funcCreateProductType.isLoading} />
 			<h4>Thêm loại gỗ</h4>
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={clsx('mb')}>

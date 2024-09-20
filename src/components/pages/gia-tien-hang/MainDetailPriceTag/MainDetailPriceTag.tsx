@@ -13,7 +13,7 @@ import DetailBox from '~/components/common/DetailBox';
 function MainDetailPriceTag({}: PropsMainDetailPriceTag) {
 	return (
 		<div className={styles.container}>
-			{/* <Loading loading={fucnChangeStatus.isLoading} /> */}
+			{/* <Loading loading={funcChangeStatus.isLoading} /> */}
 			<div className={styles.header}>
 				<Link href={PATH.GiaTienHangHienTai} className={styles.header_title}>
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
