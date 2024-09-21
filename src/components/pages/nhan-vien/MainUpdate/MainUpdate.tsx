@@ -306,7 +306,6 @@ function MainUpdate({}: PropsMainUpdate) {
 							name='fullName'
 							value={form.fullName || ''}
 							isRequired={true}
-							min={5}
 							max={255}
 							blur={true}
 							label={
@@ -371,7 +370,6 @@ function MainUpdate({}: PropsMainUpdate) {
 							name='provinceOwnerId'
 							value={form.provinceOwnerId || ''}
 							readOnly={!isReadOnly?.['Quản lý nhập hàng'] && !isReadOnly?.['Nhân viên thị trường']}
-							min={5}
 							max={255}
 							blur={true}
 							label={

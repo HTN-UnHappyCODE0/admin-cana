@@ -269,7 +269,6 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 						<Input
 							name='taxCode'
 							value={form.taxCode || ''}
-							min={5}
 							max={255}
 							label={<span>Mã số thuế</span>}
 							placeholder='Nhập mã số thuế'
@@ -279,7 +278,6 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 						<Input
 							name='director'
 							value={form.director || ''}
-							min={5}
 							max={255}
 							blur={true}
 							label={<span>Người liên hệ</span>}
@@ -331,7 +329,6 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 							name='bankAccount'
 							value={form.bankAccount || ''}
 							isNumber
-							min={9}
 							max={20}
 							label={<span>Số tài khoản</span>}
 							placeholder='Nhập số tài khoản'
@@ -406,7 +403,6 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 						<Input
 							name='address'
 							value={form.address || ''}
-							min={5}
 							max={255}
 							label={<span>Địa chỉ chi tiết</span>}
 							placeholder='Nhập địa chỉ chi tiết'

@@ -168,7 +168,6 @@ function UpdateCompany({}: PropsUpdateCompany) {
 								value={form.name}
 								blur={true}
 								isRequired
-								min={5}
 								max={255}
 								label={
 									<span>
@@ -200,7 +199,6 @@ function UpdateCompany({}: PropsUpdateCompany) {
 								name='dirrector'
 								value={form.dirrector}
 								blur={true}
-								min={5}
 								max={255}
 								label={<span>Người đại diện</span>}
 								placeholder='Nhập tên người đại diện'
@@ -296,7 +294,6 @@ function UpdateCompany({}: PropsUpdateCompany) {
 							name='address'
 							value={form.address || ''}
 							blur={true}
-							min={5}
 							max={255}
 							label={<span>Địa chỉ chi tiết</span>}
 							placeholder='Nhập địa chỉ chi tiết'
