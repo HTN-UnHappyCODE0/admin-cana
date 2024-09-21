@@ -25,11 +25,16 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react';
+import {useSelector} from 'react-redux';
+import {RootState} from '~/redux/store';
 function DetailMainPage({}: PropsDetailMainPage) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
+	const {infoUser} = useSelector((state: RootState) => state.user);
+
 	const {_id, _page, _pageSize, _status} = router.query;
+
 	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 
@@ -102,37 +107,39 @@ function DetailMainPage({}: PropsDetailMainPage) {
 							<p>Chi tiết nhân viên: {detailUser?.fullName}</p>
 						</Link>
 
-						<div className={styles.list_btn}>
-							<Button
-								rounded_2
-								w_fit
-								light_outline
-								p_8_16
-								bold
-								icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
-								onClick={() => router.push(`${PATH.NhanVien}/chinh-sua?_id=${detailUser?.uuid}`)}
-							>
-								Chỉnh sửa
-							</Button>
+						{detailUser?.uuid != infoUser?.userUuid && (
+							<div className={styles.list_btn}>
+								<Button
+									rounded_2
+									w_fit
+									light_outline
+									p_8_16
+									bold
+									icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
+									onClick={() => router.push(`${PATH.NhanVien}/chinh-sua?_id=${detailUser?.uuid}`)}
+								>
+									Chỉnh sửa
+								</Button>
 
-							<Button
-								rounded_2
-								w_fit
-								light_outline
-								p_8_16
-								bold
-								icon={
-									detailUser?.status == CONFIG_STATUS.HOAT_DONG ? (
-										<HiOutlineLockClosed color='#23262F' fontSize={18} fontWeight={600} />
-									) : (
-										<HiOutlineLockOpen color='#23262F' fontSize={18} fontWeight={600} />
-									)
-								}
-								onClick={() => setOpenChangeStatus(true)}
-							>
-								{detailUser?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-							</Button>
-						</div>
+								<Button
+									rounded_2
+									w_fit
+									light_outline
+									p_8_16
+									bold
+									icon={
+										detailUser?.status == CONFIG_STATUS.HOAT_DONG ? (
+											<HiOutlineLockClosed color='#23262F' fontSize={18} fontWeight={600} />
+										) : (
+											<HiOutlineLockOpen color='#23262F' fontSize={18} fontWeight={600} />
+										)
+									}
+									onClick={() => setOpenChangeStatus(true)}
+								>
+									{detailUser?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+								</Button>
+							</div>
+						)}
 					</div>
 					<div className={clsx('mt')}>
 						<table className={styles.container}>

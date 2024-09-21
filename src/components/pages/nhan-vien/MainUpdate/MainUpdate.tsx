@@ -27,8 +27,6 @@ function MainUpdate({}: PropsMainUpdate) {
 
 	const {_id} = router.query;
 
-	const [openWarning, setOpenWarning] = useState<boolean>(false);
-
 	const [form, setForm] = useState<IFormUpdate>({
 		fullName: '',
 		phoneNumber: '',
@@ -47,7 +45,7 @@ function MainUpdate({}: PropsMainUpdate) {
 		provinceOwnerId: '',
 	});
 
-	const {data: userDetails} = useQuery([QUERY_KEY.chi_tiet_nhan_vien], {
+	useQuery([QUERY_KEY.chi_tiet_nhan_vien], {
 		queryFn: () =>
 			httpRequest({
 				http: userServices.detailUser({
@@ -267,15 +265,7 @@ function MainUpdate({}: PropsMainUpdate) {
 			return toastWarn({msg: 'Ngày sinh không hợp lệ!'});
 		}
 
-		if (
-			form.provinceOwnerId != userDetails?.provinceOwner &&
-			(form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid ||
-				form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid)
-		) {
-			return setOpenWarning(true);
-		} else {
-			return funUpdateUser.mutate();
-		}
+		return funUpdateUser.mutate();
 	};
 
 	return (
@@ -560,16 +550,6 @@ function MainUpdate({}: PropsMainUpdate) {
 					</div>
 				</Form>
 			</div>
-			<DialogWarning
-				warn
-				open={openWarning}
-				onClose={() => setOpenWarning(false)}
-				title={'Cảnh báo!'}
-				note={
-					'Khi bạn thay đổi khu vực quản lý, toàn bộ dữ liệu của nhân viên sẽ được chuyển sang khu vực mới. Bạn có chắc chắn muốn thay đổi không?'
-				}
-				onSubmit={funUpdateUser.mutate}
-			/>
 		</div>
 	);
 }

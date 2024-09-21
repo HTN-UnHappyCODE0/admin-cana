@@ -32,11 +32,16 @@ import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import FlexLayout from '~/components/layouts/FlexLayout';
 import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
+import {useSelector} from 'react-redux';
+import {RootState} from '~/redux/store';
 function MainPage({}: PropsMainPage) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
+	const {infoUser} = useSelector((state: RootState) => state.user);
+
 	const {_page, _pageSize, _userOwnerUu, _keyword, _regencyUuid, _regencyUuidExclude, _provinceIDOwer, _status} = router.query;
+
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<IUser | null>(null);
 	const [dataCreateAccount, setDataCreateAccount] = useState<IUser | null>(null);
@@ -237,50 +242,54 @@ function MainPage({}: PropsMainPage) {
 									title: 'Tác vụ',
 									fixedRight: true,
 									render: (data: IUser) => (
-										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-											{data?.account == null ? (
-												<IconCustom
-													edit
-													icon={<UserAdd fontSize={20} fontWeight={600} />}
-													tooltip='Cấp tài khoản'
-													color='#777E90'
-													onClick={() => {
-														setDataCreateAccount(data);
-													}}
-												/>
-											) : (
-												<IconCustom
-													create
-													icon={<TickCircle size='23' />}
-													tooltip='Đã cấp tài khoản'
-													color='#35c244'
-												/>
-											)}
-
-											<IconCustom
-												edit
-												icon={<LuPencil fontSize={20} fontWeight={600} />}
-												tooltip='Chỉnh sửa'
-												color='#777E90'
-												href={`/nhan-vien/chinh-sua?_id=${data?.uuid}`}
-											/>
-
-											<IconCustom
-												lock
-												icon={
-													data?.status == CONFIG_STATUS.HOAT_DONG ? (
-														<HiOutlineLockClosed size='22' />
+										<>
+											{data?.uuid != infoUser?.userUuid && (
+												<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+													{data?.account == null ? (
+														<IconCustom
+															edit
+															icon={<UserAdd fontSize={20} fontWeight={600} />}
+															tooltip='Cấp tài khoản'
+															color='#777E90'
+															onClick={() => {
+																setDataCreateAccount(data);
+															}}
+														/>
 													) : (
-														<HiOutlineLockOpen size='22' />
-													)
-												}
-												tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
-												color='#777E90'
-												onClick={() => {
-													setDataStatus(data);
-												}}
-											/>
-										</div>
+														<IconCustom
+															create
+															icon={<TickCircle size='23' />}
+															tooltip='Đã cấp tài khoản'
+															color='#35c244'
+														/>
+													)}
+
+													<IconCustom
+														edit
+														icon={<LuPencil fontSize={20} fontWeight={600} />}
+														tooltip='Chỉnh sửa'
+														color='#777E90'
+														href={`/nhan-vien/chinh-sua?_id=${data?.uuid}`}
+													/>
+
+													<IconCustom
+														lock
+														icon={
+															data?.status == CONFIG_STATUS.HOAT_DONG ? (
+																<HiOutlineLockClosed size='22' />
+															) : (
+																<HiOutlineLockOpen size='22' />
+															)
+														}
+														tooltip={data.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+														color='#777E90'
+														onClick={() => {
+															setDataStatus(data);
+														}}
+													/>
+												</div>
+											)}
+										</>
 									),
 								},
 							]}
