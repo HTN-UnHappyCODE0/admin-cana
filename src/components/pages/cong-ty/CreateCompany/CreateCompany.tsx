@@ -160,7 +160,6 @@ function CreateCompany({}: PropsCreateCompany) {
 							<Input
 								name='name'
 								value={form.name || ''}
-								min={5}
 								isRequired
 								blur={true}
 								max={255}
@@ -193,7 +192,6 @@ function CreateCompany({}: PropsCreateCompany) {
 							<Input
 								name='dirrector'
 								value={form.dirrector || ''}
-								min={5}
 								max={255}
 								blur={true}
 								label={<span>Người liên hệ</span>}
@@ -289,7 +287,6 @@ function CreateCompany({}: PropsCreateCompany) {
 						<Input
 							name='address'
 							value={form.address || ''}
-							min={5}
 							max={255}
 							blur={true}
 							label={<span>Địa chỉ chi tiết</span>}

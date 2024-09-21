@@ -281,7 +281,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 						<Input
 							name='taxCode'
 							value={form.taxCode || ''}
-							min={5}
 							max={255}
 							label={<span>Mã số thuế</span>}
 							placeholder='Nhập mã số thuế'
@@ -292,7 +291,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							name='director'
 							value={form.director || ''}
 							isRequired
-							min={5}
 							max={255}
 							blur={true}
 							label={
@@ -357,7 +355,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							name='bankAccount'
 							value={form.bankAccount || ''}
 							isNumber
-							min={9}
 							max={20}
 							label={<span>Số tài khoản</span>}
 							placeholder='Nhập số tài khoản'
@@ -450,7 +447,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 						<Input
 							name='address'
 							value={form.address || ''}
-							min={5}
 							max={255}
 							label={<span>Địa chỉ chi tiết</span>}
 							placeholder='Nhập địa chỉ chi tiết'

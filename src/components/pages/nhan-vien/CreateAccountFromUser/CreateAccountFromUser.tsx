@@ -119,7 +119,6 @@ function CreateAccountFromUser({dataCreateAccount, onClose}: PropsCreateAccountF
 						placeholder='Nhập tên tài khoản'
 						max={50}
 						blur={true}
-						min={3}
 						name='userName'
 						value={form.userName}
 						label={

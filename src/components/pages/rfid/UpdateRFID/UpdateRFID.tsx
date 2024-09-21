@@ -101,7 +101,6 @@ function UpdateRFID({dataUpdateRFID, onClose}: PropsUpdateRFID) {
 						name='code'
 						value={form.code || ''}
 						isRequired
-						min={5}
 						max={255}
 						type='text'
 						blur={true}
