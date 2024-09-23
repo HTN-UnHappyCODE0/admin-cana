@@ -5,7 +5,15 @@ import styles from './MainWeightSessionDirect.module.scss';
 import {useRouter} from 'next/router';
 import useDebounce from '~/common/hooks/useDebounce';
 import {useQuery} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_SCALES} from '~/constants/config/enum';
+import {
+	CONFIG_DESCENDING,
+	CONFIG_PAGING,
+	CONFIG_STATUS,
+	CONFIG_TYPE_FIND,
+	QUERY_KEY,
+	TYPE_DATE,
+	TYPE_SCALES,
+} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import batchBillServices from '~/services/batchBillServices';
 import truckServices from '~/services/truckServices';
@@ -191,7 +199,7 @@ function MainWeightSessionDirect({}: PropsMainWeightSessionDirect) {
 							/>
 						</div>
 						<div className={styles.filter}>
-							<DateRangerCustom />
+							<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
 						</div>
 					</div>
 
@@ -283,15 +291,15 @@ function MainWeightSessionDirect({}: PropsMainWeightSessionDirect) {
 								),
 							},
 							{
-								title: 'TL 1 (kg)',
+								title: 'TL 1 (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weight1?.weight)}</>,
 							},
 							{
-								title: 'TL 2 (kg)',
+								title: 'TL 2 (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weight2?.weight)}</>,
 							},
 							{
-								title: 'TL hàng (kg)',
+								title: 'TL hàng (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
