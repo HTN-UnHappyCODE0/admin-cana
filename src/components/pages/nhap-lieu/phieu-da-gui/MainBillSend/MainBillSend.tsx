@@ -257,7 +257,7 @@ function MainBillSend({}: PropsMainBillSend) {
 						}))}
 					/>
 					<div className={styles.filter}>
-						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.LAST_7_DAYS} />
+						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
 					</div>
 				</div>
 			</div>
@@ -296,7 +296,7 @@ function MainBillSend({}: PropsMainBillSend) {
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL hàng (kg)',
+								title: 'TL hàng (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
