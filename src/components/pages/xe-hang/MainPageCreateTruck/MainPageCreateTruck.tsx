@@ -209,7 +209,6 @@ function MainPageCreateTruck({}: PropsMainPageCreateTruck) {
 								isRequired
 								max={255}
 								type='text'
-								isLicensePalate={true}
 								blur={true}
 								label={
 									<span>
