@@ -402,24 +402,20 @@ function MainCreate({}: PropsMainCreate) {
 						/>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
-						<DatePicker
-							icon={true}
+						<Input
+							type='date'
+							name='birthDay'
+							value={form.birthDay || ''}
+							isRequired={true}
+							blur={true}
 							label={
 								<span>
-									Ngày sinh<span style={{color: 'red'}}>*</span>
+									Ngày sinh <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Chọn ngày sinh'
-							value={form.birthDay || ''}
-							onSetValue={(date) =>
-								setForm((prev: any) => ({
-									...prev,
-									birthDay: date,
-								}))
-							}
-							name='birthDay'
-							onClean={true}
+							placeholder='Nhập ngày sinh'
 						/>
+
 						<div className={styles.gennder}>
 							<label>
 								Giới tính<span style={{color: 'red'}}>*</span>
