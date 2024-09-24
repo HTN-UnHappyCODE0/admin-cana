@@ -236,7 +236,6 @@ function MainPageUpdateTruck({}: PropsMainPageUpdateTruck) {
 								max={255}
 								type='text'
 								blur={true}
-								isLicensePalate={true}
 								label={
 									<span>
 										Biển số <span style={{color: 'red'}}>*</span>
