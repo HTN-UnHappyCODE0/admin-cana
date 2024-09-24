@@ -18,7 +18,6 @@ import commonServices from '~/services/commonServices';
 import {toastWarn} from '~/common/funcs/toast';
 import moment from 'moment';
 import {useRouter} from 'next/router';
-import DialogWarning from '~/components/common/DialogWarning';
 import Loading from '~/components/common/Loading';
 import {timeSubmit} from '~/common/funcs/optionConvert';
 
@@ -57,7 +56,7 @@ function MainUpdate({}: PropsMainUpdate) {
 				fullName: data?.fullName,
 				phoneNumber: data?.phoneNumber,
 				email: data?.email,
-				birthDay: data?.birthDay,
+				birthDay: moment(data.birthDay).format('yyyy-MM-DD'),
 				address: data?.address,
 				description: data?.description,
 				accountUsername: data?.accountUsername,
@@ -444,23 +443,18 @@ function MainUpdate({}: PropsMainUpdate) {
 						/>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
-						<DatePicker
-							icon={true}
+						<Input
+							type='date'
+							name='birthDay'
+							value={form.birthDay || ''}
+							isRequired={true}
+							blur={true}
 							label={
 								<span>
-									Ngày sinh<span style={{color: 'red'}}>*</span>
+									Ngày sinh <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Chọn ngày sinh'
-							value={form.birthDay || ''}
-							onSetValue={(date) =>
-								setForm((prev: any) => ({
-									...prev,
-									birthDay: date,
-								}))
-							}
-							name='birthDay'
-							onClean={true}
+							placeholder='Nhập ngày sinh'
 						/>
 						<div className={styles.gennder}>
 							<label>
