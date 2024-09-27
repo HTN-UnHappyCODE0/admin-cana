@@ -10,18 +10,19 @@ import Select, {Option} from '~/components/common/Select';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
-import commonServices from '~/services/commonServices';
 import {useRouter} from 'next/router';
 import {toastWarn} from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
-import scalesStationServices from '~/services/scalesStationServices';
 import companyServices from '~/services/companyServices';
+import commonServices from '~/services/commonServices';
+import scalesStationServices from '~/services/scalesStationServices';
 
 function CreateWeighingStation({}: PropsCreateWeighingStation) {
 	const router = useRouter();
 
 	const [form, setForm] = useState<IFormCreate>({
 		name: '',
+		code: '',
 		address: '',
 		description: '',
 		phoneNumber: '',
@@ -96,7 +97,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 		enabled: !!form?.dictrictId,
 	});
 
-	const funcAddScalesstation = useMutation({
+	const fucnAddScalesstation = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -111,6 +112,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 			if (data) {
 				setForm({
 					name: '',
+					code: '',
 					address: '',
 					description: '',
 					phoneNumber: '',
@@ -133,7 +135,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 
 	const handleSubmit = async () => {
 		if (!form.companyUuid) {
-			return toastWarn({msg: 'Vui lòng chọn khu vực cảng xuất khẩu!'});
+			return toastWarn({msg: 'Vui lòng chọn KV cảng xuất khẩu!'});
 		}
 		if (!form.provinceId) {
 			return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
@@ -145,12 +147,12 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
 		}
 
-		return funcAddScalesstation.mutate();
+		return fucnAddScalesstation.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcAddScalesstation.isLoading} />
+			<Loading loading={fucnAddScalesstation.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
@@ -172,21 +174,37 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 				</div>
 
 				<div className={styles.form}>
-					<div className={clsx('mt')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
-							name='name'
-							value={form.name || ''}
+							name='code'
+							value={form.code || ''}
 							isRequired
 							max={255}
 							type='text'
 							blur={true}
 							label={
 								<span>
-									Tên trạm cân <span style={{color: 'red'}}>*</span>
+									Mã trạm cân <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên trạm cân'
+							placeholder='Nhập mã trạm cân'
 						/>
+						<div>
+							<Input
+								name='name'
+								value={form.name || ''}
+								isRequired
+								max={255}
+								type='text'
+								blur={true}
+								label={
+									<span>
+										Tên trạm cân <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập tên trạm cân'
+							/>
+						</div>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
@@ -195,7 +213,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 								isSearch
 								name='companyUuid'
 								value={form.companyUuid}
-								placeholder='Chọn khu vực cảng xuất khẩu'
+								placeholder='Chọn KV cảng xuất khẩu'
 								onChange={(e) =>
 									setForm((prev: any) => ({
 										...prev,
@@ -204,7 +222,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 								}
 								label={
 									<span>
-										Khu vực cảng xuất khẩu <span style={{color: 'red'}}>*</span>
+										Thuộc KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -323,7 +341,7 @@ function CreateWeighingStation({}: PropsCreateWeighingStation) {
 						/>
 					</div>
 					<div className={clsx('mt')}>
-						<TextArea placeholder='Nhập ghi chú' name='description' label={<span>Mô tả</span>} blur max={5000} />
+						<TextArea placeholder='Nhập ghi chú' name='description' label={<span>Ghi chú</span>} blur max={5000} />
 					</div>
 				</div>
 			</Form>

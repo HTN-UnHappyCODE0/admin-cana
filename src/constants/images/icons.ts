@@ -42,6 +42,8 @@ import chart_empty from '../../../public/static/images/chart_empty.png';
 import luotcan from '../../../public/static/images/luotcan.svg';
 import duyetsanluong from '../../../public/static/images/duyetsanluong.svg';
 import icon_ship from '../../../public/static/images/ship.svg';
+import duyetphieu from '../../../public/static/images/duyetphieu.svg';
+import cang from '../../../public/static/images/cang.svg';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -89,4 +91,6 @@ export default {
 	luotcan,
 	duyetsanluong,
 	icon_ship,
+	duyetphieu,
+	cang,
 };

@@ -11,11 +11,11 @@ import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY
 import {PATH} from '~/constants/config';
 import Select, {Option} from '~/components/common/Select';
 import {useRouter} from 'next/router';
-import companyServices from '~/services/companyServices';
-import commonServices from '~/services/commonServices';
 import {toastWarn} from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
 import scalesStationServices from '~/services/scalesStationServices';
+import companyServices from '~/services/companyServices';
+import commonServices from '~/services/commonServices';
 
 function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 	const router = useRouter();
@@ -24,6 +24,7 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 
 	const [form, setForm] = useState<IFormUpdate>({
 		name: '',
+		code: '',
 		address: '',
 		description: '',
 		phoneNumber: '',
@@ -119,7 +120,7 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 		enabled: !!form?.dictrictId,
 	});
 
-	const funcUpdateScalesstation = useMutation({
+	const fucnUpdateScalesstation = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -146,7 +147,7 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 
 	const handleSubmit = async () => {
 		if (!form.companyUuid) {
-			return toastWarn({msg: 'Vui lòng chọn khu vực cảng xuất khẩu!'});
+			return toastWarn({msg: 'Vui lòng chọn KV cảng xuất khẩu!'});
 		}
 		if (!form.provinceId) {
 			return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
@@ -158,12 +159,12 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
 		}
 
-		return funcUpdateScalesstation.mutate();
+		return fucnUpdateScalesstation.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcUpdateScalesstation.isLoading} />
+			<Loading loading={fucnUpdateScalesstation.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
@@ -185,21 +186,38 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 				</div>
 
 				<div className={styles.form}>
-					<div className={clsx('mt')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
-							name='name'
-							value={form.name || ''}
+							name='code'
+							value={form.code || ''}
 							isRequired
 							max={255}
 							type='text'
 							blur={true}
+							readOnly={true}
 							label={
 								<span>
-									Tên trạm cân <span style={{color: 'red'}}>*</span>
+									Mã trạm cân <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên trạm cân'
+							placeholder='Nhập mã trạm cân'
 						/>
+						<div>
+							<Input
+								name='name'
+								value={form.name || ''}
+								isRequired
+								max={255}
+								type='text'
+								blur={true}
+								label={
+									<span>
+										Tên trạm cân <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập tên trạm cân'
+							/>
+						</div>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
@@ -208,7 +226,7 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 								isSearch
 								name='companyUuid'
 								value={form.companyUuid}
-								placeholder='Chọn khu vực cảng xuất khẩu'
+								placeholder='Chọn KV cảng xuất khẩu'
 								onChange={(e) =>
 									setForm((prev: any) => ({
 										...prev,
@@ -217,7 +235,7 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 								}
 								label={
 									<span>
-										Khu vực cảng xuất khẩu <span style={{color: 'red'}}>*</span>
+										Thuộc KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -336,7 +354,7 @@ function UpdateWeighingStation({}: PropsUpdateWeighingStation) {
 						/>
 					</div>
 					<div className={clsx('mt')}>
-						<TextArea placeholder='Nhập ghi chú' name='description' label={<span>Mô tả</span>} max={5000} blur />
+						<TextArea placeholder='Nhập ghi chú' name='description' label={<span>Ghi chú</span>} max={5000} blur />
 					</div>
 				</div>
 			</Form>

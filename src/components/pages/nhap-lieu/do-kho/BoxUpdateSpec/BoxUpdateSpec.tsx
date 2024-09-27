@@ -30,7 +30,7 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 				title: v?.criteriaUu?.title!,
 				value: v?.value!,
 				ruler: v?.criteriaUu?.ruler!,
-				valuecriteria: v?.criteriaUu?.value!,
+				valuecriteria: v?.criteriaUu.value!,
 			}))!
 		);
 	}, [dataUpdateSpec]);
@@ -48,7 +48,7 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 		);
 	};
 
-	const funcUpdateSpecWeightSession = useMutation({
+	const fucnUpdateSpecWeightSession = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -79,12 +79,12 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 			return toastWarn({msg: 'Nhập giá trị cho tiêu chí quy cách!'});
 		}
 
-		return funcUpdateSpecWeightSession.mutate();
+		return fucnUpdateSpecWeightSession.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcUpdateSpecWeightSession.isLoading} />
+			<Loading loading={fucnUpdateSpecWeightSession.isLoading} />
 			<div className={styles.main}>
 				{dataRules?.map((v, i) => (
 					<div key={i} className={styles.item}>

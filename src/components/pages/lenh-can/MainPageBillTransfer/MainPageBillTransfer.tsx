@@ -159,7 +159,7 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 			},
 		}
 	);
-	const funcStartBatchBill = useMutation({
+	const fucnStartBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -181,7 +181,7 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 	});
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading} />
+			<Loading loading={fucnStartBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -216,6 +216,7 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 							name: v?.licensePalate,
 						}))}
 					/>
+
 					<FilterCustom
 						isSearch
 						name='Trạng thái'
@@ -318,14 +319,6 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 								),
 							},
 							{
-								title: 'Loại gỗ',
-								render: (data: IDataBill) => <>{data?.productTypeUu?.name || '---'}</>,
-							},
-							{
-								title: 'Quy cách',
-								render: (data: IDataBill) => <>{data?.specificationsUu?.name || '---'}</>,
-							},
-							{
 								title: 'Đến',
 								render: (data: IDataBill) => (
 									<>
@@ -337,6 +330,18 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 							{
 								title: 'KL dự kiến (tấn)',
 								render: (data: IDataBill) => <>{convertCoin(data?.batchsUu?.weightIntent) || '---'}</>,
+							},
+							{
+								title: 'Loại gỗ',
+								render: (data: IDataBill) => <>{data?.productTypeUu?.name || '---'}</>,
+							},
+							{
+								title: 'Quy cách',
+								render: (data: IDataBill) => <>{data?.specificationsUu?.name || '---'}</>,
+							},
+							{
+								title: 'Trạm cân',
+								render: (data: IDataBill) => <>{data?.scalesStationUu?.name || '---'}</>,
 							},
 							{
 								title: 'Ngày dự kiến',
@@ -423,7 +428,7 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 				title='Bắt đầu cân'
 				note='Bạn có muốn thực hiện thao tác cân cho phiếu cân này không?'
 				onClose={() => setUuidPlay('')}
-				onSubmit={funcStartBatchBill.mutate}
+				onSubmit={fucnStartBatchBill.mutate}
 			/>
 			<Popup open={!!billUuid} onClose={() => setBilldUuid(null)}>
 				<PopupDeleteBill uuid={billUuid} onClose={() => setBilldUuid(null)} />

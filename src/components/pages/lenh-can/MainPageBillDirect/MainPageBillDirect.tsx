@@ -15,7 +15,6 @@ import {
 	QUERY_KEY,
 	STATUS_BILL,
 	STATUS_CUSTOMER,
-	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
@@ -49,7 +48,7 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 	const queryClient = useQueryClient();
 	const [uuidPlay, setUuidPlay] = useState<string>('');
 
-	const {_page, _pageSize, _keyword, _isBatch, _customerUuid, _shipUuid, _productTypeUuid, _status, _dateFrom, _dateTo} = router.query;
+	const {_page, _pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _shipUuid, _status, _dateFrom, _dateTo} = router.query;
 
 	const [billUuid, setBilldUuid] = useState<string | null>(null);
 
@@ -161,7 +160,7 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 			},
 		}
 	);
-	const funcStartBatchBill = useMutation({
+	const fucnStartBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -184,7 +183,7 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading} />
+			<Loading loading={fucnStartBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -301,15 +300,6 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 									</p>
 								),
 							},
-							// {
-							// 	title: 'Kiểu cân',
-							// 	render: (data: IDataBill) => (
-							// 		<>
-							// 			{data?.isBatch == TYPE_BATCH.CAN_LO && 'Cân lô'}
-							// 			{data?.isBatch == TYPE_BATCH.CAN_LE && 'Cân lẻ'}
-							// 		</>
-							// 	),
-							// },
 							{
 								title: 'Mã tàu',
 								render: (data: IDataBill) => (
@@ -332,14 +322,6 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 								),
 							},
 							{
-								title: 'Loại gỗ',
-								render: (data: IDataBill) => <>{data?.productTypeUu?.name || '---'}</>,
-							},
-							{
-								title: 'Quy cách',
-								render: (data: IDataBill) => <>{data?.specificationsUu?.name || '---'}</>,
-							},
-							{
 								title: 'Đến',
 								render: (data: IDataBill) => (
 									<>
@@ -351,6 +333,18 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 							{
 								title: 'KL dự kiến (tấn)',
 								render: (data: IDataBill) => <>{convertCoin(data?.batchsUu?.weightIntent) || '---'}</>,
+							},
+							{
+								title: 'Loại gỗ',
+								render: (data: IDataBill) => <>{data?.productTypeUu?.name || '---'}</>,
+							},
+							{
+								title: 'Quy cách',
+								render: (data: IDataBill) => <>{data?.specificationsUu?.name || '---'}</>,
+							},
+							{
+								title: 'Trạm cân',
+								render: (data: IDataBill) => <>{data?.scalesStationUu?.name || '---'}</>,
 							},
 							{
 								title: 'Ngày dự kiến',
@@ -437,7 +431,7 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 				title='Bắt đầu cân'
 				note='Bạn có muốn thực hiện thao tác cân cho phiếu cân này không?'
 				onClose={() => setUuidPlay('')}
-				onSubmit={funcStartBatchBill.mutate}
+				onSubmit={fucnStartBatchBill.mutate}
 			/>
 			{/* POPUP */}
 			<Popup open={!!billUuid} onClose={() => setBilldUuid(null)}>

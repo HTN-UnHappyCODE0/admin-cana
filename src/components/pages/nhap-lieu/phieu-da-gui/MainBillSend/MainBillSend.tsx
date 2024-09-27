@@ -37,6 +37,7 @@ import clsx from 'clsx';
 import BoxViewSpec from '../BoxViewSpec';
 import Moment from 'react-moment';
 import {convertCoin} from '~/common/funcs/convertCoin';
+import Link from 'next/link';
 
 function MainBillSend({}: PropsMainBillSend) {
 	const router = useRouter();
@@ -201,7 +202,7 @@ function MainBillSend({}: PropsMainBillSend) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng, số phiếu, biển số, lô gô xe' />
 					</div>
 					<div className={styles.filter}>
 						<FilterCustom
@@ -231,7 +232,7 @@ function MainBillSend({}: PropsMainBillSend) {
 					/>
 					<FilterCustom
 						isSearch
-						name='Loại hàng'
+						name='Loại gỗ'
 						query='_productTypeUuid'
 						listFilter={listProductType?.data?.map((v: any) => ({
 							id: v?.uuid,
@@ -264,7 +265,7 @@ function MainBillSend({}: PropsMainBillSend) {
 			<div className={styles.table}>
 				<DataWrapper
 					data={queryWeightsession?.data?.items || []}
-					loading={queryWeightsession.isLoading}
+					loading={queryWeightsession.isFetching}
 					noti={<Noti des='Hiện tại chưa có danh sách nhập liệu nào!' disableButton />}
 				>
 					<Table
@@ -275,8 +276,16 @@ function MainBillSend({}: PropsMainBillSend) {
 								render: (data: IWeightSession, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Số phiếu',
+								title: 'Mã lô',
 								fixedLeft: true,
+								render: (data: IWeightSession) => (
+									<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
+										{data?.billUu?.code}
+									</Link>
+								),
+							},
+							{
+								title: 'Số phiếu',
 								render: (data: IWeightSession) => <>{data?.code}</>,
 							},
 							{
@@ -292,11 +301,11 @@ function MainBillSend({}: PropsMainBillSend) {
 								render: (data: IWeightSession) => <>{data?.toUu?.name || '---'}</>,
 							},
 							{
-								title: 'Loại hàng',
+								title: 'Loại gỗ',
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL hàng (tấn)',
+								title: 'KL hàng (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
@@ -334,23 +343,26 @@ function MainBillSend({}: PropsMainBillSend) {
 						]}
 					/>
 				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 20}
-					total={queryWeightsession?.data?.pagination?.totalCount}
-					dependencies={[
-						_pageSize,
-						_keyword,
-						_isBatch,
-						_customerUuid,
-						_productTypeUuid,
-						_specUuid,
-						_billUuid,
-						_dateFrom,
-						_dateTo,
-						_isShift,
-					]}
-				/>
+
+				{!queryWeightsession.isFetching && (
+					<Pagination
+						currentPage={Number(_page) || 1}
+						pageSize={Number(_pageSize) || 20}
+						total={queryWeightsession?.data?.pagination?.totalCount}
+						dependencies={[
+							_pageSize,
+							_keyword,
+							_isBatch,
+							_customerUuid,
+							_productTypeUuid,
+							_specUuid,
+							_billUuid,
+							_dateFrom,
+							_dateTo,
+							_isShift,
+						]}
+					/>
+				)}
 			</div>
 		</div>
 	);

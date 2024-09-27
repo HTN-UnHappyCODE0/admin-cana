@@ -12,7 +12,7 @@ function BoxViewSpec({dataUpdateSpec}: PropsBoxViewSpec) {
 					<div key={i} className={styles.item}>
 						<p>
 							{v?.criteriaUu?.title}
-							<span style={{margin: '0 6px'}}>{v?.ruler == TYPE_RULER.NHO_HON ? '<' : '>'}</span>
+							<span style={{margin: '0 6px'}}>{v?.criteriaUu?.ruler == TYPE_RULER.NHO_HON ? '<' : '>'}</span>
 							{v?.criteriaUu?.value}
 						</p>
 						<p>{v?.value}</p>
