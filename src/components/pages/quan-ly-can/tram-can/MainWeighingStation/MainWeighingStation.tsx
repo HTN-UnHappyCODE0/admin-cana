@@ -21,12 +21,12 @@ import Loading from '~/components/common/Loading';
 import TagStatus from '~/components/common/TagStatus';
 import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
 import {PATH} from '~/constants/config';
-import companyServices from '~/services/companyServices';
-import scalesStationServices from '~/services/scalesStationServices';
 import Link from 'next/link';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
+import companyServices from '~/services/companyServices';
+import scalesStationServices from '~/services/scalesStationServices';
 function MainWeighingStation({}: PropsMainWeighingStation) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
@@ -74,7 +74,7 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 		},
 	});
 
-	const funcChangeStatus = useMutation({
+	const fucnChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -95,11 +95,11 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 	});
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcChangeStatus.isLoading} />
+			<Loading loading={fucnChangeStatus.isLoading} />
 			<div className={styles.filter}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm tên trạm cân' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên trạm cân' />
 					</div>
 					<div style={{minWidth: '240px'}}>
 						<FilterCustom
@@ -157,6 +157,10 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 								render: (data: IScalesStation, index: number) => <>{index + 1}</>,
 							},
 							{
+								title: 'Mã trạm cân',
+								render: (data: IScalesStation) => <p style={{fontWeight: 600}}>{data?.code}</p>,
+							},
+							{
 								title: 'Tên trạm cân',
 								fixedLeft: true,
 								render: (data: IScalesStation) => (
@@ -192,7 +196,7 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 											</div>
 										)}
 									>
-										<Tippy content='Xem chi tiết mô tả'>
+										<Tippy content='Xem chi tiết ghi chú'>
 											<p
 												onClick={() => {
 													if (!data.description) {
@@ -265,7 +269,7 @@ function MainWeighingStation({}: PropsMainWeighingStation) {
 						? 'Bạn có chắc chắn muốn khóa trạm cân này?'
 						: 'Bạn có chắc chắn muốn mở khóa trạm cân này?'
 				}
-				onSubmit={funcChangeStatus.mutate}
+				onSubmit={fucnChangeStatus.mutate}
 			/>
 		</div>
 	);

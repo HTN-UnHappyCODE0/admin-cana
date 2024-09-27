@@ -121,6 +121,9 @@ export enum PATH {
 	// Duyệt sản lượng
 	DuyetSanLuong = '/duyet-san-luong',
 
+	DuyetPhieu = '/duyet-phieu',
+	CangBocDo = '/cang-boc-do',
+
 	// Nhân viên
 	NhanVien = '/nhan-vien',
 	ThemNhanVien = '/nhan-vien/them-moi',
@@ -167,6 +170,13 @@ export const Menu: {
 			{title: 'Công nợ công ty', icon: icons.congno, path: PATH.CongNo, pathActive: '/cong-no'},
 			{title: 'Giá tiền hàng', icon: icons.giatienhang, path: PATH.GiaTienHangHienTai, pathActive: PATH.GiaTien},
 			{title: 'Duyệt sản lượng', icon: icons.duyetsanluong, path: PATH.DuyetSanLuong, pathActive: PATH.DuyetSanLuong},
+		],
+	},
+	{
+		title: 'Quản lý kho',
+		group: [
+			{title: 'Duyệt phiếu', icon: icons.duyetphieu, path: PATH.DuyetPhieu, pathActive: PATH.DuyetPhieu},
+			{title: 'Cảng bốc dỡ', icon: icons.cang, path: PATH.CangBocDo, pathActive: PATH.CangBocDo},
 		],
 	},
 	{

@@ -6,7 +6,7 @@ import Button from '~/components/common/Button';
 import {IoClose} from 'react-icons/io5';
 import clsx from 'clsx';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import Select, {Option} from '~/components/common/Select';
 import {toastWarn} from '~/common/funcs/toast';
@@ -33,7 +33,7 @@ function AddScalesMachine({onClose, nameScalesStation, uuidScalesStation, listSc
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					scalesStationUuid: '',
 				}),
 			}),
@@ -42,7 +42,7 @@ function AddScalesMachine({onClose, nameScalesStation, uuidScalesStation, listSc
 		},
 	});
 
-	const funcAddScalesMachine = useMutation({
+	const fucnAddScalesMachine = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -78,12 +78,12 @@ function AddScalesMachine({onClose, nameScalesStation, uuidScalesStation, listSc
 			return toastWarn({msg: 'Vui lòng chọn cầu cân!'});
 		}
 
-		return funcAddScalesMachine.mutate();
+		return fucnAddScalesMachine.mutate();
 	};
 
 	return (
 		<Fragment>
-			<Loading loading={funcAddScalesMachine.isLoading} />
+			<Loading loading={fucnAddScalesMachine.isLoading} />
 			<div className={styles.container}>
 				<h4>Thêm cầu cân vào trạm cân</h4>
 				<Form form={form} setForm={setForm}>

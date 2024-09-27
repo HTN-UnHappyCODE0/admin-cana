@@ -27,28 +27,30 @@ import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
-
 import Link from 'next/link';
 import {convertCoin} from '~/common/funcs/convertCoin';
 import Pagination from '~/components/common/Pagination';
 import batchBillServices from '~/services/batchBillServices';
 import IconCustom from '~/components/common/IconCustom';
 import {Eye, RefreshLeftSquare, TickCircle} from 'iconsax-react';
-import clsx from 'clsx';
 import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
 import Popup from '~/components/common/Popup';
-import PopupRejectBatchBill from '../PopupRejectBatchBill';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import PopupRejectBatchBill from '../../phieu-can/PopupRejectBatchBill';
+import clsx from 'clsx';
+import Button from '~/components/common/Button';
 
 function PageConfirmOutput({}: PropsPageConfirmOutput) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const [uuidKTKConfirm, setUuidKTKConfirm] = useState<string>('');
-	const [uuidKTKReject, setUuidKTKReject] = useState<string>('');
+	const {_page, _pageSize, _keyword, _customerUuid, _isBatch, _productTypeUuid, _state, _dateFrom, _dateTo} = router.query;
 
-	const {_page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo, _isBatch} = router.query;
+	const [uuidKTKConfirm, setUuidKTKConfirm] = useState<string[]>([]);
+	const [uuidKTKReject, setUuidKTKReject] = useState<string[]>([]);
+
+	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
+	const [total, setTotal] = useState<number>(0);
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
 		queryFn: () =>
@@ -94,8 +96,19 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 		},
 	});
 
-	const listBatch = useQuery(
-		[QUERY_KEY.table_ktk_duyet_san_luong, _page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo, _isBatch],
+	const getListBatch = useQuery(
+		[
+			QUERY_KEY.table_ktk_duyet_san_luong,
+			_page,
+			_pageSize,
+			_keyword,
+			_customerUuid,
+			_isBatch,
+			_productTypeUuid,
+			_dateFrom,
+			_state,
+			_dateTo,
+		],
 		{
 			queryFn: () =>
 				httpRequest({
@@ -120,7 +133,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 							STATUS_BILL.DA_KCS,
 							STATUS_BILL.CHOT_KE_TOAN,
 						],
-						state: [STATE_BILL.QLK_CHECKED, STATE_BILL.KTK_REJECTED],
+						state: !!_state ? [Number(_state)] : [STATE_BILL.QLK_CHECKED, STATE_BILL.KTK_REJECTED],
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
@@ -128,13 +141,27 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 						transportType: null,
 					}),
 				}),
+			onSuccess(data) {
+				if (data) {
+					setListBatchBill(
+						data?.items?.map((v: any, index: number) => ({
+							...v,
+							index: index,
+							isChecked: false,
+						}))
+					);
+					setTotal(data?.pagination?.totalCount);
+				}
+			},
 			select(data) {
-				return data;
+				if (data) {
+					return data;
+				}
 			},
 		}
 	);
 
-	const funcKTKConfirmBatchBill = useMutation({
+	const fucnKTKConfirmBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -146,7 +173,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 			}),
 		onSuccess(data) {
 			if (data) {
-				setUuidKTKConfirm('');
+				setUuidKTKConfirm([]);
 				queryClient.invalidateQueries([QUERY_KEY.table_ktk_duyet_san_luong]);
 			}
 		},
@@ -157,9 +184,43 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcKTKConfirmBatchBill.isLoading} />
+			<Loading loading={fucnKTKConfirmBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
+					{listBatchBill?.some((x) => x.isChecked !== false) && (
+						<div style={{height: 40}}>
+							<Button
+								className={styles.btn}
+								rounded_2
+								maxHeight
+								primary
+								p_4_12
+								onClick={() => {
+									setUuidKTKConfirm(listBatchBill?.filter((v) => v.isChecked !== false)?.map((x: any) => x.uuid));
+								}}
+							>
+								KTK duyệt sản lượng
+							</Button>
+						</div>
+					)}
+
+					{listBatchBill?.some((x) => x.isChecked !== false) && (
+						<div style={{height: 40}}>
+							<Button
+								className={styles.btn}
+								rounded_2
+								maxHeight
+								danger
+								p_4_12
+								onClick={() => {
+									setUuidKTKReject(listBatchBill?.filter((v) => v.isChecked !== false)?.map((x: any) => x.uuid));
+								}}
+							>
+								Yêu cầu duyệt lại
+							</Button>
+						</div>
+					)}
+
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
@@ -198,9 +259,24 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 							name: v?.name,
 						}))}
 					/>
+					<FilterCustom
+						isSearch
+						name='Xác Nhận SL'
+						query='_state'
+						listFilter={[
+							{
+								id: STATE_BILL.QLK_CHECKED,
+								name: 'QLK đã duyệt',
+							},
+							{
+								id: STATE_BILL.KTK_REJECTED,
+								name: 'KTK duyệt lại',
+							},
+						]}
+					/>
 
 					<div className={styles.filter}>
-						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.LAST_7_DAYS} />
+						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
 					</div>
 				</div>
 			</div>
@@ -208,25 +284,27 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 				<div className={styles.parameter}>
 					<div>
 						TỔNG LƯỢNG HÀNG TƯƠI:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(listBatch?.data?.amountMt) || 0} </span>(tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertCoin(getListBatch?.data?.amountMt) || 0} </span>(Tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG HÀNG QUY KHÔ:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(listBatch?.data?.amountBdmt) || 0} </span>(tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertCoin(getListBatch?.data?.amountBdmt) || 0} </span>(Tấn)
 					</div>
 				</div>
 			</div>
 			<div className={styles.table}>
 				<DataWrapper
-					data={listBatch?.data?.items || []}
-					loading={listBatch?.isLoading}
+					data={listBatchBill || []}
+					loading={getListBatch?.isFetching}
 					noti={<Noti des='Hiện tại chưa có lô nào!' disableButton />}
 				>
 					<Table
-						data={listBatch?.data?.items || []}
+						data={listBatchBill || []}
+						onSetData={setListBatchBill}
 						column={[
 							{
 								title: 'STT',
+								checkBox: true,
 								render: (data: ITableBillScale, index: number) => <>{index + 1}</>,
 							},
 							{
@@ -267,7 +345,6 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								render: (data: ITableBillScale) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
-										{/* <p>({data?.fromUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
 							},
@@ -293,21 +370,20 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								render: (data: ITableBillScale) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
 							},
 							{
-								title: 'Khối lượng tươi (tấn)',
-								render: (data: ITableBillScale) => <>{convertWeight(data?.weightTotal) || 0}</>,
+								title: 'KL tươi (tấn)',
+								render: (data: ITableBillScale) => <>{convertCoin(data?.weightTotal) || 0}</>,
+							},
+							{
+								title: 'KL độ khô (tấn)',
+								render: (data: ITableBillScale) => <>{convertCoin(data?.weightBdmt) || 0}</>,
 							},
 							{
 								title: 'Độ khô (%)',
-								render: (data: ITableBillScale) => <>{data?.drynessAvg?.toFixed(3) || '---'}</>,
-							},
-							{
-								title: 'Khối lượng quy khô (tấn)',
-								render: (data: ITableBillScale) => <>{convertWeight(data?.weightBdmt) || 0}</>,
+								render: (data: ITableBillScale) => <>{convertCoin(data?.drynessAvg) || 0}</>,
 							},
 							{
 								title: 'Xác nhận SL',
@@ -349,7 +425,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 												icon={<TickCircle size={22} fontWeight={600} />}
 												tooltip='KTK duyệt'
 												color='#2CAE39'
-												onClick={() => setUuidKTKConfirm(data?.uuid)}
+												onClick={() => setUuidKTKConfirm([data?.uuid])}
 											/>
 										) : null}
 
@@ -360,7 +436,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 												icon={<RefreshLeftSquare size={22} fontWeight={600} />}
 												tooltip='Yêu cầu duyệt lại'
 												color='#D95656'
-												onClick={() => setUuidKTKReject(data?.uuid)}
+												onClick={() => setUuidKTKReject([data?.uuid])}
 											/>
 										) : null}
 
@@ -378,27 +454,30 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 						]}
 					/>
 				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 20}
-					total={listBatch?.data?.pagination?.totalCount}
-					dependencies={[_pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo]}
-				/>
+
+				{!getListBatch.isFetching && (
+					<Pagination
+						currentPage={Number(_page) || 1}
+						pageSize={Number(_pageSize) || 20}
+						total={total}
+						dependencies={[_pageSize, _keyword, _customerUuid, _isBatch, _productTypeUuid, _state, _dateFrom, _dateTo]}
+					/>
+				)}
 			</div>
 
 			{/* Kế toán kho duyệt */}
 			<Dialog
 				danger
-				open={!!uuidKTKConfirm}
+				open={uuidKTKConfirm.length > 0}
 				title='KTK duyệt sản lượng'
 				note='Bạn có muốn thực hiện thao tác duyệt sản lượng cho phiếu cân này không?'
-				onClose={() => setUuidKTKConfirm('')}
-				onSubmit={funcKTKConfirmBatchBill.mutate}
+				onClose={() => setUuidKTKConfirm([])}
+				onSubmit={fucnKTKConfirmBatchBill.mutate}
 			/>
 
 			{/* Quản lý kho từ chối */}
-			<Popup open={!!uuidKTKReject} onClose={() => setUuidKTKReject('')}>
-				<PopupRejectBatchBill uuid={uuidKTKReject} onClose={() => setUuidKTKReject('')} />
+			<Popup open={uuidKTKReject.length > 0} onClose={() => setUuidKTKReject([])}>
+				<PopupRejectBatchBill uuids={uuidKTKReject} onClose={() => setUuidKTKReject([])} />
 			</Popup>
 		</div>
 	);

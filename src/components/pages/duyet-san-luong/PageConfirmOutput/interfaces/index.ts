@@ -1,5 +1,4 @@
 export interface PropsPageConfirmOutput {}
-
 export interface ITableBillScale {
 	scalesStationUu: {
 		code: string;

@@ -21,7 +21,7 @@ import weightSessionServices from '~/services/weightSessionServices';
 function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _billUuid, _dateFrom, _dateTo} = router.query;
+	const {_page, _pageSize, _keyword, _dateFrom, _dateTo} = router.query;
 
 	const listBills = useQuery([QUERY_KEY.dropdown_lo_hang], {
 		queryFn: () =>
@@ -53,60 +53,47 @@ function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 		},
 	});
 
-	const listWeightSessionGroupTruck = useQuery(
-		[QUERY_KEY.table_luot_can_nhom_theo_xe, _page, _pageSize, _keyword, _billUuid, _dateFrom, _dateTo],
-		{
-			queryFn: () =>
-				httpRequest({
-					isList: true,
-					http: weightSessionServices.getListWeightSessionGroupTruck({
-						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 20,
-						keyword: (_keyword as string) || '',
-						isPaging: CONFIG_PAGING.IS_PAGING,
-						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-						typeFind: CONFIG_TYPE_FIND.TABLE,
-						billUuid: !!_billUuid ? (_billUuid as string) : '',
-						codeEnd: null,
-						codeStart: null,
-						isBatch: null,
-						scalesType: [],
-						specUuid: '',
-						storageUuid: '',
-						timeStart: _dateFrom ? (_dateFrom as string) : null,
-						timeEnd: _dateTo ? (_dateTo as string) : null,
-						truckUuid: '',
-						customerUuid: '',
-						groupBy: 1,
-						productTypeUuid: '',
-						shift: null,
-						status: [],
-					}),
+	const listWeightSessionGroupTruck = useQuery([QUERY_KEY.table_luot_can_nhom_theo_xe, _page, _pageSize, _keyword, _dateFrom, _dateTo], {
+		queryFn: () =>
+			httpRequest({
+				isList: true,
+				http: weightSessionServices.getListWeightSessionGroupTruck({
+					page: Number(_page) || 1,
+					pageSize: Number(_pageSize) || 20,
+					keyword: (_keyword as string) || '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					billUuid: '',
+					codeEnd: null,
+					codeStart: null,
+					isBatch: null,
+					scalesType: [],
+					specUuid: '',
+					storageUuid: '',
+					timeStart: _dateFrom ? (_dateFrom as string) : null,
+					timeEnd: _dateTo ? (_dateTo as string) : null,
+					truckUuid: '',
+					customerUuid: '',
+					groupBy: 1,
+					productTypeUuid: '',
+					shift: null,
+					status: [],
 				}),
-			select(data) {
-				return data;
-			},
-		}
-	);
+			}),
+		select(data) {
+			return data;
+		},
+	});
 
 	return (
 		<div className={styles.container}>
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo biển số xe' />
 					</div>
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Lô'
-							query='_billUuid'
-							listFilter={listBills?.data?.map((v: any) => ({
-								id: v.uuid,
-								name: v?.code,
-							}))}
-						/>
-					</div>
+
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
 					</div>
@@ -141,15 +128,15 @@ function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 								render: (data: IWeightSessionByTruck) => <p style={{fontWeight: 600}}>{data?.count}</p>,
 							},
 							{
-								title: 'Tổng TL 1 (tấn)',
+								title: 'Tổng khối lượng 1 (tấn)',
 								render: (data: IWeightSessionByTruck) => <>{convertCoin(data?.weight1?.weight)}</>,
 							},
 							{
-								title: 'Tổng TL 2 (tấn)',
+								title: 'Tổng khối lượng 2 (tấn)',
 								render: (data: IWeightSessionByTruck) => <>{convertCoin(data?.weight2?.weight)}</>,
 							},
 							{
-								title: 'Tổng TL hàng (tấn)',
+								title: 'Tổng khối lượng hàng (tấn)',
 								render: (data: IWeightSessionByTruck) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
@@ -171,7 +158,7 @@ function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 					currentPage={Number(_page) || 1}
 					pageSize={Number(_pageSize) || 20}
 					total={listWeightSessionGroupTruck?.data?.pagination?.totalCount}
-					dependencies={[_pageSize, _keyword, _billUuid, _dateFrom, _dateTo]}
+					dependencies={[_pageSize, _keyword, _dateFrom, _dateTo]}
 				/>
 			</div>
 		</div>

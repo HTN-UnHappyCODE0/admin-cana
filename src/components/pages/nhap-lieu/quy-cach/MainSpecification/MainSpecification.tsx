@@ -36,6 +36,7 @@ import Popup from '~/components/common/Popup';
 import FormUpdateSpecWS from '../FormUpdateSpecWS';
 import {toastWarn} from '~/common/funcs/toast';
 import {convertCoin} from '~/common/funcs/convertCoin';
+import Link from 'next/link';
 
 function MainSpecification({}: PropsMainSpecification) {
 	const router = useRouter();
@@ -266,7 +267,7 @@ function MainSpecification({}: PropsMainSpecification) {
 					/>
 					<FilterCustom
 						isSearch
-						name='Loại hàng'
+						name='Loại gỗ'
 						query='_productTypeUuid'
 						listFilter={listProductType?.data?.map((v: any) => ({
 							id: v?.uuid,
@@ -313,8 +314,16 @@ function MainSpecification({}: PropsMainSpecification) {
 								render: (data: IWeightSession, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Số phiếu',
+								title: 'Mã lô',
 								fixedLeft: true,
+								render: (data: IWeightSession) => (
+									<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
+										{data?.billUu?.code}
+									</Link>
+								),
+							},
+							{
+								title: 'Số phiếu',
 								render: (data: IWeightSession) => <>{data?.code}</>,
 							},
 							{
@@ -330,11 +339,11 @@ function MainSpecification({}: PropsMainSpecification) {
 								render: (data: IWeightSession) => <>{data?.toUu?.name || '---'}</>,
 							},
 							{
-								title: 'Loại hàng',
+								title: 'Loại gỗ',
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL hàng (tấn)',
+								title: 'KL hàng (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
@@ -406,23 +415,25 @@ function MainSpecification({}: PropsMainSpecification) {
 						]}
 					/>
 				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 20}
-					total={total}
-					dependencies={[
-						_pageSize,
-						_keyword,
-						_isBatch,
-						_customerUuid,
-						_productTypeUuid,
-						_specUuid,
-						_billUuid,
-						_dateFrom,
-						_dateTo,
-						_isShift,
-					]}
-				/>
+				{!loading && (
+					<Pagination
+						currentPage={Number(_page) || 1}
+						pageSize={Number(_pageSize) || 20}
+						total={total}
+						dependencies={[
+							_pageSize,
+							_keyword,
+							_isBatch,
+							_customerUuid,
+							_productTypeUuid,
+							_specUuid,
+							_billUuid,
+							_dateFrom,
+							_dateTo,
+							_isShift,
+						]}
+					/>
+				)}
 			</div>
 
 			<Popup open={weightSessionSubmits.length > 0} onClose={() => setWeightSessionSubmits([])}>

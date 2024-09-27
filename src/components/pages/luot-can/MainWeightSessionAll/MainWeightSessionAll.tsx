@@ -35,7 +35,7 @@ import weightSessionServices from '~/services/weightSessionServices';
 
 function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 	const router = useRouter();
-	const {_page, _pageSize, _keyword, _billUuid, _truckUuid, _specUuid, _status, _dateFrom, _dateTo} = router.query;
+	const {_page, _pageSize, _keyword, _truckUuid, _specUuid, _status, _dateFrom, _dateTo} = router.query;
 
 	const [byFilter, setByFilter] = useState<boolean>(false);
 	const [formCode, setFormCode] = useState<{codeStart: string; codeEnd: string}>({
@@ -154,7 +154,6 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 			_page,
 			_pageSize,
 			_keyword,
-			_billUuid,
 			_truckUuid,
 			_specUuid,
 			_status,
@@ -182,7 +181,7 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						customerUuid: '',
 						productTypeUuid: '',
-						billUuid: _billUuid ? (_billUuid as string) : '',
+						billUuid: '',
 						codeEnd: byFilter && !!debounceCodeEnd ? Number(debounceCodeEnd) : null,
 						codeStart: byFilter && !!debounceCodeStart ? Number(debounceCodeStart) : null,
 						specUuid: !!_specUuid ? (_specUuid as string) : null,
@@ -203,17 +202,9 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 				<div className={styles.main_search}>
 					<div className={styles.left}>
 						<div className={styles.search}>
-							<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu' />
+							<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô' />
 						</div>
-						<FilterCustom
-							isSearch
-							name='Lô'
-							query='_billUuid'
-							listFilter={listBills?.data?.map((v: any) => ({
-								id: v.uuid,
-								name: v?.code,
-							}))}
-						/>
+
 						<FilterCustom
 							isSearch
 							name='Biển số xe'
@@ -348,15 +339,15 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 								),
 							},
 							{
-								title: 'TL 1 (tấn)',
+								title: 'KL 1 (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weight1?.weight)}</>,
 							},
 							{
-								title: 'TL 2 (tấn)',
+								title: 'KL 2 (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weight2?.weight)}</>,
 							},
 							{
-								title: 'TL hàng (tấn)',
+								title: 'KL hàng (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
@@ -420,7 +411,6 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 					dependencies={[
 						_pageSize,
 						_keyword,
-						_billUuid,
 						_truckUuid,
 						_specUuid,
 						_status,

@@ -97,7 +97,6 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 			return data;
 		},
 	});
-
 	const listShip = useQuery([QUERY_KEY.dropdown_ma_tau], {
 		queryFn: () =>
 			httpRequest({
@@ -162,7 +161,7 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 		}
 	);
 
-	const funcStartBatchBill = useMutation({
+	const fucnStartBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -204,7 +203,7 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading} />
+			<Loading loading={fucnStartBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -381,14 +380,6 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 								),
 							},
 							{
-								title: 'Loại gỗ',
-								render: (data: IDataBill) => <>{data?.productTypeUu?.name || '---'}</>,
-							},
-							{
-								title: 'Quy cách',
-								render: (data: IDataBill) => <>{data?.specificationsUu?.name || '---'}</>,
-							},
-							{
 								title: 'Đến',
 								render: (data: IDataBill) => (
 									<>
@@ -400,6 +391,18 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 							{
 								title: 'KL dự kiến (tấn)',
 								render: (data: IDataBill) => <>{convertCoin(data?.batchsUu?.weightIntent) || '---'}</>,
+							},
+							{
+								title: 'Loại gỗ',
+								render: (data: IDataBill) => <>{data?.productTypeUu?.name || '---'}</>,
+							},
+							{
+								title: 'Quy cách',
+								render: (data: IDataBill) => <>{data?.specificationsUu?.name || '---'}</>,
+							},
+							{
+								title: 'Trạm cân',
+								render: (data: IDataBill) => <>{data?.scalesStationUu?.name || '---'}</>,
 							},
 							{
 								title: 'Ngày dự kiến',
@@ -487,7 +490,7 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 				title='Bắt đầu cân'
 				note='Bạn có muốn thực hiện thao tác cân cho phiếu cân này không?'
 				onClose={() => setUuidPlay('')}
-				onSubmit={funcStartBatchBill.mutate}
+				onSubmit={fucnStartBatchBill.mutate}
 			/>
 
 			{/* POPUP */}

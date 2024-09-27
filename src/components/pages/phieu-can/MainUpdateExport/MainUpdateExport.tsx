@@ -40,6 +40,7 @@ import shipServices from '~/services/shipServices';
 import {IDetailBatchBill} from '../../lenh-can/MainDetailBill/interfaces';
 import Popup from '~/components/common/Popup';
 import FormReasonUpdateBill from '../FormReasonUpdateBill';
+import scalesStationServices from '~/services/scalesStationServices';
 
 function MainUpdateExport({}: PropsMainUpdateExport) {
 	const router = useRouter();
@@ -72,6 +73,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 		code: '',
 		reason: '',
 		isBatch: TYPE_BATCH.CAN_LO,
+		scaleStationUuid: '',
 	});
 
 	const {data: detailBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
@@ -105,6 +107,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					code: data?.code,
 					isBatch: data?.isBatch,
 					reason: '',
+					scaleStationUuid: data?.scalesStationUu?.uuid || '',
 				});
 
 				// SET LIST TRUCK
@@ -285,7 +288,27 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 		},
 	});
 
-	const funcUpdateBatchBill = useMutation({
+	const listScaleStation = useQuery([QUERY_KEY.dropdown_tram_can], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: scalesStationServices.listScalesStation({
+					page: 1,
+					pageSize: 20,
+					keyword: '',
+					companyUuid: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const fucnUpdateBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -318,6 +341,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					lstTruckRemoveUuid: listTruckBatchBill
 						.filter((v) => !listTruckChecked.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
+					scaleStationUuid: form?.scaleStationUuid,
 				}),
 			}),
 		onSuccess(data) {
@@ -348,6 +372,9 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 		if (!form.warehouseUuid) {
 			return toastWarn({msg: 'Vui lòng chọn kho chính!'});
 		}
+		if (!form.scaleStationUuid) {
+			return toastWarn({msg: 'Vui lòng chọn trạm cân!'});
+		}
 		if (!form.fromUuid) {
 			return toastWarn({msg: 'Vui lòng chọn bãi!'});
 		}
@@ -363,7 +390,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 		) {
 			return setOpenWarning(true);
 		} else {
-			return funcUpdateBatchBill.mutate();
+			return fucnUpdateBatchBill.mutate();
 		}
 	};
 
@@ -372,12 +399,12 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 			return toastWarn({msg: 'Vui lòng nhập lý do thay đổi!'});
 		}
 
-		return funcUpdateBatchBill.mutate();
+		return fucnUpdateBatchBill.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcUpdateBatchBill.isLoading} />
+			<Loading loading={fucnUpdateBatchBill.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
@@ -677,6 +704,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 											fromUuid: '',
 											specificationsUuid: '',
 											productTypeUuid: '',
+											scaleStationUuid: v?.scaleStationUu?.uuid || '',
 										}))
 									}
 								/>
@@ -768,6 +796,33 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 						</div>
 					</div>
 
+					<div className={clsx('mt')}>
+						<Select
+							isSearch
+							name='scaleStationUuid'
+							placeholder='Chọn trạm cân'
+							value={form?.scaleStationUuid}
+							label={
+								<span>
+									Trạm cân <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listScaleStation?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.name}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											scaleStationUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+					</div>
 					<div className={clsx('mt')}>
 						<Input
 							name='documentId'

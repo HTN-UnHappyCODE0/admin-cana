@@ -46,6 +46,7 @@ import Dialog from '~/components/common/Dialog';
 import Popup from '~/components/common/Popup';
 import FormUpdateDryness from '../FormUpdateDryness';
 import {convertCoin} from '~/common/funcs/convertCoin';
+import Link from 'next/link';
 
 function MainDryness({}: PropsMainDryness) {
 	const router = useRouter();
@@ -221,7 +222,7 @@ function MainDryness({}: PropsMainDryness) {
 		}
 	);
 
-	const funcUpdateDrynessWeightSession = useMutation({
+	const fucnUpdateDrynessWeightSession = useMutation({
 		mutationFn: (body: {uuid: string; dryness: number}) =>
 			httpRequest({
 				showMessageFailed: true,
@@ -243,7 +244,7 @@ function MainDryness({}: PropsMainDryness) {
 		},
 	});
 
-	const funcUpdateKCSWeightSession = useMutation({
+	const fucnUpdateKCSWeightSession = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -296,7 +297,7 @@ function MainDryness({}: PropsMainDryness) {
 				return toastWarn({msg: 'Giá trị độ khô không hợp lệ!'});
 			}
 
-			return funcUpdateDrynessWeightSession.mutate({
+			return fucnUpdateDrynessWeightSession.mutate({
 				uuid: uuid,
 				dryness: value,
 			});
@@ -308,12 +309,12 @@ function MainDryness({}: PropsMainDryness) {
 			return toastWarn({msg: 'Nhập độ khô trước khi gửi kể toán!'});
 		}
 
-		return funcUpdateKCSWeightSession.mutate();
+		return fucnUpdateKCSWeightSession.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcUpdateDrynessWeightSession.isLoading || funcUpdateKCSWeightSession.isLoading} />
+			<Loading loading={fucnUpdateDrynessWeightSession.isLoading || fucnUpdateKCSWeightSession.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{weightSessions?.some((x) => x.isChecked !== false) && (
@@ -385,7 +386,7 @@ function MainDryness({}: PropsMainDryness) {
 					/>
 					<FilterCustom
 						isSearch
-						name='Loại hàng'
+						name='Loại gỗ'
 						query='_productTypeUuid'
 						listFilter={listProductType?.data?.map((v: any) => ({
 							id: v?.uuid,
@@ -419,7 +420,7 @@ function MainDryness({}: PropsMainDryness) {
 			<div className={styles.table}>
 				<DataWrapper
 					data={weightSessions || []}
-					loading={queryWeightsession.isLoading}
+					loading={queryWeightsession.isFetching}
 					noti={<Noti des='Hiện tại chưa có danh sách nhập liệu nào!' disableButton />}
 				>
 					<Table
@@ -432,8 +433,16 @@ function MainDryness({}: PropsMainDryness) {
 								render: (data: IWeightSession, index: number) => <>{index + 1}</>,
 							},
 							{
-								title: 'Số phiếu',
+								title: 'Mã lô',
 								fixedLeft: true,
+								render: (data: IWeightSession) => (
+									<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
+										{data?.billUu?.code}
+									</Link>
+								),
+							},
+							{
+								title: 'Số phiếu',
 								render: (data: IWeightSession) => <>{data?.code}</>,
 							},
 							{
@@ -449,11 +458,11 @@ function MainDryness({}: PropsMainDryness) {
 								render: (data: IWeightSession) => <>{data?.toUu?.name || '---'}</>,
 							},
 							{
-								title: 'Loại hàng',
+								title: 'Loại gỗ',
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'TL hàng (tấn)',
+								title: 'KL hàng (tấn)',
 								render: (data: IWeightSession) => <>{convertCoin(data?.weightReal)}</>,
 							},
 							{
@@ -530,23 +539,25 @@ function MainDryness({}: PropsMainDryness) {
 						]}
 					/>
 				</DataWrapper>
-				<Pagination
-					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 20}
-					total={total}
-					dependencies={[
-						_pageSize,
-						_keyword,
-						_isBatch,
-						_customerUuid,
-						_productTypeUuid,
-						_specUuid,
-						_billUuid,
-						_dateFrom,
-						_dateTo,
-						_isShift,
-					]}
-				/>
+				{!queryWeightsession.isFetching && (
+					<Pagination
+						currentPage={Number(_page) || 1}
+						pageSize={Number(_pageSize) || 20}
+						total={total}
+						dependencies={[
+							_pageSize,
+							_keyword,
+							_isBatch,
+							_customerUuid,
+							_productTypeUuid,
+							_specUuid,
+							_billUuid,
+							_dateFrom,
+							_dateTo,
+							_isShift,
+						]}
+					/>
+				)}
 			</div>
 
 			<Popup

@@ -18,7 +18,6 @@ import {useRouter} from 'next/router';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
-import scalesStationServices from '~/services/scalesStationServices';
 import {getTextAddress} from '~/common/funcs/optionConvert';
 import TagStatus from '~/components/common/TagStatus';
 import Pagination from '~/components/common/Pagination';
@@ -29,6 +28,7 @@ import Loading from '~/components/common/Loading';
 import Popup from '~/components/common/Popup';
 import AddScalesMachine from '../AddScalesMachine';
 import {IScalesMachine} from '../../cau-can/MainScaleTable/interfaces';
+import scalesStationServices from '~/services/scalesStationServices';
 import scalesMachineServices from '~/services/scalesMachineServices';
 
 function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
@@ -95,7 +95,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 		},
 	});
 
-	const funcChangeStatus = useMutation({
+	const fucnChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -117,7 +117,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 
 	return (
 		<Fragment>
-			<Loading loading={funcDeleteScalesStation.isLoading || funcChangeStatus.isLoading} />
+			<Loading loading={funcDeleteScalesStation.isLoading || fucnChangeStatus.isLoading} />
 			<div className={styles.header}>
 				<Link href={PATH.TramCan} className={styles.header_title}>
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
@@ -168,17 +168,16 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.name}</span>
 						</td>
 						<td>
-							<span>KV cảng xuất khẩu:</span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.companyUu?.name}</span>
+							<span>Mã cầu cân:</span>
+							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.code}</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span>Số lượng cầu cân:</span>
-							<span style={{fontWeight: 600, marginLeft: '6px', color: '#3772FF'}}>
-								{scalesStation?.scalesMachine?.length}
-							</span>
+							<span>Thuộc KV cảng xuất khẩu:</span>
+							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.companyUu?.name}</span>
 						</td>
+
 						<td>
 							<span>Địa chỉ chi tiết:</span>
 							<span style={{fontWeight: 600, marginLeft: '6px'}}>
@@ -191,7 +190,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 							<span>Số điện thoại: </span>
 							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.phoneNumber}</span>
 						</td>
-						<td rowSpan={2} className={styles.description}>
+						<td rowSpan={3} className={styles.description}>
 							<span>Ghi chú: </span>
 							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.description}</span>
 						</td>
@@ -201,6 +200,14 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 							<span>Trạng thái: </span>
 							<span style={{fontWeight: 600, marginLeft: '6px'}}>
 								<TagStatus status={scalesStation?.status} />
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>Số lượng cầu cân:</span>
+							<span style={{fontWeight: 600, marginLeft: '6px', color: '#3772FF'}}>
+								{scalesStation?.scalesMachine?.length}
 							</span>
 						</td>
 					</tr>
@@ -293,7 +300,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 						? 'Bạn có chắc chắn muốn khóa trạm cân này?'
 						: 'Bạn có chắc chắn muốn mở khóa trạm cân này?'
 				}
-				onSubmit={funcChangeStatus.mutate}
+				onSubmit={fucnChangeStatus.mutate}
 			/>
 
 			<Popup open={openAddScalesMachine} onClose={() => setOpenAddScalesMachine(false)}>

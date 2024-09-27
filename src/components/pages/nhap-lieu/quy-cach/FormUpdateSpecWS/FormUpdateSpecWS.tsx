@@ -100,7 +100,7 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 		);
 	};
 
-	const funcUpdateSpecWeightSession = useMutation({
+	const fucnUpdateSpecWeightSession = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -130,12 +130,12 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 		if (dataRules?.some((v) => isNaN(v?.value))) {
 			return toastWarn({msg: 'Nhập giá trị cho tiêu chí quy cách!'});
 		}
-		return funcUpdateSpecWeightSession.mutate();
+		return fucnUpdateSpecWeightSession.mutate();
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcUpdateSpecWeightSession.isLoading} />
+			<Loading loading={fucnUpdateSpecWeightSession.isLoading} />
 			<h4>Cập nhật quy cách</h4>
 			<Form form={form} setForm={setForm}>
 				<Input
