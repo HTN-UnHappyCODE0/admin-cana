@@ -31,7 +31,7 @@ import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
 import FormUpdateStorage from '../../FormUpdateStorage';
 import Tippy from '@tippyjs/react';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
 
 function DetailStorage({}: PropsDetailStorage) {
 	const router = useRouter();
@@ -200,7 +200,7 @@ function DetailStorage({}: PropsDetailStorage) {
 							</div>
 						}
 					/>
-					<DetailBox name={'Độ khô trung bình'} value={detailStorage?.drynessAvg!?.toFixed(3)} />
+					<DetailBox name={'Độ khô trung bình'} value={formatDrynessAvg(detailStorage?.drynessAvg!)} />
 				</GridColumn>
 			</div>
 			<div className={'mt'}>
