@@ -253,8 +253,8 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 								),
 							},
 							{
-								title: 'Giá tiền',
-								render: (data: IPriceTag) => <>{convertCoin(data?.pricetagUu?.amount)} VND</>,
+								title: 'Giá tiền (VND)',
+								render: (data: IPriceTag) => <>{convertCoin(data?.pricetagUu?.amount) || 0} </>,
 							},
 							{
 								title: 'Cung cấp',
