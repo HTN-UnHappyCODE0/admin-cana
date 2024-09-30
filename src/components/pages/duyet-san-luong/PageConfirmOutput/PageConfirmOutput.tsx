@@ -367,7 +367,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								render: (data: ITableBillScale) => <>{data?.specificationsUu?.name || '---'}</>,
 							},
 							{
-								title: 'Đến',
+								title: 'Đến ',
 								render: (data: ITableBillScale) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
