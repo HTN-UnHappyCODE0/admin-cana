@@ -96,8 +96,8 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 								),
 							},
 							{
-								title: 'Giá tiền thay đổi',
-								render: (data: IPriceTag) => <>{convertCoin(data?.pricetagUu?.amount)} VND</>,
+								title: 'Giá tiền thay đổi (VND)',
+								render: (data: IPriceTag) => <>{convertCoin(data?.pricetagUu?.amount) || 0} </>,
 							},
 							{
 								title: 'Ngày thay đổi',

@@ -111,8 +111,8 @@ function MainDetailPriceTagUpdate({}: PropsMainDetailPriceTagUpdate) {
 										render: (data: IhistoryFixPriceBill) => <>{data?.billUu?.code}</>,
 									},
 									{
-										title: 'Giá ban đầu',
-										render: (data: IhistoryFixPriceBill) => <>{convertCoin(data?.priceOldUu?.amount)}</>,
+										title: 'Giá ban đầu (VND)',
+										render: (data: IhistoryFixPriceBill) => <>{convertCoin(data?.priceOldUu?.amount) || 0}</>,
 									},
 									{
 										title: 'Ngày thay đổi',

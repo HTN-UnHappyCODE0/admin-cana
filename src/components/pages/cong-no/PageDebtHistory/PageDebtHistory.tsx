@@ -173,7 +173,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							},
 							{
 								title: 'Công ty',
-								render: (data: ITransaction) => <>{data?.partnerUu?.name}</>,
+								render: (data: ITransaction) => <>{data?.partnerUu?.name || '--- '}</>,
 							},
 							{
 								title: 'Hình thức',
@@ -185,7 +185,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							},
 							{
 								title: 'Số tiền (VND)',
-								render: (data: ITransaction) => <>{convertCoin(data?.totalAmount)}</>,
+								render: (data: ITransaction) => <>{convertCoin(data?.totalAmount) || 0}</>,
 							},
 							{
 								title: 'Tác vụ',

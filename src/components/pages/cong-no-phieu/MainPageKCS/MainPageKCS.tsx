@@ -208,19 +208,19 @@ function MainPageKCS({}: PropsMainPageKCS) {
 							},
 							{
 								title: 'KL hàng (tấn)',
-								render: (data: IDebtBill) => <>{convertWeight(data?.weightTotal)}</>,
+								render: (data: IDebtBill) => <>{convertWeight(data?.weightTotal) || 0}</>,
 							},
 							{
 								title: 'Quy cách',
-								render: (data: IDebtBill) => <>{data?.specificationsUu?.name}</>,
+								render: (data: IDebtBill) => <>{data?.specificationsUu?.name || '---'}</>,
 							},
 							{
 								title: 'Loại gỗ',
-								render: (data: IDebtBill) => <>{data?.productTypeUu?.name}</>,
+								render: (data: IDebtBill) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
 							{
 								title: 'Giá tiền (VND)',
-								render: (data: IDebtBill) => <>{convertCoin(data?.priceTagUu?.amount)}</>,
+								render: (data: IDebtBill) => <>{convertCoin(data?.priceTagUu?.amount) || 0}</>,
 							},
 							{
 								title: 'Công nợ chuẩn (VND)',
