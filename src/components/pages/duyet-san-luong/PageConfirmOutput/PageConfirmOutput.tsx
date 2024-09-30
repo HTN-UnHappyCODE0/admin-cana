@@ -386,6 +386,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								title: 'Độ khô (%)',
 								render: (data: ITableBillScale) => <>{formatDrynessAvg(data?.drynessAvg) || 0}</>,
 							},
+
 							{
 								title: 'Xác nhận SL',
 								render: (data: ITableBillScale) => (
@@ -414,7 +415,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								),
 							},
 							{
-								title: 'Tác vụ',
+								title: 'Tác vụ ',
 								fixedRight: true,
 								render: (data: ITableBillScale) => (
 									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
