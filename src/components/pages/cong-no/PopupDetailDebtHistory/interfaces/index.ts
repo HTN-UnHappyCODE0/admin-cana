@@ -18,6 +18,7 @@ export interface IDetailTransaction {
 	status: number;
 	totalAmount: number;
 	created: string;
+	transTime: string;
 	creatorUu: {
 		username: string;
 		status: number;

@@ -71,7 +71,7 @@ function PopupDetailDebtHistory({onClose}: PropsPopupDetailDebtHistory) {
 								<li>
 									<p>Thời gian thanh toán :</p>
 									<p>
-										<Moment date={detailTransaction?.created} format='DD/MM/YYYY' />
+										<Moment date={detailTransaction?.transTime} format='DD/MM/YYYY' />
 									</p>
 								</li>
 								{(detailTransaction?.type == TYPE_TRANSACTION.THANH_TOAN ||
@@ -97,10 +97,6 @@ function PopupDetailDebtHistory({onClose}: PropsPopupDetailDebtHistory) {
 										<li>
 											<p>Tiền thuế :</p>
 											<p>{convertCoin(detailTransaction?.amountCash!)} VND</p>
-										</li>
-										<li>
-											<p>Tiền hóa đơn :</p>
-											<p>{convertCoin(detailTransaction?.amountBank!)} VND</p>
 										</li>
 									</>
 								)}
