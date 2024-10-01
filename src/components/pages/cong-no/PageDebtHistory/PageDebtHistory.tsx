@@ -71,7 +71,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
-						status: !!_status ? Number(_status) : null,
+						status: CONFIG_STATUS.HOAT_DONG,
 						type: !!_type ? Number(_type) : null,
 						partnerUuid: (_partnerUuid as string) || '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
@@ -165,7 +165,15 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							{
 								title: 'Mã giao dịch',
 								fixedLeft: true,
-								render: (data: ITransaction) => <>{data?.code || '---'}</>,
+								render: (data: ITransaction) => (
+									<Link
+										href={`/lich-su-thanh-toan?_uuidTransaction=${data?.uuid}`}
+										className={styles.link}
+										style={{fontWeight: 600}}
+									>
+										{data?.code || '---'}
+									</Link>
+								),
 							},
 							{
 								title: 'Thời gian',
@@ -173,7 +181,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							},
 							{
 								title: 'Công ty',
-								render: (data: ITransaction) => <>{data?.partnerUu?.name || '--- '}</>,
+								render: (data: ITransaction) => <>{data?.partnerUu?.name}</>,
 							},
 							{
 								title: 'Hình thức',
@@ -185,7 +193,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							},
 							{
 								title: 'Số tiền (VND)',
-								render: (data: ITransaction) => <>{convertCoin(data?.totalAmount) || 0}</>,
+								render: (data: ITransaction) => <>{convertCoin(data?.totalAmount)}</>,
 							},
 							{
 								title: 'Tác vụ',
