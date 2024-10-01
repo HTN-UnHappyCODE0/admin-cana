@@ -15,6 +15,7 @@ import wareServices from '~/services/wareServices';
 import Select, {Option} from '~/components/common/Select';
 import storageServices from '~/services/storageServices';
 import Loading from '~/components/common/Loading';
+import {convertCoin, price} from '~/common/funcs/convertCoin';
 
 function FormUpdatePostionStorage({draggedElements, onClose}: PropsFormUpdatePostionStorage) {
 	const router = useRouter();
@@ -25,10 +26,14 @@ function FormUpdatePostionStorage({draggedElements, onClose}: PropsFormUpdatePos
 	const [form, setForm] = useState<IFormUpdatePostionStorage>({
 		storageUuid: '',
 		name: '',
+		warehouseUuid: '',
 		productUuid: '',
 		qualityUuid: '',
 		specificationsUuid: '',
 		description: '',
+		amountKcs: 0,
+		drynessAvg: 0,
+		specWsValues: [],
 	});
 
 	const listStorage = useQuery([QUERY_KEY.dropdown_kho_hang_con, _id], {
@@ -67,10 +72,19 @@ function FormUpdatePostionStorage({draggedElements, onClose}: PropsFormUpdatePos
 				setForm((prev) => ({
 					...prev,
 					name: data?.name,
+					warehouseUuid: data?.warehouseUu?.uuid,
 					productUuid: data?.productUu?.uuid,
 					qualityUuid: data?.qualityUu?.uuid,
 					specificationsUuid: data?.specificationsUu?.uuid,
+					locationMap: data?.locationMap,
 					description: data?.description,
+					amountKcs: convertCoin(data?.amountKcs),
+					drynessAvg: data?.drynessAvg,
+					specWsValues: data?.listSpecValue?.map((v: any) => ({
+						uuid: v?.criteriaUu?.uuid,
+						title: v?.criteriaUu?.title,
+						value: v?.value,
+					})),
 				}));
 			}
 		},
@@ -151,17 +165,27 @@ function FormUpdatePostionStorage({draggedElements, onClose}: PropsFormUpdatePos
 					specificationsUuid: form.specificationsUuid,
 					locationMap: JSON.stringify(draggedElements),
 					description: form.description,
+					amountKcs: price(form.amountKcs),
+					drynessAvg: form.drynessAvg,
+					specWsValues: form?.specWsValues?.map((v) => ({
+						uuid: v?.uuid,
+						value: v?.value,
+					})),
 				}),
 			}),
 		onSuccess(data) {
 			if (data) {
 				setForm({
-					name: '',
 					storageUuid: '',
+					name: '',
+					warehouseUuid: '',
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
 					description: '',
+					amountKcs: 0,
+					drynessAvg: 48,
+					specWsValues: [],
 				});
 				onClose();
 				queryClient.invalidateQueries([QUERY_KEY.chi_tiet_kho_hang_chinh, _id]);

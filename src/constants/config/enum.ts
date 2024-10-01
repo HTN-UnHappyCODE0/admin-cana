@@ -28,10 +28,9 @@ export enum QUERY_KEY {
 	dropdown_nguoi_quan_ly,
 	dropdown_nguoi_quan_ly_nhap_hang,
 	dropdown_khach_hang_nhap,
-	dropdown_loai_hang_quy_cach,
+	dropdown_loai_go_quy_cach,
 	dropdown_khach_hang_xuat,
 	dropdown_tau_hang,
-	dropdown_loai_go_quy_cach,
 	dropdown_kho_hang,
 	dropdown_bai,
 	dropdown_bai_dich,
@@ -121,12 +120,21 @@ export enum QUERY_KEY {
 	chi_tiet_cong_ty,
 
 	danh_sach_tieu_chi_nha_lieu,
+	danh_sach_tieu_chi_quy_cach,
+	danh_sach_tieu_chi_nhap_lieu,
 	quy_cach_postion_storage,
 	thong_ke_kho_hang,
 	thong_ke_tong_hang_nhap,
 	thong_ke_tong_hang_xuat,
 	thong_ke_tong_hang_dich_vu,
 	thong_ke_trang_chu_admin,
+	thong_ke_tong_hop_phieu_can_tat_ca,
+	thong_ke_tong_hop_phieu_can_nhap,
+	thong_ke_tong_hop_phieu_can_xuat,
+	thong_ke_tong_hop_phieu_can_dich_vu,
+	thong_ke_tong_hop_phieu_can_chuyen_kho,
+	thong_ke_tong_hop_phieu_can_xuat_thang,
+	thong_ke_tong_hop_phieu_nhom_theo_xe,
 }
 
 export enum TYPE_DATE {

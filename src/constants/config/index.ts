@@ -270,14 +270,14 @@ export const ListOptionTimePicker: {
 		name: 'Tháng này',
 		value: TYPE_DATE.THIS_MONTH,
 	},
-	// {
-	// 	name: 'Tháng trước',
-	// 	value: TYPE_DATE.LAST_MONTH,
-	// },
-	// {
-	// 	name: 'Năm này',
-	// 	value: TYPE_DATE.THIS_YEAR,
-	// },
+	{
+		name: 'Tháng trước',
+		value: TYPE_DATE.LAST_MONTH,
+	},
+	{
+		name: 'Năm này',
+		value: TYPE_DATE.THIS_YEAR,
+	},
 	{
 		name: 'Lựa chọn',
 		value: TYPE_DATE.LUA_CHON,

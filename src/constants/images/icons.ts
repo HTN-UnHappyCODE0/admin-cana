@@ -44,6 +44,13 @@ import duyetsanluong from '../../../public/static/images/duyetsanluong.svg';
 import icon_ship from '../../../public/static/images/ship.svg';
 import duyetphieu from '../../../public/static/images/duyetphieu.svg';
 import cang from '../../../public/static/images/cang.svg';
+import tongkhoiluongcan from '../../../public/static/images/tongkhoiluongcan.png';
+import sochuyenxe from '../../../public/static/images/sochuyenxe.png';
+import khoiluonghangnhap from '../../../public/static/images/khoiluonghangnhap.png';
+import khoiluonghangxuat from '../../../public/static/images/khoiluonghangxuat.png';
+import khoiluonghangdichvu from '../../../public/static/images/khoiluonghangdichvu.png';
+import khoiluonghangchuyenkho from '../../../public/static/images/khoiluonghangchuyenkho.png';
+import khoiluonghangxuatthang from '../../../public/static/images/khoiluonghangxuatthang.png';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -93,4 +100,11 @@ export default {
 	icon_ship,
 	duyetphieu,
 	cang,
+	tongkhoiluongcan,
+	sochuyenxe,
+	khoiluonghangnhap,
+	khoiluonghangxuat,
+	khoiluonghangdichvu,
+	khoiluonghangchuyenkho,
+	khoiluonghangxuatthang,
 };

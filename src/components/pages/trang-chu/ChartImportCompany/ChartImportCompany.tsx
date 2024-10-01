@@ -179,14 +179,14 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 						margin={{
 							top: 8,
 							right: 8,
-							left: 0,
+							left: 24,
 							bottom: 8,
 						}}
 						barSize={24}
 					>
 						<XAxis dataKey='name' scale='point' padding={{left: 40, right: 10}} />
-						<YAxis domain={[0, 40000]} range={[0, 10000, 20000, 30000, 40000, 50000]} />
-						<Tooltip />
+						<YAxis domain={[0, 4000000]} tickFormatter={(value): any => convertWeight(value)} />
+						<Tooltip formatter={(value): any => convertWeight(Number(value))} />
 						<CartesianGrid strokeDasharray='3 3' vertical={false} />
 						{productTypes.map((v, i) => (
 							<Bar key={i} dataKey={v?.key} stackId='product_type' fill={v?.fill} />
