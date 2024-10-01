@@ -6,7 +6,6 @@ import styles from './ChartExportCompany.module.scss';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
 import SelectFilterOption from '../SelectFilterOption';
 import SelectFilterDate from '../SelectFilterDate';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import {useQuery} from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
@@ -17,6 +16,7 @@ import {
 	TYPE_DATE,
 	TYPE_DATE_SHOW,
 	TYPE_PARTNER,
+	TYPE_SHOW_BDMT,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import partnerServices from '~/services/partnerServices';
@@ -24,12 +24,14 @@ import batchBillServices from '~/services/batchBillServices';
 import {convertWeight, timeSubmit} from '~/common/funcs/optionConvert';
 import moment from 'moment';
 import {ContextDashbroad, IContextDashbroad} from '../MainDashboard/context';
+import storageServices from '~/services/storageServices';
 
 function ChartExportCompany({}: PropsChartExportCompany) {
 	const context = useContext<IContextDashbroad>(ContextDashbroad);
-
+	const [isShowBDMT, setIsShowBDMT] = useState<string>(String(TYPE_SHOW_BDMT.MT));
+	const [storageUuid, setStorageUuid] = useState<string>('');
 	const [partnerUuid, setPartnerUuid] = useState<string>('');
-	const [typeDate, setTypeDate] = useState<number | null>(TYPE_DATE.THIS_MONTH);
+	const [typeDate, setTypeDate] = useState<number | null>(TYPE_DATE.LAST_7_DAYS);
 	const [date, setDate] = useState<{
 		from: Date | null;
 		to: Date | null;
@@ -71,13 +73,40 @@ function ChartExportCompany({}: PropsChartExportCompany) {
 		},
 	});
 
-	useQuery([QUERY_KEY.thong_ke_tong_hang_xuat, partnerUuid, context?.companyUuid, date], {
+	const listStorage = useQuery([QUERY_KEY.dropdown_bai], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 20,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					productUuid: '',
+					qualityUuid: '',
+					specificationsUuid: '',
+					warehouseUuid: '',
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	useQuery([QUERY_KEY.thong_ke_tong_hang_xuat, partnerUuid, context?.companyUuid, isShowBDMT, storageUuid, date], {
 		queryFn: () =>
 			httpRequest({
 				isData: true,
 				http: batchBillServices.dashbroadBillOut({
 					partnerUuid: partnerUuid,
 					companyUuid: context?.companyUuid,
+					customerUuid: '',
+					isShowBDMT: Number(isShowBDMT),
+					storageUuid: storageUuid,
+					warehouseUuid: '',
 					typeFindDay: 0,
 					timeStart: timeSubmit(date?.from)!,
 					timeEnd: timeSubmit(date?.to, true)!,
@@ -146,13 +175,38 @@ function ChartExportCompany({}: PropsChartExportCompany) {
 				<h3>Biểu đồ thống kê hàng xuất của tổng công ty</h3>
 				<div className={styles.filter}>
 					<SelectFilterOption
+						isShowAll={false}
+						uuid={isShowBDMT}
+						setUuid={setIsShowBDMT}
+						listData={[
+							{
+								uuid: String(TYPE_SHOW_BDMT.MT),
+								name: 'Tấn tươi',
+							},
+							{
+								uuid: String(TYPE_SHOW_BDMT.BDMT),
+								name: 'Tấn khô',
+							},
+						]}
+						placeholder='Tấn hàng'
+					/>
+					<SelectFilterOption
+						uuid={storageUuid}
+						setUuid={setStorageUuid}
+						listData={listStorage?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Tất cả bãi'
+					/>
+					<SelectFilterOption
 						uuid={partnerUuid}
 						setUuid={setPartnerUuid}
 						listData={listPartner?.data?.map((v: any) => ({
 							uuid: v?.uuid,
 							name: v?.name,
 						}))}
-						placeholder='Tất cả KH xuất'
+						placeholder='Tất cả công ty xuất'
 					/>
 					<SelectFilterDate isOptionDateAll={true} date={date} setDate={setDate} typeDate={typeDate} setTypeDate={setTypeDate} />
 				</div>

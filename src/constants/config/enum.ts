@@ -307,6 +307,11 @@ export enum TYPE_DATE_SHOW {
 	YEAR,
 }
 
+export enum TYPE_SHOW_BDMT {
+	MT,
+	BDMT,
+}
+
 // COMON REGENCY
 export enum REGENCY_NAME {
 	'Nhân viên tài chính - kế toán' = '9',
