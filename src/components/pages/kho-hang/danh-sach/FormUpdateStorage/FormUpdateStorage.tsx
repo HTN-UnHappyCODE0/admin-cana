@@ -250,7 +250,6 @@ function FormUpdateStorage({onClose}: PropsFormUpdateStorage) {
 							<div>
 								<Input
 									name='amountKcs'
-									value={form.amountKcs || ''}
 									isRequired
 									isMoney
 									type='text'
