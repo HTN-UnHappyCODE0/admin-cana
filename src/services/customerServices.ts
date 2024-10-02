@@ -88,6 +88,17 @@ const customerServices = {
 			cancelToken: tokenAxios,
 		});
 	},
+	updateStorage: (
+		data: {
+			customerSpecUuid: string;
+			storageUuid: string;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/Customer/update-storage`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
 };
 
 export default customerServices;

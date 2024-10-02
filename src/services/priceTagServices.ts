@@ -94,6 +94,7 @@ const priceTagServices = {
 				priceTagUuid: string | null;
 				state: 0 | 1;
 				transportType: number;
+				storageUuid?: string;
 			}[];
 			customerUuid: string[];
 		},
@@ -123,6 +124,16 @@ const priceTagServices = {
 		tokenAxios?: any
 	) => {
 		return axiosClient.post(`/PriceTag/detail-pricetag`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	detailCustomerSpec: (
+		data: {
+			uuid: string;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/PriceTag/detail-customer-spec`, data, {
 			cancelToken: tokenAxios,
 		});
 	},

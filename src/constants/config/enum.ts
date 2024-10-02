@@ -118,6 +118,7 @@ export enum QUERY_KEY {
 	chi_tiet_bai_den,
 	chi_tiet_phieu_can,
 	chi_tiet_cong_ty,
+	chi_tiet_gia_tien_hang,
 
 	danh_sach_tieu_chi_nha_lieu,
 	danh_sach_tieu_chi_quy_cach,

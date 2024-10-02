@@ -39,6 +39,8 @@ import icons from '~/constants/images/icons';
 import {convertCoin} from '~/common/funcs/convertCoin';
 import PopupAddPrice from '../PopupAddPrice/PopupAddPrice';
 import TagStatusSpecCustomer from '../TagStatusSpecCustomer';
+import IconCustom from '~/components/common/IconCustom';
+import PopupUpdatePrice from '../PopupUpdatePrice';
 
 function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 	const router = useRouter();
@@ -46,6 +48,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 
 	const {_id, _page, _typeCus, _pageSize} = router.query;
 
+	const [uuidUpdate, setUuidUpdate] = useState<string>('');
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
 
@@ -314,6 +317,10 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 									render: (data: any) => <>{data?.specUu?.name}</>,
 								},
 								{
+									title: 'Bãi',
+									render: (data: any) => <>{data?.storageUu?.name || '---'}</>,
+								},
+								{
 									title: 'Vận chuyển',
 									render: (data: any) => (
 										<>
@@ -332,10 +339,21 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 									title: 'Cung cấp',
 									render: (data: any) => <TagStatusSpecCustomer status={data.state} />,
 								},
-								// {
-								// 	title: 'Trạng thái',
-								// 	render: (data: any) => <TagStatus status={data.status} />,
-								// },
+								{
+									title: 'Tác vụ',
+									fixedRight: true,
+									render: (data: any) => (
+										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+											<IconCustom
+												edit
+												icon={<LuPencil fontSize={20} fontWeight={600} />}
+												tooltip='Cập nhật bãi'
+												color='#777E90'
+												onClick={() => setUuidUpdate(data?.uuid)}
+											/>
+										</div>
+									),
+								},
 							]}
 						/>
 					</DataWrapper>
@@ -403,6 +421,10 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 					typePartner={detailCustomer?.partnerUu?.type}
 					onClose={() => setOpenCreate(false)}
 				/>
+			</Popup>
+
+			<Popup open={!!uuidUpdate} onClose={() => setUuidUpdate('')}>
+				<PopupUpdatePrice customerSpecUuid={uuidUpdate} onClose={() => setUuidUpdate('')} />
 			</Popup>
 		</div>
 	);

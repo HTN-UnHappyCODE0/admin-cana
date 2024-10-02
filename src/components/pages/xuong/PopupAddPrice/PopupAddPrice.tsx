@@ -25,6 +25,7 @@ import {toastWarn} from '~/common/funcs/toast';
 import {useRouter} from 'next/router';
 import Loading from '~/components/common/Loading';
 import priceTagServices from '~/services/priceTagServices';
+import storageServices from '~/services/storageServices';
 
 function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice) {
 	const router = useRouter();
@@ -39,12 +40,14 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 		state: CONFIG_STATE_SPEC_CUSTOMER;
 		productTypeUuid: string;
 		customerName: string;
+		storageUuid: string;
 	}>({
 		specUuid: '',
 		productTypeUuid: '',
 		state: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
 		customerName: customerName,
 		transportType: '',
+		storageUuid: '',
 	});
 
 	const [priceTag, setPriceTag] = useState<{
@@ -62,6 +65,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 			customerName: '',
 			transportType: '',
 			state: CONFIG_STATE_SPEC_CUSTOMER.DANG_CUNG_CAP,
+			storageUuid: '',
 		});
 		setPriceTag({
 			id: '',
@@ -114,6 +118,30 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 		},
 	});
 
+	const listStorage = useQuery([QUERY_KEY.dropdown_bai, form.specUuid, form.productTypeUuid], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 20,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					specificationsUuid: form.specUuid,
+					productUuid: form.productTypeUuid,
+					warehouseUuid: '',
+					qualityUuid: '',
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+		enabled: !!form.specUuid && !!form.productTypeUuid,
+	});
+
 	const listPriceTag = useQuery([QUERY_KEY.dropdown_gia_tien_hang], {
 		queryFn: () =>
 			httpRequest({
@@ -148,6 +176,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 							productTypeUuid: form.productTypeUuid,
 							transportType: Number(form.transportType),
 							priceTagUuid: !priceTag.id && !priceTag.name ? '0' : priceTag.id === '' ? String(priceTag.name) : priceTag.id,
+							storageUuid: form?.storageUuid,
 						},
 					],
 					customerUuid: [_id as string],
@@ -176,6 +205,9 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 		}
 		if (!form.productTypeUuid) {
 			return toastWarn({msg: 'Vui lòng chọn loại gỗ!'});
+		}
+		if (!form.storageUuid) {
+			return toastWarn({msg: 'Vui lòng chọn bãi!'});
 		}
 
 		return funcAddSpecCustomer.mutate();
@@ -245,6 +277,32 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 							>
 								{listSpecifications?.data?.map((value: any) => (
 									<Option key={value.uuid} title={value?.name} value={value?.uuid} />
+								))}
+							</Select>
+							<Select
+								isSearch
+								name='storageUuid'
+								placeholder='Lựa chọn bãi'
+								value={form.storageUuid}
+								readOnly={!form.specUuid || !form.productTypeUuid}
+								label={
+									<span>
+										Bãi <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								{listStorage?.data?.map((value: any) => (
+									<Option
+										key={value.uuid}
+										title={value?.name}
+										value={value?.uuid}
+										onClick={() =>
+											setForm((prev: any) => ({
+												...prev,
+												storageUuid: value.uuid,
+											}))
+										}
+									/>
 								))}
 							</Select>
 							<Select
