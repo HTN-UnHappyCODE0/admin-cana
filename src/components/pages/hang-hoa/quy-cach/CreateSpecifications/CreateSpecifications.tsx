@@ -266,7 +266,7 @@ function CreateSpecifications({}: PropsCreateSpecifications) {
 							}
 							label={
 								<span>
-									Loại gỗ <span style={{color: 'red'}}>*</span>
+									Loại hàng <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>

@@ -253,7 +253,7 @@ function DetailWarehouse({}: PropsDetailWarehouse) {
 					</tr>
 					<tr>
 						<td>
-							<span>Tổng loại gỗ:</span>
+							<span>Tổng loại hàng:</span>
 							<span style={{marginLeft: '6px', color: '#2A85FF'}}>{detailWarehouse?.countProductType}</span>
 						</td>
 					</tr>

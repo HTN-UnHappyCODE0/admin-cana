@@ -215,7 +215,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 								render: (data: IDebtBill) => <>{data?.specificationsUu?.name || '---'}</>,
 							},
 							{
-								title: 'Loại gỗ',
+								title: 'Loại hàng',
 								render: (data: IDebtBill) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
 							{

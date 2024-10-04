@@ -86,7 +86,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 				</div>
 				<div className={clsx('mt')}>
 					<GridColumn col_4>
-						<ItemDashboard isLoading={isLoading} text='Loại gỗ' color='' value={detailDebtBill?.productTypeUu?.name} />
+						<ItemDashboard isLoading={isLoading} text='Loại hàng' color='' value={detailDebtBill?.productTypeUu?.name} />
 						<ItemDashboard isLoading={isLoading} text='Quy cách' color='' value={detailDebtBill?.specificationsUu?.name} />
 						<ItemDashboard
 							isLoading={isLoading}

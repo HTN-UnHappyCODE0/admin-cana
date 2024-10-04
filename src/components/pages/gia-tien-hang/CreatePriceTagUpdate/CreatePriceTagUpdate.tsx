@@ -299,11 +299,11 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 								<Select
 									isSearch
 									name='productUuid'
-									placeholder='Chọn loại gỗ'
+									placeholder='Chọn loại hàng'
 									value={form?.productUuid}
 									label={
 										<span>
-											Loại gỗ <span style={{color: 'red'}}>*</span>
+											Loại hàng <span style={{color: 'red'}}>*</span>
 										</span>
 									}
 								>
@@ -474,7 +474,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 											render: (data: IFormCreatePriceTagUpdate) => <>{data?.code}</>,
 										},
 										{
-											title: 'Loại gỗ',
+											title: 'Loại hàng',
 											render: (data: IFormCreatePriceTagUpdate) => <>{data?.productTypeUu?.name}</>,
 										},
 										{
@@ -599,7 +599,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 						<div className={styles.filter}>
 							<FilterCustom
 								isSearch
-								name='Loại gỗ'
+								name='Loại hàng'
 								query='_productTypeUuid'
 								listFilter={listProductType?.data?.map((v: any) => ({
 									id: v?.uuid,
@@ -661,7 +661,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 											render: (data: any) => <>{data?.code}</>,
 										},
 										{
-											title: 'Loại gỗ',
+											title: 'Loại hàng',
 											render: (data: any) => <>{data?.productTypeUu?.name}</>,
 										},
 										{

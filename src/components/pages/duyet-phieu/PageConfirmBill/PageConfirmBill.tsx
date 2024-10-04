@@ -153,7 +153,7 @@ function PageConfirmBill({}: PropsPageConfirmBill) {
 		}
 	);
 
-	const fucnQLKConfirmBatchBill = useMutation({
+	const funcQLKConfirmBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -176,7 +176,7 @@ function PageConfirmBill({}: PropsPageConfirmBill) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnQLKConfirmBatchBill.isLoading} />
+			<Loading loading={funcQLKConfirmBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{listBatchBill?.some((x) => x.isChecked !== false) && (
@@ -227,7 +227,7 @@ function PageConfirmBill({}: PropsPageConfirmBill) {
 					/>
 					<FilterCustom
 						isSearch
-						name='Loại gỗ'
+						name='Loại hàng'
 						query='_productTypeUuid'
 						listFilter={listProductType?.data?.map((v: any) => ({
 							id: v?.uuid,
@@ -324,7 +324,7 @@ function PageConfirmBill({}: PropsPageConfirmBill) {
 								),
 							},
 							{
-								title: 'Loại gỗ',
+								title: 'Loại hàng',
 								render: (data: ITableBillScale) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
 							{
@@ -434,7 +434,7 @@ function PageConfirmBill({}: PropsPageConfirmBill) {
 				title='QLK duyệt sản lượng'
 				note='Bạn có muốn thực hiện thao tác duyệt sản lượng cho phiếu cân này không?'
 				onClose={() => setUuidQLKConfirm([])}
-				onSubmit={fucnQLKConfirmBatchBill.mutate}
+				onSubmit={funcQLKConfirmBatchBill.mutate}
 			/>
 		</div>
 	);

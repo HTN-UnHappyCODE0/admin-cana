@@ -65,7 +65,7 @@ function MainDetailPriceTagUpdate({}: PropsMainDetailPriceTagUpdate) {
 				<div className={clsx('mt')}>
 					<GridColumn col_3>
 						<ItemDashboard text='Công ty' color='#2D74FF' value={detailFixPricetag?.customerUu?.name} />
-						<ItemDashboard text='Loại gỗ' color='#2D74FF' value={detailFixPricetag?.productTypeUu?.name} />
+						<ItemDashboard text='Loại hàng' color='#2D74FF' value={detailFixPricetag?.productTypeUu?.name} />
 						<ItemDashboard text='Quy cách' color='#2D74FF' value={detailFixPricetag?.specificationUu?.name} />
 						<ItemDashboard text='Số lượng phiếu' color='#2D74FF' value={detailFixPricetag?.totalCount} />
 						<ItemDashboard

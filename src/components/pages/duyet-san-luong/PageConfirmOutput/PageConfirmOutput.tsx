@@ -162,7 +162,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 		}
 	);
 
-	const fucnKTKConfirmBatchBill = useMutation({
+	const funcKTKConfirmBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
 				showMessageFailed: true,
@@ -185,7 +185,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={fucnKTKConfirmBatchBill.isLoading} />
+			<Loading loading={funcKTKConfirmBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{listBatchBill?.some((x) => x.isChecked !== false) && (
@@ -253,7 +253,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 					/>
 					<FilterCustom
 						isSearch
-						name='Loại gỗ'
+						name='Loại hàng'
 						query='_productTypeUuid'
 						listFilter={listProductType?.data?.map((v: any) => ({
 							id: v?.uuid,
@@ -350,7 +350,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								),
 							},
 							{
-								title: 'Loại gỗ',
+								title: 'Loại hàng',
 								render: (data: ITableBillScale) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
 							{
@@ -474,7 +474,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 				title='KTK duyệt sản lượng'
 				note='Bạn có muốn thực hiện thao tác duyệt sản lượng cho phiếu cân này không?'
 				onClose={() => setUuidKTKConfirm([])}
-				onSubmit={fucnKTKConfirmBatchBill.mutate}
+				onSubmit={funcKTKConfirmBatchBill.mutate}
 			/>
 
 			{/* Quản lý kho từ chối */}

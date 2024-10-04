@@ -263,7 +263,7 @@ function DetailStorage({}: PropsDetailStorage) {
 					</tr>
 					<tr>
 						<td>
-							<span>Loại gỗ:</span>
+							<span>Loại hàng:</span>
 							<span style={{marginLeft: '6px'}}>{detailStorage?.productUu?.name}</span>
 						</td>
 					</tr>

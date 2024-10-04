@@ -204,7 +204,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 			return toastWarn({msg: 'Vui lòng chọn loại quy cách!'});
 		}
 		if (!form.productTypeUuid) {
-			return toastWarn({msg: 'Vui lòng chọn loại gỗ!'});
+			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
 		}
 		if (!form.storageUuid) {
 			return toastWarn({msg: 'Vui lòng chọn bãi!'});
@@ -219,7 +219,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.wrapper}>
-					<h4 className={styles.title}>Thêm loại gỗ</h4>
+					<h4 className={styles.title}>Thêm loại hàng</h4>
 					<div className={clsx('mt', styles.main_form)}>
 						<div className='mt'>
 							<Input
@@ -239,7 +239,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 								isSearch
 								name='productTypeUuid'
 								value={form.productTypeUuid}
-								placeholder='Lựa chọn loại gỗ'
+								placeholder='Lựa chọn loại hàng'
 								onChange={(e: any) =>
 									setForm((prev: any) => ({
 										...prev,
@@ -249,7 +249,7 @@ function PopupAddPrice({customerName, onClose, typePartner}: PropsPopupAddPrice)
 								}
 								label={
 									<span>
-										Loại gỗ<span style={{color: 'red'}}>*</span>
+										Loại hàng<span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>

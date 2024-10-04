@@ -76,7 +76,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 		enabled: !!_id,
 	});
 
-	const fucnChangeStatus = useMutation({
+	const funcChangeStatus = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
@@ -99,7 +99,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 	return (
 		<div>
 			<Fragment>
-				<Loading loading={fucnChangeStatus.isLoading} />
+				<Loading loading={funcChangeStatus.isLoading} />
 				<div>
 					<div className={styles.header}>
 						<Link href={PATH.NhanVien} className={styles.header_title}>
@@ -301,7 +301,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 						? 'Bạn có chắc chắn muốn khóa hoạt động chức vụ này?'
 						: 'Bạn có chắc chắn muốn mở khóa hoạt động chức vụ này?'
 				}
-				onSubmit={fucnChangeStatus.mutate}
+				onSubmit={funcChangeStatus.mutate}
 			/>
 		</div>
 	);

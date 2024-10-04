@@ -79,7 +79,7 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 								render: (data: IPriceTag) => <>{data?.customerUu?.name || '---'}</>,
 							},
 							{
-								title: 'Loại gỗ',
+								title: 'Loại hàng',
 								render: (data: IPriceTag) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
 							{

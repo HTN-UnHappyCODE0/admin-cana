@@ -149,7 +149,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
-							name='Loại gỗ'
+							name='Loại hàng'
 							query='_productTypeUuid'
 							listFilter={listProductType?.data?.map((v: any) => ({
 								id: v?.uuid,
@@ -236,7 +236,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 								),
 							},
 							{
-								title: 'Loại gỗ',
+								title: 'Loại hàng',
 								render: (data: IPriceTag) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
 							{
