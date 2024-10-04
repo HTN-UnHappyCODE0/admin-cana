@@ -302,7 +302,7 @@ function UpdateSpecifications({}: PropsUpdateSpecifications) {
 							readOnly={true}
 							label={
 								<span>
-									Loại gỗ <span style={{color: 'red'}}>*</span>
+									Loại hàng <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>

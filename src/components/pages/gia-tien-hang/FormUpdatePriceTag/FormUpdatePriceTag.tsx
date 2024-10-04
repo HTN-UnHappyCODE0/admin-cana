@@ -126,12 +126,12 @@ function FormUpdatePriceTag({dataUpdate, onClose}: PropsFormUpdatePriceTag) {
 								}
 							/>
 							<Input
-								placeholder='Loại gỗ'
+								placeholder='Loại hàng'
 								name='productType'
 								readOnly={true}
 								label={
 									<span>
-										Loại gỗ <span style={{color: 'red'}}>*</span>
+										Loại hàng <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							/>

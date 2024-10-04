@@ -282,7 +282,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 								rounded_2
 								onClick={() => setOpenCreate(true)}
 							>
-								Thêm loại gỗ
+								Thêm loại hàng
 							</Button>
 						</div>
 					)}
@@ -304,7 +304,7 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 									render: (data: any, index: number) => <>{index + 1}</>,
 								},
 								{
-									title: 'Loại gỗ',
+									title: 'Loại hàng',
 									fixedLeft: true,
 									render: (data: any) => <>{data?.productTypeUu?.name}</>,
 								},

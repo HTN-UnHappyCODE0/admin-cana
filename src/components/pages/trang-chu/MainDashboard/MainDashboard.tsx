@@ -13,8 +13,6 @@ import {QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import dashbroadServices from '~/services/dashbroadServices';
 import clsx from 'clsx';
-import DataFlowWeight from '../DataFlowWeight';
-import DataFlowDryness from '../DataFlowDryness';
 
 function MainDashboard({}: PropsMainDashboard) {
 	const [companyUuid, setCompanyUuid] = useState<string>('');
@@ -43,8 +41,6 @@ function MainDashboard({}: PropsMainDashboard) {
 						<WarehouseStatistics key={v?.companyDTO?.uuid} infoCompany={v} isLoading={isFetching} />
 					))}
 				</div>
-				<DataFlowWeight />
-				<DataFlowDryness />
 				<ChartImportCompany />
 				<ChartExportCompany />
 				<ChartServiceCompany />

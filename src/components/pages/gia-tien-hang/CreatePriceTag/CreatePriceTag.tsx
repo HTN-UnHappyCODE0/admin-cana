@@ -179,7 +179,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 			return toastWarn({msg: 'Vui lòng chọn loại quy cách!'});
 		}
 		if (!form.productTypeUuid) {
-			return toastWarn({msg: 'Vui lòng chọn loại gỗ!'});
+			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
 		}
 		if (priceTag.name === undefined || priceTag.name === '') {
 			return toastWarn({msg: 'Vui lòng chọn giá tiền áp dụng!'});
@@ -216,7 +216,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 								isSearch
 								name='productTypeUuid'
 								value={form.productTypeUuid}
-								placeholder='Lựa chọn loại gỗ'
+								placeholder='Lựa chọn loại hàng'
 								onChange={(e: any) =>
 									setForm((prev: any) => ({
 										...prev,
@@ -226,7 +226,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 								}
 								label={
 									<span>
-										Loại gỗ <span style={{color: 'red'}}>*</span>
+										Loại hàng <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -370,7 +370,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 				warn
 				open={openWarning}
 				title='Cảnh báo!'
-				note={`Các giá tiền cũ của loại gỗ này sẽ không được sử dụng nữa!`}
+				note={`Các giá tiền cũ của loại hàng này sẽ không được sử dụng nữa!`}
 				onClose={() => setOpenWarning(false)}
 				onSubmit={() => {
 					setOpenWarning(false);

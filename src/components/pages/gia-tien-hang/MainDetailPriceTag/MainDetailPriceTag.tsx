@@ -29,7 +29,7 @@ function MainDetailPriceTag({}: PropsMainDetailPriceTag) {
 
 			<div className={'mt'}>
 				<GridColumn col_4>
-					<DetailBox name={'Loại gỗ'} value={24} />
+					<DetailBox name={'Loại hàng'} value={24} />
 					<DetailBox name={'Quy cách'} value={32} />
 					<DetailBox name={'Vận chuyển'} value={4} />
 					<DetailBox name={'Giá tiền hiện tại'} value={5} />

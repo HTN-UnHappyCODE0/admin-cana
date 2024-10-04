@@ -29,7 +29,7 @@ function FormCreateProductType({onClose}: PropsFormCreateProductType) {
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Thêm mới loại gỗ thành công!',
+				msgSuccess: 'Thêm mới loại hàng thành công!',
 				http: wareServices.upsertProductType({
 					uuid: '',
 					name: form.name,
@@ -63,12 +63,12 @@ function FormCreateProductType({onClose}: PropsFormCreateProductType) {
 	return (
 		<div className={styles.container}>
 			<Loading loading={funcCreateProductType.isLoading} />
-			<h4>Thêm loại gỗ</h4>
+			<h4>Thêm loại hàng</h4>
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={clsx('mb')}>
 					<div className={styles.item}>
 						<label className={styles.label}>
-							Loại hàng <span style={{color: 'red'}}>*</span>
+							Sử dụng <span style={{color: 'red'}}>*</span>
 						</label>
 						<div className={styles.group_radio}>
 							<div className={styles.item_radio}>
@@ -126,10 +126,10 @@ function FormCreateProductType({onClose}: PropsFormCreateProductType) {
 					max={255}
 					type='text'
 					blur={true}
-					placeholder='Nhập tên loại gỗ'
+					placeholder='Nhập tên loại hàng'
 					label={
 						<span>
-							Tên loại gỗ<span style={{color: 'red'}}> *</span>
+							Tên loại hàng<span style={{color: 'red'}}> *</span>
 						</span>
 					}
 				/>
