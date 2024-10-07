@@ -218,7 +218,7 @@ function MainPagePosition({}: PropsMainPagePosition) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={listRegency?.data?.pagination?.totalCount}
-						pageSize={Number(_pageSize) || 20}
+						pageSize={Number(_pageSize) || 50}
 						dependencies={[_pageSize, _keyword, _status]}
 					/>
 				</FullColumnFlex>

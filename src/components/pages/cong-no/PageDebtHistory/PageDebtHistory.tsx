@@ -209,7 +209,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 				</DataWrapper>
 				<Pagination
 					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 20}
+					pageSize={Number(_pageSize) || 50}
 					total={listTransaction?.data?.pagination?.totalCount}
 					dependencies={[_pageSize, _keyword, _partnerUuid, _type, _dateFrom, _dateTo, _status]}
 				/>

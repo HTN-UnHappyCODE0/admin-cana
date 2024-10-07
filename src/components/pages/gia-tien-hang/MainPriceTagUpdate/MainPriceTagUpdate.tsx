@@ -266,7 +266,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listUpdatePriceTag?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 20}
+					pageSize={Number(_pageSize) || 50}
 					dependencies={[_pageSize, _keyword, _specificationUuid, _productTypeUuid, _transportType, _dateFrom, _dateTo]}
 				/>
 			</div>

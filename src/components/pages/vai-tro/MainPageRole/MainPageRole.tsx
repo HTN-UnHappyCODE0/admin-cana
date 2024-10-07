@@ -99,7 +99,7 @@ function MainPageRole({}: PropsMainPageRole) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={400}
-						pageSize={Number(_pageSize) || 20}
+						pageSize={Number(_pageSize) || 50}
 						dependencies={[_pageSize, _keyword, _time, _dateFrom, _dateTo]}
 					/>
 				</DataWrapper>
