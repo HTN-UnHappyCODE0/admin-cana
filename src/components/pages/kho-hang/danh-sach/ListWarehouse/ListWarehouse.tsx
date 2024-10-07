@@ -142,7 +142,7 @@ function ListWarehouse({}: PropsListWarehouse) {
 				{!queryDataTable.isFetching && (
 					<Pagination
 						currentPage={Number(_page) || 1}
-						pageSize={Number(_pageSize) || 20}
+						pageSize={Number(_pageSize) || 50}
 						total={totalCount}
 						dependencies={[_pageSize, _keyword, _status]}
 					/>
