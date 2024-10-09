@@ -95,7 +95,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 					isList: true,
 					http: priceTagServices.getListUpdatePriceTag({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 20,
+						pageSize: Number(_pageSize) || 50,
 						status: null,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,

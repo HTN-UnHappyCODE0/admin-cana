@@ -70,7 +70,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 				isList: true,
 				http: customerServices.listCustomer({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 20,
+					pageSize: Number(_pageSize) || 50,
 					keyword: '',
 					specUuid: '',
 					userUuid: '',

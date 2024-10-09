@@ -84,7 +84,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 				isDropdown: true,
 				http: companyServices.listCompany({
 					page: 1,
-					pageSize: 20,
+					pageSize: 50,
 					keyword: '',
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -149,7 +149,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 				isDropdown: true,
 				http: regencyServices.listRegency({
 					page: 1,
-					pageSize: 20,
+					pageSize: 50,
 					keyword: '',
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -167,7 +167,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 				isDropdown: true,
 				http: userServices.listUser({
 					page: 1,
-					pageSize: 20,
+					pageSize: 50,
 					keyword: '',
 					regencyUuid: listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Quản lý nhập hàng'])
 						? listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import LayoutPages from '~/components/layouts/LayoutPages';
-import PageNotConfirmBill from '~/components/pages/duyet-phieu/PageNotConfirmBill';
+import PageNotConfirmOutput from '~/components/pages/duyet-san-luong/PageNotConfirmOutput';
 import {PATH} from '~/constants/config';
 
 export default function Page() {
@@ -26,7 +26,7 @@ export default function Page() {
 					},
 				]}
 			>
-				<PageNotConfirmBill />
+				<PageNotConfirmOutput />
 			</LayoutPages>
 		</Fragment>
 	);

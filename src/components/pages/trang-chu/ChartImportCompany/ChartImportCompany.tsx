@@ -58,7 +58,7 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 				isDropdown: true,
 				http: partnerServices.listPartner({
 					page: 1,
-					pageSize: 20,
+					pageSize: 50,
 					keyword: '',
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -80,7 +80,7 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 				isDropdown: true,
 				http: storageServices.listStorage({
 					page: 1,
-					pageSize: 20,
+					pageSize: 50,
 					keyword: '',
 					status: CONFIG_STATUS.HOAT_DONG,
 					isPaging: CONFIG_PAGING.NO_PAGING,

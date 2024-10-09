@@ -24,6 +24,8 @@ const batchBillServices = {
 			qualityUuid: string;
 			transportType: number | null;
 			shipUuid?: string;
+			typeCheckDay: number | 0;
+			ScalesStationUuid: string | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -56,6 +58,7 @@ const batchBillServices = {
 			lstTruckRemoveUuid: string[];
 			reason?: string;
 			scaleStationUuid: string;
+			portname: string;
 		},
 		tokenAxios?: any
 	) => {

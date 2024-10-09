@@ -347,3 +347,7 @@ export enum TYPE_UPDATE_BILL {
 	DUYET_PHIEU = 5,
 	TU_CHOI_DUYET = 6,
 }
+
+export enum TYPE_CHECK_DAY_BILL {
+	DUYET_SAN_LUONG = 1,
+}
