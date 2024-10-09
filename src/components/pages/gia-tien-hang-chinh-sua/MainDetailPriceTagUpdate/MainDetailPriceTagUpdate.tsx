@@ -21,7 +21,7 @@ import {httpRequest} from '~/services';
 import priceTagServices from '~/services/priceTagServices';
 
 import Moment from 'react-moment';
-import ItemDashboard from '../../cong-no-phieu/ItemDashboard';
+import ItemDashboard from './ItemDashboard';
 
 function MainDetailPriceTagUpdate({}: PropsMainDetailPriceTagUpdate) {
 	const router = useRouter();
@@ -44,7 +44,7 @@ function MainDetailPriceTagUpdate({}: PropsMainDetailPriceTagUpdate) {
 	return (
 		<div>
 			<div className={styles.header}>
-				<Link href={PATH.GiaTienHangQuaKhu} className={styles.header_title}>
+				<Link href={PATH.GiaTienHangChinhSua} className={styles.header_title}>
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
 					<p>Chi tiết giá tiền chỉnh sửa</p>
 				</Link>

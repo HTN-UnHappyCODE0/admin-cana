@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
-import {ITableBillScale, PropsPageConfirmBill} from './interfaces';
-import styles from './PageConfirmBill.module.scss';
+import {ITableBillScale, PropsPageNotConfirmBill} from './interfaces';
+import styles from './PageNotConfirmBill.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
 import {
@@ -39,7 +39,7 @@ import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
 import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
 
-function PageConfirmBill({}: PropsPageConfirmBill) {
+function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
@@ -125,7 +125,7 @@ function PageConfirmBill({}: PropsPageConfirmBill) {
 						productTypeUuid: (_productTypeUuid as string) || '',
 						specificationsUuid: '',
 						status: [STATUS_BILL.DA_CAN_CHUA_KCS, STATUS_BILL.DA_KCS, STATUS_BILL.CHOT_KE_TOAN],
-						state: !!_state ? [Number(_state)] : [STATE_BILL.KTK_CHECKED, STATE_BILL.END],
+						state: !!_state ? [Number(_state)] : [STATE_BILL.QLK_CHECKED, STATE_BILL.KTK_REJECTED],
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
@@ -441,4 +441,4 @@ function PageConfirmBill({}: PropsPageConfirmBill) {
 	);
 }
 
-export default PageConfirmBill;
+export default PageNotConfirmBill;

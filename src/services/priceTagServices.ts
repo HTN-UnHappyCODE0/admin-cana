@@ -18,6 +18,8 @@ const priceTagServices = {
 			priceTagUuid: string;
 			transportType?: number | null;
 			state: number | null;
+			userUuid?: string | null;
+			parentUserUuid?: string | null;
 		},
 		tokenAxios?: any
 	) => {

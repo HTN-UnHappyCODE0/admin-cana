@@ -95,8 +95,13 @@ export enum PATH {
 	GiaTienHangHienTai = '/gia-tien-hang/gia-hang-hien-tai',
 	GiaTienHangQuaKhu = '/gia-tien-hang/gia-hang-chinh-sua',
 	ThemGiaTien = '/gia-tien-hang/them-moi',
-	ThemThayDoiGiaTien = '/gia-tien-hang/them-gia-hang-chinh-sua',
-	ChinhSuaGiaTien = '/gia-tien-hang/chinh-sua',
+	GiaTienHangLichSu = '/gia-tien-hang/gia-hang-lich-su',
+	// ThemThayDoiGiaTien = '/gia-tien-hang/them-gia-hang-chinh-sua',
+	// ChinhSuaGiaTien = '/gia-tien-hang/chinh-sua',
+
+	// Giá tiền hàng chỉnh sửa
+	GiaTienHangChinhSua = '/gia-tien-hang-chinh-sua',
+	ThemThayDoiGiaTienChinhSua = '/gia-tien-hang-chinh-sua/them-gia-hang-chinh-sua',
 
 	// Xưởng
 	Xuong = '/xuong',
@@ -120,9 +125,14 @@ export enum PATH {
 
 	// Duyệt sản lượng
 	DuyetSanLuong = '/duyet-san-luong',
+	SanLuongDaDuyet = '/duyet-san-luong/san-luong-da-duyet',
+	SanLuongChuaDuyet = '/duyet-san-luong/san-luong-chua-duyet',
 
+	// Duyệt phiếu
 	DuyetPhieu = '/duyet-phieu',
 	CangBocDo = '/cang-boc-do',
+	PhieuChuaDuyet = '/duyet-phieu/phieu-chua-duyet',
+	PhieuDaDuyet = '/duyet-phieu/phieu-da-duyet',
 
 	// Nhân viên
 	NhanVien = '/nhan-vien',
@@ -169,13 +179,14 @@ export const Menu: {
 			{title: 'Công nợ phiếu', icon: icons.phieuhang, path: PATH.CongNoPhieu, pathActive: '/cong-no-phieu'},
 			{title: 'Công nợ công ty', icon: icons.congno, path: PATH.CongNo, pathActive: '/cong-no'},
 			{title: 'Giá tiền hàng', icon: icons.giatienhang, path: PATH.GiaTienHangHienTai, pathActive: PATH.GiaTien},
-			{title: 'Duyệt sản lượng', icon: icons.duyetsanluong, path: PATH.DuyetSanLuong, pathActive: PATH.DuyetSanLuong},
+			{title: 'Giá tiền hàng chỉnh sửa', icon: icons.giatienhangchinhsua, path: PATH.GiaTienHangChinhSua},
+			{title: 'Duyệt sản lượng', icon: icons.duyetsanluong, path: PATH.SanLuongChuaDuyet, pathActive: PATH.DuyetSanLuong},
 		],
 	},
 	{
 		title: 'Quản lý kho',
 		group: [
-			{title: 'Duyệt phiếu', icon: icons.duyetphieu, path: PATH.DuyetPhieu, pathActive: PATH.DuyetPhieu},
+			{title: 'Duyệt phiếu', icon: icons.duyetphieu, path: PATH.PhieuChuaDuyet, pathActive: PATH.DuyetPhieu},
 			{title: 'Cảng bốc dỡ', icon: icons.cang, path: PATH.CangBocDo, pathActive: PATH.CangBocDo},
 		],
 	},

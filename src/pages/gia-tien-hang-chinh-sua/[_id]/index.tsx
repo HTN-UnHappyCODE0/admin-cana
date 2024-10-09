@@ -2,7 +2,7 @@ import Head from 'next/head';
 import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import WrapperContainer from '~/components/layouts/WrapperContainer';
-import MainDetailPriceTagUpdate from '~/components/pages/gia-tien-hang/MainDetailPriceTagUpdate';
+import MainDetailPriceTagUpdate from '~/components/pages/gia-tien-hang-chinh-sua/MainDetailPriceTagUpdate';
 
 export default function Page() {
 	return (

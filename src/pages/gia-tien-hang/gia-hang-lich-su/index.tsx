@@ -2,7 +2,7 @@ import Head from 'next/head';
 import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import LayoutPages from '~/components/layouts/LayoutPages';
-import MainPriceTagCurrent from '~/components/pages/gia-tien-hang/MainPriceTagCurrent';
+import MainHistoryChangePriceTag from '~/components/pages/gia-tien-hang/MainHistoryChangePriceTag';
 import {PATH} from '~/constants/config';
 
 export default function Page() {
@@ -26,7 +26,7 @@ export default function Page() {
 					},
 				]}
 			>
-				<MainPriceTagCurrent />
+				<MainHistoryChangePriceTag />
 			</LayoutPages>
 		</Fragment>
 	);

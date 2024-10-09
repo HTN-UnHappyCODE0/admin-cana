@@ -2,24 +2,23 @@ import Head from 'next/head';
 import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import WrapperContainer from '~/components/layouts/WrapperContainer';
-import PageConfirmBill from '~/components/pages/duyet-phieu/PageConfirmBill';
-
+import CreatePriceTagUpdate from '~/components/pages/gia-tien-hang-chinh-sua/CreatePriceTagUpdate';
 export default function Page() {
 	return (
 		<Fragment>
 			<Head>
-				<title>Duyệt phiếu</title>
-				<meta name='description' content='Duyệt phiếu' />
+				<title>Thêm giá tiền hàng chỉnh sửa</title>
+				<meta name='description' content='Thêm giá tiền hàng chỉnh sửa' />
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<WrapperContainer bg={true}>
-				<PageConfirmBill />
+				<CreatePriceTagUpdate />
 			</WrapperContainer>
 		</Fragment>
 	);
 }
 
 Page.getLayout = function (Page: ReactElement) {
-	return <BaseLayout title='Quản lý kho'>{Page}</BaseLayout>;
+	return <BaseLayout title='Thêm giá tiền hàng chỉnh sửa'>{Page}</BaseLayout>;
 };

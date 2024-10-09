@@ -41,6 +41,7 @@ export enum QUERY_KEY {
 	dropdown_kho_hang_nguon,
 	dropdown_khach_hang_dich_vu,
 	dropdown_ma_tau,
+	dropdown_quan_ly_nhap_hang,
 
 	table_phieu_da_gui_KT,
 	table_cang_boc_do,
@@ -119,6 +120,7 @@ export enum QUERY_KEY {
 	chi_tiet_phieu_can,
 	chi_tiet_cong_ty,
 	chi_tiet_gia_tien_hang,
+	chi_tiet_lich_su_thay_doi_phieu,
 
 	danh_sach_tieu_chi_nha_lieu,
 	danh_sach_tieu_chi_quy_cach,
@@ -337,4 +339,11 @@ export enum STATUS_SITUATIONS {
 	CHUA_KIEM_DUYET,
 	DA_DUYET,
 	XU_LY_SAI,
+}
+
+export enum TYPE_UPDATE_BILL {
+	CHINH_SUA = 2,
+	DOI_TRANG_THAI = 3,
+	DUYET_PHIEU = 5,
+	TU_CHOI_DUYET = 6,
 }

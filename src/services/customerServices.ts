@@ -19,11 +19,12 @@ const customerServices = {
 			isDescending: CONFIG_DESCENDING;
 			typeFind: CONFIG_TYPE_FIND;
 			isPaging: CONFIG_PAGING;
-			userUuid: string;
 			partnerUUid: string | null;
 			specUuid: string;
 			provinceId: string;
 			typeCus: TYPE_CUSTOMER | null;
+			userUuid?: string;
+			parentUserUuid?: string;
 		},
 		tokenAxios?: any
 	) => {
