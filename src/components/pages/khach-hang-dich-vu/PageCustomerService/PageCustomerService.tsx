@@ -53,7 +53,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 				isDropdown: true,
 				http: regencyServices.listRegency({
 					page: 1,
-					pageSize: 20,
+					pageSize: 50,
 					keyword: '',
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -72,7 +72,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 				isDropdown: true,
 				http: userServices.listUser({
 					page: 1,
-					pageSize: 20,
+					pageSize: 50,
 					keyword: '',
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -96,7 +96,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 			httpRequest({
 				isList: true,
 				http: partnerServices.listPartner({
-					pageSize: Number(_pageSize) || 20,
+					pageSize: Number(_pageSize) || 50,
 					page: Number(_page) || 1,
 					keyword: (_keyword as string) || '',
 					status: !!_status ? Number(_status) : null,

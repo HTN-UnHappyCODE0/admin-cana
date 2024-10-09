@@ -27,7 +27,7 @@ const PageDebtCompany = ({}: PropsPageDebtCompany) => {
 				isList: true,
 				http: partnerServices.listPartnerDebt({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 20,
+					pageSize: Number(_pageSize) || 50,
 					status: null,
 					provinceId: '',
 					userUuid: '',
