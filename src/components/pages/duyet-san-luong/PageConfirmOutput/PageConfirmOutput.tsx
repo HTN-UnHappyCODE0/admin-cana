@@ -134,7 +134,9 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 							STATUS_BILL.DA_KCS,
 							STATUS_BILL.CHOT_KE_TOAN,
 						],
-						state: !!_state ? [Number(_state)] : [STATE_BILL.QLK_CHECKED, STATE_BILL.KTK_REJECTED],
+						state: !!_state
+							? [Number(_state)]
+							: [STATE_BILL.QLK_CHECKED, STATE_BILL.KTK_REJECTED, STATE_BILL.KTK_CHECKED, STATE_BILL.END],
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
@@ -419,7 +421,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								fixedRight: true,
 								render: (data: ITableBillScale) => (
 									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
-										{data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS &&
+										{/* {data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS &&
 										data.state <= STATE_BILL.KTK_REJECTED &&
 										data.state > STATE_BILL.QLK_REJECTED ? (
 											<IconCustom
@@ -440,7 +442,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 												color='#D95656'
 												onClick={() => setUuidKTKReject([data?.uuid])}
 											/>
-										) : null}
+										) : null} */}
 
 										{/* Xem chi tiết */}
 										<IconCustom

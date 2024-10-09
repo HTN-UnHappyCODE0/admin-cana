@@ -49,7 +49,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
-					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+					type: [TYPE_PRODUCT.CONG_TY],
 				}),
 			}),
 		select(data) {
@@ -121,17 +121,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo nhà cung cấp, công ty' />
 					</div>
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Quy cách'
-							query='_specificationUuid'
-							listFilter={listSpecifications?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: v?.name,
-							}))}
-						/>
-					</div>
+
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
@@ -143,6 +133,18 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 							}))}
 						/>
 					</div>
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Quy cách'
+							query='_specificationUuid'
+							listFilter={listSpecifications?.data?.map((v: any) => ({
+								id: v?.uuid,
+								name: v?.name,
+							}))}
+						/>
+					</div>
+
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
@@ -168,7 +170,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 					<Button
 						p_8_16
 						rounded_2
-						href={PATH.ThemThayDoiGiaTien}
+						href={PATH.ThemThayDoiGiaTienChinhSua}
 						icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 					>
 						Thay đổi giá tiền
@@ -182,7 +184,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 					noti={
 						<Noti
 							titleButton='Thay đổi giá tiền'
-							onClick={() => router.push(PATH.ThemThayDoiGiaTien)}
+							onClick={() => router.push(PATH.ThemThayDoiGiaTienChinhSua)}
 							des='Hiện tại chưa có giá tiền chỉnh sửa nào, thêm ngay?'
 						/>
 					}
@@ -194,18 +196,29 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 								title: 'STT',
 								render: (data: IPriceTagUpdate, index: number) => <>{index + 1}</>,
 							},
+
+							// {
+							// 	title: 'Công ty',
+							// 	fixedLeft: true,
+							// 	render: (data: IPriceTagUpdate) => (
+							// 		<Link href={`/gia-tien-hang/gia-hang-chinh-sua/${data?.uuid}`} className={styles.link}>
+							// 			{data?.partnerUu?.name || '---'}
+							// 		</Link>
+							// 	),
+							// },
 							{
-								title: 'Công ty',
-								fixedLeft: true,
+								title: 'Nhà cung cấp',
 								render: (data: IPriceTagUpdate) => (
-									<Link href={`/gia-tien-hang/gia-hang-chinh-sua/${data?.uuid}`} className={styles.link}>
-										{data?.partnerUu?.name || '---'}
+									<Link href={`/gia-tien-hang-chinh-sua/${data?.uuid}`} className={styles.link}>
+										{data?.customerUu?.name || '---'}
 									</Link>
 								),
 							},
 							{
-								title: 'Nhà cung cấp',
-								render: (data: IPriceTagUpdate) => <>{data?.customerUu?.name || '---'}</>,
+								title: 'Giá tiền mới (VND)',
+								render: (data: IPriceTagUpdate) => (
+									<span style={{color: 'var(--primary)'}}>{convertCoin(data?.priceUu?.amount) || 0}</span>
+								),
 							},
 							{
 								title: 'Loại hàng',
@@ -236,12 +249,6 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 							},
 
 							{
-								title: 'Giá tiền mới (VND)',
-								render: (data: IPriceTagUpdate) => (
-									<span style={{color: 'var(--primary)'}}>{convertCoin(data?.priceUu?.amount) || 0}</span>
-								),
-							},
-							{
 								title: 'Ngày thay đổi',
 								render: (data: IPriceTagUpdate) =>
 									data.created ? <Moment date={data.created} format='HH:mm, DD/MM/YYYY' /> : '---',
@@ -255,7 +262,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 											icon={<FaRegEye fontSize={20} fontWeight={600} />}
 											tooltip='Xem chi tiết'
 											color='#777E90'
-											href={`/gia-tien-hang/gia-hang-chinh-sua/${data?.uuid}`}
+											href={`/gia-tien-hang-chinh-sua/${data?.uuid}`}
 										/>
 									</div>
 								),

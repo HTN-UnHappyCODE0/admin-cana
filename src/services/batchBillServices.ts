@@ -192,6 +192,16 @@ const batchBillServices = {
 			cancelToken: tokenAxios,
 		});
 	},
+	ViewActionAudit: (
+		data: {
+			uuid: string;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/view-action-audit`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
 };
 
 export default batchBillServices;

@@ -2,40 +2,37 @@ import Head from 'next/head';
 import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import LayoutPages from '~/components/layouts/LayoutPages';
-import MainPriceTagCurrent from '~/components/pages/gia-tien-hang/MainPriceTagCurrent';
+import WrapperContainer from '~/components/layouts/WrapperContainer';
+import PageConfirmBill from '~/components/pages/duyet-phieu/PageConfirmBill';
 import {PATH} from '~/constants/config';
 
 export default function Page() {
 	return (
 		<Fragment>
 			<Head>
-				<title>Quản lý giá tiền hàng</title>
-				<meta name='description' content='Quản lý giá tiền hàng' />
+				<title>Duyệt phiếu</title>
+				<meta name='description' content='Duyệt phiếu' />
 				<meta name='viewport' content='width=device-width, initial-scale=1' />
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<LayoutPages
 				listPages={[
 					{
-						title: 'Giá hàng hiện tại',
-						url: PATH.GiaTienHangHienTai,
+						title: 'Phiếu chưa duyệt',
+						url: PATH.PhieuChuaDuyet,
 					},
 					{
-						title: 'Lịch sử giá hàng',
-						url: PATH.GiaTienHangLichSu,
+						title: 'Phiếu đã duyệt',
+						url: PATH.PhieuDaDuyet,
 					},
 				]}
 			>
-				<MainPriceTagCurrent />
+				<PageConfirmBill />
 			</LayoutPages>
 		</Fragment>
 	);
 }
 
 Page.getLayout = function (Page: ReactElement) {
-	return (
-		<BaseLayout bgLight title='Quản lý giá tiền hàng'>
-			{Page}
-		</BaseLayout>
-	);
+	return <BaseLayout title='Duyệt phiếu'>{Page}</BaseLayout>;
 };
