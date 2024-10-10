@@ -493,7 +493,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 											),
 										},
 										{
-											title: 'Khối lượng hàng (tấn)',
+											title: 'Khối lượng hàng (Tấn)',
 											render: (data: IFormCreatePriceTagUpdate) => <>{convertWeight(data?.weightTotal)}</>,
 										},
 										{
@@ -680,7 +680,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 											),
 										},
 										{
-											title: 'Khối lượng hàng (tấn)',
+											title: 'Khối lượng hàng (Tấn)',
 											render: (data: any) => <>{convertWeight(data?.weightTotal)}</>,
 										},
 										{
