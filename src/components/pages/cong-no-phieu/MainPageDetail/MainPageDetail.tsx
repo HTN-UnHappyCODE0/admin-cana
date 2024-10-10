@@ -145,7 +145,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 								),
 							},
 							{
-								title: 'KL hàng(tấn)',
+								title: 'KL hàng(Tấn)',
 								render: (data: IWeightSession) => <>{convertWeight(data?.weightReal)}</>,
 							},
 							{

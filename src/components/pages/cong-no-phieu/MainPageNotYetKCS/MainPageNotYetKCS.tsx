@@ -207,7 +207,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 								render: (data: IDebtBill) => <>{data?.fromUu?.userUu?.fullName || '---'}</>,
 							},
 							{
-								title: 'KL hàng (tấn)',
+								title: 'KL hàng (Tấn)',
 								render: (data: IDebtBill) => <>{convertWeight(data?.weightTotal) || 0}</>,
 							},
 							{

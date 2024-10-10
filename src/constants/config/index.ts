@@ -295,4 +295,4 @@ export const ListOptionTimePicker: {
 	},
 ];
 
-export const WEIGHT_WAREHOUSE = 10000; // tấn
+export const WEIGHT_WAREHOUSE = 10000; // Tấn
