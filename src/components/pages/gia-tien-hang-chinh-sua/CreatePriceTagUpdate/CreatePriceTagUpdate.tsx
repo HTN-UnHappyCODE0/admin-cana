@@ -179,7 +179,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 					warehouseUuid: '',
 					qualityUuid: '',
 					typeCheckDay: 0,
-					ScalesStationUuid: '',
+					scalesStationUuid: '',
 				}),
 			}),
 		onSuccess(data) {
