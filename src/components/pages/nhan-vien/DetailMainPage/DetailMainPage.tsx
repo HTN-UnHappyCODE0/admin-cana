@@ -185,7 +185,8 @@ function DetailMainPage({}: PropsDetailMainPage) {
 							</tr>
 							<tr>
 								<td>
-									<span>Giới tính: </span> {detailUser?.sex == GENDER.NAM ? 'Nam' : 'Nữ' || '---'}
+									<span>Giới tính: </span>{' '}
+									{detailUser?.sex !== undefined ? (detailUser.sex == GENDER.NAM ? 'Nam' : 'Nữ') : '---'}
 								</td>
 								<td>
 									<span>Ngày sinh: </span>
