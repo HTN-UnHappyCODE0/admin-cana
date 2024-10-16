@@ -52,6 +52,7 @@ import khoiluonghangdichvu from '../../../public/static/images/khoiluonghangdich
 import khoiluonghangchuyenkho from '../../../public/static/images/khoiluonghangchuyenkho.png';
 import khoiluonghangxuatthang from '../../../public/static/images/khoiluonghangxuatthang.png';
 import giatienhangchinhsua from '../../../public/static/images/giahangchinhsua.svg';
+import giatienhangtuonglai from '../../../public/static/images/dollar-circle.svg';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -109,4 +110,5 @@ export default {
 	khoiluonghangchuyenkho,
 	khoiluonghangxuatthang,
 	giatienhangchinhsua,
+	giatienhangtuonglai,
 };
