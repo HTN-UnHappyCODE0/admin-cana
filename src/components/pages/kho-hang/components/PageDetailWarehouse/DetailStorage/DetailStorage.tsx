@@ -286,10 +286,10 @@ function DetailStorage({}: PropsDetailStorage) {
 												<div key={i} className={styles.item}>
 													<p>{v?.criteriaUu?.title}</p>
 													<p style={{color: '#2D74FF', fontWeight: 600}}>
-														<span style={{marginRight: 4}}>
-															{v?.criteriaUu?.ruler == TYPE_RULER.NHO_HON ? '<' : '>'}
-														</span>
-														{v?.criteriaUu?.value}
+														{/* <span style={{marginRight: 4}}>
+														{v?.criteriaUu?.ruler == TYPE_RULER.NHO_HON ? '<' : '>'}
+													</span> */}
+														{formatDrynessAvg(v?.value)}%
 													</p>
 												</div>
 											))}
