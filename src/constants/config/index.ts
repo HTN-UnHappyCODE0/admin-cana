@@ -176,24 +176,24 @@ export const Menu: {
 		title: 'overview',
 		group: [{title: 'Tổng quan', icon: icons.tongQuan, path: PATH.Home}],
 	},
-	{
-		title: 'Kế toán',
-		group: [
-			{title: 'Công nợ phiếu', icon: icons.phieuhang, path: PATH.CongNoPhieu, pathActive: '/cong-no-phieu'},
-			{title: 'Công nợ công ty', icon: icons.congno, path: PATH.CongNo, pathActive: '/cong-no'},
-			{title: 'Giá tiền hàng', icon: icons.giatienhang, path: PATH.GiaTienHangHienTai, pathActive: PATH.GiaTien},
-			{title: 'Giá tiền hàng chỉnh sửa', icon: icons.giatienhangchinhsua, path: PATH.GiaTienHangChinhSua},
-			// {title: 'Giá tiền hàng tương lai', icon: icons.giatienhangtuonglai, path: PATH.GiaTienHangTuongLai},
-			{title: 'Duyệt sản lượng', icon: icons.duyetsanluong, path: PATH.SanLuongChuaDuyet, pathActive: PATH.DuyetSanLuong},
-		],
-	},
-	{
-		title: 'Quản lý kho',
-		group: [
-			{title: 'Duyệt phiếu', icon: icons.duyetphieu, path: PATH.PhieuChuaDuyet, pathActive: PATH.DuyetPhieu},
-			{title: 'Cảng bốc dỡ', icon: icons.cang, path: PATH.CangBocDo, pathActive: PATH.CangBocDo},
-		],
-	},
+	// {
+	// 	title: 'Kế toán',
+	// 	group: [
+	// 		{title: 'Công nợ phiếu', icon: icons.phieuhang, path: PATH.CongNoPhieu, pathActive: '/cong-no-phieu'},
+	// 		{title: 'Công nợ công ty', icon: icons.congno, path: PATH.CongNo, pathActive: '/cong-no'},
+	// 		{title: 'Giá tiền hàng', icon: icons.giatienhang, path: PATH.GiaTienHangHienTai, pathActive: PATH.GiaTien},
+	// 		{title: 'Giá tiền hàng chỉnh sửa', icon: icons.giatienhangchinhsua, path: PATH.GiaTienHangChinhSua},
+	// 		{title: 'Giá tiền hàng tương lai', icon: icons.giatienhangtuonglai, path: PATH.GiaTienHangTuongLai},
+	// 		{title: 'Duyệt sản lượng', icon: icons.duyetsanluong, path: PATH.SanLuongChuaDuyet, pathActive: PATH.DuyetSanLuong},
+	// 	],
+	// },
+	// {
+	// 	title: 'Quản lý kho',
+	// 	group: [
+	// 		{title: 'Duyệt phiếu', icon: icons.duyetphieu, path: PATH.PhieuChuaDuyet, pathActive: PATH.DuyetPhieu},
+	// 		{title: 'Cảng bốc dỡ', icon: icons.cang, path: PATH.CangBocDo, pathActive: PATH.CangBocDo},
+	// 	],
+	// },
 	{
 		title: 'Kho hàng',
 		group: [
