@@ -316,6 +316,7 @@ function CreatePriceTag({}: PropsCreatePriceTag) {
 					<div className={clsx('mt', styles.group)}>
 						<div className={styles.btn}>
 							<ButtonSelectMany
+								isShowCheckAll={false}
 								showOverlay={true}
 								label={
 									<span>

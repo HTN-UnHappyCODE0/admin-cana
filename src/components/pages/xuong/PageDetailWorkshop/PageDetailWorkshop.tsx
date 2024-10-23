@@ -85,31 +85,31 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 		},
 	});
 
-	const listPriceTagCustomer = useQuery([QUERY_KEY.table_hang_hoa_cua_khach_hang, _id, _page, _pageSize], {
-		queryFn: () =>
-			httpRequest({
-				isList: true,
-				http: priceTagServices.listPriceTag({
-					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
-					keyword: '',
-					isPaging: CONFIG_PAGING.IS_PAGING,
-					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-					typeFind: CONFIG_TYPE_FIND.TABLE,
-					status: null,
-					customerUuid: _id as string,
-					specUuid: '',
-					productTypeUuid: '',
-					priceTagUuid: '',
-					state: null,
-					transportType: null,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-		enabled: !!_id,
-	});
+	// const listPriceTagCustomer = useQuery([QUERY_KEY.table_hang_hoa_cua_khach_hang, _id, _page, _pageSize], {
+	// 	queryFn: () =>
+	// 		httpRequest({
+	// 			isList: true,
+	// 			http: priceTagServices.listPriceTag({
+	// 				page: Number(_page) || 1,
+	// 				pageSize: Number(_pageSize) || 50,
+	// 				keyword: '',
+	// 				isPaging: CONFIG_PAGING.IS_PAGING,
+	// 				isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+	// 				typeFind: CONFIG_TYPE_FIND.TABLE,
+	// 				status: null,
+	// 				customerUuid: _id as string,
+	// 				specUuid: '',
+	// 				productTypeUuid: '',
+	// 				priceTagUuid: '',
+	// 				state: null,
+	// 				transportType: null,
+	// 			}),
+	// 		}),
+	// 	select(data) {
+	// 		return data;
+	// 	},
+	// 	enabled: !!_id,
+	// });
 
 	return (
 		<div className={styles.container}>
@@ -292,12 +292,12 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 			<div className={clsx('mt')}>
 				<div className={styles.table}>
 					<DataWrapper
-						data={listPriceTagCustomer?.data?.items || []}
-						loading={listPriceTagCustomer?.isLoading}
+						data={detailCustomer?.customerSpec || []}
+						// loading={listPriceTagCustomer?.isLoading}
 						noti={<Noti disableButton des='Hiện tại chưa có hàng hóa nào!' />}
 					>
 						<Table
-							data={listPriceTagCustomer?.data?.items || []}
+							data={detailCustomer?.customerSpec || []}
 							column={[
 								{
 									title: 'STT',
@@ -357,12 +357,12 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 							]}
 						/>
 					</DataWrapper>
-					<Pagination
+					{/* <Pagination
 						currentPage={Number(_page) || 1}
 						pageSize={Number(_pageSize) || 50}
 						total={listPriceTagCustomer?.data?.pagination?.totalCount}
 						dependencies={[_id, _pageSize]}
-					/>
+					/> */}
 				</div>
 			</div>
 
