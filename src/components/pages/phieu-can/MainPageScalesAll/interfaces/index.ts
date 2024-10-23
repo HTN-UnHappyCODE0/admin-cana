@@ -50,6 +50,7 @@ export interface ITableBillScale {
 			uuid: string;
 		};
 	};
+	port: string;
 	batchsUu: {
 		uuid: string;
 		ship: string;
