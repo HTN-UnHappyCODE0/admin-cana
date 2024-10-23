@@ -39,4 +39,51 @@ export interface IDetailCustomer {
 	code: string;
 	name: string;
 	uuid: string;
+	customerSpec: IlistCustomerSpec[];
+}
+
+export interface IlistCustomerSpec {
+	state: number;
+	status: number;
+	transportType: number;
+	specUu: {
+		name: string;
+		status: number;
+		qualityUu: {
+			name: string;
+			status: number;
+			uuid: string;
+		};
+		uuid: string;
+	};
+	pricetagUu: {
+		code: string;
+		amount: number;
+		status: number;
+		uuid: string;
+	};
+	qualityUu: {
+		name: string;
+		status: number;
+		uuid: string;
+	};
+	productTypeUu: {
+		code: string;
+		name: string;
+		status: number;
+		type: number;
+		uuid: string;
+	};
+	accountUu: {
+		username: string;
+		status: number;
+		uuid: string;
+	};
+	storageUu: {
+		code: string;
+		name: string;
+		status: number;
+		uuid: string;
+	};
+	uuid: string;
 }
