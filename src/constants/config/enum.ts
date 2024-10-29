@@ -42,6 +42,7 @@ export enum QUERY_KEY {
 	dropdown_khach_hang_dich_vu,
 	dropdown_ma_tau,
 	dropdown_quan_ly_nhap_hang,
+	dropdown_loai_hang,
 
 	table_phieu_da_gui_KT,
 	table_cang_boc_do,
