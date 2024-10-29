@@ -70,7 +70,7 @@ function MainSpecification({}: PropsMainSpecification) {
 		},
 	});
 
-	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
+	const listProductType = useQuery([QUERY_KEY.dropdown_loai_hang], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,

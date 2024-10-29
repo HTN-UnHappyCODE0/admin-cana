@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import {PropsFormUpdateSpecWS} from './interfaces';
 import styles from './FormUpdateSpecWS.module.scss';
-import Form, {Input} from '~/components/common/Form';
+import Form, {FormContext, Input} from '~/components/common/Form';
 import Button from '~/components/common/Button';
 import {IoClose} from 'react-icons/io5';
 import Select, {Option} from '~/components/common/Select';
@@ -15,26 +15,31 @@ import Loading from '~/components/common/Loading';
 import criteriaServices from '~/services/criteriaServices';
 import {toastWarn} from '~/common/funcs/toast';
 import clsx from 'clsx';
+import FormReasonUpdateSpec from '../FormReasonUpdateSpec';
+import Popup from '~/components/common/Popup';
+import {price} from '~/common/funcs/convertCoin';
 
 function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 	const queryClient = useQueryClient();
 
-	const [form, setForm] = useState<{numberChecked: number; specificationsUuid: string; weightTotal?: number}>({
+	const [openWarning, setOpenWarning] = useState<boolean>(false);
+	const [form, setForm] = useState<{numberChecked: number; specificationsUuid: string; totalSample: number | string}>({
 		numberChecked: 0,
 		specificationsUuid: '',
-		weightTotal: 0,
+		totalSample: 0,
 	});
 
 	const [dataRules, setDataRules] = useState<
 		{
 			uuid: string;
 			title: string;
-			value: number;
+			amountSample: number;
 		}[]
 	>([]);
 
 	useEffect(() => {
 		setForm({
+			totalSample: 0,
 			numberChecked: dataUpdateSpecWS?.length,
 			specificationsUuid: dataUpdateSpecWS?.[0]?.specificationsUu?.uuid,
 		});
@@ -81,7 +86,7 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 					data?.map((v: any) => ({
 						uuid: v?.uuid,
 						title: v?.title,
-						value: null,
+						amountSample: 0,
 					}))
 				);
 			}
@@ -89,13 +94,13 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 		enabled: !!dataUpdateSpecWS?.[0]?.specificationsUu?.uuid,
 	});
 
-	const handleChange = (rule: {uuid: string; title: string; value: number}, value: any) => {
+	const handleChange = (rule: {uuid: string; title: string; amountSample: number}, value: any) => {
 		setDataRules((prevRules) =>
 			prevRules.map((r) =>
 				r.uuid === rule.uuid
 					? {
 							...r,
-							value: value,
+							amountSample: value,
 					  }
 					: r
 			)
@@ -112,9 +117,9 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 					wsUuids: dataUpdateSpecWS?.map((v: any) => v?.uuid),
 					lstValueSpec: dataRules?.map((v) => ({
 						uuid: v?.uuid,
-						value: Number(v?.value),
+						amountSample: v?.amountSample ? Number(v?.amountSample) : 0,
 					})),
-					weightTotal: Number(form?.weightTotal),
+					totalSample: form?.totalSample ? Number(form?.totalSample) : 0,
 				}),
 			}),
 		onSuccess(data) {
@@ -130,9 +135,17 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 	});
 
 	const handleSubmit = async () => {
-		if (dataRules?.some((v) => isNaN(v?.value))) {
+		if (dataRules?.some((v) => isNaN(v?.amountSample))) {
 			return toastWarn({msg: 'Nhập giá trị cho tiêu chí quy cách!'});
 		}
+		if (dataRules?.some((v) => v?.amountSample > price(form?.totalSample))) {
+			return setOpenWarning(true);
+		} else {
+			return funcUpdateSpecWeightSession.mutate();
+		}
+	};
+
+	const handleSubmitReason = async () => {
 		return funcUpdateSpecWeightSession.mutate();
 	};
 
@@ -140,7 +153,7 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 		<div className={styles.container}>
 			<Loading loading={funcUpdateSpecWeightSession.isLoading} />
 			<h4>Cập nhật quy cách</h4>
-			<Form form={form} setForm={setForm}>
+			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<Input
 					name='numberChecked'
 					value={form.numberChecked || ''}
@@ -149,7 +162,7 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 					label={<span>Số phiếu đã chọn</span>}
 					readOnly
 				/>
-				<div className={clsx('mt', 'col_2')}>
+				<div className={clsx('mt')}>
 					<Select
 						isSearch
 						name='specificationsUuid'
@@ -176,39 +189,62 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 							/>
 						))}
 					</Select>
+				</div>
+
+				{/* <div className={clsx('mt')}>
 					<Input
-						name='weightTotal'
-						value={form.weightTotal || ''}
-						isRequired
-						type='number'
+						value={form.totalSample}
+						type='text'
+						isMoney
 						placeholder='Nhập khối lượng cân mẫu'
-						label={
-							<span>
-								Khối lượng cân mẫu <span style={{color: 'red'}}>*</span>
-							</span>
-						}
+						label={<span>Khối lượng cân mẫu</span>}
 						unit='gr'
 					/>
+				</div> */}
+
+				<label className={styles.label}>Nhập khối lượng cân mẫu</label>
+				<div className={styles.input_total}>
+					<input
+						className={styles.input_sample}
+						name='totalSample'
+						type='number'
+						step='any'
+						placeholder='Nhập khối lượng cân mẫu'
+						value={form.totalSample}
+						onChange={(e) => setForm((prev) => ({...prev, totalSample: e.target.value}))}
+					/>
+					<div className={styles.unit}>gr</div>
 				</div>
 
 				<div className='mt'>
-					{dataRules?.map((v, i) => (
-						<div key={i} className={styles.item}>
-							<p>{v?.title}</p>
-							<div className={styles.box_input}>
-								<input
-									className={styles.input}
-									type='number'
-									value={v?.value}
-									onChange={(e) => handleChange(v, e.target.value)}
-								/>
-								<div className={styles.unit}>gr</div>
+					{dataRules?.map((v, i) => {
+						const totalGr = dataRules.reduce((sum, rule) => sum + (rule.amountSample || 0), 0);
+						const percentage = price(form?.totalSample)
+							? (v?.amountSample / price(form?.totalSample)) * 100
+							: (v?.amountSample / totalGr) * 100;
+
+						return (
+							<div key={i} className={styles.item}>
+								<p>{v?.title}</p>
+								<div className={styles.value_spec}>
+									<div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : ''}</div>
+									<div className={styles.box_input}>
+										<input
+											className={styles.input}
+											type='number'
+											step='any'
+											value={v?.amountSample}
+											onChange={(e) => handleChange(v, parseFloat(e.target.value))}
+										/>
+										<div className={styles.unit}>gr</div>
+									</div>
+								</div>
 							</div>
-						</div>
-					))}
+						);
+					})}
 				</div>
 
-				<div className={styles.btn}>
+				{/* <div className={styles.btn}>
 					<div>
 						<Button p_10_24 rounded_2 grey_outline onClick={onClose}>
 							Hủy bỏ
@@ -219,11 +255,42 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 							Xác nhận
 						</Button>
 					</div>
+				</div> */}
+
+				<div className={styles.btn}>
+					<div>
+						<Button p_10_24 rounded_2 grey_outline onClick={onClose}>
+							Hủy bỏ
+						</Button>
+					</div>
+					<div>
+						<FormContext.Consumer>
+							{({isDone}) => (
+								<Button disable={!isDone} p_10_24 rounded_2 primary>
+									Cập nhật
+								</Button>
+							)}
+						</FormContext.Consumer>
+					</div>
 				</div>
 
 				<div className={styles.close} onClick={onClose}>
 					<IoClose />
 				</div>
+				<Popup
+					zIndex={102}
+					open={openWarning}
+					onClose={() => {
+						setOpenWarning(false);
+					}}
+				>
+					<FormReasonUpdateSpec
+						onSubmit={handleSubmitReason}
+						onClose={() => {
+							setOpenWarning(false);
+						}}
+					/>
+				</Popup>
 			</Form>
 		</div>
 	);
