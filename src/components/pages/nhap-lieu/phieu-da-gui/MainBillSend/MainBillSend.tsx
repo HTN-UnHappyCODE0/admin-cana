@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
 
-import {PropsMainBillSend} from './interfaces';
+import {IBillSend, PropsMainBillSend} from './interfaces';
 import styles from './MainBillSend.module.scss';
 import {useRouter} from 'next/router';
 import {useQuery} from '@tanstack/react-query';
@@ -11,6 +11,7 @@ import {
 	CONFIG_STATUS,
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
+	STATUS_BILL,
 	STATUS_WEIGHT_SESSION,
 	TYPE_BATCH,
 	TYPE_CUSTOMER,
@@ -28,7 +29,7 @@ import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
-import {IWeightSession} from '../../quy-cach/MainSpecification/interfaces';
+
 import Pagination from '~/components/common/Pagination';
 import Tippy from '@tippyjs/react';
 import clsx from 'clsx';
@@ -36,13 +37,24 @@ import BoxViewSpec from '../BoxViewSpec';
 import Moment from 'react-moment';
 import Link from 'next/link';
 import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
+import IconCustom from '~/components/common/IconCustom';
+import {DocumentText, Edit, Eye} from 'iconsax-react';
+import Popup from '~/components/common/Popup';
+import PopupChangeDryness from '../PopupChangeDryness';
+import Button from '~/components/common/Button';
+import {PATH} from '~/constants/config';
+import batchBillServices from '~/services/batchBillServices';
 
 function MainBillSend({}: PropsMainBillSend) {
 	const router = useRouter();
 
 	const {_page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _productTypeUuid, _specUuid, _dateFrom, _dateTo} = router.query;
 
-	const [dataSpec, setDataSpec] = useState<IWeightSession | null>(null);
+	const [dataSpec, setDataSpec] = useState<IBillSend | null>(null);
+	const [total, setTotal] = useState<number>(0);
+	const [listSelectBill, setListSelectBill] = useState<any[]>([]);
+	const [listBillSend, setListBillSend] = useState<any[]>([]);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
 		queryFn: () =>
@@ -108,7 +120,7 @@ function MainBillSend({}: PropsMainBillSend) {
 		},
 	});
 
-	const queryWeightsession = useQuery(
+	useQuery(
 		[
 			QUERY_KEY.table_phieu_da_gui_KT,
 			_page,
@@ -126,29 +138,45 @@ function MainBillSend({}: PropsMainBillSend) {
 			queryFn: () =>
 				httpRequest({
 					isList: true,
-					http: weightSessionServices.listWeightsession({
+					setLoading: setLoading,
+					http: batchBillServices.getListBill({
 						page: Number(_page) || 1,
 						pageSize: Number(_pageSize) || 50,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
-						billUuid: '',
-						codeEnd: null,
-						codeStart: null,
 						isBatch: !!_isBatch ? Number(_isBatch) : null,
 						scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
-						specUuid: !!_specUuid ? (_specUuid as string) : null,
-						status: [STATUS_WEIGHT_SESSION.KCS_XONG],
+						status: [STATUS_BILL.DA_KCS, STATUS_BILL.CHOT_KE_TOAN],
 						storageUuid: '',
-						truckUuid: '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						customerUuid: _customerUuid ? (_customerUuid as string) : '',
 						productTypeUuid: _productTypeUuid ? (_productTypeUuid as string) : '',
-						shift: !!_isShift ? Number(_isShift) : null,
+						specificationsUuid: (_specUuid as string) || '',
+						isCreateBatch: null,
+						qualityUuid: '',
+						scalesStationUuid: '',
+						transportType: null,
+						typeCheckDay: 0,
+						warehouseUuid: '',
+						shipUuid: '',
+						state: [],
 					}),
 				}),
+			onSuccess(data) {
+				if (data) {
+					setListBillSend(
+						data?.items?.map((v: any, index: number) => ({
+							...v,
+							index: index,
+							isChecked: false,
+						}))
+					);
+					setTotal(data?.pagination?.totalCount);
+				}
+			},
 			select(data) {
 				if (data) {
 					return data;
@@ -159,8 +187,25 @@ function MainBillSend({}: PropsMainBillSend) {
 
 	return (
 		<div className={styles.container}>
+			{/* <Loading loading={.isLoading} /> */}
 			<div className={styles.header}>
 				<div className={styles.main_search}>
+					{listBillSend?.some((x) => x.isChecked !== false) && (
+						<div style={{height: 40}}>
+							<Button
+								className={styles.btn}
+								rounded_2
+								maxHeight
+								danger
+								p_4_12
+								onClick={() => {
+									setListSelectBill(listBillSend?.filter((v) => v.isChecked !== false));
+								}}
+							>
+								Chỉnh sửa độ khô
+							</Button>
+						</div>
+					)}
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu và mã lô hàng' />
 					</div>
@@ -216,91 +261,126 @@ function MainBillSend({}: PropsMainBillSend) {
 			</div>
 			<div className={styles.table}>
 				<DataWrapper
-					data={queryWeightsession?.data?.items || []}
-					loading={queryWeightsession.isFetching}
+					data={listBillSend || []}
+					loading={loading}
 					noti={<Noti des='Hiện tại chưa có danh sách nhập liệu nào!' disableButton />}
 				>
 					<Table
-						data={queryWeightsession?.data?.items || []}
+						data={listBillSend || []}
+						onSetData={setListBillSend}
 						column={[
 							{
 								title: 'STT',
-								render: (data: IWeightSession, index: number) => <>{index + 1}</>,
+								checkBox: true,
+								render: (data: IBillSend, index: number) => <>{index + 1}</>,
 							},
 							{
 								title: 'Mã lô',
 								fixedLeft: true,
-								render: (data: IWeightSession) => (
-									<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
-										{data?.billUu?.code}
+								render: (data: IBillSend) => (
+									<Link href={`/phieu-can/${data?.uuid}`} className={styles.link}>
+										{data?.code}
 									</Link>
 								),
 							},
 							{
 								title: 'Số phiếu',
-								render: (data: IWeightSession) => <>{data?.code}</>,
+								render: (data: IBillSend) => <>{data?.code}</>,
 							},
 							{
-								title: 'Số xe',
-								render: (data: IWeightSession) => <>{data?.truckUu?.licensePalate || '---'}</>,
+								title: 'Tổng số phiếu',
+								render: (data: IBillSend) => <>{'---'}</>,
 							},
 							{
 								title: 'Khách hàng',
-								render: (data: IWeightSession) => <>{data?.fromUu?.name || '---'}</>,
+								render: (data: IBillSend) => <>{data?.fromUu?.name || '---'}</>,
 							},
 							{
 								title: 'Kho hàng',
-								render: (data: IWeightSession) => <>{data?.toUu?.name || '---'}</>,
+								render: (data: IBillSend) => <>{data?.toUu?.name || '---'}</>,
 							},
 							{
 								title: 'Loại hàng',
-								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
+								render: (data: IBillSend) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
 							{
 								title: 'KL hàng (Tấn)',
-								render: (data: IWeightSession) => <>{convertWeight(data?.weightReal)}</>,
+								render: (data: IBillSend) => <>{convertWeight(data?.weightTotal)}</>,
 							},
-							{
-								title: 'Quy cách',
-								render: (data: IWeightSession) => (
-									<TippyHeadless
-										maxWidth={'100%'}
-										interactive
-										onClickOutside={() => setDataSpec(null)}
-										visible={dataSpec?.uuid == data?.uuid}
-										placement='top'
-										render={(attrs) => <BoxViewSpec dataUpdateSpec={dataSpec} />}
-									>
-										<Tippy content='Xem quy cách'>
-											<p
-												className={clsx(styles.specification, {
-													[styles.active]: dataSpec?.uuid == data?.uuid,
-												})}
-												onClick={() => setDataSpec(data)}
-											>
-												{data?.specificationsUu?.name || '---'}
-											</p>
-										</Tippy>
-									</TippyHeadless>
-								),
-							},
+							// {
+							// 	title: 'Quy cách',
+							// 	render: (data: IBillSend) => (
+							// 		<TippyHeadless
+							// 			maxWidth={'100%'}
+							// 			interactive
+							// 			onClickOutside={() => setDataSpec(null)}
+							// 			visible={dataSpec?.uuid == data?.uuid}
+							// 			placement='top'
+							// 			render={(attrs) => <BoxViewSpec dataUpdateSpec={dataSpec} />}
+							// 		>
+							// 			<Tippy content='Xem quy cách'>
+							// 				<p
+							// 					className={clsx(styles.specification, {
+							// 						[styles.active]: dataSpec?.uuid == data?.uuid,
+							// 					})}
+							// 					onClick={() => setDataSpec(data)}
+							// 				>
+							// 					{data?.specificationsUu?.name || '---'}
+							// 				</p>
+							// 			</Tippy>
+							// 		</TippyHeadless>
+							// 	),
+							// },
 							{
 								title: 'Độ khô',
-								render: (data: IWeightSession) => <p className={styles.dryness}>{formatDrynessAvg(data?.dryness)} %</p>,
+								render: (data: IBillSend) => <p className={styles.dryness}>{formatDrynessAvg(data?.drynessAvg)} %</p>,
 							},
 							{
 								title: 'Thời gian gửi',
-								render: (data: IWeightSession) => <Moment date={data?.updatedTime} format='HH:mm, DD/MM/YYYY' />,
+								render: (data: IBillSend) => <Moment date={data?.updatedTime} format='HH:mm, DD/MM/YYYY' />,
+							},
+							{
+								title: 'Tác vụ',
+								fixedRight: true,
+								render: (data: IBillSend) => (
+									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+										<IconCustom
+											edit
+											icon={<Edit fontSize={20} fontWeight={600} />}
+											tooltip='Chỉnh sửa'
+											color='#2CAE39'
+											onClick={() => {
+												setListSelectBill([data]);
+											}}
+										/>
+
+										{/* <IconCustom
+											edit
+											icon={<Eye fontSize={20} fontWeight={600} />}
+											tooltip='Xem chi tiết'
+											color='#777E90'
+											href={``}
+										/> */}
+										{/* <IconCustom
+											edit
+											icon={<DocumentText fontSize={20} fontWeight={600} />}
+											tooltip='Xem chi tiết'
+											color='#777E90'
+											href={PATH.LishSuPhieuGui + `?_BillSendUuid=${data?.uuid}`}
+										/> */}
+									</div>
+								),
 							},
 						]}
 					/>
 				</DataWrapper>
 
-				{!queryWeightsession.isFetching && (
+				{/* {!queryWeightsession.isFetching && ( */}
+				{!loading && (
 					<Pagination
 						currentPage={Number(_page) || 1}
 						pageSize={Number(_pageSize) || 50}
-						total={queryWeightsession?.data?.pagination?.totalCount}
+						total={total}
 						dependencies={[
 							_pageSize,
 							_keyword,
@@ -315,6 +395,19 @@ function MainBillSend({}: PropsMainBillSend) {
 					/>
 				)}
 			</div>
+			<Popup
+				open={listSelectBill.length > 0}
+				onClose={() => {
+					setListSelectBill([]);
+				}}
+			>
+				<PopupChangeDryness
+					dataBillChangeDryness={listSelectBill}
+					onClose={() => {
+						setListSelectBill([]);
+					}}
+				/>
+			</Popup>
 		</div>
 	);
 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {PropsFormUpdateSpecWS} from './interfaces';
 import styles from './FormUpdateSpecWS.module.scss';
@@ -21,6 +21,24 @@ import {price} from '~/common/funcs/convertCoin';
 
 function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 	const queryClient = useQueryClient();
+
+	const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+	const handleKeyEnter = (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			event.preventDefault();
+			const newIndex = event.key === 'ArrowUp' ? index - 1 : index + 1;
+
+			if (inputRefs.current[newIndex]) {
+				inputRefs.current[newIndex]?.focus();
+			}
+		}
+		if (event.key === 'Enter' || event.keyCode === 13) {
+			if (index === -1) {
+				handleSubmit();
+			}
+		}
+	};
 
 	const [openWarning, setOpenWarning] = useState<boolean>(false);
 	const [form, setForm] = useState<{numberChecked: number; specificationsUuid: string; totalSample: number | string}>({
@@ -138,6 +156,10 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 		if (dataRules?.some((v) => isNaN(v?.amountSample))) {
 			return toastWarn({msg: 'Nhập giá trị cho tiêu chí quy cách!'});
 		}
+		if (dataRules?.every((v) => v?.amountSample === 0)) {
+			return toastWarn({msg: 'Nhập giá trị cho tiêu chí quy cách!'});
+		}
+
 		if (dataRules?.some((v) => v?.amountSample > price(form?.totalSample))) {
 			return setOpenWarning(true);
 		} else {
@@ -212,6 +234,8 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 						placeholder='Nhập khối lượng cân mẫu'
 						value={form.totalSample}
 						onChange={(e) => setForm((prev) => ({...prev, totalSample: e.target.value}))}
+						onKeyDown={(e) => handleKeyEnter(e, -1)}
+						ref={(el) => (inputRefs.current[-1] = el)}
 					/>
 					<div className={styles.unit}>gr</div>
 				</div>
@@ -220,14 +244,13 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 					{dataRules?.map((v, i) => {
 						const totalGr = dataRules.reduce((sum, rule) => sum + (rule.amountSample || 0), 0);
 						const percentage = price(form?.totalSample)
-							? (v?.amountSample / price(form?.totalSample)) * 100
+							? (v?.amountSample / Number(form?.totalSample)) * 100
 							: (v?.amountSample / totalGr) * 100;
 
 						return (
 							<div key={i} className={styles.item}>
 								<p>{v?.title}</p>
 								<div className={styles.value_spec}>
-									<div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : ''}</div>
 									<div className={styles.box_input}>
 										<input
 											className={styles.input}
@@ -235,9 +258,12 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 											step='any'
 											value={v?.amountSample}
 											onChange={(e) => handleChange(v, parseFloat(e.target.value))}
+											onKeyDown={(e) => handleKeyEnter(e, i)}
+											ref={(el) => (inputRefs.current[i] = el)}
 										/>
 										<div className={styles.unit}>gr</div>
 									</div>
+									<div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : ''}</div>
 								</div>
 							</div>
 						);

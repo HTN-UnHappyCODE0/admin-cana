@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {PropsBoxUpdateSpec} from './interfaces';
 import styles from './BoxUpdateSpec.module.scss';
@@ -16,6 +16,24 @@ import {convertCoin, price} from '~/common/funcs/convertCoin';
 
 function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 	const queryClient = useQueryClient();
+
+	const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+	const handleKeyEnter = (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			event.preventDefault();
+			const newIndex = event.key === 'ArrowUp' ? index - 1 : index + 1;
+
+			if (inputRefs.current[newIndex]) {
+				inputRefs.current[newIndex]?.focus();
+			}
+		}
+		if (event.key === 'Enter' || event.keyCode === 13) {
+			if (index === -1) {
+				handleSubmit();
+			}
+		}
+	};
 
 	const [openWarning, setOpenWarning] = useState<boolean>(false);
 	const [form, setForm] = useState<{totalSample: number | string}>({
@@ -45,7 +63,7 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 			}))!
 		);
 		setForm({
-			totalSample: convertCoin(dataUpdateSpec?.specStyleUu?.[0]?.totalSample || 0),
+			totalSample: dataUpdateSpec?.specStyleUu?.[0]?.totalSample?.toFixed(2) || 0,
 		});
 	}, [dataUpdateSpec]);
 
@@ -72,7 +90,7 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 					wsUuids: [dataUpdateSpec?.uuid!],
 					lstValueSpec: dataRules?.map((v) => ({
 						uuid: v?.uuid,
-						amountSample: Number(v?.amountSample),
+						amountSample: v?.amountSample ? Number(v?.amountSample) : 0,
 					})),
 					totalSample: form?.totalSample ? Number(form?.totalSample) : 0,
 				}),
@@ -129,6 +147,8 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 							placeholder='Nhập khối lượng cân mẫu'
 							value={form.totalSample}
 							onChange={(e) => setForm((prev) => ({...prev, totalSample: e.target.value}))}
+							onKeyDown={(e) => handleKeyEnter(e, -1)}
+							ref={(el) => (inputRefs.current[-1] = el)}
 						/>
 						<div className={styles.unit}>gr</div>
 					</div>
@@ -136,8 +156,9 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 						{dataRules?.map((v, i) => {
 							const totalGr = dataRules.reduce((sum, rule) => sum + (rule.amountSample || 0), 0);
 							const percentage = price(form?.totalSample)
-								? (v?.amountSample / price(form?.totalSample)) * 100
+								? (v?.amountSample / Number(form?.totalSample)) * 100
 								: (v?.amountSample / totalGr) * 100;
+							// console.log(Number(form?.totalSample));
 
 							return (
 								<div key={i} className={styles.item}>
@@ -146,17 +167,18 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 									</p>
 
 									<div className={styles.value_spec}>
-										<div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : ''}</div>
-
 										<div className={styles.box_input}>
 											<input
 												className={styles.input}
 												type='number'
 												value={v?.amountSample}
 												onChange={(e) => handleChange(v, parseFloat(e.target.value))}
+												onKeyDown={(e) => handleKeyEnter(e, i)}
+												ref={(el) => (inputRefs.current[i] = el)}
 											/>
 											<div className={styles.unit}>gr</div>
 										</div>
+										<div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : ''}</div>
 									</div>
 								</div>
 							);
