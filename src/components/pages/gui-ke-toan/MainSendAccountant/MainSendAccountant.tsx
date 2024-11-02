@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
-import TippyHeadless from '@tippyjs/react/headless';
 
-import {PropsMainDryness} from './interfaces';
-import styles from './MainDryness.module.scss';
+import {PropsMainSendAccountant} from './interfaces';
+import styles from './MainSendAccountant.module.scss';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import FilterCustom from '~/components/common/FilterCustom';
 import Search from '~/components/common/Search';
@@ -25,29 +24,24 @@ import {httpRequest} from '~/services';
 import wareServices from '~/services/wareServices';
 import {useRouter} from 'next/router';
 import weightSessionServices from '~/services/weightSessionServices';
-import {IWeightSession} from '../../quy-cach/MainSpecification/interfaces';
+
 import DataWrapper from '~/components/common/DataWrapper';
 import Pagination from '~/components/common/Pagination';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
-import Tippy from '@tippyjs/react';
-import clsx from 'clsx';
-import BoxUpdateSpec from '../BoxUpdateSpec';
+
 import {AiOutlineFileAdd} from 'react-icons/ai';
 import Button from '~/components/common/Button';
-import {Edit2} from 'iconsax-react';
 import {toastWarn} from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
 import {LuFileSymlink} from 'react-icons/lu';
-import {IoMdAdd} from 'react-icons/io';
 import Dialog from '~/components/common/Dialog';
-import Popup from '~/components/common/Popup';
-import FormUpdateDryness from '../FormUpdateDryness';
+
 import Link from 'next/link';
 import {convertWeight} from '~/common/funcs/optionConvert';
-import FormUpdateSpecWS from '../../quy-cach/FormUpdateSpecWS';
+import {IWeightSession} from '../../nhap-lieu/quy-cach/MainSpecification/interfaces';
 
-function MainDryness({}: PropsMainDryness) {
+function MainSendAccountant({}: PropsMainSendAccountant) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
@@ -56,10 +50,7 @@ function MainDryness({}: PropsMainDryness) {
 	const {_page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _status, _productTypeUuid, _specUuid, _dateFrom, _dateTo} =
 		router.query;
 
-	const [dataUpdateSpec, setDataUpdateSpec] = useState<IWeightSession | null>(null);
 	const [dataWeightSessionSubmit, setDataWeightSessionSubmit] = useState<any[]>([]);
-	const [dataWeightSessionSpec, setDataWeightSessionSpec] = useState<any[]>([]);
-	// const [openUpdateDryness, setOpenUpdateDryness] = useState<boolean>(false);
 	const [openSentData, setOpenSentData] = useState<boolean>(false);
 
 	const [weightSessions, setWeightSessions] = useState<any[]>([]);
@@ -131,7 +122,7 @@ function MainDryness({}: PropsMainDryness) {
 
 	useEffect(() => {
 		router.push({
-			pathname: '/nhap-lieu/do-kho',
+			pathname: '/gui-ke-toan',
 			query: {
 				...router.query,
 				_status: STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
@@ -198,28 +189,6 @@ function MainDryness({}: PropsMainDryness) {
 		}
 	);
 
-	const funcUpdateDrynessWeightSession = useMutation({
-		mutationFn: (body: {uuid: string; dryness: number}) =>
-			httpRequest({
-				showMessageFailed: true,
-				showMessageSuccess: true,
-				msgSuccess: 'Cập nhật độ khô thành công!',
-				http: weightSessionServices.updateDrynessWeightSession({
-					wsUuids: [body.uuid],
-					dryness: body.dryness,
-				}),
-			}),
-		onSuccess(data) {
-			if (data) {
-				queryClient.invalidateQueries([QUERY_KEY.table_nhap_lieu_do_kho]);
-			}
-		},
-		onError(error) {
-			console.log({error});
-			return;
-		},
-	});
-
 	const funcUpdateKCSWeightSession = useMutation({
 		mutationFn: () =>
 			httpRequest({
@@ -234,6 +203,7 @@ function MainDryness({}: PropsMainDryness) {
 			if (data) {
 				queryClient.invalidateQueries([QUERY_KEY.table_nhap_lieu_do_kho]);
 				setDataWeightSessionSubmit([]);
+				setOpenSentData(false);
 			}
 		},
 		onError(error) {
@@ -250,35 +220,6 @@ function MainDryness({}: PropsMainDryness) {
 		}
 	}, [weightSessions]);
 
-	const handleDrynessChange = (uuid: string, value: number) => {
-		setWeightSessions((prevSessions) =>
-			prevSessions.map((session) => (session.uuid === uuid ? {...session, dryness: value} : session))
-		);
-	};
-
-	const handleKeyEnter = (uuid: string, value: number, event: any, index: number) => {
-		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-			event.preventDefault();
-
-			const newIndex = event.key === 'ArrowUp' ? index - 1 : index + 1;
-
-			if (inputRefs.current[newIndex]?.focus) {
-				inputRefs.current[newIndex]?.focus();
-			}
-		}
-
-		if (event.key === 'Enter' || event.keyCode === 13) {
-			if (value < 0 || value > 100) {
-				return toastWarn({msg: 'Giá trị độ khô không hợp lệ!'});
-			}
-
-			return funcUpdateDrynessWeightSession.mutate({
-				uuid: uuid,
-				dryness: value,
-			});
-		}
-	};
-
 	const handleSubmitSentData = async () => {
 		if (dataWeightSessionSubmit.some((v) => v.dryness == null)) {
 			return toastWarn({msg: 'Nhập độ khô trước khi gửi kể toán!'});
@@ -287,55 +228,12 @@ function MainDryness({}: PropsMainDryness) {
 		return funcUpdateKCSWeightSession.mutate();
 	};
 
-	const handleUpdateAll = () => {
-		const arr = weightSessions?.filter((v) => v.isChecked !== false);
-
-		if (!arr?.every((obj: any) => obj?.specificationsUu?.uuid === arr[0]?.specificationsUu?.uuid)) {
-			return toastWarn({msg: 'Chỉ chọn được các lô có cùng quy cách!'});
-		} else {
-			setDataWeightSessionSpec(arr);
-		}
-	};
-
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcUpdateDrynessWeightSession.isLoading || funcUpdateKCSWeightSession.isLoading} />
+			<Loading loading={funcUpdateKCSWeightSession.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{weightSessions?.some((x) => x.isChecked !== false) && (
-						<div style={{height: 40}}>
-							<Button
-								className={styles.btn}
-								rounded_2
-								maxHeight
-								primary
-								p_4_12
-								icon={<IoMdAdd size={18} />}
-								onClick={() => {
-									setDataWeightSessionSubmit(weightSessions?.filter((v) => v.isChecked !== false));
-								}}
-							>
-								Thêm độ khô
-							</Button>
-						</div>
-					)}
-					{weightSessions?.some((x) => x.isChecked !== false) && (
-						<div style={{height: 40}}>
-							<Button
-								className={styles.btn}
-								rounded_2
-								maxHeight
-								green
-								p_4_12
-								icon={<AiOutlineFileAdd size={20} />}
-								onClick={handleUpdateAll}
-							>
-								Cập nhật quy cách
-							</Button>
-						</div>
-					)}
-
-					{/* {weightSessions?.some((x) => x.isChecked !== false) && (
 						<div style={{height: 40}}>
 							<Button
 								className={styles.btn}
@@ -352,7 +250,7 @@ function MainDryness({}: PropsMainDryness) {
 								Gửi kế toán
 							</Button>
 						</div>
-					)} */}
+					)}
 
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu và mã lô hàng' />
@@ -459,23 +357,7 @@ function MainDryness({}: PropsMainDryness) {
 							},
 							{
 								title: 'Độ khô',
-								render: (data: IWeightSession, index: number) => (
-									<div className={styles.valueDryness}>
-										<input
-											ref={(el) => (inputRefs.current[index] = el)}
-											tabIndex={index + 1}
-											className={styles.input}
-											type='number'
-											step='0.01'
-											value={data?.dryness!}
-											onChange={(e) => handleDrynessChange(data.uuid, parseFloat(e.target.value))}
-											onKeyDown={(e) => handleKeyEnter(data.uuid, Number(data?.dryness), e, index)}
-										/>
-										<div className={styles.iconEdit}>
-											<Edit2 size={16} />
-										</div>
-									</div>
-								),
+								render: (data: IWeightSession, index: number) => <>{data?.dryness || '---'}</>,
 							},
 							{
 								title: 'Khách hàng',
@@ -495,57 +377,34 @@ function MainDryness({}: PropsMainDryness) {
 							},
 							{
 								title: 'Quy cách',
-								render: (data: IWeightSession) => (
-									<TippyHeadless
-										zIndex={100}
-										maxWidth={'100%'}
-										interactive
-										// onClickOutside={() => setDataUpdateSpec(null)}
-										visible={dataUpdateSpec?.uuid == data?.uuid}
-										placement='bottom-start'
-										render={(attrs) => (
-											<BoxUpdateSpec dataUpdateSpec={dataUpdateSpec} onClose={() => setDataUpdateSpec(null)} />
-										)}
-									>
-										<Tippy content='CN quy cách'>
-											<p
-												className={clsx(styles.specification, {
-													[styles.active]: dataUpdateSpec?.uuid == data?.uuid,
-												})}
-												onClick={() => setDataUpdateSpec(data)}
-											>
-												{data?.specificationsUu?.name || '---'}
-											</p>
-										</Tippy>
-									</TippyHeadless>
-								),
+								render: (data: IWeightSession) => <p>{data?.specificationsUu?.name || '---'}</p>,
 							},
 
-							// {
-							// 	title: 'Tác vụ',
-							// 	fixedRight: true,
-							// 	render: (data: IWeightSession) => (
-							// 		<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-							// 			<div>
-							// 				<Button
-							// 					className={styles.btn}
-							// 					rounded_2
-							// 					maxHeight
-							// 					primary
-							// 					p_4_12
-							// 					icon={<AiOutlineFileAdd size={20} />}
-							// 					disable={data?.dryness == null}
-							// 					onClick={() => {
-							// 						setOpenSentData(true);
-							// 						setDataWeightSessionSubmit([data]);
-							// 					}}
-							// 				>
-							// 					Gửi kế toán
-							// 				</Button>
-							// 			</div>
-							// 		</div>
-							// 	),
-							// },
+							{
+								title: 'Tác vụ',
+								fixedRight: true,
+								render: (data: IWeightSession) => (
+									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+										<div>
+											<Button
+												className={styles.btn}
+												rounded_2
+												maxHeight
+												primary
+												p_4_12
+												icon={<AiOutlineFileAdd size={20} />}
+												disable={data?.dryness == null}
+												onClick={() => {
+													setOpenSentData(true);
+													setDataWeightSessionSubmit([data]);
+												}}
+											>
+												Gửi kế toán
+											</Button>
+										</div>
+									</div>
+								),
+							},
 						]}
 					/>
 				</DataWrapper>
@@ -570,20 +429,6 @@ function MainDryness({}: PropsMainDryness) {
 				)}
 			</div>
 
-			<Popup
-				open={dataWeightSessionSubmit.length > 0}
-				onClose={() => {
-					setDataWeightSessionSubmit([]);
-				}}
-			>
-				<FormUpdateDryness
-					dataUpdateDryness={dataWeightSessionSubmit}
-					onClose={() => {
-						setDataWeightSessionSubmit([]);
-					}}
-				/>
-			</Popup>
-
 			<Dialog
 				open={openSentData}
 				onClose={() => {
@@ -594,12 +439,8 @@ function MainDryness({}: PropsMainDryness) {
 				note={`Đang chọn ${dataWeightSessionSubmit?.length} phiếu đã có độ khô! Bạn có chắc chắn muốn gửi đi ?`}
 				onSubmit={handleSubmitSentData}
 			/>
-
-			<Popup open={dataWeightSessionSpec.length > 0} onClose={() => setDataWeightSessionSpec([])}>
-				<FormUpdateSpecWS dataUpdateSpecWS={dataWeightSessionSpec} onClose={() => setDataWeightSessionSpec([])} />
-			</Popup>
 		</div>
 	);
 }
 
-export default MainDryness;
+export default MainSendAccountant;

@@ -37,6 +37,9 @@ export enum PATH {
 	CauCan = '/quan-ly-can/cau-can',
 	ThemTramCan = '/quan-ly-can/tram-can/them-moi',
 
+	// Gửi kế toán
+	GuiKeToan = '/gui-ke-toan',
+
 	// RFID
 	RFID = '/rfid',
 
