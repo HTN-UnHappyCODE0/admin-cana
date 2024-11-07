@@ -164,6 +164,13 @@ export enum PATH {
 	ThongKeKeToanTaiChinh = '/thong-ke-log/ke-toan-tai-chinh',
 	ThongKeKhac = '/thong-ke-log/thong-ke-khac',
 	TinhHuongBatThuong = '/thong-ke-log/tinh-huong-bat-thuong',
+
+	// xuất/nhập ngoài hệ thống
+	NhapXuatNgoai = '/nhap-xuat-ngoai',
+	NhapXuatNgoaiTatCa = '/nhap-xuat-ngoai/tat-ca',
+	NhapXuatNgoaiNhapHang = '/nhap-xuat-ngoai/nhap-hang',
+	NhapXuatNgoaiXuatHang = '/nhap-xuat-ngoai/xuat-hang',
+	NhapXuatNgoaiXuatThang = '/nhap-xuat-ngoai/xuat-thang',
 }
 
 export const Menu: {
@@ -202,6 +209,7 @@ export const Menu: {
 		group: [
 			{title: 'Kho hàng', icon: icons.danhsachkho, path: PATH.KhoHangThongKe, pathActive: PATH.KhoHang},
 			{title: 'Hàng hóa', icon: icons.hanghoa, path: PATH.HangHoaLoaiGo, pathActive: PATH.HangHoa},
+			{title: 'Nhập/xuất ngoài hệ thống', icon: icons.nhapxuatngoai, path: PATH.NhapXuatNgoaiTatCa, pathActive: PATH.NhapXuatNgoai},
 			{title: 'Trạm cân', icon: icons.tramcan, path: PATH.TramCan, pathActive: PATH.QuanLyCan},
 			{title: 'RFID', icon: icons.icon_rfid, path: PATH.RFID, pathActive: PATH.RFID},
 			{title: 'Xe hàng', icon: icons.xehang, path: PATH.XeHang, pathActive: PATH.XeHang},
