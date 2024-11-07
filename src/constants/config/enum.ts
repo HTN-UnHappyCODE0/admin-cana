@@ -236,6 +236,7 @@ export enum TYPE_SIFT {
 export enum TYPE_BATCH {
 	CAN_LE,
 	CAN_LO,
+	KHONG_CAN = 3,
 }
 
 export enum TYPE_SCALES {
