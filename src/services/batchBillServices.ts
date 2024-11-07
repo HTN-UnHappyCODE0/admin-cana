@@ -276,10 +276,9 @@ const batchBillServices = {
 			lstTruckAddUuid: string[];
 			lstTruckRemoveUuid: string[];
 			reason?: string;
-			scaleStationUuid: string;
+			scaleStationUuid: string | null;
 			portname: string;
 			storageTemporaryUuid?: string;
-
 			timeStart: string | null;
 			timeEnd: string | null;
 			descriptionWs: string;

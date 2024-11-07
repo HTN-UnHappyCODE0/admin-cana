@@ -11,6 +11,9 @@ export interface IFormCreateImport {
 	weightIntent: number;
 	description: string;
 	timeStart: string | Date;
+	timeEnd: string | Date;
+	transportType: number;
+	documentId: string;
 }
 
 export interface IDetailCustomer {
