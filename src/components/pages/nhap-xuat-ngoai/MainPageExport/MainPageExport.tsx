@@ -208,7 +208,7 @@ function MainPageExport({}: PropsMainPageExport) {
 								render: (data: any) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
-										{data?.isBatch == TYPE_BATCH.CAN_LO && (
+										{/* {data?.isBatch == TYPE_BATCH.CAN_LO && (
 											<p style={{fontWeight: 600, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
@@ -217,7 +217,7 @@ function MainPageExport({}: PropsMainPageExport) {
 											<p style={{fontWeight: 600, color: '#3772FF'}}>
 												{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
 											</p>
-										)}
+										)} */}
 									</>
 								),
 							},
@@ -243,9 +243,9 @@ function MainPageExport({}: PropsMainPageExport) {
 								render: (data: any) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										<p style={{fontWeight: 600, color: '#3772FF'}}>
+										{/* <p style={{fontWeight: 600, color: '#3772FF'}}>
 											{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
-										</p>
+										</p> */}
 									</>
 								),
 							},
