@@ -160,7 +160,11 @@ function MainPageImport({}: PropsMainPageImport) {
 			</div>
 
 			<div className={styles.table}>
-				<DataWrapper data={ListBill?.data?.items || []} noti={<Noti des='Hiện tại chưa có dữ liệu nào!' disableButton />}>
+				<DataWrapper
+					loading={ListBill?.isLoading}
+					data={ListBill?.data?.items || []}
+					noti={<Noti des='Hiện tại chưa có dữ liệu nào!' disableButton />}
+				>
 					<Table
 						data={ListBill?.data?.items || []}
 						column={[
