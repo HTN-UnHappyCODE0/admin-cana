@@ -265,7 +265,7 @@ function MainPageAll({}: PropsMainPageAll) {
 								render: (data: any) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
-										{data?.isBatch == TYPE_BATCH.CAN_LO && (
+										{/* {data?.isBatch == TYPE_BATCH.CAN_LO && (
 											<p style={{fontWeight: 600, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
@@ -274,7 +274,7 @@ function MainPageAll({}: PropsMainPageAll) {
 											<p style={{fontWeight: 600, color: '#3772FF'}}>
 												{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
 											</p>
-										)}
+										)} */}
 									</>
 								),
 							},
@@ -300,9 +300,9 @@ function MainPageAll({}: PropsMainPageAll) {
 								render: (data: any) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										<p style={{fontWeight: 600, color: '#3772FF'}}>
+										{/* <p style={{fontWeight: 600, color: '#3772FF'}}>
 											{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
-										</p>
+										</p> */}
 									</>
 								),
 							},
@@ -334,7 +334,7 @@ function MainPageAll({}: PropsMainPageAll) {
 											icon={<Eye size={22} fontWeight={600} />}
 											tooltip='Xem chi tiết'
 											color='#777E90'
-											href={`/nhap-xuat-ngoai/${data.uuid}`}
+											href={`/phieu-can/${data.uuid}`}
 										/>
 									</div>
 								),
