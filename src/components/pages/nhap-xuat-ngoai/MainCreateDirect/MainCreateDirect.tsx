@@ -199,24 +199,23 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 		const timeStart = new Date(form.timeStart!);
 		const timeEnd = new Date(form.timeEnd!);
 		const imgs = images?.map((v: any) => v?.file);
+		if (!form.fromUuid) {
+			return toastWarn({msg: 'Vui lòng chọn nhà cung cấp!'});
+		}
 
 		if (!form.toUuid) {
 			return toastWarn({msg: 'Vui lòng chọn khách hàng xuất!'});
 		}
-		if (!form.warehouseUuid) {
-			return toastWarn({msg: 'Vui lòng chọn kho!'});
-		}
-		if (!form.fromUuid) {
-			return toastWarn({msg: 'Vui lòng chọn bãi!'});
-		}
 		if (!form.productTypeUuid) {
 			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
 		}
-		if (!form.specificationsUuid) {
-			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
-		}
+
 		if (!form.weightIntent) {
 			return toastWarn({msg: 'Vui lòng nhập khối lượng cân'});
+		}
+
+		if (!form.specificationsUuid) {
+			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
 		}
 		if (timeStart > timeEnd) {
 			return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
@@ -248,7 +247,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 		<div className={styles.container}>
 			<Loading loading={loading || funcCreateBatchBillNoScale.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
-				<div className={styles.Header}>
+				<div className={styles.header}>
 					<div className={styles.left}>
 						<h4>Tạo phiếu xuất thẳng</h4>
 						<p>Điền đầy đủ các thông tin cân trực tiếp</p>
@@ -268,7 +267,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 				</div>
 
 				<div className={styles.from}>
-					<div className={clsx('col_2')}>
+					<div className={clsx('mt', 'col_2')}>
 						<div className={styles.item}>
 							<label className={styles.label}>
 								Hình thức vận chuyển <span style={{color: 'red'}}>*</span>
@@ -347,7 +346,8 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 								readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
 								label={
 									<span>
-										Từ tàu <span style={{color: 'red'}}>*</span>
+										Từ tàu
+										<span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -406,7 +406,8 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 								readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
 								label={
 									<span>
-										Đến tàu <span style={{color: 'red'}}>*</span>
+										Đến tàu
+										<span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -507,18 +508,24 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 							value={form.weightIntent || ''}
 							type='text'
 							isMoney
-							unit='TẤN'
+							unit='KG'
 							placeholder='Nhập khối lượng cân'
-							label={<span>Khối lượng cân</span>}
+							label={
+								<span>
+									Khối lượng cân <span style={{color: 'red'}}>*</span>
+								</span>
+							}
 						/>
-						<Input
-							name='documentId'
-							value={form.documentId || ''}
-							type='text'
-							max={255}
-							label={<span>Chứng từ</span>}
-							placeholder='Nhập chứng từ'
-						/>
+						<div>
+							<Input
+								name='documentId'
+								value={form.documentId || ''}
+								type='text'
+								max={255}
+								label={<span>Chứng từ </span>}
+								placeholder='Nhập chứng từ'
+							/>
+						</div>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
