@@ -33,25 +33,30 @@ import batchBillServices from '~/services/batchBillServices';
 import {price} from '~/common/funcs/convertCoin';
 import moment from 'moment';
 import Loading from '~/components/common/Loading';
+import storageServices from '~/services/storageServices';
+import warehouseServices from '~/services/warehouseServices';
 
 function MainCreateDirect({}: PropsMainCreateDirect) {
 	const router = useRouter();
-	const [loading, setLoading] = useState<boolean>(false);
+
 	const [images, setImages] = useState<any[]>([]);
+	const [loading, setLoading] = useState<boolean>(false);
+
 	const [form, setForm] = useState<IFormCreateDirect>({
 		shipUuid: '',
-		toUuid: '',
-		productTypeUuid: '',
-		fromUuid: '',
-		specificationsUuid: '',
-		warehouseUuid: '',
-		weightIntent: 0,
-		timeEnd: '',
-		timeStart: '',
-		description: '',
-		transportType: TYPE_TRANSPORT.DUONG_THUY,
-		documentId: '',
 		shipOutUuid: '',
+		transportType: TYPE_TRANSPORT.DUONG_THUY,
+		weightIntent: 0,
+		specificationsUuid: '',
+		productTypeUuid: '',
+		documentId: '',
+		description: '',
+		fromUuid: '',
+		toUuid: '',
+		warehouseUuid: '',
+		storageTemporaryUuid: '',
+		timeStart: '',
+		timeEnd: '',
 	});
 
 	const listCustomerFrom = useQuery([QUERY_KEY.dropdown_khach_hang_nhap], {
@@ -95,6 +100,60 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 		select(data) {
 			return data;
 		},
+	});
+
+	const listWarehouse = useQuery([QUERY_KEY.dropdown_kho_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: warehouseServices.listWarehouse({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					customerUuid: '',
+					timeEnd: null,
+					timeStart: null,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listStorage = useQuery([QUERY_KEY.dropdown_bai, form.warehouseUuid, form.specificationsUuid, form.productTypeUuid], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					qualityUuid: '',
+					specificationsUuid: form.specificationsUuid,
+					warehouseUuid: form.warehouseUuid,
+					productUuid: form.productTypeUuid,
+				}),
+			}),
+		onSuccess(data) {
+			if (data) {
+				setForm((prev) => ({
+					...prev,
+					storageTemporaryUuid: data?.[0]?.uuid || '',
+				}));
+			}
+		},
+		select(data) {
+			return data;
+		},
+		enabled: !!form.warehouseUuid && !!form.productTypeUuid && !!form.specificationsUuid,
 	});
 
 	const listCustomerTo = useQuery([QUERY_KEY.dropdown_khach_hang_xuat], {
@@ -154,8 +213,8 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 				msgSuccess: 'Thêm mới thành công!',
 				http: batchBillServices.upsertBillNoScales({
 					batchUuid: '',
-					shipUuid: '',
-					shipOutUuid: '',
+					shipUuid: form?.shipUuid,
+					shipOutUuid: form?.shipOutUuid,
 					transportType: form?.transportType,
 					timeIntend: null,
 					weightIntent: price(form?.weightIntent),
@@ -164,17 +223,17 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 					isBatch: TYPE_BATCH.KHONG_CAN,
 					isCreateBatch: 1,
 					isSift: TYPE_SIFT.KHONG_CAN_SANG,
-					scalesType: TYPE_SCALES.CAN_XUAT,
+					scalesType: TYPE_SCALES.CAN_TRUC_TIEP,
 					fromUuid: form?.fromUuid,
 					toUuid: form?.toUuid,
-					documentId: '',
+					documentId: form.documentId,
 					reason: '',
 					description: form.description,
 					isPrint: 0,
 					specificationsUuid: form?.specificationsUuid,
 					productTypeUuid: form.productTypeUuid,
 					scaleStationUuid: '',
-					storageTemporaryUuid: '',
+					storageTemporaryUuid: form.storageTemporaryUuid,
 					portname: '',
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
@@ -199,21 +258,19 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 		const timeStart = new Date(form.timeStart!);
 		const timeEnd = new Date(form.timeEnd!);
 		const imgs = images?.map((v: any) => v?.file);
+
 		if (!form.fromUuid) {
 			return toastWarn({msg: 'Vui lòng chọn nhà cung cấp!'});
 		}
-
 		if (!form.toUuid) {
 			return toastWarn({msg: 'Vui lòng chọn khách hàng xuất!'});
 		}
 		if (!form.productTypeUuid) {
 			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
 		}
-
 		if (!form.weightIntent) {
 			return toastWarn({msg: 'Vui lòng nhập khối lượng cân'});
 		}
-
 		if (!form.specificationsUuid) {
 			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
 		}
@@ -239,8 +296,6 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 				paths: [],
 			});
 		}
-
-		// return funcCreateBatchBillNoScale.mutate();
 	};
 
 	return (
@@ -273,7 +328,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 								Hình thức vận chuyển <span style={{color: 'red'}}>*</span>
 							</label>
 							<div className={styles.group_radio}>
-								<div className={styles.item_radio}>
+								{/* <div className={styles.item_radio}>
 									<input
 										type='radio'
 										id='van_chuyen_bo'
@@ -288,7 +343,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 										}
 									/>
 									<label htmlFor='van_chuyen_bo'>Đường bộ</label>
-								</div>
+								</div> */}
 								<div className={styles.item_radio}>
 									<input
 										type='radio'
@@ -343,7 +398,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 								name='shipUuid'
 								placeholder='Chọn tàu'
 								value={form?.shipUuid}
-								readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+								// readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
 								label={
 									<span>
 										Từ tàu
@@ -373,66 +428,6 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
-							name='toUuid'
-							placeholder='Chọn khách hàng xuất'
-							value={form?.toUuid}
-							label={
-								<span>
-									Khách hàng xuất<span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
-							{listCustomerTo?.data?.map((v: any) => (
-								<Option
-									key={v?.uuid}
-									value={v?.uuid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											toUuid: v?.uuid,
-											isSift: v?.isSift,
-										}))
-									}
-								/>
-							))}
-						</Select>
-						<div>
-							<Select
-								isSearch
-								name='shipOutUuid'
-								placeholder='Chọn tàu'
-								value={form?.shipOutUuid}
-								readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
-								label={
-									<span>
-										Đến tàu
-										<span style={{color: 'red'}}>*</span>
-									</span>
-								}
-							>
-								{listShip?.data
-									?.filter((x: any) => x?.uuid != form.shipUuid)
-									?.map((v: any) => (
-										<Option
-											key={v?.uuid}
-											value={v?.uuid}
-											title={v?.licensePalate}
-											onClick={() =>
-												setForm((prev) => ({
-													...prev,
-													shipOutUuid: v?.uuid,
-												}))
-											}
-										/>
-									))}
-							</Select>
-						</div>
-					</div>
-
-					<div className={clsx('mt', 'col_2')}>
-						<Select
-							isSearch
 							name='productTypeUuid'
 							placeholder='Chọn loại hàng'
 							value={form?.productTypeUuid}
@@ -442,19 +437,6 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 								</span>
 							}
 						>
-							{/* {[...new Map(listPriceTagInfo?.data?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()]?.map((v: any) => (
-								<Option
-									key={v?.uuid}
-									value={v?.productTypeUu?.uuid}
-									title={v?.productTypeUu?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											productTypeUuid: v?.productTypeUu?.uuid,
-										}))
-									}
-								/>
-							))} */}
 							{[...new Map(detailCustomer?.customerSpec?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()]?.map(
 								(v: any) => (
 									<Option
@@ -498,6 +480,124 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 										/>
 									)
 								)}
+							</Select>
+						</div>
+					</div>
+
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='warehouseUuid'
+							placeholder='Chọn kho hàng'
+							value={form?.warehouseUuid}
+							label={
+								<span>
+									Kho hàng <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listWarehouse?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.name}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											warehouseUuid: v?.uuid,
+											storageTemporaryUuid: '',
+											scaleStationUuid: v?.scaleStationUu?.uuid || '',
+										}))
+									}
+								/>
+							))}
+						</Select>
+						<div>
+							<Select
+								isSearch
+								name='storageTemporaryUuid'
+								placeholder='Chọn bãi trung chuyển'
+								value={form?.storageTemporaryUuid}
+								readOnly={!form.warehouseUuid || !form.productTypeUuid || !form.specificationsUuid}
+								label={
+									<span>
+										Bãi trung chuyển <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								{listStorage?.data?.map((v: any) => (
+									<Option
+										key={v?.uuid}
+										value={v?.uuid}
+										title={v?.name}
+										onClick={() =>
+											setForm((prev: any) => ({
+												...prev,
+												storageTemporaryUuid: v?.uuid,
+											}))
+										}
+									/>
+								))}
+							</Select>
+						</div>
+					</div>
+
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='toUuid'
+							placeholder='Chọn khách hàng xuất'
+							value={form?.toUuid}
+							label={
+								<span>
+									Khách hàng xuất<span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listCustomerTo?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.name}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											toUuid: v?.uuid,
+											isSift: v?.isSift,
+										}))
+									}
+								/>
+							))}
+						</Select>
+						<div>
+							<Select
+								isSearch
+								name='shipOutUuid'
+								placeholder='Chọn tàu'
+								value={form?.shipOutUuid}
+								// readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+								label={
+									<span>
+										Đến tàu
+										<span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								{listShip?.data
+									?.filter((x: any) => x?.uuid != form.shipUuid)
+									?.map((v: any) => (
+										<Option
+											key={v?.uuid}
+											value={v?.uuid}
+											title={v?.licensePalate}
+											onClick={() =>
+												setForm((prev) => ({
+													...prev,
+													shipOutUuid: v?.uuid,
+												}))
+											}
+										/>
+									))}
 							</Select>
 						</div>
 					</div>
