@@ -45,6 +45,7 @@ import {convertCoin} from '~/common/funcs/convertCoin';
 import {convertWeight} from '~/common/funcs/optionConvert';
 import storageServices from '~/services/storageServices';
 import StateActive from '~/components/common/StateActive';
+import scalesStationServices from '~/services/scalesStationServices';
 
 function MainPageBillAll({}: PropsMainPageBillAll) {
 	const router = useRouter();
@@ -52,8 +53,19 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 
 	const [uuidPlay, setUuidPlay] = useState<string>('');
 
-	const {_page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _shipUuid, _status, _dateFrom, _dateTo, _storageUuid} =
-		router.query;
+	const {
+		_page,
+		_pageSize,
+		_keyword,
+		_customerUuid,
+		_productTypeUuid,
+		_shipUuid,
+		_status,
+		_dateFrom,
+		_dateTo,
+		_scalesStationUuid,
+		_storageUuid,
+	} = router.query;
 
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const [billUuid, setBilldUuid] = useState<string | null>(null);
@@ -126,6 +138,27 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 			return data;
 		},
 	});
+
+	const listScalesStation = useQuery([QUERY_KEY.table_tram_can], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: scalesStationServices.listScalesStation({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					companyUuid: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const listShip = useQuery([QUERY_KEY.dropdown_ma_tau], {
 		queryFn: () =>
 			httpRequest({
@@ -158,6 +191,7 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 			_dateFrom,
 			_dateTo,
 			_storageUuid,
+			_scalesStationUuid,
 		],
 		{
 			queryFn: () =>
@@ -184,7 +218,7 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 						transportType: null,
 						shipUuid: (_shipUuid as string) || '',
 						typeCheckDay: 0,
-						scalesStationUuid: '',
+						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
 					}),
 				}),
@@ -295,6 +329,15 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 								name: 'Đã hoàn thành',
 							},
 						]}
+					/>
+					<FilterCustom
+						isSearch
+						name='Trạm cân'
+						query='_scalesStationUuid'
+						listFilter={listScalesStation?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
 					/>
 
 					<FilterCustom
@@ -499,45 +542,45 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 							{
 								title: 'Trạng thái',
 								render: (data: IDataBill) => (
-									// <>
-									// 	{data?.status == STATUS_BILL.DA_HUY && <span style={{color: '#D94212'}}>Đã hủy bỏ</span>}
-									// 	{data?.status == STATUS_BILL.CHUA_CAN && <span style={{color: '#3772FF'}}>Chưa xử lý</span>}
-									// 	{(data?.status == STATUS_BILL.DANG_CAN || data?.status == STATUS_BILL.TAM_DUNG) && (
-									// 		<span style={{color: '#9757D7'}}>Đang xử lý</span>
-									// 	)}
-									// 	{data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS && (
-									// 		<span style={{color: '#2CAE39'}}>Đã hoàn thành</span>
-									// 	)}
-									// </>
-									<StateActive
-										stateActive={data?.status}
-										listState={[
-											{
-												state: STATUS_BILL.DANG_CAN || STATUS_BILL.TAM_DUNG,
-												text: 'Đang xử lý',
-												textColor: '#9757D7',
-												backgroundColor: 'rgba(151, 87, 215, 0.10)',
-											},
-											{
-												state: STATUS_BILL.DA_HUY,
-												text: 'Đã hủy bỏ',
-												textColor: '#F95B5B',
-												backgroundColor: 'rgba(249, 91, 91, 0.10)',
-											},
-											{
-												state: STATUS_BILL.CHUA_CAN,
-												text: 'Chưa xử lý',
-												textColor: '#2D74FF',
-												backgroundColor: 'rgba(45, 116, 255, 0.10)',
-											},
-											{
-												state: STATUS_BILL.DA_CAN_CHUA_KCS || STATUS_BILL.DA_KCS || STATUS_BILL.CHOT_KE_TOAN,
-												text: 'Đã hoàn thành',
-												textColor: '#41CD4F',
-												backgroundColor: 'rgba(65, 205, 79, 0.1)',
-											},
-										]}
-									/>
+									<>
+										{data?.status == STATUS_BILL.DA_HUY && <span style={{color: '#D94212'}}>Đã hủy bỏ</span>}
+										{data?.status == STATUS_BILL.CHUA_CAN && <span style={{color: '#3772FF'}}>Chưa xử lý</span>}
+										{(data?.status == STATUS_BILL.DANG_CAN || data?.status == STATUS_BILL.TAM_DUNG) && (
+											<span style={{color: '#9757D7'}}>Đang xử lý</span>
+										)}
+										{data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS && (
+											<span style={{color: '#2CAE39'}}>Đã hoàn thành</span>
+										)}
+									</>
+									// <StateActive
+									// 	stateActive={data?.status}
+									// 	listState={[
+									// 		{
+									// 			state: STATUS_BILL.DANG_CAN || STATUS_BILL.TAM_DUNG,
+									// 			text: 'Đang xử lý',
+									// 			textColor: '#9757D7',
+									// 			backgroundColor: 'rgba(151, 87, 215, 0.10)',
+									// 		},
+									// 		{
+									// 			state: STATUS_BILL.DA_HUY,
+									// 			text: 'Đã hủy bỏ',
+									// 			textColor: '#F95B5B',
+									// 			backgroundColor: 'rgba(249, 91, 91, 0.10)',
+									// 		},
+									// 		{
+									// 			state: STATUS_BILL.CHUA_CAN,
+									// 			text: 'Chưa xử lý',
+									// 			textColor: '#2D74FF',
+									// 			backgroundColor: 'rgba(45, 116, 255, 0.10)',
+									// 		},
+									// 		{
+									// 			state: STATUS_BILL.DA_CAN_CHUA_KCS || STATUS_BILL.DA_KCS || STATUS_BILL.CHOT_KE_TOAN,
+									// 			text: 'Đã hoàn thành',
+									// 			textColor: '#41CD4F',
+									// 			backgroundColor: 'rgba(65, 205, 79, 0.1)',
+									// 		},
+									// 	]}
+									// />
 								),
 							},
 							{
@@ -600,6 +643,7 @@ function MainPageBillAll({}: PropsMainPageBillAll) {
 						_dateFrom,
 						_dateTo,
 						_storageUuid,
+						_scalesStationUuid,
 					]}
 				/>
 			</div>

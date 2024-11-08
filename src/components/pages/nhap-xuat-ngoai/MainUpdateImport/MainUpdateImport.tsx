@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {PropsMainUpdateImport} from './interfaces';
+import {IFormUpdateImport, PropsMainUpdateImport} from './interfaces';
 import styles from './MainUpdateImport.module.scss';
 import TextArea from '~/components/common/Form/components/TextArea';
 import Form, {FormContext, Input} from '~/components/common/Form';
@@ -30,20 +30,22 @@ import storageServices from '~/services/storageServices';
 import warehouseServices from '~/services/warehouseServices';
 import DatePicker from '~/components/common/DatePicker';
 import batchBillServices from '~/services/batchBillServices';
-import {price} from '~/common/funcs/convertCoin';
+import {convertCoin, price} from '~/common/funcs/convertCoin';
 import moment from 'moment';
 import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import {toastWarn} from '~/common/funcs/toast';
 import uploadImageService from '~/services/uploadService';
 import {timeSubmit} from '~/common/funcs/optionConvert';
-import {IFormCreateImport} from '../MainCreateImport/interfaces';
+import {IDetailBatchBill} from '../../lenh-can/MainDetailBill/interfaces';
 
 function MainUpdateImport({}: PropsMainUpdateImport) {
 	const router = useRouter();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [images, setImages] = useState<any[]>([]);
 
-	const [form, setForm] = useState<IFormCreateImport>({
+	const {_id} = router.query;
+
+	const [form, setForm] = useState<IFormUpdateImport>({
 		weightIntent: 0,
 		specificationsUuid: '',
 		warehouseUuid: '',
@@ -55,6 +57,44 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
 		timeStart: new Date(),
 		timeEnd: new Date(),
+		batchUuid: '',
+		billUuid: '',
+	});
+
+	const {data: detailBatchBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
+		queryFn: () =>
+			httpRequest({
+				http: batchBillServices.detailBatchbill({
+					uuid: _id as string,
+				}),
+			}),
+		onSuccess(data) {
+			if (data) {
+				setForm({
+					transportType: data?.transportType,
+					weightIntent: convertCoin(data?.batchsUu?.weightIntent),
+					specificationsUuid: data?.specificationsUu?.uuid,
+					warehouseUuid: data?.toUu?.parentUu?.uuid || '',
+					productTypeUuid: data?.productTypeUu?.uuid,
+					documentId: data?.documentId || '',
+					description: data?.description,
+					fromUuid: data?.fromUu?.uuid,
+					toUuid: data?.toUu?.uuid,
+					timeStart: data?.timeStart,
+					timeEnd: data?.timeEnd,
+					batchUuid: data?.batchsUu?.uuid,
+					billUuid: data?.uuid,
+				});
+				setImages(
+					data?.path?.map((v: any) => ({
+						file: null,
+						img: v,
+						path: `${process.env.NEXT_PUBLIC_IMAGE}/${v}`,
+					})) || []
+				);
+			}
+		},
+		enabled: !!_id,
 	});
 
 	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
@@ -160,15 +200,15 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		enabled: !!form.warehouseUuid && !!form.productTypeUuid && !!form.specificationsUuid,
 	});
 
-	const funcCreatBill = useMutation({
+	const funcUpdateBill = useMutation({
 		mutationFn: (body: {paths: string[]}) =>
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Thêm mới thành công!',
+				msgSuccess: 'Chỉnh sửa thành công!',
 				http: batchBillServices.upsertBillNoScales({
-					batchUuid: '',
-					billUuid: '',
+					batchUuid: form?.batchUuid,
+					billUuid: form.billUuid,
 					shipOutUuid: '',
 					customerName: '',
 					isCreateBatch: 1,
@@ -228,48 +268,49 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 			return toastWarn({msg: 'Vui lòng chọn bãi!'});
 		}
 
-		if (today > timeStart) {
-			return toastWarn({msg: 'Ngày xuất hàng không hợp lệ!'});
-		}
+		// if (today > timeStart) {
+		// 	return toastWarn({msg: 'Ngày xuất hàng không hợp lệ!'});
+		// }
 
-		if (today > timeEnd) {
-			return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
-		}
+		// if (today > timeEnd) {
+		// 	return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
+		// }
 
 		if (timeStart > timeEnd) {
 			return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
 		}
 
-		const imgs = images?.map((v: any) => v?.file);
+		const currentImage = images.filter((item) => !!item.img).map((v) => v.img);
 
-		if (imgs.length > 0) {
+		const files = images?.filter((x: any) => !!x.file)?.map((v: any) => v?.file);
+
+		if (files.length > 0) {
 			const dataImage = await httpRequest({
 				setLoading,
 				isData: true,
-				http: uploadImageService.uploadMutilImage(imgs),
+				http: uploadImageService.uploadMutilImage(files),
 			});
 			if (dataImage?.error?.code == 0) {
-				return funcCreatBill.mutate({
-					paths: dataImage.items,
+				return funcUpdateBill.mutate({
+					paths: [...currentImage, ...dataImage.items],
 				});
 			} else {
 				return toastWarn({msg: 'Upload ảnh thất bại!'});
 			}
 		} else {
-			return funcCreatBill.mutate({
-				...form,
-				paths: [],
+			return funcUpdateBill.mutate({
+				paths: currentImage,
 			});
 		}
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={loading || funcCreatBill.isLoading} />
+			<Loading loading={loading || funcUpdateBill.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm phiếu nhập hàng</h4>
+						<h4>Chỉnh sửa phiếu nhập hàng</h4>
 						<p>Điền đầy đủ các thông tin phiếu nhập hàng</p>
 					</div>
 					<div className={styles.right}>

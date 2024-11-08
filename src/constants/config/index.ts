@@ -222,7 +222,7 @@ export const Menu: {
 			{title: 'Lệnh cân', icon: icons.phieudukien, path: PATH.PhieuDuKienTatCa, pathActive: PATH.PhieuDuKien},
 			{title: 'Phiếu cân', icon: icons.phieudacan, path: PATH.PhieuCanTatCa, pathActive: PATH.PhieuCan},
 			{title: 'Lượt cân', icon: icons.luotcan, path: PATH.LuotCanTatCa, pathActive: PATH.LuotCan},
-			{title: 'Nhập liệu', icon: icons.nhaplieu, path: PATH.NhapLieuQuyCach, pathActive: PATH.NhapLieu},
+			// {title: 'Nhập liệu', icon: icons.nhaplieu, path: PATH.NhapLieuQuyCach, pathActive: PATH.NhapLieu},
 		],
 	},
 	{
