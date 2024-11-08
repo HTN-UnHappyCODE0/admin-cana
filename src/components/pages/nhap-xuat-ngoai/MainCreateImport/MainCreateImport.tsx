@@ -19,6 +19,8 @@ import {
 	TYPE_BATCH,
 	TYPE_CUSTOMER,
 	TYPE_SCALES,
+	TYPE_SIFT,
+	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
 import customerServices from '~/services/customerServices';
 import {httpRequest} from '~/services';
@@ -33,6 +35,7 @@ import moment from 'moment';
 import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import {toastWarn} from '~/common/funcs/toast';
 import uploadImageService from '~/services/uploadService';
+import {timeSubmit} from '~/common/funcs/optionConvert';
 
 function MainCreateImport({}: PropsMainCreateImport) {
 	const router = useRouter();
@@ -45,9 +48,12 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		warehouseUuid: '',
 		productTypeUuid: '',
 		description: '',
+		documentId: '',
 		fromUuid: '',
 		toUuid: '',
+		transportType: TYPE_TRANSPORT.DUONG_THUY,
 		timeStart: new Date(),
+		timeEnd: new Date(),
 	});
 
 	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
@@ -169,23 +175,23 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					timeIntend: null,
 					weightIntent: price(form?.weightIntent),
 					isBatch: TYPE_BATCH.KHONG_CAN,
-					isSift: null,
+					isSift: TYPE_SIFT.KHONG_CAN_SANG,
 					scalesType: TYPE_SCALES.CAN_NHAP,
 					specificationsUuid: form.specificationsUuid,
 					productTypeUuid: form.productTypeUuid,
-					documentId: '',
+					documentId: form.documentId,
 					description: form.description,
 					fromUuid: form.fromUuid,
 					toUuid: form?.toUuid,
-					isPrint: null,
-					transportType: null,
+					isPrint: 0,
+					transportType: form?.transportType,
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
 					scaleStationUuid: '',
 					portname: '',
 					descriptionWs: '',
 					paths: body.paths,
-					timeEnd: null,
+					timeEnd: form?.timeEnd ? moment(form?.timeEnd!).format('YYYY-MM-DD') : null,
 					timeStart: form?.timeStart ? moment(form?.timeStart!).format('YYYY-MM-DD') : null,
 				}),
 			}),
@@ -201,6 +207,38 @@ function MainCreateImport({}: PropsMainCreateImport) {
 	});
 
 	const handleSubmit = async () => {
+		const today = new Date(timeSubmit(new Date())!);
+		const timeStart = new Date(form.timeStart!);
+		const timeEnd = new Date(form.timeEnd!);
+
+		if (!form.fromUuid) {
+			return toastWarn({msg: 'Vui lòng chọn nhà cũng cấp!'});
+		}
+		if (!form.productTypeUuid) {
+			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
+		}
+		if (!form.specificationsUuid) {
+			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
+		}
+		if (!form.warehouseUuid) {
+			return toastWarn({msg: 'Vui lòng chọn kho chính!'});
+		}
+		if (!form.toUuid) {
+			return toastWarn({msg: 'Vui lòng chọn bãi!'});
+		}
+
+		// if (today > timeStart) {
+		// 	return toastWarn({msg: 'Ngày xuất hàng không hợp lệ!'});
+		// }
+
+		// if (today > timeEnd) {
+		// 	return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
+		// }
+
+		if (timeStart > timeEnd) {
+			return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
+		}
+
 		const imgs = images?.map((v: any) => v?.file);
 
 		if (imgs.length > 0) {
@@ -230,7 +268,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm lệnh cân nhập dự kiến</h4>
+						<h4>Thêm phiếu nhập hàng</h4>
 						<p>Điền đầy đủ các thông tin phiếu nhập hàng</p>
 					</div>
 					<div className={styles.right}>
@@ -247,6 +285,86 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					</div>
 				</div>
 				<div className={styles.form}>
+					<div className={clsx('mt', 'col_2')}>
+						<div className='col_2'>
+							<div className={styles.item}>
+								<label className={styles.label}>
+									Hình thức vận chuyển <span style={{color: 'red'}}>*</span>
+								</label>
+								<div className={styles.group_radio}>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='van_chuyen_bo'
+											name='transportType'
+											checked={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													transportType: TYPE_TRANSPORT.DUONG_BO,
+													shipUuid: '',
+												}))
+											}
+										/>
+										<label htmlFor='van_chuyen_bo'>Đường bộ</label>
+									</div>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='van_chuyen_thủy'
+											name='transportType'
+											checked={form.transportType == TYPE_TRANSPORT.DUONG_THUY}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													transportType: TYPE_TRANSPORT.DUONG_THUY,
+												}))
+											}
+										/>
+										<label htmlFor='van_chuyen_thủy'>Đường thủy</label>
+									</div>
+								</div>
+							</div>
+
+							{/* <div className={styles.item}>
+								<label className={styles.label}>
+									Phân loại <span style={{color: 'red'}}>*</span>
+								</label>
+								<div className={styles.group_radio}>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='phan_loai_da_sang'
+											name='isSift'
+											checked={form.isSift == TYPE_SIFT.CAN_SANG}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isSift: TYPE_SIFT.CAN_SANG,
+												}))
+											}
+										/>
+										<label htmlFor='phan_loai_da_sang'>Cần sàng</label>
+									</div>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='phan_loai_chua_sang'
+											name='isSift'
+											checked={form.isSift == TYPE_SIFT.KHONG_CAN_SANG}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isSift: TYPE_SIFT.KHONG_CAN_SANG,
+												}))
+											}
+										/>
+										<label htmlFor='phan_loai_chua_sang'>Không cần sàng</label>
+									</div>
+								</div>
+							</div> */}
+						</div>
+					</div>
 					<div className={clsx('mt')}>
 						<Select
 							isSearch
@@ -272,7 +390,6 @@ function MainCreateImport({}: PropsMainCreateImport) {
 											isSift: v?.isSift,
 											productTypeUuid: '',
 											specificationsUuid: '',
-											shipUuid: '',
 										}))
 									}
 								/>
@@ -404,24 +521,56 @@ function MainCreateImport({}: PropsMainCreateImport) {
 							type='text'
 							isMoney
 							unit='KG'
-							label={<span>Khối lượng hàng</span>}
+							label={
+								<span>
+									Khối lượng hàng <span style={{color: 'red'}}>*</span>
+								</span>
+							}
 							placeholder='Nhập khối lượng hàng'
+						/>
+
+						<div>
+							<Input
+								name='documentId'
+								value={form.documentId || ''}
+								max={255}
+								type='text'
+								label={<span>Số chứng từ</span>}
+								placeholder='Nhập số chứng từ'
+							/>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
+						<DatePicker
+							label={
+								<span>
+									Ngày bắt đầu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							value={form.timeStart}
+							onSetValue={(date) =>
+								setForm((prev: any) => ({
+									...prev,
+									timeStart: date,
+								}))
+							}
+							placeholder='Chọn ngày bắt đầu'
 						/>
 						<div>
 							<DatePicker
 								label={
 									<span>
-										Ngày nhập hàng <span style={{color: 'red'}}>*</span>
+										Ngày kết thúc <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								value={form.timeStart}
+								value={form.timeEnd}
 								onSetValue={(date) =>
 									setForm((prev: any) => ({
 										...prev,
-										timeStart: date,
+										timeEnd: date,
 									}))
 								}
-								placeholder='Chọn ngày nhập hàng'
+								placeholder='Chọn ngày kết thúc'
 							/>
 						</div>
 					</div>
