@@ -36,6 +36,7 @@ import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import {toastWarn} from '~/common/funcs/toast';
 import uploadImageService from '~/services/uploadService';
 import {timeSubmit} from '~/common/funcs/optionConvert';
+import shipServices from '~/services/shipServices';
 
 function MainCreateImport({}: PropsMainCreateImport) {
 	const router = useRouter();
@@ -54,6 +55,8 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
 		timeStart: new Date(),
 		timeEnd: new Date(),
+		portname: '',
+		shipUuid: '',
 	});
 
 	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
@@ -127,6 +130,25 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		},
 	});
 
+	const listShip = useQuery([QUERY_KEY.dropdown_tau_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: shipServices.listShip({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const listStorage = useQuery([QUERY_KEY.dropdown_bai, form.specificationsUuid, form.productTypeUuid, form.warehouseUuid], {
 		queryFn: () =>
 			httpRequest({
@@ -171,7 +193,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					shipOutUuid: '',
 					customerName: '',
 					isCreateBatch: 1,
-					shipUuid: '',
+					shipUuid: form.shipUuid,
 					timeIntend: null,
 					weightIntent: price(form?.weightIntent),
 					isBatch: TYPE_BATCH.KHONG_CAN,
@@ -188,7 +210,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
 					scaleStationUuid: '',
-					portname: '',
+					portname: form.portname,
 					descriptionWs: '',
 					paths: body.paths,
 					timeEnd: form?.timeEnd ? moment(form?.timeEnd!).format('YYYY-MM-DD') : null,
@@ -211,6 +233,9 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		const timeStart = new Date(form.timeStart!);
 		const timeEnd = new Date(form.timeEnd!);
 
+		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipUuid) {
+			return toastWarn({msg: 'Vui lòng chọn tàu!'});
+		}
 		if (!form.fromUuid) {
 			return toastWarn({msg: 'Vui lòng chọn nhà cũng cấp!'});
 		}
@@ -395,6 +420,41 @@ function MainCreateImport({}: PropsMainCreateImport) {
 								/>
 							))}
 						</Select>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='shipUuid'
+							placeholder='Chọn tàu'
+							value={form?.shipUuid}
+							readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+							label={
+								<span>
+									Tàu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listShip?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.licensePalate}
+									onClick={() =>
+										setForm((prev) => ({
+											...prev,
+											shipUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+						<Input
+							name='portname'
+							value={form.portname}
+							type='text'
+							label={<span>Cảng bốc dỡ</span>}
+							placeholder='Nhập cảng bốc dỡ'
+						/>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
