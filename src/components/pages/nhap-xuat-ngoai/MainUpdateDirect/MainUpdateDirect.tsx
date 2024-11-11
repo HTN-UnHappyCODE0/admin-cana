@@ -166,7 +166,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		},
 	});
 
-	const listStorage = useQuery([QUERY_KEY.dropdown_bai, form.warehouseUuid, form.specificationsUuid, form.productTypeUuid], {
+	const listStorage = useQuery([QUERY_KEY.dropdown_bai, form.specificationsUuid, form.productTypeUuid, form.warehouseUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -188,7 +188,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 			if (data) {
 				setForm((prev) => ({
 					...prev,
-					storageTemporaryUuid: data?.[0]?.uuid || '',
+					toUuid: data?.[0]?.uuid || '',
 				}));
 			}
 		},
@@ -230,7 +230,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 				}),
 			}),
 		onSuccess(data) {
-			if (data) {
+			if (data && !form.productTypeUuid && !form.specificationsUuid) {
 				const listspecUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.specUu?.uuid, v])).values()];
 				const listProductTypeUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()];
 
@@ -490,6 +490,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 											setForm((prev: any) => ({
 												...prev,
 												productTypeUuid: v?.productTypeUu?.uuid,
+												toUuid: '',
 											}))
 										}
 									/>
@@ -518,6 +519,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 												setForm((prev: any) => ({
 													...prev,
 													specificationsUuid: v?.specUu?.uuid,
+													toUuid: '',
 												}))
 											}
 										/>
