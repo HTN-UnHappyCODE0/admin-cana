@@ -41,6 +41,7 @@ import shipServices from '~/services/shipServices';
 import wareServices from '~/services/wareServices';
 import storageServices from '~/services/storageServices';
 import customerServices from '~/services/customerServices';
+import {clsx} from 'clsx';
 
 function MainPageImport({}: PropsMainPageImport) {
 	const router = useRouter();
@@ -61,7 +62,7 @@ function MainPageImport({}: PropsMainPageImport) {
 		_scalesStationUuid,
 	} = router.query;
 
-	const ListBill = useQuery(
+	const listBill = useQuery(
 		[
 			QUERY_KEY.table_phieu_can_tat_ca,
 			_page,
@@ -349,15 +350,23 @@ function MainPageImport({}: PropsMainPageImport) {
 					</div>
 				</div>
 			</div>
+			<div className={clsx('mt')}>
+				<div className={styles.parameter}>
+					<div>
+						TỔNG LƯỢNG HÀNG TƯƠI:
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(listBill?.data?.amountMt) || 0} </span>(Tấn)
+					</div>
+				</div>
+			</div>
 
 			<div className={styles.table}>
 				<DataWrapper
-					loading={ListBill?.isLoading}
-					data={ListBill?.data?.items || []}
+					loading={listBill?.isLoading}
+					data={listBill?.data?.items || []}
 					noti={<Noti des='Hiện tại chưa có dữ liệu nào!' disableButton />}
 				>
 					<Table
-						data={ListBill?.data?.items || []}
+						data={listBill?.data?.items || []}
 						column={[
 							{
 								title: 'STT',
@@ -399,16 +408,39 @@ function MainPageImport({}: PropsMainPageImport) {
 								render: (data: any) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
-										{/* {data?.isBatch == TYPE_BATCH.CAN_LO && (
-											<p style={{fontWeight: 600, color: '#3772FF'}}>
+										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
+											<>
+												<p style={{fontWeight: 500, color: '#3772FF'}}>{'---'}</p>
+											</>
+										)}
+										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
+											<>
+												<p style={{fontWeight: 500, color: '#3772FF'}}>
+													{data?.batchsUu?.shipUu?.licensePalate || '---'}
+												</p>
+											</>
+										)}
+									</>
+								),
+							},
+							{
+								title: 'Đến',
+								render: (data: any) => (
+									<>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
+										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
-										{data?.isBatch == TYPE_BATCH.CAN_LE && (
-											<p style={{fontWeight: 600, color: '#3772FF'}}>
-												{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
+										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
+												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
-										)} */}
+										)}
+										{/* <p style={{fontWeight: 600, color: '#3772FF'}}>
+											{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+										</p> */}
 									</>
 								),
 							},
@@ -428,17 +460,6 @@ function MainPageImport({}: PropsMainPageImport) {
 							{
 								title: 'KL tươi (Tấn)',
 								render: (data: any) => <>{convertWeight(data?.weightTotal) || 0}</>,
-							},
-							{
-								title: 'Đến',
-								render: (data: any) => (
-									<>
-										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										{/* <p style={{fontWeight: 600, color: '#3772FF'}}>
-											{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
-										</p> */}
-									</>
-								),
 							},
 							{
 								title: 'Ngày bắt đầu',
@@ -481,7 +502,7 @@ function MainPageImport({}: PropsMainPageImport) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					pageSize={Number(_pageSize) || 50}
-					total={ListBill?.data?.pagination?.totalCount}
+					total={listBill?.data?.pagination?.totalCount}
 					dependencies={[
 						_pageSize,
 						_keyword,
