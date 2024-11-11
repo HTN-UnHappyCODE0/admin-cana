@@ -14,6 +14,8 @@ export interface IFormCreateImport {
 	timeEnd: string | Date;
 	transportType: number;
 	documentId: string;
+	portname: string;
+	shipUuid: string;
 }
 
 export interface IDetailCustomer {
