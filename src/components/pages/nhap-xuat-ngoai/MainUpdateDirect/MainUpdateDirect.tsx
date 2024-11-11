@@ -274,7 +274,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					specificationsUuid: form?.specificationsUuid,
 					productTypeUuid: form.productTypeUuid,
 					scaleStationUuid: '',
-					storageTemporaryUuid: form.storageTemporaryUuid,
+					storageTemporaryUuid: form?.storageTemporaryUuid,
 					portname: '',
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
@@ -502,7 +502,6 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 											setForm((prev: any) => ({
 												...prev,
 												productTypeUuid: v?.productTypeUu?.uuid,
-												toUuid: '',
 											}))
 										}
 									/>
@@ -531,7 +530,6 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 												setForm((prev: any) => ({
 													...prev,
 													specificationsUuid: v?.specUu?.uuid,
-													toUuid: '',
 												}))
 											}
 										/>
@@ -620,7 +618,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 										setForm((prev: any) => ({
 											...prev,
 											toUuid: v?.uuid,
-											isSift: v?.isSift,
+											// isSift: v?.isSift,
 										}))
 									}
 								/>
