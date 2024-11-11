@@ -525,53 +525,6 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 						</div>
 					</div>
 
-					<div className={clsx('mt', 'col_2')}>
-						<div>
-							<Select
-								isSearch
-								name='userUuid'
-								placeholder='Chọn nhân viên'
-								value={form?.userUuid}
-								onChange={(e: any) =>
-									setForm((prev: any) => ({
-										...prev,
-										userUuid: e.target.value,
-									}))
-								}
-								label={
-									<span>
-										Thuộc nhân viên quản lý <span style={{color: 'red'}}>*</span>
-									</span>
-								}
-							>
-								{listUser?.data?.map((v: any) => (
-									<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
-								))}
-							</Select>
-						</div>
-						<Select
-							isSearch
-							name='warehouseUuid'
-							placeholder='Chọn kho hàng chính'
-							value={form?.warehouseUuid}
-							label={<span>Kho hàng chính</span>}
-						>
-							{listWarehouse?.data?.map((v: any) => (
-								<Option
-									key={v?.uuid}
-									value={v?.uuid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											warehouseUuid: v?.uuid,
-										}))
-									}
-								/>
-							))}
-						</Select>
-					</div>
-
 					<div className={clsx('mt', 'col_3')}>
 						<Select
 							isSearch
@@ -655,6 +608,54 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 							))}
 						</Select>
 					</div>
+
+					<div className={clsx('mt', 'col_2')}>
+						<div>
+							<Select
+								isSearch
+								name='userUuid'
+								placeholder='Chọn nhân viên'
+								value={form?.userUuid}
+								onChange={(e: any) =>
+									setForm((prev: any) => ({
+										...prev,
+										userUuid: e.target.value,
+									}))
+								}
+								label={
+									<span>
+										Thuộc nhân viên quản lý <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								{listUser?.data?.map((v: any) => (
+									<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
+								))}
+							</Select>
+						</div>
+						<Select
+							isSearch
+							name='warehouseUuid'
+							placeholder='Chọn kho hàng chính'
+							value={form?.warehouseUuid}
+							label={<span>Kho hàng chính</span>}
+						>
+							{listWarehouse?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.name}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											warehouseUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+					</div>
+
 					<div className={clsx('mt')}>
 						<Input
 							name='address'

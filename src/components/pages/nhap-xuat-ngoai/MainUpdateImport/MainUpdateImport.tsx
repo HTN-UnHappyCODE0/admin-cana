@@ -56,8 +56,8 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		fromUuid: '',
 		toUuid: '',
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
-		timeStart: new Date(),
-		timeEnd: new Date(),
+		timeStart: '',
+		timeEnd: '',
 		batchUuid: '',
 		billUuid: '',
 		portname: '',
@@ -83,8 +83,8 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					description: data?.description,
 					fromUuid: data?.fromUu?.uuid,
 					toUuid: data?.toUu?.uuid,
-					timeStart: data?.timeStart,
-					timeEnd: data?.timeEnd,
+					timeStart: moment(data.timeStart).format('yyyy-MM-DD'),
+					timeEnd: moment(data.timeEnd).format('yyyy-MM-DD'),
 					batchUuid: data?.batchsUu?.uuid,
 					billUuid: data?.uuid,
 					portname: data?.port,
@@ -608,7 +608,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 						</div>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
-						<DatePicker
+						{/* <DatePicker
 							label={
 								<span>
 									Ngày bắt đầu <span style={{color: 'red'}}>*</span>
@@ -622,9 +622,22 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 								}))
 							}
 							placeholder='Chọn ngày bắt đầu'
+						/> */}
+						<Input
+							type='date'
+							name='timeStart'
+							value={form.timeStart || ''}
+							isRequired={true}
+							blur={true}
+							label={
+								<span>
+									Ngày bắt đầu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày bắt đầu'
 						/>
 						<div>
-							<DatePicker
+							{/* <DatePicker
 								label={
 									<span>
 										Ngày kết thúc <span style={{color: 'red'}}>*</span>
@@ -636,6 +649,19 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 										...prev,
 										timeEnd: date,
 									}))
+								}
+								placeholder='Chọn ngày kết thúc'
+							/> */}
+							<Input
+								type='date'
+								name='timeEnd'
+								value={form.timeEnd || ''}
+								isRequired={true}
+								blur={true}
+								label={
+									<span>
+										Ngày kết thúc <span style={{color: 'red'}}>*</span>
+									</span>
 								}
 								placeholder='Chọn ngày kết thúc'
 							/>
