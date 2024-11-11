@@ -302,18 +302,30 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		if (!form.fromUuid) {
 			return toastWarn({msg: 'Vui lòng chọn nhà cung cấp!'});
 		}
-		if (!form.toUuid) {
-			return toastWarn({msg: 'Vui lòng chọn khách hàng xuất!'});
+		if (!form.shipUuid) {
+			return toastWarn({msg: 'Vui lòng chọn tàu!'});
 		}
 		if (!form.productTypeUuid) {
 			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
 		}
-		if (!form.weightIntent) {
-			return toastWarn({msg: 'Vui lòng nhập khối lượng cân'});
-		}
 		if (!form.specificationsUuid) {
 			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
 		}
+		if (!form.warehouseUuid) {
+			return toastWarn({msg: 'Vui lòng chọn kho hàng!'});
+		}
+
+		if (!form.storageTemporaryUuid) {
+			return toastWarn({msg: 'Vui lòng chọn bãi trung chuyển!'});
+		}
+		if (!form.toUuid) {
+			return toastWarn({msg: 'Vui lòng chọn khách hàng xuất!'});
+		}
+
+		if (!form.weightIntent) {
+			return toastWarn({msg: 'Vui lòng nhập khối lượng cân'});
+		}
+
 		if (timeStart > timeEnd) {
 			return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
 		}
