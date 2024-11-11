@@ -38,6 +38,7 @@ import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import uploadImageService from '~/services/uploadService';
 import {price} from '~/common/funcs/convertCoin';
 import {TimerStart} from 'iconsax-react';
+import shipServices from '~/services/shipServices';
 
 function MainCreateExport({}: PropsMainCreateExport) {
 	const router = useRouter();
@@ -55,6 +56,8 @@ function MainCreateExport({}: PropsMainCreateExport) {
 		description: '',
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
 		documentId: '',
+		shipUuid: '',
+		portname: '',
 	});
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang_xuat], {
@@ -76,6 +79,25 @@ function MainCreateExport({}: PropsMainCreateExport) {
 					specUuid: '',
 				}),
 			}),
+	});
+
+	const listShip = useQuery([QUERY_KEY.dropdown_tau_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: shipServices.listShip({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
 	});
 
 	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
@@ -182,7 +204,7 @@ function MainCreateExport({}: PropsMainCreateExport) {
 				msgSuccess: 'Thêm mới thành công!',
 				http: batchBillServices.upsertBillNoScales({
 					batchUuid: '',
-					shipUuid: '',
+					shipUuid: form.shipUuid,
 					shipOutUuid: '',
 					transportType: form?.transportType,
 					timeIntend: null,
@@ -203,7 +225,7 @@ function MainCreateExport({}: PropsMainCreateExport) {
 					productTypeUuid: form.productTypeUuid,
 					scaleStationUuid: '',
 					storageTemporaryUuid: '',
-					portname: '',
+					portname: form.portname,
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
 					timeStart: form?.timeStart ? moment(form?.timeStart!).format('YYYY-MM-DD') : null,
@@ -364,6 +386,42 @@ function MainCreateExport({}: PropsMainCreateExport) {
 								/>
 							))}
 						</Select>
+					</div>
+
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='shipUuid'
+							placeholder='Chọn mã tàu'
+							value={form?.shipUuid}
+							readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+							label={
+								<span>
+									Tàu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listShip?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.licensePalate}
+									onClick={() =>
+										setForm((prev) => ({
+											...prev,
+											shipUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+						<Input
+							name='portname'
+							value={form.portname}
+							type='text'
+							label={<span>Cảng bốc dỡ</span>}
+							placeholder='Nhập cảng bốc dỡ'
+						/>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>

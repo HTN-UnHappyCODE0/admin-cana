@@ -325,7 +325,7 @@ function MainPageDirect({}: PropsMainPageDirect) {
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
 											tooltip='Chỉnh sửa xuất thẳng'
 											color='#777E90'
-											href={`/nhap-xuat-ngoai/chinh-sua-xuat-thang?_uuid=${data.uuid}`}
+											href={`/nhap-xuat-ngoai/chinh-sua-xuat-thang?_id=${data.uuid}`}
 										/>
 
 										<IconCustom

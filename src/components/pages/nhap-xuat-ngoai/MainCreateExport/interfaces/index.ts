@@ -11,4 +11,6 @@ export interface IFormCreateExport {
 	transportType: number;
 	timeStart: string | Date;
 	documentId: string;
+	portname: string;
+	shipUuid: string;
 }
