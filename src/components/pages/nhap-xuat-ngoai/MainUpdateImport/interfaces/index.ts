@@ -14,4 +14,6 @@ export interface IFormUpdateImport {
 	documentId: string;
 	batchUuid: string;
 	billUuid: string;
+	portname: string;
+	shipUuid: string;
 }

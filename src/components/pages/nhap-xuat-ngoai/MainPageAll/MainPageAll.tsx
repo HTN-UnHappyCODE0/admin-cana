@@ -30,7 +30,7 @@ import Moment from 'react-moment';
 import IconCustom from '~/components/common/IconCustom';
 import {AddSquare, Edit, Eye} from 'iconsax-react';
 import {LuPencil} from 'react-icons/lu';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {httpRequest} from '~/services';
 import batchBillServices from '~/services/batchBillServices';
 import TippyHeadless from '@tippyjs/react/headless';
@@ -138,8 +138,63 @@ function MainPageAll({}: PropsMainPageAll) {
 		return '/nhap-xuat-ngoai/tat-ca';
 	};
 
+	const exportExcel = useMutation({
+		mutationFn: () => {
+			return httpRequest({
+				http: batchBillServices.exportExcel({
+					page: Number(_page) || 1,
+					pageSize: Number(_pageSize) || 50,
+					keyword: (_keyword as string) || '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					scalesType: [],
+					state: !!_state
+						? [Number(_state)]
+						: [
+								STATE_BILL.NOT_CHECK,
+								STATE_BILL.QLK_REJECTED,
+								STATE_BILL.QLK_CHECKED,
+								STATE_BILL.KTK_REJECTED,
+								STATE_BILL.KTK_CHECKED,
+								STATE_BILL.END,
+						  ],
+					customerUuid: (_customerUuid as string) || '',
+					isBatch: TYPE_BATCH.KHONG_CAN,
+					isCreateBatch: null,
+					productTypeUuid: (_productTypeUuid as string) || '',
+					specificationsUuid: '',
+					status: !!_status
+						? [Number(_status)]
+						: [
+								STATUS_BILL.DANG_CAN,
+								STATUS_BILL.TAM_DUNG,
+								STATUS_BILL.DA_CAN_CHUA_KCS,
+								STATUS_BILL.DA_KCS,
+								STATUS_BILL.CHOT_KE_TOAN,
+						  ],
+					timeStart: _dateFrom ? (_dateFrom as string) : null,
+					timeEnd: _dateTo ? (_dateTo as string) : null,
+					warehouseUuid: '',
+					qualityUuid: '',
+					transportType: null,
+					shipUuid: (_shipUuid as string) || '',
+					typeCheckDay: 0,
+					scalesStationUuid: (_scalesStationUuid as string) || '',
+					storageUuid: (_storageUuid as string) || '',
+					documentId: '',
+				}),
+			});
+		},
+		onSuccess(data) {
+			if (data) {
+				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
+			}
+		},
+	});
+
 	const handleExportExcel = () => {
-		// return exportExcel.mutate();
+		return exportExcel.mutate();
 	};
 
 	return (
@@ -234,7 +289,7 @@ function MainPageAll({}: PropsMainPageAll) {
 								title: 'Mã lô',
 								fixedLeft: true,
 								render: (data: any) => (
-									<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
+									<Link href={`/nhap-xuat-ngoai/${data.uuid}`} className={styles.link}>
 										{data?.code}
 									</Link>
 								),
@@ -334,7 +389,7 @@ function MainPageAll({}: PropsMainPageAll) {
 											icon={<Eye size={22} fontWeight={600} />}
 											tooltip='Xem chi tiết'
 											color='#777E90'
-											href={`/phieu-can/${data.uuid}`}
+											href={`/nhap-xuat-ngoai/${data.uuid}`}
 										/>
 									</div>
 								),

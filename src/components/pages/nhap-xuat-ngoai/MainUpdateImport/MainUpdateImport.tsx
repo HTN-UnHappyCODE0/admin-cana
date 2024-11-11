@@ -37,6 +37,7 @@ import {toastWarn} from '~/common/funcs/toast';
 import uploadImageService from '~/services/uploadService';
 import {timeSubmit} from '~/common/funcs/optionConvert';
 import {IDetailBatchBill} from '../../lenh-can/MainDetailBill/interfaces';
+import shipServices from '~/services/shipServices';
 
 function MainUpdateImport({}: PropsMainUpdateImport) {
 	const router = useRouter();
@@ -59,6 +60,8 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		timeEnd: new Date(),
 		batchUuid: '',
 		billUuid: '',
+		portname: '',
+		shipUuid: '',
 	});
 
 	const {data: detailBatchBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
@@ -84,6 +87,8 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					timeEnd: data?.timeEnd,
 					batchUuid: data?.batchsUu?.uuid,
 					billUuid: data?.uuid,
+					portname: data?.port,
+					shipUuid: data?.batchsUu?.shipUu?.uuid || '',
 				});
 				setImages(
 					data?.path?.map((v: any) => ({
@@ -95,31 +100,6 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 			}
 		},
 		enabled: !!_id,
-	});
-
-	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
-		queryFn: () =>
-			httpRequest({
-				http: customerServices.getDetail({
-					uuid: form.fromUuid,
-				}),
-			}),
-		onSuccess(data) {
-			if (data) {
-				const listspecUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.specUu?.uuid, v])).values()];
-				const listProductTypeUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()];
-
-				setForm((prev) => ({
-					...prev,
-					specificationsUuid: listspecUu?.[0]?.specUu?.uuid || '',
-					productTypeUuid: listProductTypeUu?.[0]?.productTypeUu?.uuid || '',
-				}));
-			}
-		},
-		select(data) {
-			return data;
-		},
-		enabled: !!form.fromUuid,
 	});
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
@@ -146,6 +126,31 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		},
 	});
 
+	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
+		queryFn: () =>
+			httpRequest({
+				http: customerServices.getDetail({
+					uuid: form.fromUuid,
+				}),
+			}),
+		onSuccess(data) {
+			if (data && !form.productTypeUuid && !form.specificationsUuid) {
+				const listspecUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.specUu?.uuid, v])).values()];
+				const listProductTypeUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()];
+
+				setForm((prev) => ({
+					...prev,
+					specificationsUuid: listspecUu?.[0]?.specUu?.uuid || '',
+					productTypeUuid: listProductTypeUu?.[0]?.productTypeUu?.uuid || '',
+				}));
+			}
+		},
+		select(data) {
+			return data;
+		},
+		enabled: !!form.fromUuid,
+	});
+
 	const listWarehouse = useQuery([QUERY_KEY.dropdown_kho_hang], {
 		queryFn: () =>
 			httpRequest({
@@ -161,6 +166,25 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					customerUuid: '',
 					timeEnd: null,
 					timeStart: null,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listShip = useQuery([QUERY_KEY.dropdown_tau_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: shipServices.listShip({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -212,7 +236,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					shipOutUuid: '',
 					customerName: '',
 					isCreateBatch: 1,
-					shipUuid: '',
+					shipUuid: form.shipUuid,
 					timeIntend: null,
 					weightIntent: price(form?.weightIntent),
 					isBatch: TYPE_BATCH.KHONG_CAN,
@@ -229,7 +253,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
 					scaleStationUuid: '',
-					portname: '',
+					portname: form.portname,
 					descriptionWs: '',
 					paths: body.paths,
 					timeEnd: form?.timeEnd ? moment(form?.timeEnd!).format('YYYY-MM-DD') : null,
@@ -252,6 +276,9 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 		const timeStart = new Date(form.timeStart!);
 		const timeEnd = new Date(form.timeEnd!);
 
+		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipUuid) {
+			return toastWarn({msg: 'Vui lòng chọn tàu!'});
+		}
 		if (!form.fromUuid) {
 			return toastWarn({msg: 'Vui lòng chọn nhà cũng cấp!'});
 		}
@@ -367,44 +394,6 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 									</div>
 								</div>
 							</div>
-
-							{/* <div className={styles.item}>
-								<label className={styles.label}>
-									Phân loại <span style={{color: 'red'}}>*</span>
-								</label>
-								<div className={styles.group_radio}>
-									<div className={styles.item_radio}>
-										<input
-											type='radio'
-											id='phan_loai_da_sang'
-											name='isSift'
-											checked={form.isSift == TYPE_SIFT.CAN_SANG}
-											onChange={() =>
-												setForm((prev) => ({
-													...prev,
-													isSift: TYPE_SIFT.CAN_SANG,
-												}))
-											}
-										/>
-										<label htmlFor='phan_loai_da_sang'>Cần sàng</label>
-									</div>
-									<div className={styles.item_radio}>
-										<input
-											type='radio'
-											id='phan_loai_chua_sang'
-											name='isSift'
-											checked={form.isSift == TYPE_SIFT.KHONG_CAN_SANG}
-											onChange={() =>
-												setForm((prev) => ({
-													...prev,
-													isSift: TYPE_SIFT.KHONG_CAN_SANG,
-												}))
-											}
-										/>
-										<label htmlFor='phan_loai_chua_sang'>Không cần sàng</label>
-									</div>
-								</div>
-							</div> */}
 						</div>
 					</div>
 					<div className={clsx('mt')}>
@@ -425,18 +414,54 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 									value={v?.uuid}
 									title={v?.name}
 									onClick={() =>
-										setForm((prev: any) => ({
+										setForm((prev) => ({
 											...prev,
 											fromUuid: v?.uuid,
 											transportType: v?.transportType,
 											isSift: v?.isSift,
 											productTypeUuid: '',
 											specificationsUuid: '',
+											shipUuid: '',
 										}))
 									}
 								/>
 							))}
 						</Select>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='shipUuid'
+							placeholder='Chọn tàu'
+							value={form?.shipUuid}
+							readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+							label={
+								<span>
+									Tàu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listShip?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.licensePalate}
+									onClick={() =>
+										setForm((prev) => ({
+											...prev,
+											shipUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+						<Input
+							name='portname'
+							value={form.portname}
+							type='text'
+							label={<span>Cảng bốc dỡ</span>}
+							placeholder='Nhập cảng bốc dỡ'
+						/>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
