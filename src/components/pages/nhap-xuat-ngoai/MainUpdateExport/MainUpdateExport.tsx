@@ -38,6 +38,7 @@ import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import uploadImageService from '~/services/uploadService';
 import {convertCoin, price} from '~/common/funcs/convertCoin';
 import {IDetailBatchBill} from '../../lenh-can/MainDetailBill/interfaces';
+import shipServices from '~/services/shipServices';
 
 function MainUpdateExport({}: PropsMainUpdateExport) {
 	const router = useRouter();
@@ -58,6 +59,8 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 		documentId: '',
 		batchUuid: '',
 		billUuid: '',
+		shipUuid: '',
+		portname: '',
 	});
 
 	const {data: detailBatchBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_nhap_xuat_ngoai, _id], {
@@ -83,6 +86,8 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					documentId: data?.documentId || '',
 					batchUuid: data?.batchsUu?.uuid,
 					billUuid: data?.uuid,
+					shipUuid: data?.batchsUu?.shipUu?.uuid || '',
+					portname: data?.port || '',
 				});
 				setImages(
 					data?.path?.map((v: any) => ({
@@ -115,6 +120,25 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					specUuid: '',
 				}),
 			}),
+	});
+
+	const listShip = useQuery([QUERY_KEY.dropdown_tau_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: shipServices.listShip({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
 	});
 
 	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
@@ -222,7 +246,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 				http: batchBillServices.upsertBillNoScales({
 					batchUuid: form?.batchUuid,
 					billUuid: form.billUuid,
-					shipUuid: '',
+					shipUuid: form?.shipUuid,
 					shipOutUuid: '',
 					transportType: form?.transportType,
 					timeIntend: null,
@@ -241,7 +265,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					productTypeUuid: form.productTypeUuid,
 					scaleStationUuid: '',
 					storageTemporaryUuid: '',
-					portname: '',
+					portname: form?.portname,
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
 					timeStart: form?.timeStart ? moment(form?.timeStart!).format('YYYY-MM-DD') : null,
@@ -402,6 +426,42 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 								/>
 							))}
 						</Select>
+					</div>
+
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='shipUuid'
+							placeholder='Chọn mã tàu'
+							value={form?.shipUuid}
+							readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+							label={
+								<span>
+									Tàu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listShip?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.licensePalate}
+									onClick={() =>
+										setForm((prev) => ({
+											...prev,
+											shipUuid: v?.uuid,
+										}))
+									}
+								/>
+							))}
+						</Select>
+						<Input
+							name='portname'
+							value={form.portname}
+							type='text'
+							label={<span>Cảng bốc dỡ</span>}
+							placeholder='Nhập cảng bốc dỡ'
+						/>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
