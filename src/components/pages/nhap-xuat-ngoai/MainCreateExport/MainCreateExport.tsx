@@ -601,9 +601,7 @@ function MainCreateExport({}: PropsMainCreateExport) {
 						<TextArea name='description' placeholder='Nhập ghi chú' max={5000} blur label={<span>Ghi chú</span>} />
 					</div>
 					<div className='mt'>
-						<div className={styles.image_upload}>
-							Chọn ảnh <span style={{color: 'red'}}>*</span>
-						</div>
+						<div className={styles.image_upload}>Chọn ảnh</div>
 						<UploadMultipleFile images={images} setImages={setImages} />
 					</div>
 				</div>
