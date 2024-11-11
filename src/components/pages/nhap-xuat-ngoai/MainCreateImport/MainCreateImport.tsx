@@ -28,7 +28,6 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 import {IDetailCustomer} from '../../lenh-can/MainCreateImport/interfaces';
 import storageServices from '~/services/storageServices';
 import warehouseServices from '~/services/warehouseServices';
-import DatePicker from '~/components/common/DatePicker';
 import batchBillServices from '~/services/batchBillServices';
 import {price} from '~/common/funcs/convertCoin';
 import moment from 'moment';
@@ -53,8 +52,8 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		fromUuid: '',
 		toUuid: '',
 		transportType: TYPE_TRANSPORT.DUONG_THUY,
-		timeStart: new Date(),
-		timeEnd: new Date(),
+		timeStart: '',
+		timeEnd: '',
 		portname: '',
 		shipUuid: '',
 	});
@@ -601,7 +600,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 						</div>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
-						<DatePicker
+						{/* <DatePicker
 							label={
 								<span>
 									Ngày bắt đầu <span style={{color: 'red'}}>*</span>
@@ -615,9 +614,23 @@ function MainCreateImport({}: PropsMainCreateImport) {
 								}))
 							}
 							placeholder='Chọn ngày bắt đầu'
+						/> */}
+
+						<Input
+							type='date'
+							name='timeStart'
+							value={form.timeStart || ''}
+							isRequired={true}
+							blur={true}
+							label={
+								<span>
+									Ngày bắt đầu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày bắt đầu'
 						/>
 						<div>
-							<DatePicker
+							{/* <DatePicker
 								label={
 									<span>
 										Ngày kết thúc <span style={{color: 'red'}}>*</span>
@@ -629,6 +642,19 @@ function MainCreateImport({}: PropsMainCreateImport) {
 										...prev,
 										timeEnd: date,
 									}))
+								}
+								placeholder='Chọn ngày kết thúc'
+							/> */}
+							<Input
+								type='date'
+								name='timeEnd'
+								value={form.timeEnd || ''}
+								isRequired={true}
+								blur={true}
+								label={
+									<span>
+										Ngày kết thúc <span style={{color: 'red'}}>*</span>
+									</span>
 								}
 								placeholder='Chọn ngày kết thúc'
 							/>

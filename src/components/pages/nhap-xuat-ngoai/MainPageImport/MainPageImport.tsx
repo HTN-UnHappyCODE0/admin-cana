@@ -325,7 +325,7 @@ function MainPageImport({}: PropsMainPageImport) {
 											icon={<LuPencil size={22} fontWeight={600} />}
 											tooltip='chỉnh sửa nhập'
 											color='#777E90'
-											href={`/nhap-xuat-ngoai/chinh-sua-nhap?_uuid=${data.uuid}`}
+											href={`/nhap-xuat-ngoai/chinh-sua-nhap?_id=${data.uuid}`}
 										/>
 
 										<IconCustom
