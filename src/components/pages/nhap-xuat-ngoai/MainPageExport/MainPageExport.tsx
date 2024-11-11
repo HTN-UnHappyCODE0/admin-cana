@@ -270,7 +270,7 @@ function MainPageExport({}: PropsMainPageExport) {
 											icon={<LuPencil size='22' />}
 											tooltip={'Chỉnh sửa xuất'}
 											color='#777E90'
-											href={`/lenh-can/chinh-sua-xuat?_uuid=${data.uuid}`}
+											href={`/lenh-can/chinh-sua-xuat?_id=${data.uuid}`}
 										/>
 
 										<IconCustom
