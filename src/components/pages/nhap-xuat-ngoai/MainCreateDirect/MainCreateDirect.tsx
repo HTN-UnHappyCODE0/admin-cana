@@ -237,8 +237,8 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 					portname: '',
 					lstTruckAddUuid: [],
 					lstTruckRemoveUuid: [],
-					timeStart: form?.timeStart ? moment(form?.timeStart!).format('YYYY-MM-DD') : null,
 					timeEnd: form?.timeEnd ? moment(form?.timeEnd!).format('YYYY-MM-DD') : null,
+					timeStart: form?.timeStart ? moment(form?.timeStart!).format('YYYY-MM-DD') : null,
 					descriptionWs: '',
 					paths: body.paths,
 				}),
@@ -629,34 +629,30 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
-						<DatePicker
+						<Input
+							type='date'
+							name='timeStart'
+							value={form.timeStart || ''}
+							isRequired={true}
+							blur={true}
 							label={
 								<span>
 									Ngày bắt đầu <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							value={form.timeStart}
-							onSetValue={(date) =>
-								setForm((prev: any) => ({
-									...prev,
-									timeStart: date,
-								}))
-							}
 							placeholder='Chọn ngày bắt đầu'
 						/>
 						<div>
-							<DatePicker
+							<Input
+								type='date'
+								name='timeEnd'
+								value={form.timeEnd || ''}
+								isRequired={true}
+								blur={true}
 								label={
 									<span>
 										Ngày kết thúc <span style={{color: 'red'}}>*</span>
 									</span>
-								}
-								value={form.timeEnd}
-								onSetValue={(date) =>
-									setForm((prev: any) => ({
-										...prev,
-										timeEnd: date,
-									}))
 								}
 								placeholder='Chọn ngày kết thúc'
 							/>
