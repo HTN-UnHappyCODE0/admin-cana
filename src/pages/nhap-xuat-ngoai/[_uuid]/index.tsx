@@ -14,7 +14,9 @@ export default function Page() {
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<WrapperContainer>
-				<MainPageDetail />
+				{' '}
+				<div></div>
+				{/* <MainPageDetail /> */}
 			</WrapperContainer>
 		</Fragment>
 	);
