@@ -12,12 +12,15 @@ import {convertWeight} from '~/common/funcs/optionConvert';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
+	CONFIG_STATUS,
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	STATE_BILL,
 	STATUS_BILL,
+	STATUS_CUSTOMER,
 	TYPE_BATCH,
 	TYPE_DATE,
+	TYPE_PRODUCT,
 	TYPE_SCALES,
 	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
@@ -33,6 +36,11 @@ import icons from '~/constants/images/icons';
 import batchBillServices from '~/services/batchBillServices';
 import {httpRequest} from '~/services';
 import {useMutation, useQuery} from '@tanstack/react-query';
+import FilterCustom from '~/components/common/FilterCustom';
+import shipServices from '~/services/shipServices';
+import wareServices from '~/services/wareServices';
+import storageServices from '~/services/storageServices';
+import customerServices from '~/services/customerServices';
 
 function MainPageExport({}: PropsMainPageExport) {
 	const router = useRouter();
@@ -123,6 +131,94 @@ function MainPageExport({}: PropsMainPageExport) {
 		}
 	);
 
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: customerServices.listCustomer({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					partnerUUid: '',
+					userUuid: '',
+					status: STATUS_CUSTOMER.HOP_TAC,
+					typeCus: null,
+					provinceId: '',
+					specUuid: '',
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listStorage = useQuery([QUERY_KEY.table_bai], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					warehouseUuid: '',
+					productUuid: '',
+					qualityUuid: '',
+					specificationsUuid: '',
+					status: null,
+				}),
+			}),
+		select(data) {
+			if (data) {
+				return data;
+			}
+		},
+	});
+
+	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listProductType({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listShip = useQuery([QUERY_KEY.dropdown_ma_tau], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: shipServices.listShip({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const exportExcel = useMutation({
 		mutationFn: () => {
 			return httpRequest({
@@ -187,8 +283,48 @@ function MainPageExport({}: PropsMainPageExport) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
-						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu và mã lô hàng' />
+						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
+
+					<FilterCustom
+						isSearch
+						name='Khách hàng'
+						query='_customerUuid'
+						listFilter={listCustomer?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
+
+					<FilterCustom
+						isSearch
+						name='Loại hàng'
+						query='_productTypeUuid'
+						listFilter={listProductType?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
+
+					<FilterCustom
+						isSearch
+						name='Mã tàu'
+						query='_shipUuid'
+						listFilter={listShip?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.licensePalate,
+						}))}
+					/>
+
+					<FilterCustom
+						isSearch
+						name='Bãi'
+						query='_storageUuid'
+						listFilter={listStorage?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
 
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
@@ -346,7 +482,18 @@ function MainPageExport({}: PropsMainPageExport) {
 					currentPage={Number(_page) || 1}
 					pageSize={Number(_pageSize) || 50}
 					total={ListBill?.data?.pagination?.totalCount}
-					dependencies={[_pageSize, _keyword, _dateFrom, _dateTo, _isBatch]}
+					dependencies={[
+						_pageSize,
+						_keyword,
+						_dateFrom,
+						_dateTo,
+						_isBatch,
+						_productTypeUuid,
+						_customerUuid,
+						_shipUuid,
+						_storageUuid,
+						_scalesStationUuid,
+					]}
 				/>
 			</div>
 		</div>
