@@ -72,22 +72,22 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		onSuccess(data) {
 			if (data) {
 				setForm({
-					transportType: data?.transportType,
-					fromUuid: data?.fromUu?.uuid,
-					shipUuid: data?.batchsUu?.shipUu?.uuid || '',
-					shipOutUuid: data?.batchsUu?.shipOutUu?.uuid || '',
-					toUuid: data?.toUu?.uuid,
-					productTypeUuid: data?.productTypeUu?.uuid,
-					specificationsUuid: data?.specificationsUu?.uuid,
-					weightIntent: convertCoin(data?.batchsUu?.weightIntent),
-					documentId: data?.documentId || '',
-					description: data?.description,
-					timeStart: data?.timeStart,
-					timeEnd: data?.timeEnd,
-					storageTemporaryUuid: data?.storageTemporaryUu?.uuid || '',
-					warehouseUuid: data?.storageTemporaryUu?.parentUu?.uuid || '',
 					batchUuid: data?.batchsUu?.uuid,
 					billUuid: data?.uuid,
+					transportType: data?.transportType, //đường thủy
+					fromUuid: data?.fromUu?.uuid, //Nhà cung cấp
+					shipUuid: data?.batchsUu?.shipUu?.uuid || '', // Từ tàu
+					productTypeUuid: data?.productTypeUu?.uuid, //Loại hàng
+					specificationsUuid: data?.specificationsUu?.uuid, //Quy cách
+					warehouseUuid: data?.storageTemporaryUu?.parentUu?.uuid || '', //Kho hàng
+					storageTemporaryUuid: data?.storageTemporaryUu?.uuid || '', //Bãi trung chuyển
+					toUuid: data?.toUu?.uuid, //Khách hàng xuất
+					shipOutUuid: data?.batchsUu?.shipOutUu?.uuid || '', //Đến tàu
+					weightIntent: convertCoin(data?.batchsUu?.weightIntent), //Khối lượng cân
+					documentId: data?.documentId || '', //Chứng từ
+					timeStart: data?.timeStart, //ngày bắt đầu
+					timeEnd: data?.timeEnd, //Ngày kết thúc
+					description: data?.description,
 				});
 				setImages(
 					data?.path?.map((v: any) => ({
@@ -188,7 +188,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 			if (data) {
 				setForm((prev) => ({
 					...prev,
-					toUuid: data?.[0]?.uuid || '',
+					storageTemporaryUuid: data?.[0]?.uuid || '',
 				}));
 			}
 		},
@@ -561,7 +561,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 											...prev,
 											warehouseUuid: v?.uuid,
 											storageTemporaryUuid: '',
-											scaleStationUuid: v?.scaleStationUu?.uuid || '',
+											// scaleStationUuid: v?.scaleStationUu?.uuid || '',
 										}))
 									}
 								/>
@@ -618,7 +618,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 										setForm((prev: any) => ({
 											...prev,
 											toUuid: v?.uuid,
-											// isSift: v?.isSift,
+											isSift: v?.isSift,
 										}))
 									}
 								/>
@@ -630,11 +630,10 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 								name='shipOutUuid'
 								placeholder='Chọn tàu'
 								value={form?.shipOutUuid}
-								// readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+								readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
 								label={
 									<span>
-										Đến tàu
-										<span style={{color: 'red'}}>*</span>
+										Đến tàu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
