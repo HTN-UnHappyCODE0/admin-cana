@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import {PropsMainPageBillService} from './interfaces';
+import { PropsMainPageBillService } from './interfaces';
 import styles from './MainPageBillService.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -19,19 +19,19 @@ import {
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Moment from 'react-moment';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
-import {Eye, Play, Trash} from 'iconsax-react';
-import {IDataBill} from '../MainPageBillAll/interfaces';
+import { LuPencil } from 'react-icons/lu';
+import { Eye, Play, Trash } from 'iconsax-react';
+import { IDataBill } from '../MainPageBillAll/interfaces';
 import Link from 'next/link';
 import PopupDeleteBill from '../PopupDeleteBill';
 import Popup from '~/components/common/Popup';
@@ -41,12 +41,12 @@ import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import batchBillServices from '~/services/batchBillServices';
 import shipServices from '~/services/shipServices';
-import {convertCoin} from '~/common/funcs/convertCoin';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import { convertCoin } from '~/common/funcs/convertCoin';
+import { convertWeight } from '~/common/funcs/optionConvert';
 import storageServices from '~/services/storageServices';
 import scalesStationServices from '~/services/scalesStationServices';
 
-function MainPageBillService({}: PropsMainPageBillService) {
+function MainPageBillService({ }: PropsMainPageBillService) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [uuidPlay, setUuidPlay] = useState<string>('');
@@ -240,7 +240,7 @@ function MainPageBillService({}: PropsMainPageBillService) {
 			}
 		},
 		onError(error) {
-			console.log({error});
+			console.log({ error });
 		},
 	});
 	return (
@@ -373,14 +373,14 @@ function MainPageBillService({}: PropsMainPageBillService) {
 								title: 'Từ(tàu/xe)',
 								render: (data: IDataBill) => (
 									<>
-										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
+										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
 										{/* <p>({data?.fromUu?.parentUu?.name || '---'})</p> */}
 										{/* <p style={{fontWeight: 400, color: '#3772FF'}}>{data?.batchsUu?.shipUu?.licensePalate || '---'}</p> */}
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>{'---'}</p>
+											<p style={{ fontWeight: 400, color: '#3772FF' }}>{'---'}</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>
+											<p style={{ fontWeight: 400, color: '#3772FF' }}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
@@ -391,14 +391,14 @@ function MainPageBillService({}: PropsMainPageBillService) {
 								title: 'Đến',
 								render: (data: IDataBill) => (
 									<>
-										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
+										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>
+											<p style={{ fontWeight: 400, color: '#3772FF' }}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>
+											<p style={{ fontWeight: 400, color: '#3772FF' }}>
 												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
 										)}
@@ -423,7 +423,7 @@ function MainPageBillService({}: PropsMainPageBillService) {
 
 							{
 								title: 'KL dự kiến (Tấn)',
-								render: (data: IDataBill) => <>{convertCoin(data?.batchsUu?.weightIntent) || '---'}</>,
+								render: (data: IDataBill) => <>{convertCoin(data?.batchsUu?.weightIntent) || 0}</>,
 							},
 							{
 								title: 'Loại hàng',
@@ -431,15 +431,15 @@ function MainPageBillService({}: PropsMainPageBillService) {
 							},
 							{
 								title: 'Tổng KL (Tấn)',
-								render: (data: IDataBill) => <>{convertWeight(data?.weightTotal) || '---'}</>,
+								render: (data: IDataBill) => <>{convertWeight(data?.weightTotal) || 0}</>,
 							},
 							{
 								title: 'KL 1 (Tấn)',
-								render: (data: IDataBill) => <>{convertWeight(data?.weigth1) || '---'}</>,
+								render: (data: IDataBill) => <>{convertWeight(data?.weigth1) || 0}</>,
 							},
 							{
 								title: 'KL 2 (Tấn)',
-								render: (data: IDataBill) => <>{convertWeight(data?.weigth2) || '---'}</>,
+								render: (data: IDataBill) => <>{convertWeight(data?.weigth2) || 0}</>,
 							},
 							{
 								title: 'Cảng bốc dỡ',
@@ -452,7 +452,7 @@ function MainPageBillService({}: PropsMainPageBillService) {
 							{
 								title: 'Loại cân',
 								render: (data: IDataBill) => (
-									<p style={{fontWeight: 600}}>
+									<p style={{ fontWeight: 600 }}>
 										{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
 										{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
@@ -477,13 +477,13 @@ function MainPageBillService({}: PropsMainPageBillService) {
 								title: 'Trạng thái',
 								render: (data: IDataBill) => (
 									<>
-										{data?.status == STATUS_BILL.DA_HUY && <span style={{color: '#D94212'}}>Đã hủy bỏ</span>}
-										{data?.status == STATUS_BILL.CHUA_CAN && <span style={{color: '#3772FF'}}>Chưa xử lý</span>}
+										{data?.status == STATUS_BILL.DA_HUY && <span style={{ color: '#D94212' }}>Đã hủy bỏ</span>}
+										{data?.status == STATUS_BILL.CHUA_CAN && <span style={{ color: '#3772FF' }}>Chưa xử lý</span>}
 										{(data?.status == STATUS_BILL.DANG_CAN || data?.status == STATUS_BILL.TAM_DUNG) && (
-											<span style={{color: '#9757D7'}}>Đang xử lý</span>
+											<span style={{ color: '#9757D7' }}>Đang xử lý</span>
 										)}
 										{data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS && (
-											<span style={{color: '#2CAE39'}}>Đã hoàn thành</span>
+											<span style={{ color: '#2CAE39' }}>Đã hoàn thành</span>
 										)}
 									</>
 								),
@@ -492,7 +492,7 @@ function MainPageBillService({}: PropsMainPageBillService) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IDataBill) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										{data?.status == STATUS_BILL.CHUA_CAN || data?.status == STATUS_BILL.TAM_DUNG ? (
 											<IconCustom
 												edit
