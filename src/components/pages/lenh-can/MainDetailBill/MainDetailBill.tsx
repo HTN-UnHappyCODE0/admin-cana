@@ -22,6 +22,7 @@ import {
 	TYPE_BATCH,
 	TYPE_SCALES,
 	TYPE_SIFT,
+	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import Moment from 'react-moment';
@@ -76,6 +77,22 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 		},
 		enabled: !!_id,
 	});
+
+	const getlicensePalate = () => {
+		if (detailBatchBill?.transportType == TYPE_TRANSPORT.DUONG_BO) {
+			return `Đường bộ (${detailBatchBill?.weightSessionUu?.truckUu?.licensePalate || '---'})`;
+		}
+		if (detailBatchBill?.transportType == TYPE_TRANSPORT.DUONG_THUY) {
+			if (detailBatchBill?.scalesType == TYPE_SCALES.CAN_TRUC_TIEP) {
+				return `Đường thủy (${detailBatchBill?.batchsUu?.shipUu?.licensePalate || '---'} - ${
+					detailBatchBill?.batchsUu?.shipOutUu?.licensePalate || '---'
+				})`;
+			} else {
+				return `Đường thủy (${detailBatchBill?.batchsUu?.shipUu?.licensePalate || '---'})`;
+			}
+		}
+		return '---';
+	};
 
 	const getUrlUpdateBatchBill = (): string => {
 		if (detailBatchBill?.scalesType == TYPE_SCALES.CAN_NHAP) {
@@ -311,6 +328,10 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 								{detailBatchBill?.status == STATUS_BILL.DA_KCS && 'Đã KCS'}
 								{detailBatchBill?.status == STATUS_BILL.CHOT_KE_TOAN && 'Chốt kế toán'}
 							</span>
+						</div>
+						<div className={styles.item_table}>
+							<p>Vận chuyển:</p>
+							<span>{getlicensePalate()}</span>
 						</div>
 						<div className={styles.item_table}>
 							<p>Người tạo lệnh cân:</p>

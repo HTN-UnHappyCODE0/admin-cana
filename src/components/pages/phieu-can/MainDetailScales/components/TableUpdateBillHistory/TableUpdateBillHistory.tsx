@@ -67,6 +67,10 @@ function TableUpdateBillHistory({}: PropsTableUpdateBillHistory) {
 								render: (data: any) => <>{data?.username || '---'}</>,
 							},
 							{
+								title: 'Tác vụ',
+								render: (data: any) => <>{data?.method || '---'}</>,
+							},
+							{
 								title: 'Trang thái',
 								render: (data: any) => (
 									<p style={{fontWeight: 600}}>
