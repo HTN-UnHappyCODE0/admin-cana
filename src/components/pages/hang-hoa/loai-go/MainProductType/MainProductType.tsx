@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import icons from '~/constants/images/icons';
 import Image from 'next/image';
-import {IProductType, PropsMainProductType} from './interfaces';
+import { IProductType, PropsMainProductType } from './interfaces';
 import styles from './MainProductType.module.scss';
 import Search from '~/components/common/Search';
 import Button from '~/components/common/Button';
@@ -10,30 +10,30 @@ import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Popup from '~/components/common/Popup';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import Dialog from '~/components/common/Dialog';
 import FormCreateProductType from '../FormCreateProductType';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_PRODUCT} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_PRODUCT } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import wareServices from '~/services/wareServices';
 import FilterCustom from '~/components/common/FilterCustom';
 import TagStatus from '~/components/common/TagStatus';
-import {HiOutlineLockClosed} from 'react-icons/hi';
+import { HiOutlineLockClosed } from 'react-icons/hi';
 import Loading from '~/components/common/Loading';
 import FormUpdateProductType from '../FormUpdateProductType';
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react';
 import clsx from 'clsx';
 
-function MainProductType({}: PropsMainProductType) {
+function MainProductType({ }: PropsMainProductType) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _status, _type} = router.query;
+	const { _page, _pageSize, _keyword, _status, _type } = router.query;
 
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const [uuidDescription, setUuidDescription] = useState<string>('');
@@ -210,7 +210,7 @@ function MainProductType({}: PropsMainProductType) {
 														setUuidDescription(uuidDescription ? '' : data.uuid);
 													}
 												}}
-												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
+												className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
 											>
 												{data?.description || '---'}
 											</p>
@@ -222,7 +222,7 @@ function MainProductType({}: PropsMainProductType) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IProductType) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
