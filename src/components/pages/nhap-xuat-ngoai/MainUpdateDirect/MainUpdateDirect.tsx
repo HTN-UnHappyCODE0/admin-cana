@@ -86,8 +86,8 @@ function MainUpdateDirect({ }: PropsMainUpdateDirect) {
 					shipOutUuid: data?.batchsUu?.shipOutUu?.uuid || '', //Đến tàu
 					weightIntent: convertCoin(data?.batchsUu?.weightIntent), //Khối lượng cân
 					documentId: data?.documentId || '', //Chứng từ
-					timeStart: data?.timeStart, //ngày bắt đầu
-					timeEnd: data?.timeEnd, //Ngày kết thúc
+					timeStart: moment(data.timeStart).format('yyyy-MM-DD'),
+					timeEnd: moment(data.timeEnd).format('yyyy-MM-DD'),
 					description: data?.description,
 				});
 				setImages(
@@ -684,34 +684,30 @@ function MainUpdateDirect({ }: PropsMainUpdateDirect) {
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
-						<DatePicker
+						<Input
+							type='date'
+							name='timeStart'
+							value={form.timeStart || ''}
+							isRequired={true}
+							blur={true}
 							label={
 								<span>
 									Ngày bắt đầu <span style={{ color: 'red' }}>*</span>
 								</span>
 							}
-							value={form.timeStart}
-							onSetValue={(date) =>
-								setForm((prev: any) => ({
-									...prev,
-									timeStart: date,
-								}))
-							}
 							placeholder='Chọn ngày bắt đầu'
 						/>
 						<div>
-							<DatePicker
+							<Input
+								type='date'
+								name='timeEnd'
+								value={form.timeEnd || ''}
+								isRequired={true}
+								blur={true}
 								label={
 									<span>
 										Ngày kết thúc <span style={{ color: 'red' }}>*</span>
 									</span>
-								}
-								value={form.timeEnd}
-								onSetValue={(date) =>
-									setForm((prev: any) => ({
-										...prev,
-										timeEnd: date,
-									}))
 								}
 								placeholder='Chọn ngày kết thúc'
 							/>
