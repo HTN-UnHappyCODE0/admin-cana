@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {ITableBillScale, PropsPageConfirmOutput} from './interfaces';
+import { ITableBillScale, PropsPageConfirmOutput } from './interfaces';
 import styles from './PageConfirmOutput.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -19,33 +19,33 @@ import {
 	TYPE_SCALES,
 	TYPE_SIFT,
 } from '~/constants/config/enum';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import customerServices from '~/services/customerServices';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import wareServices from '~/services/wareServices';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Link from 'next/link';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import Pagination from '~/components/common/Pagination';
 import batchBillServices from '~/services/batchBillServices';
 import IconCustom from '~/components/common/IconCustom';
-import {Eye, RefreshLeftSquare, TickCircle} from 'iconsax-react';
+import { Eye, RefreshLeftSquare, TickCircle } from 'iconsax-react';
 import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
 import Popup from '~/components/common/Popup';
 import PopupRejectBatchBill from '../../phieu-can/PopupRejectBatchBill';
 import clsx from 'clsx';
 import Button from '~/components/common/Button';
-import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
+import { convertWeight, formatDrynessAvg } from '~/common/funcs/optionConvert';
 import scalesStationServices from '~/services/scalesStationServices';
 import storageServices from '~/services/storageServices';
 import StateActive from '~/components/common/StateActive';
 
-function PageConfirmOutput({}: PropsPageConfirmOutput) {
+function PageConfirmOutput({ }: PropsPageConfirmOutput) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
@@ -239,7 +239,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 			}
 		},
 		onError(error) {
-			console.log({error});
+			console.log({ error });
 		},
 	});
 
@@ -291,7 +291,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{listBatchBill?.some((x) => x.isChecked !== false) && (
-						<div style={{height: 40}}>
+						<div style={{ height: 40 }}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -308,7 +308,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 					)}
 
 					{listBatchBill?.some((x) => x.isChecked !== false) && (
-						<div style={{height: 40}}>
+						<div style={{ height: 40 }}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -411,19 +411,19 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 				<div className={styles.parameter}>
 					<div>
 						TỔNG LƯỢNG HÀNG TƯƠI:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertCoin(getListBatch?.data?.amountMt) || 0} </span>(Tấn)
+						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertCoin(getListBatch?.data?.amountMt) || 0} </span>(Tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG HÀNG QUY KHÔ:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertCoin(getListBatch?.data?.amountBdmt) || 0} </span>(Tấn)
+						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertCoin(getListBatch?.data?.amountBdmt) || 0} </span>(Tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG QUY KHÔ TẠM TÍNH:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getListBatch?.data?.amountDemo) || 0} </span>(Tấn)
+						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(getListBatch?.data?.amountDemo) || 0} </span>(Tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG QUY KHÔ CHUẨN:
-						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getListBatch?.data?.amountKCS) || 0} </span>(Tấn)
+						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(getListBatch?.data?.amountKCS) || 0} </span>(Tấn)
 					</div>
 				</div>
 			</div>
@@ -450,14 +450,14 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 										<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
 											{data?.code}
 										</Link>
-										<p style={{fontWeight: 500, color: '#3772FF'}}>{data?.weightSessionUu?.code || '---'}</p>
+										<p style={{ fontWeight: 500, color: '#3772FF' }}>{data?.weightSessionUu?.code || '---'}</p>
 									</>
 								),
 							},
 							{
 								title: 'Loại cân',
 								render: (data: ITableBillScale) => (
-									<p style={{fontWeight: 600}}>
+									<p style={{ fontWeight: 600 }}>
 										{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
 										{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
@@ -479,17 +479,17 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 							// 	),
 							// },
 							{
-								title: 'Từ(tàu/xe)',
+								title: 'Từ(Tàu/Xe)',
 								render: (data: ITableBillScale) => (
 									<>
-										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
+										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
 										{data?.isBatch == TYPE_BATCH.CAN_LO && (
-											<p style={{fontWeight: 600, color: '#3772FF'}}>
+											<p style={{ fontWeight: 600, color: '#3772FF' }}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
 										{data?.isBatch == TYPE_BATCH.CAN_LE && (
-											<p style={{fontWeight: 600, color: '#3772FF'}}>
+											<p style={{ fontWeight: 600, color: '#3772FF' }}>
 												{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
 											</p>
 										)}
@@ -533,8 +533,8 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								title: 'Đến',
 								render: (data: ITableBillScale) => (
 									<>
-										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										<p style={{fontWeight: 600, color: '#3772FF'}}>
+										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
+										<p style={{ fontWeight: 600, color: '#3772FF' }}>
 											{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 										</p>
 									</>
@@ -644,7 +644,7 @@ function PageConfirmOutput({}: PropsPageConfirmOutput) {
 								title: 'Tác vụ ',
 								fixedRight: true,
 								render: (data: ITableBillScale) => (
-									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
 										{/* {data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS &&
 										data.state <= STATE_BILL.KTK_REJECTED &&
 										data.state > STATE_BILL.QLK_REJECTED ? (
