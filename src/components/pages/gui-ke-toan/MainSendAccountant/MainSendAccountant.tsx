@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import {PropsMainSendAccountant} from './interfaces';
+import { PropsMainSendAccountant } from './interfaces';
 import styles from './MainSendAccountant.module.scss';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -18,11 +18,11 @@ import {
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import customerServices from '~/services/customerServices';
-import {httpRequest} from '~/services';
+import { httpRequest } from '~/services';
 import wareServices from '~/services/wareServices';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import weightSessionServices from '~/services/weightSessionServices';
 
 import DataWrapper from '~/components/common/DataWrapper';
@@ -30,26 +30,27 @@ import Pagination from '~/components/common/Pagination';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 
-import {AiOutlineFileAdd} from 'react-icons/ai';
+import { AiOutlineFileAdd } from 'react-icons/ai';
 import Button from '~/components/common/Button';
-import {toastWarn} from '~/common/funcs/toast';
+import { toastWarn } from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
-import {LuFileSymlink} from 'react-icons/lu';
+import { LuFileSymlink } from 'react-icons/lu';
 import Dialog from '~/components/common/Dialog';
 
 import Link from 'next/link';
-import {convertWeight} from '~/common/funcs/optionConvert';
-import {IWeightSession} from '../../nhap-lieu/quy-cach/MainSpecification/interfaces';
+import { convertWeight } from '~/common/funcs/optionConvert';
+import { IWeightSession } from '../../nhap-lieu/quy-cach/MainSpecification/interfaces';
 
-function MainSendAccountant({}: PropsMainSendAccountant) {
+function MainSendAccountant({ }: PropsMainSendAccountant) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
 	const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-	const {_page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _status, _productTypeUuid, _specUuid, _dateFrom, _dateTo} =
+	const { _page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _status, _productTypeUuid, _specUuid, _dateFrom, _dateTo } =
 		router.query;
 
+	const [loading, setLoading] = useState<boolean>(false);
 	const [dataWeightSessionSubmit, setDataWeightSessionSubmit] = useState<any[]>([]);
 	const [openSentData, setOpenSentData] = useState<boolean>(false);
 
@@ -149,6 +150,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 			queryFn: () =>
 				httpRequest({
 					isList: true,
+					setLoading: setLoading,
 					http: weightSessionServices.listWeightsession({
 						page: Number(_page) || 1,
 						pageSize: Number(_pageSize) || 50,
@@ -207,7 +209,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 			}
 		},
 		onError(error) {
-			console.log({error});
+			console.log({ error });
 			return;
 		},
 	});
@@ -222,7 +224,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 
 	const handleSubmitSentData = async () => {
 		if (dataWeightSessionSubmit.some((v) => v.dryness == null)) {
-			return toastWarn({msg: 'Nhập độ khô trước khi gửi kể toán!'});
+			return toastWarn({ msg: 'Nhập độ khô trước khi gửi kể toán!' });
 		}
 
 		return funcUpdateKCSWeightSession.mutate();
@@ -234,7 +236,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{weightSessions?.some((x) => x.isChecked !== false) && (
-						<div style={{height: 40}}>
+						<div style={{ height: 40 }}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -326,7 +328,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 			<div className={styles.table}>
 				<DataWrapper
 					data={weightSessions || []}
-					loading={queryWeightsession.isFetching}
+					loading={loading}
 					noti={<Noti des='Hiện tại chưa có danh sách nhập liệu nào!' disableButton />}
 				>
 					<Table
@@ -384,7 +386,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IWeightSession) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<div>
 											<Button
 												className={styles.btn}
@@ -408,7 +410,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 						]}
 					/>
 				</DataWrapper>
-				{!queryWeightsession.isFetching && (
+				{!loading && (
 					<Pagination
 						currentPage={Number(_page) || 1}
 						pageSize={Number(_pageSize) || 50}

@@ -4,6 +4,7 @@ import BaseLayout from '~/components/layouts/BaseLayout';
 import LayoutPages from '~/components/layouts/LayoutPages';
 import { PATH } from '~/constants/config';
 import MainAbnormalSituations from '~/components/pages/thong-ke-log/MainAbnormalSituations';
+import MainPageLog from '~/components/pages/thong-ke-log/MainPageLog';
 export default function Page() {
 	return (
 		<Fragment>
@@ -41,7 +42,7 @@ export default function Page() {
 					},
 				]}
 			>
-				<MainAbnormalSituations />
+				<MainPageLog />
 			</LayoutPages>
 		</Fragment>
 	);

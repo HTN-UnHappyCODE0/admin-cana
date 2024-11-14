@@ -246,6 +246,7 @@ function MainCreateExport({ }: PropsMainCreateExport) {
 	});
 
 	const handleSubmit = async () => {
+		const today = new Date(timeSubmit(new Date())!);
 		const timeStart = new Date(form.timeStart!);
 		const timeEnd = new Date(form.timeEnd!);
 		const imgs = images?.map((v: any) => v?.file);
@@ -267,6 +268,13 @@ function MainCreateExport({ }: PropsMainCreateExport) {
 		}
 		if (!form.weightIntent) {
 			return toastWarn({ msg: 'Vui lòng nhập khối lượng cân' });
+		}
+		if (today < timeStart) {
+			return toastWarn({ msg: 'Ngày xuất hàng không hợp lệ!' });
+		}
+
+		if (today < timeEnd) {
+			return toastWarn({ msg: 'Ngày kết thúc không hợp lệ!' });
 		}
 		if (timeStart > timeEnd) {
 			return toastWarn({ msg: 'Ngày kết thúc không hợp lệ!' });

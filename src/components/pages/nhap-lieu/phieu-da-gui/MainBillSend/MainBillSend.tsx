@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
 
-import {IBillSend, PropsMainBillSend} from './interfaces';
+import { IBillSend, PropsMainBillSend } from './interfaces';
 import styles from './MainBillSend.module.scss';
-import {useRouter} from 'next/router';
-import {useQuery} from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -19,7 +19,7 @@ import {
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { httpRequest } from '~/services';
 import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import weightSessionServices from '~/services/weightSessionServices';
@@ -36,21 +36,20 @@ import clsx from 'clsx';
 import BoxViewSpec from '../BoxViewSpec';
 import Moment from 'react-moment';
 import Link from 'next/link';
-import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
+import { convertWeight, formatDrynessAvg } from '~/common/funcs/optionConvert';
 import IconCustom from '~/components/common/IconCustom';
-import {DocumentText, Edit, Eye} from 'iconsax-react';
+import { DocumentText, Edit, Eye } from 'iconsax-react';
 import Popup from '~/components/common/Popup';
 import PopupChangeDryness from '../PopupChangeDryness';
 import Button from '~/components/common/Button';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import batchBillServices from '~/services/batchBillServices';
 
-function MainBillSend({}: PropsMainBillSend) {
+function MainBillSend({ }: PropsMainBillSend) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _productTypeUuid, _specUuid, _dateFrom, _dateTo} = router.query;
+	const { _page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _productTypeUuid, _specUuid, _dateFrom, _dateTo } = router.query;
 
-	const [dataSpec, setDataSpec] = useState<IBillSend | null>(null);
 	const [total, setTotal] = useState<number>(0);
 	const [listSelectBill, setListSelectBill] = useState<any[]>([]);
 	const [listBillSend, setListBillSend] = useState<any[]>([]);
@@ -191,7 +190,7 @@ function MainBillSend({}: PropsMainBillSend) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{listBillSend?.some((x) => x.isChecked !== false) && (
-						<div style={{height: 40}}>
+						<div style={{ height: 40 }}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -343,7 +342,7 @@ function MainBillSend({}: PropsMainBillSend) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IBillSend) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<Edit fontSize={20} fontWeight={600} />}
