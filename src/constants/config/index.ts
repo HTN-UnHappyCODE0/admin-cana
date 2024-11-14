@@ -163,6 +163,8 @@ export enum PATH {
 	ThongKeDuLieuKho = '/thong-ke-log/du-lieu-kho',
 	ThongKeKeToanTaiChinh = '/thong-ke-log/ke-toan-tai-chinh',
 	ThongKeKhac = '/thong-ke-log/thong-ke-khac',
+	///
+	ThongKeLog = '/thong-ke-log/thong-ke-log',
 	TinhHuongBatThuong = '/thong-ke-log/tinh-huong-bat-thuong',
 
 	// xuất/nhập ngoài hệ thống
@@ -259,7 +261,7 @@ export const Menu: {
 			{
 				title: 'Thống kê log',
 				icon: icons.thongkelog,
-				path: PATH.ThongKeDuLieuCan,
+				path: PATH.ThongKeLog,
 				pathActive: '/thong-ke-log',
 			},
 		],

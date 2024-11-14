@@ -256,6 +256,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 	});
 
 	const handleSubmit = async () => {
+		const today = new Date(timeSubmit(new Date())!);
 		const timeStart = new Date(form.timeStart!);
 		const timeEnd = new Date(form.timeEnd!);
 		const imgs = images?.map((v: any) => v?.file);
@@ -274,6 +275,13 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 		}
 		if (!form.specificationsUuid) {
 			return toastWarn({ msg: 'Vui lòng chọn quy cách!' });
+		}
+		if (today < timeStart) {
+			return toastWarn({ msg: 'Ngày xuất hàng không hợp lệ!' });
+		}
+
+		if (today < timeEnd) {
+			return toastWarn({ msg: 'Ngày kết thúc không hợp lệ!' });
 		}
 		if (timeStart > timeEnd) {
 			return toastWarn({ msg: 'Ngày kết thúc không hợp lệ!' });

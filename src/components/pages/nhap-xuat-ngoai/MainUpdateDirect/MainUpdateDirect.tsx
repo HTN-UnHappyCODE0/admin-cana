@@ -297,6 +297,7 @@ function MainUpdateDirect({ }: PropsMainUpdateDirect) {
 	});
 
 	const handleSubmit = async () => {
+		const today = new Date(timeSubmit(new Date())!);
 		const timeStart = new Date(form.timeStart!);
 		const timeEnd = new Date(form.timeEnd!);
 
@@ -325,6 +326,13 @@ function MainUpdateDirect({ }: PropsMainUpdateDirect) {
 
 		if (!form.weightIntent) {
 			return toastWarn({ msg: 'Vui lòng nhập khối lượng cân' });
+		}
+		if (today < timeStart) {
+			return toastWarn({ msg: 'Ngày xuất hàng không hợp lệ!' });
+		}
+
+		if (today < timeEnd) {
+			return toastWarn({ msg: 'Ngày kết thúc không hợp lệ!' });
 		}
 
 		if (timeStart > timeEnd) {
