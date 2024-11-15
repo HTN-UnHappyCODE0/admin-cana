@@ -567,7 +567,7 @@ function MainPageScalesImport({ }: PropsMainPageScalesImport) {
 							},
 
 							{
-								title: 'Từ(tàu/xe)',
+								title: 'Từ(Tàu/Xe)',
 								render: (data: ITableBillScale) => (
 									<>
 										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
@@ -700,41 +700,75 @@ function MainPageScalesImport({ }: PropsMainPageScalesImport) {
 							{
 								title: 'Trạng thái',
 								render: (data: ITableBillScale) => (
-									<StateActive
-										stateActive={data?.status}
-										listState={[
-											{
-												state: STATUS_BILL.DANG_CAN,
-												text: 'Đang cân',
-												textColor: '#9757D7',
-												backgroundColor: 'rgba(151, 87, 215, 0.10)',
-											},
-											{
-												state: STATUS_BILL.TAM_DUNG,
-												text: 'Tạm dừng',
-												textColor: '#F95B5B',
-												backgroundColor: 'rgba(249, 91, 91, 0.10)',
-											},
-											{
-												state: STATUS_BILL.DA_CAN_CHUA_KCS,
-												text: 'Đã cân chưa KCS',
-												textColor: '#2D74FF',
-												backgroundColor: 'rgba(45, 116, 255, 0.10)',
-											},
-											{
-												state: STATUS_BILL.DA_KCS,
-												text: 'Đã KCS',
-												textColor: '#41CD4F',
-												backgroundColor: 'rgba(65, 205, 79, 0.1)',
-											},
-											{
-												state: STATUS_BILL.CHOT_KE_TOAN,
-												text: 'Chốt kế toán',
-												textColor: '#0EA5E9',
-												backgroundColor: 'rgba(14, 165, 233, 0.1)',
-											},
-										]}
-									/>
+									<>
+										{data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<StateActive
+												stateActive={data?.status}
+												listState={[
+													{
+														state: STATUS_BILL.TAM_DUNG,
+														text: 'Tạm dừng',
+														textColor: '#F95B5B',
+														backgroundColor: 'rgba(249, 91, 91, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_CAN_CHUA_KCS,
+														text: 'chưa KCS',
+														textColor: '#2D74FF',
+														backgroundColor: 'rgba(45, 116, 255, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_KCS,
+														text: 'Đã KCS',
+														textColor: '#41CD4F',
+														backgroundColor: 'rgba(65, 205, 79, 0.1)',
+													},
+													{
+														state: STATUS_BILL.CHOT_KE_TOAN,
+														text: 'Chốt kế toán',
+														textColor: '#0EA5E9',
+														backgroundColor: 'rgba(14, 165, 233, 0.1)',
+													},
+												]}
+											/>
+										) : (
+											<StateActive
+												stateActive={data?.status}
+												listState={[
+													{
+														state: STATUS_BILL.DANG_CAN,
+														text: 'Đang cân',
+														textColor: '#9757D7',
+														backgroundColor: 'rgba(151, 87, 215, 0.10)',
+													},
+													{
+														state: STATUS_BILL.TAM_DUNG,
+														text: 'Tạm dừng',
+														textColor: '#F95B5B',
+														backgroundColor: 'rgba(249, 91, 91, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_CAN_CHUA_KCS,
+														text: 'Đã cân chưa KCS',
+														textColor: '#2D74FF',
+														backgroundColor: 'rgba(45, 116, 255, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_KCS,
+														text: 'Đã KCS',
+														textColor: '#41CD4F',
+														backgroundColor: 'rgba(65, 205, 79, 0.1)',
+													},
+													{
+														state: STATUS_BILL.CHOT_KE_TOAN,
+														text: 'Chốt kế toán',
+														textColor: '#0EA5E9',
+														backgroundColor: 'rgba(14, 165, 233, 0.1)',
+													},
+												]}
+											/>
+										)}
+									</>
 								),
 							},
 							{
@@ -770,7 +804,11 @@ function MainPageScalesImport({ }: PropsMainPageScalesImport) {
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
 											tooltip='Chỉnh sửa'
 											color='#777E90'
-											href={data?.isBatch == TYPE_BATCH.KHONG_CAN ? `/nhap-xuat-ngoai/chinh-sua-nhap?_id=${data.uuid}` : `/phieu-can/chinh-sua-phieu-nhap?_id=${data.uuid}`}
+											href={
+												data?.isBatch == TYPE_BATCH.KHONG_CAN
+													? `/nhap-xuat-ngoai/chinh-sua-nhap?_id=${data.uuid}`
+													: `/phieu-can/chinh-sua-phieu-nhap?_id=${data.uuid}`
+											}
 										/>
 
 										{/* Xem chi tiết */}
@@ -779,7 +817,11 @@ function MainPageScalesImport({ }: PropsMainPageScalesImport) {
 											icon={<Eye fontSize={20} fontWeight={600} />}
 											tooltip='Xem chi tiết'
 											color='#777E90'
-											href={data?.isBatch == TYPE_BATCH.KHONG_CAN ? `/nhap-xuat-ngoai/${data.uuid}` : `/phieu-can/${data.uuid}`}
+											href={
+												data?.isBatch == TYPE_BATCH.KHONG_CAN
+													? `/nhap-xuat-ngoai/${data.uuid}`
+													: `/phieu-can/${data.uuid}`
+											}
 										/>
 									</div>
 								),
