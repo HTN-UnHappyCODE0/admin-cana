@@ -1,44 +1,44 @@
-import React, {Fragment, useState} from 'react';
-import {ICustomer, IUserDetail, PropsDetailMainPage} from './interfaces';
+import React, { Fragment, useState } from 'react';
+import { ICustomer, IUserDetail, PropsDetailMainPage } from './interfaces';
 import styles from './DetailMainPage.module.scss';
 import Link from 'next/link';
-import {IoArrowBackOutline} from 'react-icons/io5';
-import {LuPencil} from 'react-icons/lu';
-import {PATH} from '~/constants/config';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
+import { IoArrowBackOutline } from 'react-icons/io5';
+import { LuPencil } from 'react-icons/lu';
+import { PATH } from '~/constants/config';
+import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
 import clsx from 'clsx';
 import Table from '~/components/common/Table';
 import Button from '~/components/common/Button';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {useRouter} from 'next/router';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { httpRequest } from '~/services';
 import userServices from '~/services/userServices';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, GENDER, QUERY_KEY} from '~/constants/config/enum';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, GENDER, QUERY_KEY } from '~/constants/config/enum';
 import Loading from '~/components/common/Loading';
 import Moment from 'react-moment';
 import Dialog from '~/components/common/Dialog';
 import customerServices from '~/services/customerServices';
 import Pagination from '~/components/common/Pagination';
 import TagStatus from '~/components/common/TagStatus';
-import {getTextAddress} from '~/common/funcs/optionConvert';
+import { getTextAddress } from '~/common/funcs/optionConvert';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react';
-import {useSelector} from 'react-redux';
-import {RootState} from '~/redux/store';
-function DetailMainPage({}: PropsDetailMainPage) {
+import { useSelector } from 'react-redux';
+import { RootState } from '~/redux/store';
+function DetailMainPage({ }: PropsDetailMainPage) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {infoUser} = useSelector((state: RootState) => state.user);
+	const { infoUser } = useSelector((state: RootState) => state.user);
 
-	const {_id, _page, _pageSize, _status} = router.query;
+	const { _id, _page, _pageSize, _status } = router.query;
 
 	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 
-	const {data: detailUser} = useQuery<IUserDetail>([QUERY_KEY.chi_tiet_nhan_vien, _id], {
+	const { data: detailUser } = useQuery<IUserDetail>([QUERY_KEY.chi_tiet_nhan_vien, _id], {
 		queryFn: () =>
 			httpRequest({
 				http: userServices.detailUser({
@@ -58,7 +58,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 				http: customerServices.listCustomer({
 					userUuid: _id as string,
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -144,8 +144,8 @@ function DetailMainPage({}: PropsDetailMainPage) {
 					<div className={clsx('mt')}>
 						<table className={styles.container}>
 							<colgroup>
-								<col style={{width: '50%'}} />
-								<col style={{width: '50%'}} />
+								<col style={{ width: '50%' }} />
+								<col style={{ width: '50%' }} />
 							</colgroup>
 							<tr>
 								<td>
@@ -169,13 +169,13 @@ function DetailMainPage({}: PropsDetailMainPage) {
 
 							<tr>
 								<td>
-									<span>Email: </span> <span style={{color: 'var(--primary)'}}>{detailUser?.email || '---'}</span>
+									<span>Email: </span> <span style={{ color: 'var(--primary)' }}>{detailUser?.email || '---'}</span>
 								</td>
 								{/* <td>
 									<span>Người tạo:</span> {'---'}
 								</td> */}
 								<td>
-									<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
 										<span>Trạng thái: </span>
 										<span>
 											<TagStatus status={detailUser?.status as CONFIG_STATUS} />
@@ -286,7 +286,7 @@ function DetailMainPage({}: PropsDetailMainPage) {
 					</div>
 					<Pagination
 						currentPage={Number(_page) || 1}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						total={listCustomer?.data?.pagination?.totalCount}
 						dependencies={[_pageSize]}
 					/>

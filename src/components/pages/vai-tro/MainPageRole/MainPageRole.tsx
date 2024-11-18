@@ -1,25 +1,25 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Moment from 'react-moment';
-import {PropsMainPageRole} from './interfaces';
+import { PropsMainPageRole } from './interfaces';
 import styles from './MainPageRole.module.scss';
 import Search from '~/components/common/Search';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
-import {Trash} from 'iconsax-react';
+import { LuPencil } from 'react-icons/lu';
+import { Trash } from 'iconsax-react';
 import Button from '~/components/common/Button';
 import Dialog from '~/components/common/Dialog';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
-function MainPageRole({}: PropsMainPageRole) {
+function MainPageRole({ }: PropsMainPageRole) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _time, _dateFrom, _dateTo} = router.query;
+	const { _page, _pageSize, _keyword, _time, _dateFrom, _dateTo } = router.query;
 	const [openDelete, setOpenDelete] = useState<boolean>(false);
 	return (
 		<div className={styles.container}>
@@ -73,13 +73,13 @@ function MainPageRole({}: PropsMainPageRole) {
 							{
 								title: 'Tác vụ',
 								render: (data: any) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
 											tooltip='Chỉnh sửa'
 											color='#777E90'
-											onClick={() => {}}
+											onClick={() => { }}
 										/>
 
 										<IconCustom
@@ -99,7 +99,7 @@ function MainPageRole({}: PropsMainPageRole) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={400}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _keyword, _time, _dateFrom, _dateTo]}
 					/>
 				</DataWrapper>

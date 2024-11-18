@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {PropsMainFuturePricceTag} from './interfaces';
+import { PropsMainFuturePricceTag } from './interfaces';
 import styles from './MainFuturePricceTag.module.scss';
 import Popup from '~/components/common/Popup';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -18,31 +18,31 @@ import {
 	TYPE_PRODUCT,
 	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { httpRequest } from '~/services';
 import wareServices from '~/services/wareServices';
 import Button from '~/components/common/Button';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Link from 'next/link';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import Pagination from '~/components/common/Pagination';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import Moment from 'react-moment';
 import priceTagServices from '~/services/priceTagServices';
 import FormUpdateFuturePriceTag from '../FormUpdateFuturePriceTag';
-import {Trash} from 'iconsax-react';
+import { Trash } from 'iconsax-react';
 import Dialog from '~/components/common/Dialog';
 
-function MainFuturePricceTag({}: PropsMainFuturePricceTag) {
+function MainFuturePricceTag({ }: PropsMainFuturePricceTag) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _specUuid, _productTypeUuid, _parentUserUuid, _userUuid, _state, _transportType, _status} =
+	const { _page, _pageSize, _keyword, _specUuid, _productTypeUuid, _parentUserUuid, _userUuid, _state, _transportType, _status } =
 		router.query;
 
 	const [dataDelete, setDataDelete] = useState<any>(null);
@@ -128,7 +128,7 @@ function MainFuturePricceTag({}: PropsMainFuturePricceTag) {
 					isList: true,
 					http: priceTagServices.listPriceTag({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -299,10 +299,10 @@ function MainFuturePricceTag({}: PropsMainFuturePricceTag) {
 								title: 'Trạng thái',
 								render: (data: any) => (
 									<>
-										{data?.status == STATUS_BILL.DANG_CAN && <span style={{color: '#9757D7'}}>Chưa áp dụng</span>}
-										{data?.status == STATUS_BILL.DA_CAN_CHUA_KCS && <span style={{color: '#D94212'}}>Đã hủy</span>}
-										{data?.status == STATUS_BILL.DA_KCS && <span style={{color: '#3772FF'}}>Đã kết thúc</span>}
-										{data?.status == STATUS_BILL.CHOT_KE_TOAN && <span style={{color: '#2CAE39'}}>Đang áp dụng</span>}
+										{data?.status == STATUS_BILL.DANG_CAN && <span style={{ color: '#9757D7' }}>Chưa áp dụng</span>}
+										{data?.status == STATUS_BILL.DA_CAN_CHUA_KCS && <span style={{ color: '#D94212' }}>Đã hủy</span>}
+										{data?.status == STATUS_BILL.DA_KCS && <span style={{ color: '#3772FF' }}>Đã kết thúc</span>}
+										{data?.status == STATUS_BILL.CHOT_KE_TOAN && <span style={{ color: '#2CAE39' }}>Đang áp dụng</span>}
 									</>
 								),
 							},
@@ -310,7 +310,7 @@ function MainFuturePricceTag({}: PropsMainFuturePricceTag) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: any) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											delete
 											icon={<Trash fontSize={20} fontWeight={600} />}
@@ -333,7 +333,7 @@ function MainFuturePricceTag({}: PropsMainFuturePricceTag) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listPriceTag?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _specUuid, _productTypeUuid, _transportType, _status]}
 				/>
 			</div>

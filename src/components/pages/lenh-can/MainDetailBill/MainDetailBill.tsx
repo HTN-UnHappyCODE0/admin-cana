@@ -1,14 +1,14 @@
-import React, {Fragment, useState} from 'react';
-import {IDetailBatchBill, PropsMainDetailBill} from './interfaces';
+import React, { Fragment, useState } from 'react';
+import { IDetailBatchBill, PropsMainDetailBill } from './interfaces';
 import styles from './MainDetailBill.module.scss';
 import Link from 'next/link';
-import {IoArrowBackOutline} from 'react-icons/io5';
+import { IoArrowBackOutline } from 'react-icons/io5';
 import clsx from 'clsx';
 import Table from '~/components/common/Table';
 import Button from '~/components/common/Button';
-import {convertCoin} from '~/common/funcs/convertCoin';
-import {useRouter} from 'next/router';
-import {useQuery} from '@tanstack/react-query';
+import { convertCoin } from '~/common/funcs/convertCoin';
+import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react';
 import {
@@ -24,27 +24,27 @@ import {
 	TYPE_SIFT,
 	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { httpRequest } from '~/services';
 import Moment from 'react-moment';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Pagination from '~/components/common/Pagination';
-import {HiOutlineLockClosed} from 'react-icons/hi';
-import {LuPencil} from 'react-icons/lu';
+import { HiOutlineLockClosed } from 'react-icons/hi';
+import { LuPencil } from 'react-icons/lu';
 import Popup from '~/components/common/Popup';
 import PopupDeleteBill from '../PopupDeleteBill';
 import batchBillServices from '~/services/batchBillServices';
 import truckServices from '~/services/truckServices';
 
-const MainDetailBill = ({}: PropsMainDetailBill) => {
+const MainDetailBill = ({ }: PropsMainDetailBill) => {
 	const router = useRouter();
 
-	const {_id, _page, _pageSize} = router.query;
+	const { _id, _page, _pageSize } = router.query;
 
 	const [uuidTruck, setUuidTruck] = useState<string>('');
 	const [openCancel, setOpenCancel] = useState<boolean>(false);
 
-	const {data: detailBatchBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
+	const { data: detailBatchBill } = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_lenh_can, _id], {
 		queryFn: () =>
 			httpRequest({
 				http: batchBillServices.detailBatchbill({
@@ -63,7 +63,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 				isList: true,
 				http: truckServices.listTruck({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -84,9 +84,8 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 		}
 		if (detailBatchBill?.transportType == TYPE_TRANSPORT.DUONG_THUY) {
 			if (detailBatchBill?.scalesType == TYPE_SCALES.CAN_TRUC_TIEP) {
-				return `Đường thủy (${detailBatchBill?.batchsUu?.shipUu?.licensePalate || '---'} - ${
-					detailBatchBill?.batchsUu?.shipOutUu?.licensePalate || '---'
-				})`;
+				return `Đường thủy (${detailBatchBill?.batchsUu?.shipUu?.licensePalate || '---'} - ${detailBatchBill?.batchsUu?.shipOutUu?.licensePalate || '---'
+					})`;
 			} else {
 				return `Đường thủy (${detailBatchBill?.batchsUu?.shipUu?.licensePalate || '---'})`;
 			}
@@ -218,7 +217,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 								<span>
 									{detailBatchBill?.specificationsUu?.name}{' '}
 									{detailBatchBill?.isSift != null ? (
-										<span style={{color: '#777E90'}}>
+										<span style={{ color: '#777E90' }}>
 											- {detailBatchBill?.isSift == TYPE_SIFT.CAN_SANG && 'Cần sàng'}
 											{detailBatchBill?.isSift == TYPE_SIFT.KHONG_CAN_SANG && 'Không cần sàng'}
 										</span>
@@ -233,7 +232,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 								<p>Kho hàng:</p>
 								<span>
 									{detailBatchBill?.toUu?.name}{' '}
-									<span style={{color: '#777E90'}}>({detailBatchBill.toUu?.parentUu?.name || '---'})</span>
+									<span style={{ color: '#777E90' }}>({detailBatchBill.toUu?.parentUu?.name || '---'})</span>
 								</span>
 							</div>
 						) : null}
@@ -244,7 +243,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 								<p>Kho hàng:</p>
 								<span>
 									{detailBatchBill?.fromUu?.name}{' '}
-									<span style={{color: '#777E90'}}>({detailBatchBill.fromUu?.parentUu?.name || '---'})</span>
+									<span style={{ color: '#777E90' }}>({detailBatchBill.fromUu?.parentUu?.name || '---'})</span>
 								</span>
 							</div>
 						) : null}
@@ -256,14 +255,14 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 									<p>Kho hàng chính:</p>
 									<span>
 										{detailBatchBill.fromUu?.name}{' '}
-										<span style={{color: '#777E90'}}>({detailBatchBill.fromUu?.parentUu?.name || '---'})</span>
+										<span style={{ color: '#777E90' }}>({detailBatchBill.fromUu?.parentUu?.name || '---'})</span>
 									</span>
 								</div>
 								<div className={styles.item_table}>
 									<p>Kho hàng đích:</p>
 									<span>
 										{detailBatchBill.toUu?.name}{' '}
-										<span style={{color: '#777E90'}}>({detailBatchBill.toUu?.parentUu?.name || '---'})</span>
+										<span style={{ color: '#777E90' }}>({detailBatchBill.toUu?.parentUu?.name || '---'})</span>
 									</span>
 								</div>
 							</>
@@ -276,14 +275,14 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 									<p>Nhà cung cấp:</p>
 									<span>
 										{detailBatchBill.fromUu?.name}{' '}
-										<span style={{color: '#777E90'}}>({detailBatchBill.fromUu?.parentUu?.name || '---'})</span>
+										<span style={{ color: '#777E90' }}>({detailBatchBill.fromUu?.parentUu?.name || '---'})</span>
 									</span>
 								</div>
 								<div className={styles.item_table}>
 									<p>Khách hàng xuất:</p>
 									<span>
 										{detailBatchBill.toUu?.name}{' '}
-										<span style={{color: '#777E90'}}>({detailBatchBill.toUu?.parentUu?.name || '---'})</span>
+										<span style={{ color: '#777E90' }}>({detailBatchBill.toUu?.parentUu?.name || '---'})</span>
 									</span>
 								</div>
 								<div className={styles.item_table}>
@@ -313,7 +312,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 						</div>
 						<div className={styles.item_table}>
 							<p>Xe chở hàng:</p>
-							<span style={{color: '#2D74FF'}}>{detailBatchBill?.lstTruck?.length} xe</span>
+							<span style={{ color: '#2D74FF' }}>{detailBatchBill?.lstTruck?.length} xe</span>
 						</div>
 					</div>
 					<div className={styles.content_table}>
@@ -448,7 +447,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 															setUuidTruck(uuidTruck ? '' : data.uuid);
 														}
 													}}
-													className={clsx(styles.value, {[styles.active]: uuidTruck == data.uuid})}
+													className={clsx(styles.value, { [styles.active]: uuidTruck == data.uuid })}
 												>
 													{data?.rfid.length || 0}
 												</p>
@@ -484,7 +483,7 @@ const MainDetailBill = ({}: PropsMainDetailBill) => {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listTruck?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _id]}
 				/>
 			</div>

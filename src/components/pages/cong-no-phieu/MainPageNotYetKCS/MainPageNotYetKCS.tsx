@@ -1,16 +1,16 @@
 import React from 'react';
-import {PropsMainPageNotYetKCS} from './interfaces';
+import { PropsMainPageNotYetKCS } from './interfaces';
 import styles from './MainPageNotYetKCS.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
 import DataWrapper from '~/components/common/DataWrapper';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import clsx from 'clsx';
 import Link from 'next/link';
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -22,21 +22,21 @@ import {
 	TYPE_DATE,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { httpRequest } from '~/services';
 import regencyServices from '~/services/regencyServices';
 import userServices from '~/services/userServices';
 import debtBillServices from '~/services/debtBillServices';
-import {convertCoin} from '~/common/funcs/convertCoin';
-import {IDebtBill} from '../MainPageAll/interfaces';
+import { convertCoin } from '~/common/funcs/convertCoin';
+import { IDebtBill } from '../MainPageAll/interfaces';
 import Moment from 'react-moment';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import partnerServices from '~/services/partnerServices';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import { convertWeight } from '~/common/funcs/optionConvert';
 
-function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
+function MainPageNotYetKCS({ }: PropsMainPageNotYetKCS) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _partnerUuid, _userUuid, _dateFrom, _dateTo} = router.query;
+	const { _page, _pageSize, _keyword, _partnerUuid, _userUuid, _dateFrom, _dateTo } = router.query;
 
 	const listPartner = useQuery([QUERY_KEY.dropdown_nha_cung_cap], {
 		queryFn: () =>
@@ -112,7 +112,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 					isList: true,
 					http: debtBillServices.getListDebtBill({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 						status: [STATUS_BILL.DA_CAN_CHUA_KCS],
@@ -167,10 +167,10 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 			<div className={clsx('mt')}>
 				<div className={styles.parameter}>
 					<div>
-						TỔNG LÔ HÀNG: <span style={{color: '#2D74FF', marginLeft: 4}}>{listDebtBill?.data?.pagination?.totalCount}</span>
+						TỔNG LÔ HÀNG: <span style={{ color: '#2D74FF', marginLeft: 4 }}>{listDebtBill?.data?.pagination?.totalCount}</span>
 					</div>
 					<div>
-						TỔNG CÔNG NỢ TẠM TÍNH: <span style={{marginLeft: 4}}>{convertCoin(listDebtBill?.data?.debtDemo)} VND</span>
+						TỔNG CÔNG NỢ TẠM TÍNH: <span style={{ marginLeft: 4 }}>{convertCoin(listDebtBill?.data?.debtDemo)} VND</span>
 					</div>
 				</div>
 			</div>
@@ -192,7 +192,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 							{
 								title: 'Trạng thái',
 								render: (data: IDebtBill) => (
-									<span style={{color: data.status === STATUS_BILL.DA_KCS ? 'blue' : 'red'}}>
+									<span style={{ color: data.status === STATUS_BILL.DA_KCS ? 'blue' : 'red' }}>
 										{data?.status == STATUS_BILL.DA_CAN_CHUA_KCS && 'Chưa KCS'}
 										{data?.status == STATUS_BILL.DA_KCS && 'Đã KCS'}
 									</span>
@@ -248,7 +248,7 @@ function MainPageNotYetKCS({}: PropsMainPageNotYetKCS) {
 				</DataWrapper>
 				<Pagination
 					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					total={listDebtBill?.data?.pagination?.totalCount}
 					dependencies={[_pageSize, _keyword, _partnerUuid, _userUuid, _dateFrom, _dateTo]}
 				/>

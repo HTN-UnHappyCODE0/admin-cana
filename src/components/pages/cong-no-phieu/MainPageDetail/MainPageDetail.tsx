@@ -1,31 +1,31 @@
 import React from 'react';
-import {IDetailDebtBill, IWeightSession, PropsMainPageDetail} from './interfaces';
+import { IDetailDebtBill, IWeightSession, PropsMainPageDetail } from './interfaces';
 import styles from './MainPageDetail.module.scss';
 import Search from '~/components/common/Search';
 import DataWrapper from '~/components/common/DataWrapper';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import clsx from 'clsx';
 import Link from 'next/link';
-import {IoArrowBackOutline} from 'react-icons/io5';
-import {useQuery} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, QUERY_KEY, STATUS_BILL, STATUS_WEIGHT_SESSION} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { IoArrowBackOutline } from 'react-icons/io5';
+import { useQuery } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, QUERY_KEY, STATUS_BILL, STATUS_WEIGHT_SESSION } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import debtBillServices from '~/services/debtBillServices';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import GridColumn from '~/components/layouts/GridColumn';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
 import ItemDashboard from '../ItemDashboard';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import { convertWeight } from '~/common/funcs/optionConvert';
 
-function MainPageDetail({}: PropsMainPageDetail) {
+function MainPageDetail({ }: PropsMainPageDetail) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _id} = router.query;
+	const { _page, _pageSize, _keyword, _id } = router.query;
 
-	const {data: detailDebtBill, isLoading} = useQuery<IDetailDebtBill>(
+	const { data: detailDebtBill, isLoading } = useQuery<IDetailDebtBill>(
 		[QUERY_KEY.chi_tiet_cong_no_phieu, _page, _pageSize, _keyword, _id],
 		{
 			queryFn: () =>
@@ -34,7 +34,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 						uuid: _id as string,
 						isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						status: [],
 					}),
@@ -139,7 +139,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 							{
 								title: 'Trạng thái',
 								render: (data: IWeightSession) => (
-									<span style={{color: data?.status < STATUS_WEIGHT_SESSION.KCS_XONG ? 'red' : 'blue'}}>
+									<span style={{ color: data?.status < STATUS_WEIGHT_SESSION.KCS_XONG ? 'red' : 'blue' }}>
 										{data?.status < STATUS_WEIGHT_SESSION.KCS_XONG ? 'Chưa KCS' : 'Đã KCS'}
 									</span>
 								),
@@ -190,7 +190,7 @@ function MainPageDetail({}: PropsMainPageDetail) {
 				</DataWrapper>
 				<Pagination
 					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					total={detailDebtBill?.pagination?.totalCount || 0}
 					dependencies={[_pageSize, _keyword, _id]}
 				/>

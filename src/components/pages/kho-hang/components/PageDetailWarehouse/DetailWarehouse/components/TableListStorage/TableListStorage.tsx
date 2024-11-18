@@ -1,23 +1,23 @@
-import {useRouter} from 'next/router';
-import React, {Fragment} from 'react';
+import { useRouter } from 'next/router';
+import React, { Fragment } from 'react';
 
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import DataWrapper from '~/components/common/DataWrapper';
 
-import {IDataListStorage, PropsTableListStorage} from './interfaces';
+import { IDataListStorage, PropsTableListStorage } from './interfaces';
 import styles from './TableListStorage.module.scss';
-import {useQuery} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { useQuery } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Link from 'next/link';
 import storageServices from '~/services/storageServices';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import { convertWeight } from '~/common/funcs/optionConvert';
 
-function TableListStorage({}: PropsTableListStorage) {
+function TableListStorage({ }: PropsTableListStorage) {
 	const router = useRouter();
-	const {_id, _page, _pageSize} = router.query;
+	const { _id, _page, _pageSize } = router.query;
 
 	const listStorage = useQuery([QUERY_KEY.table_bai, _page, _pageSize, _id], {
 		queryFn: () =>
@@ -25,7 +25,7 @@ function TableListStorage({}: PropsTableListStorage) {
 				isList: true,
 				http: storageServices.listStorage({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -79,13 +79,13 @@ function TableListStorage({}: PropsTableListStorage) {
 						{
 							title: 'Tổng lượng tươi (Tấn)',
 							render: (data: IDataListStorage) => (
-								<span style={{color: '#2A85FF'}}>{convertWeight(data?.totalAmountMt)}</span>
+								<span style={{ color: '#2A85FF' }}>{convertWeight(data?.totalAmountMt)}</span>
 							),
 						},
 						{
 							title: 'Tổng lượng quy khô (Tấn)',
 							render: (data: IDataListStorage) => (
-								<span style={{color: '#2A85FF'}}>{convertWeight(data?.totalAmountBdmt)}</span>
+								<span style={{ color: '#2A85FF' }}>{convertWeight(data?.totalAmountBdmt)}</span>
 							),
 						},
 						{
@@ -111,7 +111,7 @@ function TableListStorage({}: PropsTableListStorage) {
 			<Pagination
 				currentPage={Number(_page) || 1}
 				total={listStorage?.data?.pagination?.totalCount}
-				pageSize={Number(_pageSize) || 50}
+				pageSize={Number(_pageSize) || 200}
 				dependencies={[_pageSize, _id]}
 			/>
 		</Fragment>

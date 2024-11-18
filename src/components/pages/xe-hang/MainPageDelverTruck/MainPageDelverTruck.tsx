@@ -1,36 +1,36 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {ITruck, PropsMainPageDelverTruck} from './interfaces';
+import { ITruck, PropsMainPageDelverTruck } from './interfaces';
 import styles from './MainPageDelverTruck.module.scss';
 import Search from '~/components/common/Search';
 import Button from '~/components/common/Button';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import DataWrapper from '~/components/common/DataWrapper';
 import Pagination from '~/components/common/Pagination';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import Dialog from '~/components/common/Dialog';
 import icons from '~/constants/images/icons';
 import Image from 'next/image';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, OWNEW_TYPE_TRUCK, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, OWNEW_TYPE_TRUCK, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import FilterCustom from '~/components/common/FilterCustom';
 import Loading from '~/components/common/Loading';
 import TagStatus from '~/components/common/TagStatus';
-import {HiOutlineLockClosed} from 'react-icons/hi';
+import { HiOutlineLockClosed } from 'react-icons/hi';
 import clsx from 'clsx';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react';
 import truckServices from '~/services/truckServices';
 
-function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
+function MainPageDelverTruck({ }: PropsMainPageDelverTruck) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _status} = router.query;
+	const { _page, _pageSize, _keyword, _status } = router.query;
 
 	const [dataStatus, setDataStatus] = useState<ITruck | null>(null);
 	const [uuidTruck, setUuidTruck] = useState<string>('');
@@ -41,7 +41,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 				isList: true,
 				http: truckServices.listTruck({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -176,7 +176,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 															setUuidTruck(uuidTruck ? '' : data.uuid);
 														}
 													}}
-													className={clsx(styles.value, {[styles.active]: uuidTruck == data.uuid})}
+													className={clsx(styles.value, { [styles.active]: uuidTruck == data.uuid })}
 												>
 													{data?.rfid.length || 0}
 												</p>
@@ -214,7 +214,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: ITruck) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -239,7 +239,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listTruck?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _status]}
 				/>
 			</div>

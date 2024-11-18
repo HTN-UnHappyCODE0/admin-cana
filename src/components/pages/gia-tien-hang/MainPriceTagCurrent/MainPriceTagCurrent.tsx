@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {IPriceTag, PropsMainPriceTagCurrent} from './interfaces';
+import { IPriceTag, PropsMainPriceTagCurrent } from './interfaces';
 import styles from './MainPriceTagCurrent.module.scss';
 import Search from '~/components/common/Search';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import FilterCustom from '~/components/common/FilterCustom';
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -17,9 +17,9 @@ import {
 	TYPE_PRODUCT,
 	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { httpRequest } from '~/services';
 import Button from '~/components/common/Button';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import icons from '~/constants/images/icons';
 import Image from 'next/image';
 import DataWrapper from '~/components/common/DataWrapper';
@@ -28,23 +28,23 @@ import Table from '~/components/common/Table';
 import wareServices from '~/services/wareServices';
 import Pagination from '~/components/common/Pagination';
 import priceTagServices from '~/services/priceTagServices';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import Moment from 'react-moment';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import TagStatus from '~/components/common/TagStatus';
 import Popup from '~/components/common/Popup';
 import FormUpdatePriceTag from '../FormUpdatePriceTag';
 import Link from 'next/link';
-import {FaHistory} from 'react-icons/fa';
+import { FaHistory } from 'react-icons/fa';
 import TagStatusSpecCustomer from '../../xuong/TagStatusSpecCustomer';
 import userServices from '~/services/userServices';
 import regencyServices from '~/services/regencyServices';
 
-function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
+function MainPriceTagCurrent({ }: PropsMainPriceTagCurrent) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _specUuid, _productTypeUuid, _parentUserUuid, _userUuid, _state, _transportType, _status} =
+	const { _page, _pageSize, _keyword, _specUuid, _productTypeUuid, _parentUserUuid, _userUuid, _state, _transportType, _status } =
 		router.query;
 
 	const [dataUpdate, setDataUpdate] = useState<IPriceTag | null>(null);
@@ -187,7 +187,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 					isList: true,
 					http: priceTagServices.listPriceTag({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -220,7 +220,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 					},
 				},
 				undefined,
-				{shallow: true, scroll: false}
+				{ shallow: true, scroll: false }
 			);
 		}
 	}, [_parentUserUuid]);
@@ -390,7 +390,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IPriceTag) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											icon={<FaHistory fontSize={20} fontWeight={600} />}
 											tooltip='Xem lịch sử'
@@ -412,7 +412,7 @@ function MainPriceTagCurrent({}: PropsMainPriceTagCurrent) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listPriceTag?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _specUuid, _productTypeUuid, _transportType, _status]}
 				/>
 			</div>

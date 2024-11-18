@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import icons from '~/constants/images/icons';
 import Image from 'next/image';
-import {IQualities, PropsMainQualities} from './interfaces';
+import { IQualities, PropsMainQualities } from './interfaces';
 import styles from './MainQualities.module.scss';
 import Search from '~/components/common/Search';
 import Button from '~/components/common/Button';
@@ -10,18 +10,18 @@ import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Popup from '~/components/common/Popup';
 import FormCreateQualities from '../FormCreateQualities';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import Dialog from '~/components/common/Dialog';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import wareServices from '~/services/wareServices';
 import FilterCustom from '~/components/common/FilterCustom';
-import {HiOutlineLockClosed} from 'react-icons/hi';
+import { HiOutlineLockClosed } from 'react-icons/hi';
 import TagStatus from '~/components/common/TagStatus';
 import Loading from '~/components/common/Loading';
 import FormUpdateQualities from '../FormUpdateQualities';
@@ -29,11 +29,11 @@ import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 
-function MainQualities({}: PropsMainQualities) {
+function MainQualities({ }: PropsMainQualities) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _status} = router.query;
+	const { _page, _pageSize, _keyword, _status } = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const [dataStatus, setDataStatus] = useState<IQualities | null>(null);
@@ -45,7 +45,7 @@ function MainQualities({}: PropsMainQualities) {
 				isList: true,
 				http: wareServices.listQuality({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -164,7 +164,7 @@ function MainQualities({}: PropsMainQualities) {
 														setUuidDescription(uuidDescription ? '' : data.uuid);
 													}
 												}}
-												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
+												className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
 											>
 												{data?.description || '---'}
 											</p>
@@ -184,7 +184,7 @@ function MainQualities({}: PropsMainQualities) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IQualities) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -210,7 +210,7 @@ function MainQualities({}: PropsMainQualities) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listQualities?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _status]}
 				/>
 			</div>

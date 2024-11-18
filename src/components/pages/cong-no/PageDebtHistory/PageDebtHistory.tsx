@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './PageDebtHistory.module.scss';
-import {ITransaction, PropsPageDebtHistory} from './interface';
+import { ITransaction, PropsPageDebtHistory } from './interface';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
 import DataWrapper from '~/components/common/DataWrapper';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import StatePaymentMode from '../StatePaymentMode';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
@@ -19,22 +19,22 @@ import {
 	TYPE_PARTNER,
 	TYPE_TRANSACTION,
 } from '~/constants/config/enum';
-import {useQuery} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { useQuery } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import partnerServices from '~/services/partnerServices';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Moment from 'react-moment';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import Pagination from '~/components/common/Pagination';
 import Link from 'next/link';
 import Popup from '~/components/common/Popup';
 import PopupDetailDebtHistory from '../PopupDetailDebtHistory';
 import transactionServices from '~/services/transactionServices';
 
-const PageDebtHistory = ({}: PropsPageDebtHistory) => {
+const PageDebtHistory = ({ }: PropsPageDebtHistory) => {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _partnerUuid, _type, _dateFrom, _dateTo, _status, _uuid} = router.query;
+	const { _page, _pageSize, _keyword, _partnerUuid, _type, _dateFrom, _dateTo, _status, _uuid } = router.query;
 
 	const listPartner = useQuery([QUERY_KEY.dropdown_nha_cung_cap], {
 		queryFn: () =>
@@ -66,7 +66,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 					isList: true,
 					http: transactionServices.listTransaction({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -126,9 +126,9 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 							name='Hình thức'
 							query='_type'
 							listFilter={[
-								{id: TYPE_TRANSACTION.THU_HOI, name: 'Thu hồi công nợ'},
-								{id: TYPE_TRANSACTION.THANH_TOAN, name: 'Thanh toán công nợ'},
-								{id: TYPE_TRANSACTION.THUE, name: 'Thanh toán thuế'},
+								{ id: TYPE_TRANSACTION.THU_HOI, name: 'Thu hồi công nợ' },
+								{ id: TYPE_TRANSACTION.THANH_TOAN, name: 'Thanh toán công nợ' },
+								{ id: TYPE_TRANSACTION.THUE, name: 'Thanh toán thuế' },
 							]}
 						/>
 					</div>
@@ -169,7 +169,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 									<Link
 										href={`/lich-su-thanh-toan?_uuidTransaction=${data?.uuid}`}
 										className={styles.link}
-										style={{fontWeight: 600}}
+										style={{ fontWeight: 600 }}
 									>
 										{data?.code || '---'}
 									</Link>
@@ -209,7 +209,7 @@ const PageDebtHistory = ({}: PropsPageDebtHistory) => {
 				</DataWrapper>
 				<Pagination
 					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					total={listTransaction?.data?.pagination?.totalCount}
 					dependencies={[_pageSize, _keyword, _partnerUuid, _type, _dateFrom, _dateTo, _status]}
 				/>

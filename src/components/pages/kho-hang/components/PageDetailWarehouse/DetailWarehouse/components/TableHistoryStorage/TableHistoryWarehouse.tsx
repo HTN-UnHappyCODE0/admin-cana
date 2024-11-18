@@ -1,25 +1,25 @@
-import React, {Fragment} from 'react';
-import {IDataTableHistoryWarehouse, PropsTableHistoryWarehouse} from './interfaces';
+import React, { Fragment } from 'react';
+import { IDataTableHistoryWarehouse, PropsTableHistoryWarehouse } from './interfaces';
 import styles from './TableHistoryWarehouse.module.scss';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import DataWrapper from '~/components/common/DataWrapper';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
 import Table from '~/components/common/Table';
 import Search from '~/components/common/Search';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-import {useQuery} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { useQuery } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import warehouseServices from '~/services/warehouseServices';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import { convertWeight } from '~/common/funcs/optionConvert';
 
-function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
+function TableHistoryWarehouse({ }: PropsTableHistoryWarehouse) {
 	const router = useRouter();
 
-	const {_id, _page, _pageSize, _keyword, _dateFrom, _dateTo} = router.query;
+	const { _id, _page, _pageSize, _keyword, _dateFrom, _dateTo } = router.query;
 
 	const listHistoryStorage = useQuery([QUERY_KEY.table_lich_su_bai, _page, _pageSize, _keyword, _dateFrom, _dateTo, _id], {
 		queryFn: () =>
@@ -27,7 +27,7 @@ function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 				isList: true,
 				http: warehouseServices.historyWarehouseInOut({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -78,19 +78,19 @@ function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 							{
 								title: 'Tổng lượng quy khô nhập (Tấn)',
 								render: (data: IDataTableHistoryWarehouse) => (
-									<span style={{color: '#2D74FF'}}>{convertWeight(data?.amountIn)}</span>
+									<span style={{ color: '#2D74FF' }}>{convertWeight(data?.amountIn)}</span>
 								),
 							},
 							{
 								title: 'Tổng lượng quy khô xuất (Tấn)',
 								render: (data: IDataTableHistoryWarehouse) => (
-									<span style={{color: '#2D74FF'}}>{convertWeight(data?.amountOut)}</span>
+									<span style={{ color: '#2D74FF' }}>{convertWeight(data?.amountOut)}</span>
 								),
 							},
 							{
 								title: 'Tổng lượng quy khô chuyển kho (Tấn)',
 								render: (data: IDataTableHistoryWarehouse) => (
-									<span style={{color: '#2D74FF'}}>
+									<span style={{ color: '#2D74FF' }}>
 										{convertWeight(Number(data.amountChangeIn) - Number(data?.amountChangeOut))}
 									</span>
 								),
@@ -107,7 +107,7 @@ function TableHistoryWarehouse({}: PropsTableHistoryWarehouse) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listHistoryStorage?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _dateFrom, _dateTo, _id]}
 				/>
 			</div>
