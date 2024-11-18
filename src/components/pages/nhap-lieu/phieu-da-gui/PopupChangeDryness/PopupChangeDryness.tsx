@@ -1,23 +1,22 @@
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {PropsPopupChangeDryness} from './interfaces';
-import {useEffect, useState} from 'react';
-import Form, {FormContext, Input} from '~/components/common/Form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { PropsPopupChangeDryness } from './interfaces';
+import { useEffect, useState } from 'react';
+import Form, { FormContext, Input } from '~/components/common/Form';
 
 import styles from './PopupChangeDryness.module.scss';
 import Button from '~/components/common/Button';
-import {IoClose} from 'react-icons/io5';
-import {httpRequest} from '~/services';
-import weightSessionServices from '~/services/weightSessionServices';
-import {QUERY_KEY} from '~/constants/config/enum';
-import {toastWarn} from '~/common/funcs/toast';
+import { IoClose } from 'react-icons/io5';
+import { httpRequest } from '~/services';
+import { QUERY_KEY } from '~/constants/config/enum';
+import { toastWarn } from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
 import TextArea from '~/components/common/Form/components/TextArea';
 import batchBillServices from '~/services/batchBillServices';
 
-function PopupChangeDryness({dataBillChangeDryness, onClose}: PropsPopupChangeDryness) {
+function PopupChangeDryness({ dataBillChangeDryness, onClose }: PropsPopupChangeDryness) {
 	const queryClient = useQueryClient();
 
-	const [form, setForm] = useState<{drynessNew: number; description: string; billNumber: string}>({
+	const [form, setForm] = useState<{ drynessNew: number; description: string; billNumber: string }>({
 		drynessNew: 0,
 		description: '',
 		billNumber: '',
@@ -31,7 +30,7 @@ function PopupChangeDryness({dataBillChangeDryness, onClose}: PropsPopupChangeDr
 	}, [dataBillChangeDryness]);
 
 	const funcUpdateDrynessWeightSession = useMutation({
-		mutationFn: (body: {uuids: string[]; drynessNew: number; description: string}) =>
+		mutationFn: (body: { uuids: string[]; drynessNew: number; description: string }) =>
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
@@ -49,14 +48,14 @@ function PopupChangeDryness({dataBillChangeDryness, onClose}: PropsPopupChangeDr
 			}
 		},
 		onError(error) {
-			console.log({error});
+			console.log({ error });
 			return;
 		},
 	});
 
 	const handleSubmit = async () => {
 		if (Number(form.drynessNew) <= 0 || Number(form.drynessNew) > 100) {
-			return toastWarn({msg: 'Giá trị độ khô không hợp lệ!'});
+			return toastWarn({ msg: 'Giá trị độ khô không hợp lệ!' });
 		}
 
 		return funcUpdateDrynessWeightSession.mutate({
@@ -82,7 +81,7 @@ function PopupChangeDryness({dataBillChangeDryness, onClose}: PropsPopupChangeDr
 
 				<div className='mt'>
 					<label className={styles.label}>
-						Độ khô thay đổi <span style={{color: 'red'}}>*</span>
+						Độ khô thay đổi <span style={{ color: 'red' }}>*</span>
 					</label>
 					<input
 						name='drynessNew'
@@ -102,7 +101,7 @@ function PopupChangeDryness({dataBillChangeDryness, onClose}: PropsPopupChangeDr
 					<TextArea
 						label={
 							<span>
-								Lý do thay đổi <span style={{color: 'red'}}>*</span>
+								Lý do thay đổi <span style={{ color: 'red' }}>*</span>
 							</span>
 						}
 						isRequired
@@ -120,7 +119,7 @@ function PopupChangeDryness({dataBillChangeDryness, onClose}: PropsPopupChangeDr
 						</Button>
 					</div>
 					<FormContext.Consumer>
-						{({isDone}) => (
+						{({ isDone }) => (
 							<div>
 								<Button disable={!isDone} p_10_24 rounded_2 primary>
 									Gửi yêu cầu cập nhật độ khô

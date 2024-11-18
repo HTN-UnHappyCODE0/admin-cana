@@ -27,17 +27,14 @@ import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import warehouseServices from '~/services/warehouseServices';
 import storageServices from '~/services/storageServices';
-import DatePicker from '~/components/common/DatePicker';
 import TextArea from '~/components/common/Form/components/TextArea';
 import batchBillServices from '~/services/batchBillServices';
-import moment from 'moment';
 import Loading from '~/components/common/Loading';
 import { toastWarn } from '~/common/funcs/toast';
 import { timeSubmit } from '~/common/funcs/optionConvert';
 import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import uploadImageService from '~/services/uploadService';
 import { price } from '~/common/funcs/convertCoin';
-import { TimerStart } from 'iconsax-react';
 import shipServices from '~/services/shipServices';
 
 function MainCreateExport({ }: PropsMainCreateExport) {
