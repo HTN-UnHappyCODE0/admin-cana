@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {IWeightSession, PropsMainSpecification} from './interfaces';
+import { IWeightSession, PropsMainSpecification } from './interfaces';
 import styles from './MainSpecification.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -17,29 +17,29 @@ import {
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import {useQuery} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { useQuery } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import weightSessionServices from '~/services/weightSessionServices';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import Button from '~/components/common/Button';
-import {AiOutlineFileAdd} from 'react-icons/ai';
+import { AiOutlineFileAdd } from 'react-icons/ai';
 import Popup from '~/components/common/Popup';
 import FormUpdateSpecWS from '../FormUpdateSpecWS';
-import {toastWarn} from '~/common/funcs/toast';
+import { toastWarn } from '~/common/funcs/toast';
 import Link from 'next/link';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import { convertWeight } from '~/common/funcs/optionConvert';
 
-function MainSpecification({}: PropsMainSpecification) {
+function MainSpecification({ }: PropsMainSpecification) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _specUuid, _dateFrom, _dateTo, _isShift} = router.query;
+	const { _page, _pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _specUuid, _dateFrom, _dateTo, _isShift } = router.query;
 
 	const [weightSessionSubmits, setWeightSessionSubmits] = useState<any[]>([]);
 	const [weightSessions, setWeightSessions] = useState<any[]>([]);
@@ -131,7 +131,7 @@ function MainSpecification({}: PropsMainSpecification) {
 					setLoading: setLoading,
 					http: weightSessionServices.listWeightsession({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -171,7 +171,7 @@ function MainSpecification({}: PropsMainSpecification) {
 		const arr = weightSessions?.filter((v) => v.isChecked !== false);
 
 		if (!arr?.every((obj: any) => obj?.specificationsUu?.uuid === arr[0]?.specificationsUu?.uuid)) {
-			return toastWarn({msg: 'Chỉ chọn được các lô có cùng quy cách!'});
+			return toastWarn({ msg: 'Chỉ chọn được các lô có cùng quy cách!' });
 		} else {
 			setWeightSessionSubmits(arr);
 		}
@@ -182,7 +182,7 @@ function MainSpecification({}: PropsMainSpecification) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{weightSessions?.some((x) => x.isChecked !== false) && (
-						<div style={{height: 40}}>
+						<div style={{ height: 40 }}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -347,7 +347,7 @@ function MainSpecification({}: PropsMainSpecification) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IWeightSession) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<div>
 											<Button
 												className={styles.btn}
@@ -370,7 +370,7 @@ function MainSpecification({}: PropsMainSpecification) {
 				{!loading && (
 					<Pagination
 						currentPage={Number(_page) || 1}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						total={total}
 						dependencies={[
 							_pageSize,

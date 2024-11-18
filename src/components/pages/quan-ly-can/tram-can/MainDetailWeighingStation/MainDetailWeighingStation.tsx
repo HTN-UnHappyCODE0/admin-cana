@@ -1,47 +1,47 @@
-import React, {Fragment, useState} from 'react';
+import React, { Fragment, useState } from 'react';
 
-import {PropsMainDetailWeighingStation} from './interfaces';
+import { PropsMainDetailWeighingStation } from './interfaces';
 import styles from './MainDetailWeighingStation.module.scss';
 import Link from 'next/link';
-import {PATH} from '~/constants/config';
-import {IoArrowBackOutline} from 'react-icons/io5';
+import { PATH } from '~/constants/config';
+import { IoArrowBackOutline } from 'react-icons/io5';
 import Button from '~/components/common/Button';
-import {LuPencil} from 'react-icons/lu';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
+import { LuPencil } from 'react-icons/lu';
+import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
 import clsx from 'clsx';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
-import {useRouter} from 'next/router';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
-import {getTextAddress} from '~/common/funcs/optionConvert';
+import { useRouter } from 'next/router';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
+import { getTextAddress } from '~/common/funcs/optionConvert';
 import TagStatus from '~/components/common/TagStatus';
 import Pagination from '~/components/common/Pagination';
 import IconCustom from '~/components/common/IconCustom';
-import {Trash} from 'iconsax-react';
+import { Trash } from 'iconsax-react';
 import Dialog from '~/components/common/Dialog';
 import Loading from '~/components/common/Loading';
 import Popup from '~/components/common/Popup';
 import AddScalesMachine from '../AddScalesMachine';
-import {IScalesMachine} from '../../cau-can/MainScaleTable/interfaces';
+import { IScalesMachine } from '../../cau-can/MainScaleTable/interfaces';
 import scalesStationServices from '~/services/scalesStationServices';
 import scalesMachineServices from '~/services/scalesMachineServices';
 
-function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
+function MainDetailWeighingStation({ }: PropsMainDetailWeighingStation) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _id} = router.query;
+	const { _page, _pageSize, _id } = router.query;
 
 	const [dataDelete, setDataDelete] = useState<IScalesMachine | null>(null);
 	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
 	const [openAddScalesMachine, setOpenAddScalesMachine] = useState<boolean>(false);
 
-	const {data: scalesStation} = useQuery([QUERY_KEY.chi_tiet_tram_can, _id], {
+	const { data: scalesStation } = useQuery([QUERY_KEY.chi_tiet_tram_can, _id], {
 		queryFn: () =>
 			httpRequest({
 				http: scalesStationServices.getDetail({
@@ -60,7 +60,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 				isList: true,
 				http: scalesMachineServices.listScalesMachine({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.IS_DESCENDING,
@@ -159,28 +159,28 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 			<div className={clsx('mt')}>
 				<table className={styles.container}>
 					<colgroup>
-						<col style={{width: '50%'}} />
-						<col style={{width: '50%'}} />
+						<col style={{ width: '50%' }} />
+						<col style={{ width: '50%' }} />
 					</colgroup>
 					<tr>
 						<td>
 							<span>Tên trạm cân: </span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.name}</span>
+							<span style={{ fontWeight: 600, marginLeft: '6px' }}>{scalesStation?.name}</span>
 						</td>
 						<td>
 							<span>Mã cầu cân:</span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.code}</span>
+							<span style={{ fontWeight: 600, marginLeft: '6px' }}>{scalesStation?.code}</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<span>Thuộc KV cảng xuất khẩu:</span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.companyUu?.name}</span>
+							<span style={{ fontWeight: 600, marginLeft: '6px' }}>{scalesStation?.companyUu?.name}</span>
 						</td>
 
 						<td>
 							<span>Địa chỉ chi tiết:</span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>
+							<span style={{ fontWeight: 600, marginLeft: '6px' }}>
 								{getTextAddress(scalesStation?.detailAddress, scalesStation?.address)}
 							</span>
 						</td>
@@ -188,17 +188,17 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 					<tr>
 						<td>
 							<span>Số điện thoại: </span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.phoneNumber}</span>
+							<span style={{ fontWeight: 600, marginLeft: '6px' }}>{scalesStation?.phoneNumber}</span>
 						</td>
 						<td rowSpan={3} className={styles.description}>
 							<span>Ghi chú: </span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>{scalesStation?.description}</span>
+							<span style={{ fontWeight: 600, marginLeft: '6px' }}>{scalesStation?.description}</span>
 						</td>
 					</tr>
 					<tr>
-						<td style={{display: 'flex', alignItems: 'center', border: 'none'}}>
+						<td style={{ display: 'flex', alignItems: 'center', border: 'none' }}>
 							<span>Trạng thái: </span>
-							<span style={{fontWeight: 600, marginLeft: '6px'}}>
+							<span style={{ fontWeight: 600, marginLeft: '6px' }}>
 								<TagStatus status={scalesStation?.status} />
 							</span>
 						</td>
@@ -206,7 +206,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 					<tr>
 						<td>
 							<span>Số lượng cầu cân:</span>
-							<span style={{fontWeight: 600, marginLeft: '6px', color: '#3772FF'}}>
+							<span style={{ fontWeight: 600, marginLeft: '6px', color: '#3772FF' }}>
 								{scalesStation?.scalesMachine?.length}
 							</span>
 						</td>
@@ -258,7 +258,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 								{
 									title: 'Tác vụ',
 									render: (data: IScalesMachine) => (
-										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+										<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 											<IconCustom
 												delete
 												icon={<Trash fontSize={20} fontWeight={600} />}
@@ -275,7 +275,7 @@ function MainDetailWeighingStation({}: PropsMainDetailWeighingStation) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={listScalesMachine?.data?.pagination?.totalCount}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _id]}
 					/>
 				</div>

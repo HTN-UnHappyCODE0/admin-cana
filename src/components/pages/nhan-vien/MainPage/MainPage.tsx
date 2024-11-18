@@ -1,28 +1,28 @@
-import React, {Fragment, useState} from 'react';
-import {IUser, PropsMainPage} from './interfaces';
+import React, { Fragment, useState } from 'react';
+import { IUser, PropsMainPage } from './interfaces';
 import styles from './MainPage.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
 import Button from '~/components/common/Button';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
-import {TickCircle, UserAdd} from 'iconsax-react';
+import { LuPencil } from 'react-icons/lu';
+import { TickCircle, UserAdd } from 'iconsax-react';
 import Pagination from '~/components/common/Pagination';
 import Dialog from '~/components/common/Dialog';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
 import Link from 'next/link';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import userServices from '~/services/userServices';
 import Loading from '~/components/common/Loading';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
+import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
 import TagStatus from '~/components/common/TagStatus';
 import regencyServices from '~/services/regencyServices';
 import Popup from '~/components/common/Popup';
@@ -32,15 +32,15 @@ import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import FlexLayout from '~/components/layouts/FlexLayout';
 import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
-import {useSelector} from 'react-redux';
-import {RootState} from '~/redux/store';
-function MainPage({}: PropsMainPage) {
+import { useSelector } from 'react-redux';
+import { RootState } from '~/redux/store';
+function MainPage({ }: PropsMainPage) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {infoUser} = useSelector((state: RootState) => state.user);
+	const { infoUser } = useSelector((state: RootState) => state.user);
 
-	const {_page, _pageSize, _userOwnerUu, _keyword, _regencyUuid, _regencyUuidExclude, _provinceIDOwer, _status} = router.query;
+	const { _page, _pageSize, _userOwnerUu, _keyword, _regencyUuid, _regencyUuidExclude, _provinceIDOwer, _status } = router.query;
 
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<IUser | null>(null);
@@ -73,7 +73,7 @@ function MainPage({}: PropsMainPage) {
 					isList: true,
 					http: userServices.listUser({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -244,7 +244,7 @@ function MainPage({}: PropsMainPage) {
 									render: (data: IUser) => (
 										<>
 											{data?.uuid != infoUser?.userUuid && (
-												<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+												<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 													{data?.account == null ? (
 														<IconCustom
 															edit
@@ -298,7 +298,7 @@ function MainPage({}: PropsMainPage) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={listUserStaff?.data?.pagination?.totalCount}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _keyword, _status, _regencyUuid, _regencyUuidExclude, _provinceIDOwer]}
 					/>
 				</FullColumnFlex>

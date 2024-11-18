@@ -1,5 +1,5 @@
 import DataWrapper from '~/components/common/DataWrapper';
-import {PropsMainWeigh} from './interfaces';
+import { PropsMainWeigh } from './interfaces';
 import styles from './MainWeigh.module.scss';
 import Pagination from '~/components/common/Pagination';
 import Link from 'next/link';
@@ -7,12 +7,12 @@ import Table from '~/components/common/Table';
 import clsx from 'clsx';
 import FilterCustom from '~/components/common/FilterCustom';
 import Search from '~/components/common/Search';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-function MainWeigh({}: PropsMainWeigh) {
+function MainWeigh({ }: PropsMainWeigh) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _manager, _company, _type} = router.query;
+	const { _page, _pageSize, _keyword, _manager, _company, _type } = router.query;
 
 	return (
 		<div className={styles.container}>
@@ -38,7 +38,7 @@ function MainWeigh({}: PropsMainWeigh) {
 							},
 							{
 								title: 'Hành động',
-								render: (data: any) => <p className={clsx(styles.status, {[styles.create]: true})}>Tạo phiếu cân</p>,
+								render: (data: any) => <p className={clsx(styles.status, { [styles.create]: true })}>Tạo phiếu cân</p>,
 							},
 
 							{
@@ -47,7 +47,7 @@ function MainWeigh({}: PropsMainWeigh) {
 							},
 							{
 								title: 'Mã lô',
-								render: (data: any) => <span style={{color: 'var(--primary)'}}>#67232</span>,
+								render: (data: any) => <span style={{ color: 'var(--primary)' }}>#67232</span>,
 							},
 							{
 								title: 'Thời gian',
@@ -58,7 +58,7 @@ function MainWeigh({}: PropsMainWeigh) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={400}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _keyword, _manager, _company]}
 					/>
 				</DataWrapper>

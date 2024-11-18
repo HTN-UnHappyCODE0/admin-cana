@@ -1,19 +1,19 @@
-import React, {Fragment, useState} from 'react';
-import {IAccount, PropsMainPageAccount} from './interfaces';
+import React, { Fragment, useState } from 'react';
+import { IAccount, PropsMainPageAccount } from './interfaces';
 import styles from './MainPageAccount.module.scss';
 import Search from '~/components/common/Search';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import Pagination from '~/components/common/Pagination';
 import Dialog from '~/components/common/Dialog';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import accountServices from '~/services/accountServices';
 import Loading from '~/components/common/Loading';
 import TagStatus from '~/components/common/TagStatus';
@@ -26,11 +26,11 @@ import Link from 'next/link';
 import FlexLayout from '~/components/layouts/FlexLayout';
 import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
 
-function MainPageAccount({}: PropsMainPageAccount) {
+function MainPageAccount({ }: PropsMainPageAccount) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _status, _regencyUuid} = router.query;
+	const { _page, _pageSize, _keyword, _status, _regencyUuid } = router.query;
 
 	const [dataStatus, setDataStatus] = useState<IAccount | null>(null);
 	const [dataUpdateAccount, setDataUpdateAccount] = useState<IAccount | null>(null);
@@ -80,7 +80,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 				isList: true,
 				http: accountServices.getListAccount({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -152,7 +152,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 								},
 								{
 									title: 'Mã người dùng',
-									render: (data: IAccount) => <p style={{fontWeight: 600}}>{data.user?.code || '---'}</p>,
+									render: (data: IAccount) => <p style={{ fontWeight: 600 }}>{data.user?.code || '---'}</p>,
 								},
 								{
 									title: 'Tên người dùng',
@@ -191,7 +191,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 									title: 'Tác vụ',
 									fixedRight: true,
 									render: (data: IAccount) => (
-										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+										<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 											<IconCustom
 												edit
 												icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -225,7 +225,7 @@ function MainPageAccount({}: PropsMainPageAccount) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={listAccount?.data?.pagination?.totalCount}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _keyword, _status, _regencyUuid]}
 					/>
 				</FullColumnFlex>

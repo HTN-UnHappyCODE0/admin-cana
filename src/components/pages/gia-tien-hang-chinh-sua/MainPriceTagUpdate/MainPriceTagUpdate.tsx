@@ -1,7 +1,7 @@
 import React from 'react';
-import {IPriceTagUpdate, PropsMainPriceTagUpdate} from './interfaces';
+import { IPriceTagUpdate, PropsMainPriceTagUpdate } from './interfaces';
 import styles from './MainPriceTagUpdate.module.scss';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import Button from '~/components/common/Button';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
@@ -16,11 +16,11 @@ import {
 } from '~/constants/config/enum';
 import FilterCustom from '~/components/common/FilterCustom';
 import Search from '~/components/common/Search';
-import {useQuery} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { useQuery } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import wareServices from '~/services/wareServices';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import priceTagServices from '~/services/priceTagServices';
 import Table from '~/components/common/Table';
 import DataWrapper from '~/components/common/DataWrapper';
@@ -29,13 +29,13 @@ import Link from 'next/link';
 import Pagination from '~/components/common/Pagination';
 import IconCustom from '~/components/common/IconCustom';
 import Moment from 'react-moment';
-import {FaRegEye} from 'react-icons/fa';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { FaRegEye } from 'react-icons/fa';
+import { convertCoin } from '~/common/funcs/convertCoin';
 
-function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
+function MainPriceTagUpdate({ }: PropsMainPriceTagUpdate) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _specificationUuid, _productTypeUuid, _transportType, _dateFrom, _dateTo} = router.query;
+	const { _page, _pageSize, _keyword, _specificationUuid, _productTypeUuid, _transportType, _dateFrom, _dateTo } = router.query;
 
 	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
 		queryFn: () =>
@@ -95,7 +95,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 					isList: true,
 					http: priceTagServices.getListUpdatePriceTag({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						status: null,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
@@ -217,7 +217,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 							{
 								title: 'Giá tiền mới (VND)',
 								render: (data: IPriceTagUpdate) => (
-									<span style={{color: 'var(--primary)'}}>{convertCoin(data?.priceUu?.amount) || 0}</span>
+									<span style={{ color: 'var(--primary)' }}>{convertCoin(data?.priceUu?.amount) || 0}</span>
 								),
 							},
 							{
@@ -227,7 +227,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 
 							{
 								title: 'Số phiếu cân áp dụng',
-								render: (data: IPriceTagUpdate) => <span style={{color: 'var(--primary)'}}>{data?.totalCount}</span>,
+								render: (data: IPriceTagUpdate) => <span style={{ color: 'var(--primary)' }}>{data?.totalCount}</span>,
 							},
 							{
 								title: 'Vận chuyển',
@@ -257,7 +257,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IPriceTagUpdate) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											icon={<FaRegEye fontSize={20} fontWeight={600} />}
 											tooltip='Xem chi tiết'
@@ -273,7 +273,7 @@ function MainPriceTagUpdate({}: PropsMainPriceTagUpdate) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listUpdatePriceTag?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _specificationUuid, _productTypeUuid, _transportType, _dateFrom, _dateTo]}
 				/>
 			</div>

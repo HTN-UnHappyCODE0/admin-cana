@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import {ICustomer, PropsMainPageWorkshop} from './interfaces';
+import { ICustomer, PropsMainPageWorkshop } from './interfaces';
 import styles from './MainPageWorkshop.module.scss';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -16,13 +16,13 @@ import {
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
 import customerServices from '~/services/customerServices';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Loading from '~/components/common/Loading';
 import FilterCustom from '~/components/common/FilterCustom';
 import Search from '~/components/common/Search';
 import Button from '~/components/common/Button';
 import icons from '~/constants/images/icons';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
@@ -33,15 +33,15 @@ import Pagination from '~/components/common/Pagination';
 import Dialog from '~/components/common/Dialog';
 import partnerServices from '~/services/partnerServices';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
+import { LuPencil } from 'react-icons/lu';
+import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
 import userServices from '~/services/userServices';
 import regencyServices from '~/services/regencyServices';
 
-function MainPageWorkshop({}: PropsMainPageWorkshop) {
+function MainPageWorkshop({ }: PropsMainPageWorkshop) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
-	const {_page, _pageSize, _status, _keyword, _parentUserUuid, _userUuid, _partnerUuid} = router.query;
+	const { _page, _pageSize, _status, _keyword, _parentUserUuid, _userUuid, _partnerUuid } = router.query;
 	// const [customerUuid, setCustomerUuid] = useState<string>('');
 	const [dataStatusCustomer, setDataStatusCustomer] = useState<ICustomer | null>(null);
 
@@ -117,7 +117,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 					isList: true,
 					http: customerServices.listCustomer({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						specUuid: '',
 						provinceId: '',
@@ -191,7 +191,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 					},
 				},
 				undefined,
-				{shallow: true, scroll: false}
+				{ shallow: true, scroll: false }
 			);
 		}
 	}, [_parentUserUuid]);
@@ -325,7 +325,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: any) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -365,7 +365,7 @@ function MainPageWorkshop({}: PropsMainPageWorkshop) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listCustomer?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _status, _keyword, _partnerUuid]}
 				/>
 				<Dialog

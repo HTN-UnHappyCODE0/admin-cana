@@ -1,20 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {PropsMainAccountant} from './interfaces';
+import { PropsMainAccountant } from './interfaces';
 import styles from './MainAccountant.module.scss';
 import Search from '~/components/common/Search';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import clsx from 'clsx';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-function MainAccountant({}: PropsMainAccountant) {
+function MainAccountant({ }: PropsMainAccountant) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _time, _dateFrom, _dateTo} = router.query;
+	const { _page, _pageSize, _keyword, _time, _dateFrom, _dateTo } = router.query;
 
 	return (
 		<div className={styles.container}>
@@ -71,7 +71,7 @@ function MainAccountant({}: PropsMainAccountant) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={400}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _keyword, _time, _dateFrom, _dateTo]}
 					/>
 				</DataWrapper>

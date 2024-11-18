@@ -1,27 +1,27 @@
 import React from 'react';
 
-import {PropsMainHistoryPriceTag} from './interfaces';
+import { PropsMainHistoryPriceTag } from './interfaces';
 import styles from './MainHistoryPriceTag.module.scss';
 import Link from 'next/link';
-import {PATH} from '~/constants/config';
-import {IoArrowBackOutline} from 'react-icons/io5';
-import {useQuery} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_TRANSPORT} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { PATH } from '~/constants/config';
+import { IoArrowBackOutline } from 'react-icons/io5';
+import { useQuery } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_TRANSPORT } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import priceTagServices from '~/services/priceTagServices';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
-import {IPriceTag} from '../MainPriceTagCurrent/interfaces';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { IPriceTag } from '../MainPriceTagCurrent/interfaces';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
 
-function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
+function MainHistoryPriceTag({ }: PropsMainHistoryPriceTag) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _customerUuid, _specUuid, _productTypeUuid, _transportType} = router.query;
+	const { _page, _pageSize, _customerUuid, _specUuid, _productTypeUuid, _transportType } = router.query;
 
 	const historyPriceTag = useQuery(
 		[QUERY_KEY.table_lich_su_gia_tien_hang, _page, _pageSize, _customerUuid, _specUuid, _productTypeUuid, _transportType],
@@ -31,7 +31,7 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 					isList: true,
 					http: priceTagServices.listPriceTagHistory({
 						page: Number(_page) || 1,
-						pageSize: Number(_pageSize) || 50,
+						pageSize: Number(_pageSize) || 200,
 						keyword: '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -114,7 +114,7 @@ function MainHistoryPriceTag({}: PropsMainHistoryPriceTag) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={historyPriceTag?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _customerUuid, _specUuid, _productTypeUuid, _transportType]}
 				/>
 			</div>

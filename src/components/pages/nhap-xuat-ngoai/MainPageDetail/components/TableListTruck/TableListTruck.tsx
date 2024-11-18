@@ -1,26 +1,26 @@
-import React, {Fragment} from 'react';
-import {PropsTableListTruck} from './interfaces';
+import React, { Fragment } from 'react';
+import { PropsTableListTruck } from './interfaces';
 import styles from './TableListTruck.module.scss';
 import DataWrapper from '~/components/common/DataWrapper';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import clsx from 'clsx';
 import Search from '~/components/common/Search';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {useQuery} from '@tanstack/react-query';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { useQuery } from '@tanstack/react-query';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { httpRequest } from '~/services';
 import weightSessionServices from '~/services/weightSessionServices';
-import {convertCoin} from '~/common/funcs/convertCoin';
+import { convertCoin } from '~/common/funcs/convertCoin';
 import Moment from 'react-moment';
-import {convertWeight} from '~/common/funcs/optionConvert';
+import { convertWeight } from '~/common/funcs/optionConvert';
 
-function TableListTruck({}: PropsTableListTruck) {
+function TableListTruck({ }: PropsTableListTruck) {
 	const router = useRouter();
 
-	const {_id, _keyword, _page, _pageSize} = router.query;
+	const { _id, _keyword, _page, _pageSize } = router.query;
 
 	const listWeightSessionGroupTruck = useQuery([QUERY_KEY.table_chi_tiet_xe_hang_phieu_can, _page, _pageSize, _keyword, _id], {
 		queryFn: () =>
@@ -28,7 +28,7 @@ function TableListTruck({}: PropsTableListTruck) {
 				isList: true,
 				http: weightSessionServices.getListWeightSessionGroupTruck({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -126,7 +126,7 @@ function TableListTruck({}: PropsTableListTruck) {
 				</DataWrapper>
 				<Pagination
 					currentPage={Number(_page) || 1}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					total={listWeightSessionGroupTruck?.data?.pagination?.totalCount}
 					dependencies={[_id, _keyword, _pageSize]}
 				/>

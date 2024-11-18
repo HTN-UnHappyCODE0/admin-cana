@@ -1,25 +1,25 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {IShip, PropsMainPageShip} from './interfaces';
+import { IShip, PropsMainPageShip } from './interfaces';
 import styles from './MainPageShip.module.scss';
 import Pagination from '~/components/common/Pagination';
 import DataWrapper from '~/components/common/DataWrapper';
 import Search from '~/components/common/Search';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
 import FilterCustom from '~/components/common/FilterCustom';
 import Button from '~/components/common/Button';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import TagStatus from '~/components/common/TagStatus';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
-import {HiOutlineLockClosed} from 'react-icons/hi';
+import { LuPencil } from 'react-icons/lu';
+import { HiOutlineLockClosed } from 'react-icons/hi';
 import Dialog from '~/components/common/Dialog';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import TippyHeadless from '@tippyjs/react/headless';
 import shipServices from '~/services/shipServices';
 import Loading from '~/components/common/Loading';
@@ -27,10 +27,10 @@ import Tippy from '@tippyjs/react';
 import clsx from 'clsx';
 import Moment from 'react-moment';
 
-function MainPageShip({}: PropsMainPageShip) {
+function MainPageShip({ }: PropsMainPageShip) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
-	const {_page, _pageSize, _keyword, _status} = router.query;
+	const { _page, _pageSize, _keyword, _status } = router.query;
 
 	const [dataStatus, setDataStatus] = useState<IShip | null>(null);
 	const [uuidDescription, setUuidDescription] = useState<string>('');
@@ -41,7 +41,7 @@ function MainPageShip({}: PropsMainPageShip) {
 				isList: true,
 				http: shipServices.listShip({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					status: !!_status ? Number(_status) : null,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -178,7 +178,7 @@ function MainPageShip({}: PropsMainPageShip) {
 														setUuidDescription(uuidDescription ? '' : data.uuid);
 													}
 												}}
-												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
+												className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
 											>
 												{data?.description || '---'}
 											</p>
@@ -190,7 +190,7 @@ function MainPageShip({}: PropsMainPageShip) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IShip) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -215,7 +215,7 @@ function MainPageShip({}: PropsMainPageShip) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listShip?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _status]}
 				/>
 			</div>

@@ -1,19 +1,19 @@
 import React from 'react';
-import {PropsMainOther} from './interfaces';
+import { PropsMainOther } from './interfaces';
 import styles from './MainOther.module.scss';
 import Search from '~/components/common/Search';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import clsx from 'clsx';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 
-function MainOther({}: PropsMainOther) {
+function MainOther({ }: PropsMainOther) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _time, _dateFrom, _dateTo} = router.query;
+	const { _page, _pageSize, _keyword, _time, _dateFrom, _dateTo } = router.query;
 
 	return (
 		<div className={styles.container}>
@@ -67,7 +67,7 @@ function MainOther({}: PropsMainOther) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={400}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _keyword, _time, _dateFrom, _dateTo]}
 					/>
 				</DataWrapper>

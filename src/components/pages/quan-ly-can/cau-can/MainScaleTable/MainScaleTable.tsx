@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import icons from '~/constants/images/icons';
 import Image from 'next/image';
-import {IScalesMachine, PropsMainScaleTable} from './interfaces';
+import { IScalesMachine, PropsMainScaleTable } from './interfaces';
 import styles from './MainScaleTable.module.scss';
 import Search from '~/components/common/Search';
 import Button from '~/components/common/Button';
@@ -9,29 +9,29 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Popup from '~/components/common/Popup';
 import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import Dialog from '~/components/common/Dialog';
 import CreateScaleTable from '../CreateScaleTable';
 import UpdateScaleTable from '../UpdateScaleTable';
-import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {httpRequest} from '~/services';
+import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpRequest } from '~/services';
 import FilterCustom from '~/components/common/FilterCustom';
 import Loading from '~/components/common/Loading';
 import TagStatus from '~/components/common/TagStatus';
-import {HiOutlineLockClosed} from 'react-icons/hi';
+import { HiOutlineLockClosed } from 'react-icons/hi';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import scalesMachineServices from '~/services/scalesMachineServices';
-function MainScaleTable({}: PropsMainScaleTable) {
+function MainScaleTable({ }: PropsMainScaleTable) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _status} = router.query;
+	const { _page, _pageSize, _keyword, _status } = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const [dataStatus, setDataStatus] = useState<IScalesMachine | null>(null);
@@ -43,7 +43,7 @@ function MainScaleTable({}: PropsMainScaleTable) {
 				isList: true,
 				http: scalesMachineServices.listScalesMachine({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -166,7 +166,7 @@ function MainScaleTable({}: PropsMainScaleTable) {
 														setUuidDescription(uuidDescription ? '' : data.uuid);
 													}
 												}}
-												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
+												className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
 											>
 												{data?.description || '---'}
 											</p>
@@ -182,7 +182,7 @@ function MainScaleTable({}: PropsMainScaleTable) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IScalesMachine) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -209,7 +209,7 @@ function MainScaleTable({}: PropsMainScaleTable) {
 				<Pagination
 					currentPage={Number(_page) || 1}
 					total={listScalesMachine?.data?.pagination?.totalCount}
-					pageSize={Number(_pageSize) || 50}
+					pageSize={Number(_pageSize) || 200}
 					dependencies={[_pageSize, _keyword, _status]}
 				/>
 			</div>

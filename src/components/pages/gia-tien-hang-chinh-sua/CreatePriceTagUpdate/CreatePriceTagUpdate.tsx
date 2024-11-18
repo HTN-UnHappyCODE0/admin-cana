@@ -155,7 +155,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 				isList: true,
 				http: batchBillServices.getListBill({
 					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
@@ -510,7 +510,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 							</DataWrapper>
 							<Pagination
 								currentPage={Number(_page) || 1}
-								pageSize={Number(_pageSize) || 50}
+								pageSize={Number(_pageSize) || 200}
 								total={getListBatchBill?.data?.pagination?.totalCount}
 								dependencies={[_pageSize, _keyword, _dateFrom, _dateTo]}
 							/>
@@ -693,7 +693,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 							</DataWrapper>
 							<Pagination
 								currentPage={Number(_page) || 1}
-								pageSize={Number(_pageSize) || 50}
+								pageSize={Number(_pageSize) || 200}
 								total={1}
 								dependencies={[
 									_pageSize,

@@ -1,23 +1,23 @@
-import React, {Fragment, useState} from 'react';
-import {IPageCustomerService, PropsPageCustomerService} from './interfaces';
+import React, { Fragment, useState } from 'react';
+import { IPageCustomerService, PropsPageCustomerService } from './interfaces';
 import styles from './PageCustomerService.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
 import Button from '~/components/common/Button';
-import {PATH} from '~/constants/config';
+import { PATH } from '~/constants/config';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Table from '~/components/common/Table';
-import {LuPencil} from 'react-icons/lu';
+import { LuPencil } from 'react-icons/lu';
 import IconCustom from '~/components/common/IconCustom';
 import Pagination from '~/components/common/Pagination';
 import Dialog from '~/components/common/Dialog';
 import Link from 'next/link';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
+import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -27,7 +27,7 @@ import {
 	REGENCY_NAME,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
-import {httpRequest} from '~/services';
+import { httpRequest } from '~/services';
 import partnerServices from '~/services/partnerServices';
 import userServices from '~/services/userServices';
 import TagStatus from '~/components/common/TagStatus';
@@ -39,11 +39,11 @@ import regencyServices from '~/services/regencyServices';
 import FlexLayout from '~/components/layouts/FlexLayout';
 import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
 
-function PageCustomerService({}: PropsPageCustomerService) {
+function PageCustomerService({ }: PropsPageCustomerService) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const {_page, _pageSize, _keyword, _manager, _dateFrom, _dateTo, _status, _userUuid} = router.query;
+	const { _page, _pageSize, _keyword, _manager, _dateFrom, _dateTo, _status, _userUuid } = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<IPageCustomerService | null>(null);
 
@@ -96,7 +96,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 			httpRequest({
 				isList: true,
 				http: partnerServices.listPartner({
-					pageSize: Number(_pageSize) || 50,
+					pageSize: Number(_pageSize) || 200,
 					page: Number(_page) || 1,
 					keyword: (_keyword as string) || '',
 					status: !!_status ? Number(_status) : null,
@@ -254,7 +254,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 															setUuidDescription(uuidDescription ? '' : data.uuid);
 														}
 													}}
-													className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
+													className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
 												>
 													{data?.description || '---'}
 												</p>
@@ -270,7 +270,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 									title: 'Tác vụ',
 									fixedRight: true,
 									render: (data: IPageCustomerService) => (
-										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+										<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
 											<IconCustom
 												edit
 												icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -303,7 +303,7 @@ function PageCustomerService({}: PropsPageCustomerService) {
 					<Pagination
 						currentPage={Number(_page) || 1}
 						total={listPartner?.data?.pagination?.totalCount}
-						pageSize={Number(_pageSize) || 50}
+						pageSize={Number(_pageSize) || 200}
 						dependencies={[_pageSize, _keyword, _manager, _dateFrom, _dateTo, _status]}
 					/>
 				</FullColumnFlex>
