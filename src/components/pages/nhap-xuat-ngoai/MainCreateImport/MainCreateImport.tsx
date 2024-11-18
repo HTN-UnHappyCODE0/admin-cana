@@ -30,7 +30,6 @@ import storageServices from '~/services/storageServices';
 import warehouseServices from '~/services/warehouseServices';
 import batchBillServices from '~/services/batchBillServices';
 import { price } from '~/common/funcs/convertCoin';
-import moment from 'moment';
 import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import { toastWarn } from '~/common/funcs/toast';
 import uploadImageService from '~/services/uploadService';

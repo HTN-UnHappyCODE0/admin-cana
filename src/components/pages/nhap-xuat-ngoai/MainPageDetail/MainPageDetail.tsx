@@ -15,7 +15,6 @@ import {httpRequest} from '~/services';
 import batchBillServices from '~/services/batchBillServices';
 import Button from '~/components/common/Button';
 import {LuPencil} from 'react-icons/lu';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import {IDetailBatchBill} from '../../lenh-can/MainDetailBill/interfaces';
 import {convertWeight} from '~/common/funcs/optionConvert';
 import TableUpdateBillHistory from './components/TableUpdateBillHistory';

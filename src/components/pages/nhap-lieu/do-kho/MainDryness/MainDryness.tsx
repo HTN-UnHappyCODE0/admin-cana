@@ -38,7 +38,6 @@ import Button from '~/components/common/Button';
 import { Edit2 } from 'iconsax-react';
 import { toastWarn } from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
-import { LuFileSymlink } from 'react-icons/lu';
 import { IoMdAdd } from 'react-icons/io';
 import Dialog from '~/components/common/Dialog';
 import Popup from '~/components/common/Popup';
