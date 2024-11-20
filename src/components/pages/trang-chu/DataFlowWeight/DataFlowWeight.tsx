@@ -18,7 +18,7 @@ function DataFlowWeight({}: PropsDataFlowWeight) {
 			<div className={styles.head}>
 				<h3>Luồng dữ liệu duyệt khối lượng:</h3>
 				<div className={styles.filter}>
-					<SelectFilterDate isOptionDateAll={true} date={date} setDate={setDate} typeDate={typeDate} setTypeDate={setTypeDate} />
+					<SelectFilterDate isOptionDateAll={false} date={date} setDate={setDate} typeDate={typeDate} setTypeDate={setTypeDate} />
 				</div>
 			</div>
 			<div className={styles.main}>

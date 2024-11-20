@@ -18,7 +18,7 @@ function DataFlowDryness({}: PropsDataFlowDryness) {
 			<div className={styles.head}>
 				<h3>Luồng dữ liệu duyệt độ khô:</h3>
 				<div className={styles.filter}>
-					<SelectFilterDate isOptionDateAll={true} date={date} setDate={setDate} typeDate={typeDate} setTypeDate={setTypeDate} />
+					<SelectFilterDate isOptionDateAll={false} date={date} setDate={setDate} typeDate={typeDate} setTypeDate={setTypeDate} />
 				</div>
 			</div>
 			<div className={styles.main}>
