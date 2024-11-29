@@ -363,3 +363,8 @@ export enum TYPE_LOGIN {
 	KE_TOAN,
 	NHAP_HANG,
 }
+
+export enum TYPE_STORE {
+	ADMIN_KHO,
+	NHAP_HANG,
+}
