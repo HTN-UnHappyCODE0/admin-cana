@@ -49,6 +49,28 @@ const logServices = {
 	feedBackLog: (data: {uuid: string; status: number; description: string}, tokenAxios?: any) => {
 		return axiosClient.post(`/CaseLog/feedback-caselog`, data, {cancelToken: tokenAxios});
 	},
+	getListActionAudit: (
+		data: {
+			pageSize: number;
+			page: number;
+			keyword: string;
+			isDescending: CONFIG_DESCENDING;
+			typeFind: CONFIG_TYPE_FIND;
+			isPaging: CONFIG_PAGING;
+			status: number | null;
+			caseId: number | null;
+			weightSessionUuid: string;
+			type: number | null;
+			username: string;
+			timeStart: string | null;
+			timeEnd: string | null;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/CaseLog/get-list-action-audit`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
 };
 
 export default logServices;
