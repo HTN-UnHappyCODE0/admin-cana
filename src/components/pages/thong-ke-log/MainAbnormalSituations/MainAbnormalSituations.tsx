@@ -73,7 +73,7 @@ function MainAbnormalSituations({}: PropsMainAbnormalSituations) {
 							column={[
 								{
 									title: 'STT',
-									render: (data: ILog, index: number) => <>{index}</>,
+									render: (data: ILog, index: number) => <>{index + 1}</>,
 								},
 								{
 									title: 'Tài khoản',

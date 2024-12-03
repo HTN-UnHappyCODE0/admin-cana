@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import { Fragment, ReactElement } from 'react';
+import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import LayoutPages from '~/components/layouts/LayoutPages';
-import { PATH } from '~/constants/config';
+import {PATH} from '~/constants/config';
 import MainAbnormalSituations from '~/components/pages/thong-ke-log/MainAbnormalSituations';
 export default function Page() {
 	return (
@@ -15,22 +15,6 @@ export default function Page() {
 			</Head>
 			<LayoutPages
 				listPages={[
-					// {
-					// 	title: 'Dữ liệu cân',
-					// 	url: PATH.ThongKeDuLieuCan,
-					// },
-					// {
-					// 	title: 'Dữ liệu kho',
-					// 	url: PATH.ThongKeDuLieuKho,
-					// },
-					// {
-					// 	title: 'Kế toán & tài chính',
-					// 	url: PATH.ThongKeKeToanTaiChinh,
-					// },
-					// {
-					// 	title: 'Khác',
-					// 	url: PATH.ThongKeKhac,
-					// },
 					{
 						title: 'Log',
 						url: PATH.ThongKeLog,
