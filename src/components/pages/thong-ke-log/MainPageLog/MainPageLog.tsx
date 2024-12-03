@@ -3,45 +3,15 @@ import React, {Fragment, useRef, useState} from 'react';
 import {PropsMainPageLog} from './interfaces';
 import styles from './MainPageLog.module.scss';
 import Search from '~/components/common/Search';
-import FilterCustom from '~/components/common/FilterCustom';
-import Button from '~/components/common/Button';
-import {PATH} from '~/constants/config';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import {useRouter} from 'next/router';
 import Table from '~/components/common/Table';
-import IconCustom from '~/components/common/IconCustom';
-import {LuPencil} from 'react-icons/lu';
-import {TickCircle, UserAdd} from 'iconsax-react';
 import Pagination from '~/components/common/Pagination';
-import Dialog from '~/components/common/Dialog';
-import Image from 'next/image';
-import icons from '~/constants/images/icons';
-import Link from 'next/link';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {
-	CONFIG_DESCENDING,
-	CONFIG_PAGING,
-	CONFIG_STATUS,
-	CONFIG_TYPE_FIND,
-	QUERY_KEY,
-	TYPE_DATE,
-	TYPE_UPDATE_BILL,
-} from '~/constants/config/enum';
+
+import {useQuery} from '@tanstack/react-query';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_DATE, TYPE_UPDATE_BILL} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
-import userServices from '~/services/userServices';
-import Loading from '~/components/common/Loading';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
-import TagStatus from '~/components/common/TagStatus';
-import regencyServices from '~/services/regencyServices';
-import Popup from '~/components/common/Popup';
-import Tippy from '@tippyjs/react';
-import TippyHeadless from '@tippyjs/react/headless';
-import clsx from 'clsx';
-import FlexLayout from '~/components/layouts/FlexLayout';
-import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
-import {useSelector} from 'react-redux';
-import {RootState} from '~/redux/store';
 import Moment from 'react-moment';
 import logServices from '~/services/logServices';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
