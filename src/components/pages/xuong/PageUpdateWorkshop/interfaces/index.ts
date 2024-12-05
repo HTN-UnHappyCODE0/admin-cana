@@ -18,4 +18,5 @@ export interface IFormUpdateWorkshop {
 	isSift: TYPE_SIFT | null;
 	warehouseUuid: string;
 	typeCus: number;
+	companyUuid: string;
 }

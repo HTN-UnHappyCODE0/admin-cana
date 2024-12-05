@@ -40,6 +40,12 @@ export interface IDetailCustomer {
 	name: string;
 	uuid: string;
 	customerSpec: IlistCustomerSpec[];
+	companyUu: {
+		code: string;
+		name: string;
+		status: number;
+		uuid: string;
+	};
 }
 
 export interface IlistCustomerSpec {
