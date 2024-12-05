@@ -8,4 +8,5 @@ export interface IFormCreateWarehouse {
 	dictrictId: string;
 	townId: string;
 	description: string;
+	companyUuid: string;
 }
