@@ -30,6 +30,7 @@ import regencyServices from '~/services/regencyServices';
 import userServices from '~/services/userServices';
 import warehouseServices from '~/services/warehouseServices';
 import partnerServices from '~/services/partnerServices';
+import companyServices from '~/services/companyServices';
 
 function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 	const router = useRouter();
@@ -51,6 +52,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 		partnerUuid: '',
 		isSift: TYPE_SIFT.KHONG_CAN_SANG,
 		warehouseUuid: '',
+		companyUuid: '',
 	});
 
 	const listRegency = useQuery([QUERY_KEY.dropdown_chuc_vu], {
@@ -165,6 +167,25 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 		enabled: !!form?.districtId,
 	});
 
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const listWarehouse = useQuery([QUERY_KEY.dropdown_kho_hang_chinh], {
 		queryFn: () =>
 			httpRequest({
@@ -210,6 +231,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 					email: form?.email,
 					partnerUuid: _partnerUuid ? String(_partnerUuid) : form?.partnerUuid,
 					typeCus: Number(_typeCus) || TYPE_CUSTOMER.NHA_CUNG_CAP,
+					companyUuid: form?.companyUuid,
 				}),
 			}),
 		onSuccess(data) {
@@ -232,6 +254,9 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 		}
 		if (!form.provinceId) {
 			return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
+		}
+		if (!form.companyUuid) {
+			return toastWarn({msg: 'Vui lòng chọn KV cảng xuất khẩu!'});
 		}
 		if (!form.districtId) {
 			return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
@@ -366,7 +391,7 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 							</div>
 						</div>
 					</div>
-					<div className={clsx('mt', 'col_2')}>
+					<div className={clsx('mt', 'col_3')}>
 						<Input
 							name='name'
 							value={form.name || ''}
@@ -412,6 +437,27 @@ function PageCreateWorkshop({}: PropsPageCreateWorkshop) {
 								placeholder='Nhập tên người liên hệ'
 							/>
 						</div>
+						<Select
+							isSearch
+							name='companyUuid'
+							value={form.companyUuid}
+							placeholder='Chọn KV cảng xuất khẩu'
+							onChange={(e) =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: e.target.value,
+								}))
+							}
+							label={
+								<span>
+									Thuộc KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
 					</div>
 
 					<div className={clsx('mt', 'col_3')}>

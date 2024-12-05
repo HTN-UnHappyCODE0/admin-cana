@@ -29,6 +29,7 @@ import Form, {FormContext, Input} from '~/components/common/Form';
 import Button from '~/components/common/Button';
 import Loading from '~/components/common/Loading';
 import partnerServices from '~/services/partnerServices';
+import companyServices from '~/services/companyServices';
 
 function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 	const router = useRouter();
@@ -51,6 +52,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		warehouseUuid: '',
 		partnerUuid: '',
 		typeCus: 0,
+		companyUuid: '',
 	});
 
 	const {data: detailCustomer, isSuccess} = useQuery([QUERY_KEY.chi_tiet_khach_hang, _customerUuid], {
@@ -78,6 +80,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 					warehouseUuid: data?.warehouseUu?.uuid || '',
 					partnerUuid: data?.partnerUu?.uuid || '',
 					typeCus: data?.typeCus,
+					companyUuid: data?.companyUu?.uuid || '',
 				});
 			}
 		},
@@ -181,6 +184,25 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		enabled: !!form?.provinceId,
 	});
 
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form.districtId], {
 		queryFn: () =>
 			httpRequest({
@@ -250,6 +272,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 					email: form?.email,
 					partnerUuid: _partnerUuid ? String(_partnerUuid) : form?.partnerUuid,
 					typeCus: form.typeCus,
+					companyUuid: form.companyUuid,
 				}),
 			}),
 		onSuccess(data) {
@@ -275,6 +298,9 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		}
 		if (!form.districtId) {
 			return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
+		}
+		if (!form.companyUuid) {
+			return toastWarn({msg: 'Vui lòng chọn KV cảng xuất khẩu!'});
 		}
 		if (!form.partnerUuid) {
 			return toastWarn({
@@ -496,7 +522,7 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 						</div>
 					</div>
 
-					<div className={clsx('mt', 'col_2')}>
+					<div className={clsx('mt', 'col_3')}>
 						<Input
 							name='email'
 							value={form.email || ''}
@@ -523,6 +549,27 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 								placeholder='Nhập số điện thoại'
 							/>
 						</div>
+						<Select
+							isSearch
+							name='companyUuid'
+							value={form.companyUuid}
+							placeholder='Chọn KV cảng xuất khẩu'
+							onChange={(e) =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: e.target.value,
+								}))
+							}
+							label={
+								<span>
+									Thuộc KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
 					</div>
 
 					<div className={clsx('mt', 'col_3')}>

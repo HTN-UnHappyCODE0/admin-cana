@@ -16,4 +16,5 @@ export interface IFormCreateWorkshop {
 	transportType: TYPE_TRANSPORT | null;
 	isSift: TYPE_SIFT | null;
 	warehouseUuid: string;
+	companyUuid: string;
 }
