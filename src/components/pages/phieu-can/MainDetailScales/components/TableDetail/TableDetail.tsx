@@ -1,12 +1,12 @@
-import React, { Fragment, useState } from 'react';
-import { IWeightSession, PropsTableDetail } from './interfaces';
+import React, {Fragment, useState} from 'react';
+import {IWeightSession, PropsTableDetail} from './interfaces';
 import styles from './TableDetail.module.scss';
 import DataWrapper from '~/components/common/DataWrapper';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import clsx from 'clsx';
 import Search from '~/components/common/Search';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -17,14 +17,14 @@ import {
 	TYPE_BATCH,
 	TYPE_DATE,
 } from '~/constants/config/enum';
-import { useQuery } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {useQuery} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Moment from 'react-moment';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import weightSessionServices from '~/services/weightSessionServices';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import FilterCustom from '~/components/common/FilterCustom';
 import shipServices from '~/services/shipServices';
@@ -34,8 +34,9 @@ import storageServices from '~/services/storageServices';
 import customerServices from '~/services/customerServices';
 import useDebounce from '~/common/hooks/useDebounce';
 import scalesStationServices from '~/services/scalesStationServices';
+import StateActive from '~/components/common/StateActive';
 
-function TableDetail({ }: PropsTableDetail) {
+function TableDetail({}: PropsTableDetail) {
 	const router = useRouter();
 
 	const {
@@ -59,7 +60,7 @@ function TableDetail({ }: PropsTableDetail) {
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 
 	const [byFilter, setByFilter] = useState<boolean>(false);
-	const [formCode, setFormCode] = useState<{ codeStart: string; codeEnd: string }>({
+	const [formCode, setFormCode] = useState<{codeStart: string; codeEnd: string}>({
 		codeStart: '',
 		codeEnd: '',
 	});
@@ -244,13 +245,13 @@ function TableDetail({ }: PropsTableDetail) {
 						status: !!_status
 							? [Number(_status)]
 							: [
-								STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
-								STATUS_WEIGHT_SESSION.CAN_LAN_2,
-								STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
-								STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
-								STATUS_WEIGHT_SESSION.KCS_XONG,
-								STATUS_WEIGHT_SESSION.DA_HUY,
-							],
+									STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+									STATUS_WEIGHT_SESSION.CAN_LAN_2,
+									STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+									STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
+									STATUS_WEIGHT_SESSION.KCS_XONG,
+									STATUS_WEIGHT_SESSION.DA_HUY,
+							  ],
 						truckUuid: !!_truckUuid ? (_truckUuid as string) : '',
 						shipUuid: (_shipUuid as string) || '',
 						shift: !!_shift ? Number(_shift) : null,
@@ -265,8 +266,8 @@ function TableDetail({ }: PropsTableDetail) {
 	);
 
 	const handleChangeCheckBox = (e: any) => {
-		const { checked } = e.target;
-		const { _status, ...rest } = router.query;
+		const {checked} = e.target;
+		const {_status, ...rest} = router.query;
 
 		if (checked) {
 			return router.replace(
@@ -434,7 +435,7 @@ function TableDetail({ }: PropsTableDetail) {
 									type='checkbox'
 									id='loc_theo_phieu'
 									onChange={(e) => {
-										const { checked } = e.target;
+										const {checked} = e.target;
 
 										if (checked) {
 											setByFilter(true);
@@ -503,7 +504,7 @@ function TableDetail({ }: PropsTableDetail) {
 								title: 'Từ',
 								render: (data: IWeightSession) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name}</p>
 										{/* <p>({data?.fromUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
@@ -512,7 +513,7 @@ function TableDetail({ }: PropsTableDetail) {
 								title: 'Đến',
 								render: (data: IWeightSession) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
 										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
@@ -566,6 +567,52 @@ function TableDetail({ }: PropsTableDetail) {
 								),
 							},
 							{
+								title: 'Trạng thái',
+								render: (data: IWeightSession) => (
+									<StateActive
+										stateActive={data?.status}
+										listState={[
+											{
+												state: STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+												text: 'Đã cập nhật quy cách',
+												textColor: '#9757D7',
+												backgroundColor: 'rgba(151, 87, 215, 0.10)',
+											},
+											{
+												state: STATUS_WEIGHT_SESSION.DA_HUY,
+												text: 'Đã hủy',
+												textColor: '#F95B5B',
+												backgroundColor: 'rgba(249, 91, 91, 0.10)',
+											},
+											{
+												state: STATUS_WEIGHT_SESSION.CAN_LAN_2,
+												text: 'Đã cân xong',
+												textColor: '#2D74FF',
+												backgroundColor: 'rgba(45, 116, 255, 0.10)',
+											},
+											{
+												state: STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+												text: 'Đã cập nhật độ khô',
+												textColor: '#FDAD73',
+												backgroundColor: 'rgba(253, 173, 115, 0.10)',
+											},
+											{
+												state: STATUS_WEIGHT_SESSION.KCS_XONG,
+												text: 'Đã KCS',
+												textColor: '#41CD4F',
+												backgroundColor: 'rgba(65, 205, 79, 0.1)',
+											},
+											{
+												state: STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
+												text: 'Kết thúc',
+												textColor: '#0EA5E9',
+												backgroundColor: 'rgba(14, 165, 233, 0.1)',
+											},
+										]}
+									/>
+								),
+							},
+							{
 								title: 'Ghi chú',
 								render: (data: IWeightSession) => (
 									<TippyHeadless
@@ -589,7 +636,7 @@ function TableDetail({ }: PropsTableDetail) {
 														setUuidDescription(uuidDescription ? '' : data.uuid);
 													}
 												}}
-												className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
+												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
 											>
 												{data?.description || '---'}
 											</p>

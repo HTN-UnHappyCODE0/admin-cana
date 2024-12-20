@@ -16,4 +16,5 @@ export interface IFormCreate {
 	districtId: string;
 	townId: string;
 	provinceOwnerId: string;
+	companyUuid: string;
 }

@@ -20,6 +20,7 @@ import moment from 'moment';
 import {useRouter} from 'next/router';
 import Loading from '~/components/common/Loading';
 import {timeSubmit} from '~/common/funcs/optionConvert';
+import companyServices from '~/services/companyServices';
 
 function MainCreate({}: PropsMainCreate) {
 	const router = useRouter();
@@ -39,6 +40,7 @@ function MainCreate({}: PropsMainCreate) {
 		districtId: '',
 		townId: '',
 		provinceOwnerId: '',
+		companyUuid: '',
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -106,6 +108,25 @@ function MainCreate({}: PropsMainCreate) {
 		},
 	});
 
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const listUserManager = useQuery([QUERY_KEY.dropdown_nguoi_quan_ly_nhan_vien], {
 		queryFn: () =>
 			httpRequest({
@@ -154,6 +175,7 @@ function MainCreate({}: PropsMainCreate) {
 					districtId: form.districtId,
 					townId: form.townId,
 					provinceOwnerId: form.provinceOwnerId,
+					companyUuid: form?.companyUuid,
 				}),
 			}),
 		onSuccess(data) {
@@ -174,6 +196,7 @@ function MainCreate({}: PropsMainCreate) {
 					districtId: '',
 					townId: '',
 					provinceOwnerId: '',
+					companyUuid: '',
 				});
 				router.replace(PATH.NhanVien, undefined, {
 					scroll: false,
@@ -290,7 +313,7 @@ function MainCreate({}: PropsMainCreate) {
 							))}
 						</Select>
 					</div>
-					<div className={clsx('mt', 'col_2')}>
+					<div className={clsx('mt', 'col_3')}>
 						<Select
 							isSearch
 							name='ownerUuid'
@@ -327,6 +350,24 @@ function MainCreate({}: PropsMainCreate) {
 							}
 							placeholder='Nhập khu vực quản lý'
 						/>
+
+						<Select
+							isSearch
+							name='companyUuid'
+							placeholder='Chọn khu vực cảng xuất khẩu'
+							value={form?.companyUuid}
+							onChange={(e: any) =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: e.target.value,
+								}))
+							}
+							label={<span>Khu vực cảng xuất khẩu</span>}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
 					</div>
 					<div className={clsx('mt', 'col_3')}>
 						<Select
