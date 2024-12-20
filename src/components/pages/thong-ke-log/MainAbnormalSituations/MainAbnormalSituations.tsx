@@ -24,6 +24,7 @@ function MainAbnormalSituations({}: PropsMainAbnormalSituations) {
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [uuidCase, setUuidCase] = useState<string>('');
 	const [uuidCaseSelection, setUuidCaseSelection] = useState<string>('');
+	const [uuidReason, setUuidReason] = useState<string>('');
 
 	const listLog = useQuery([QUERY_KEY.table_log_bat_thuong, _page, _pageSize, _keyword, _status, _type], {
 		queryFn: () =>
@@ -155,7 +156,7 @@ function MainAbnormalSituations({}: PropsMainAbnormalSituations) {
 								},
 
 								{
-									title: 'Lý do',
+									title: 'Ghi chú',
 									render: (data: ILog) => (
 										<TippyHeadless
 											maxWidth={'100%'}
@@ -181,6 +182,38 @@ function MainAbnormalSituations({}: PropsMainAbnormalSituations) {
 													className={clsx(styles.description, {[styles.active]: uuidCaseSelection == data.uuid})}
 												>
 													{data?.caseSelection?.name || '---'}
+												</p>
+											</Tippy>
+										</TippyHeadless>
+									),
+								},
+								{
+									title: 'Lý do',
+									render: (data: ILog) => (
+										<TippyHeadless
+											maxWidth={'100%'}
+											interactive
+											onClickOutside={() => setUuidReason('')}
+											visible={uuidReason == data?.uuid}
+											placement='bottom'
+											render={(attrs) => (
+												<div className={styles.main_description}>
+													<p>{data?.reason}</p>
+												</div>
+											)}
+										>
+											<Tippy content='Xem chi tiết mô tả'>
+												<p
+													onClick={() => {
+														if (!data.reason) {
+															return;
+														} else {
+															setUuidReason(uuidReason ? '' : data.uuid);
+														}
+													}}
+													className={clsx(styles.description, {[styles.active]: uuidReason == data.uuid})}
+												>
+													{data?.reason || '---'}
 												</p>
 											</Tippy>
 										</TippyHeadless>

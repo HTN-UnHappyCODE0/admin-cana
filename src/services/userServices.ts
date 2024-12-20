@@ -69,6 +69,7 @@ const userServices = {
 			districtId: string;
 			townId: string;
 			provinceOwnerId: string;
+			companyUuid?: string;
 		},
 		tokenAxios?: any
 	) => {
