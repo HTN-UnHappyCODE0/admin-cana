@@ -218,6 +218,7 @@ function MainUpdateProfile({}: PropsMainUpdateProfile) {
 						uuid: infoUser?.uuid || '',
 						userName: infoUser?.userName || '',
 						fullname: form.fullName || '',
+						companyUuid: infoUser?.companyUuid || ''
 					})
 				);
 				router.replace(PATH.Profile, undefined, {
