@@ -15,4 +15,5 @@ export interface IFormUpdateCustomerExport {
 	address: string;
 	description: string;
 	companyUuid: string;
+	userKtUuid: string;
 }

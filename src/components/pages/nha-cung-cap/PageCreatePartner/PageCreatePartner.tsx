@@ -45,6 +45,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 		bankName: '',
 		bankAccount: '',
 		companyUuid: '',
+		userKtUuid: '',
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -155,6 +156,31 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 		enabled: listRegency.isSuccess,
 	});
 
+	const listUserKt = useQuery([QUERY_KEY.dropdown_nguoi_kt_quan_ly], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: userServices.listUser({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					regencyUuid: listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Nhân viên tài chính - kế toán'])
+						? listRegency?.data?.find((v: any) => v?.code == REGENCY_NAME['Nhân viên tài chính - kế toán'])?.uuid
+						: null,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+					provinceIDOwer: '',
+					regencyUuidExclude: '',
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+		enabled: listRegency.isSuccess,
+	});
+
 	const funcCreatePartner = useMutation({
 		mutationFn: () =>
 			httpRequest({
@@ -178,6 +204,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					bankAccount: form?.bankAccount,
 					type: TYPE_PARTNER.NCC,
 					companyUuid: form?.companyUuid,
+					ktUuid: form?.userKtUuid,
 				}),
 			}),
 		onSuccess(data) {
@@ -197,6 +224,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					bankName: '',
 					bankAccount: '',
 					companyUuid: '',
+					userKtUuid: '',
 				});
 				router.back();
 			}
@@ -288,7 +316,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_2')}>
+					<div className={clsx('mt', 'col_3')}>
 						<Input
 							name='director'
 							value={form.director || ''}
@@ -323,6 +351,25 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 								<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
 							))}
 						</Select>
+						<div>
+							<Select
+								isSearch
+								name='userKtUuid'
+								placeholder='Kế toán quản lý'
+								value={form?.userKtUuid}
+								onChange={(e: any) =>
+									setForm((prev: any) => ({
+										...prev,
+										userKtUuid: e.target.value,
+									}))
+								}
+								label={<span>Kế toán quản lý</span>}
+							>
+								{listUserKt?.data?.map((v: any) => (
+									<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
+								))}
+							</Select>
+						</div>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
 						<div>
