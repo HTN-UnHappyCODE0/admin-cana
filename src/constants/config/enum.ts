@@ -43,6 +43,7 @@ export enum QUERY_KEY {
 	dropdown_ma_tau,
 	dropdown_quan_ly_nhap_hang,
 	dropdown_loai_hang,
+	dropdown_nguoi_kt_quan_ly,
 
 	table_phieu_da_gui_KT,
 	table_cang_boc_do,
@@ -330,6 +331,7 @@ export enum REGENCY_NAME {
 	'Quản lý kho KCS' = '3',
 	'Phó Giám Đốc' = '2',
 	'Giám Đốc' = '1',
+	'admin' = '10',
 }
 
 // PAGE QUY CÁCH

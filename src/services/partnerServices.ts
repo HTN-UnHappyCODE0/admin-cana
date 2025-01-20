@@ -50,6 +50,7 @@ const partnerServices = {
 			bankName: string;
 			bankAccount: string;
 			companyUuid: string;
+			ktUuid: string;
 		},
 		tokenAxios?: any
 	) => {

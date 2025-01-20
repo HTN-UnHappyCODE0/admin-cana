@@ -15,4 +15,5 @@ export interface IFormUpdatePartner {
 	address: string;
 	description: string;
 	companyUuid: string;
+	userKtUuid: string;
 }

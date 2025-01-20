@@ -44,6 +44,12 @@ export interface IDetailCustomerExport {
 		status: number;
 		uuid: string;
 	};
+	ktUu: {
+		username: string;
+		status: number;
+		user: any;
+		uuid: string;
+	};
 }
 
 export interface IUserOwnerUu {

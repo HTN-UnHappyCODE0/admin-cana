@@ -1,22 +1,22 @@
 import Search from '~/components/common/Search';
 import Image from 'next/image';
-import { IRFID, PropsMainPageRFID } from './interfaces';
+import {IRFID, PropsMainPageRFID} from './interfaces';
 import styles from './MainPageRFID.module.scss';
 import FilterCustom from '~/components/common/FilterCustom';
-import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import Button from '~/components/common/Button';
 import icons from '~/constants/images/icons';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import IconCustom from '~/components/common/IconCustom';
-import { LuPencil } from 'react-icons/lu';
-import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
+import {LuPencil} from 'react-icons/lu';
+import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
 import Pagination from '~/components/common/Pagination';
-import { useRouter } from 'next/router';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { httpRequest } from '~/services';
+import {useRouter} from 'next/router';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {useState} from 'react';
+import {httpRequest} from '~/services';
 import rfidServices from '~/services/rfidServices';
 import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
@@ -27,11 +27,11 @@ import UpdateRFID from '../UpdateRFID';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
-function MainPageRFID({ }: PropsMainPageRFID) {
+function MainPageRFID({}: PropsMainPageRFID) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const { _page, _pageSize, _keyword, _status } = router.query;
+	const {_page, _pageSize, _keyword, _status} = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const [dataStatus, setDataStatus] = useState<IRFID | null>(null);
@@ -160,7 +160,7 @@ function MainPageRFID({ }: PropsMainPageRFID) {
 														setUuidDescription(uuidDescription ? '' : data.uuid);
 													}
 												}}
-												className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
+												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
 											>
 												{data?.description || '---'}
 											</p>
@@ -176,7 +176,7 @@ function MainPageRFID({ }: PropsMainPageRFID) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IRFID) => (
-									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}

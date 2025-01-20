@@ -15,4 +15,5 @@ export interface ICreateCustomerService {
 	address: string;
 	description: string;
 	companyUuid: string;
+	userKtUuid: string;
 }
