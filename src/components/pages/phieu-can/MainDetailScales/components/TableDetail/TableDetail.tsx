@@ -107,7 +107,7 @@ function TableDetail({}: PropsTableDetail) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -256,6 +256,7 @@ function TableDetail({}: PropsTableDetail) {
 						shipUuid: (_shipUuid as string) || '',
 						shift: !!_shift ? Number(_shift) : null,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
+						isHaveSpec: null,
 					}),
 				}),
 			select(data) {

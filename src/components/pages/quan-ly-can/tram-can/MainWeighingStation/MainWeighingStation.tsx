@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import icons from '~/constants/images/icons';
 import Image from 'next/image';
-import { IScalesStation, PropsMainWeighingStation } from './interfaces';
+import {IScalesStation, PropsMainWeighingStation} from './interfaces';
 import styles from './MainWeighingStation.module.scss';
 import Search from '~/components/common/Search';
 import Button from '~/components/common/Button';
@@ -9,29 +9,29 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import IconCustom from '~/components/common/IconCustom';
-import { LuPencil } from 'react-icons/lu';
+import {LuPencil} from 'react-icons/lu';
 import Dialog from '~/components/common/Dialog';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
-import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import FilterCustom from '~/components/common/FilterCustom';
 import Loading from '~/components/common/Loading';
 import TagStatus from '~/components/common/TagStatus';
-import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
-import { PATH } from '~/constants/config';
+import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
+import {PATH} from '~/constants/config';
 import Link from 'next/link';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import companyServices from '~/services/companyServices';
 import scalesStationServices from '~/services/scalesStationServices';
-function MainWeighingStation({ }: PropsMainWeighingStation) {
+function MainWeighingStation({}: PropsMainWeighingStation) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const { _page, _pageSize, _keyword, _status, _companyUuid } = router.query;
+	const {_page, _pageSize, _keyword, _status, _companyUuid} = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<IScalesStation | null>(null);
 
@@ -101,7 +101,7 @@ function MainWeighingStation({ }: PropsMainWeighingStation) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo tên trạm cân' />
 					</div>
-					<div style={{ minWidth: '240px' }}>
+					<div style={{minWidth: '240px'}}>
 						<FilterCustom
 							isSearch
 							name='KV cảng xuất khẩu'
@@ -158,7 +158,7 @@ function MainWeighingStation({ }: PropsMainWeighingStation) {
 							},
 							{
 								title: 'Mã trạm cân',
-								render: (data: IScalesStation) => <p style={{ fontWeight: 600 }}>{data?.code}</p>,
+								render: (data: IScalesStation) => <p style={{fontWeight: 600}}>{data?.code}</p>,
 							},
 							{
 								title: 'Tên trạm cân',
@@ -205,7 +205,7 @@ function MainWeighingStation({ }: PropsMainWeighingStation) {
 														setUuidDescription(uuidDescription ? '' : data.uuid);
 													}
 												}}
-												className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
+												className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
 											>
 												{data?.description || '---'}
 											</p>
@@ -221,7 +221,7 @@ function MainWeighingStation({ }: PropsMainWeighingStation) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IScalesStation) => (
-									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -260,7 +260,8 @@ function MainWeighingStation({ }: PropsMainWeighingStation) {
 				/>
 			</div>
 			<Dialog
-				danger
+				danger={dataStatus?.status == CONFIG_STATUS.HOAT_DONG}
+				green={dataStatus?.status != CONFIG_STATUS.HOAT_DONG}
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
 				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa trạm cân' : 'Mở khóa trạm cân'}

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { PropsMainWeightSessionService } from './interfaces';
+import {PropsMainWeightSessionService} from './interfaces';
 import styles from './MainWeightSessionService.module.scss';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import useDebounce from '~/common/hooks/useDebounce';
-import { useQuery } from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -16,15 +16,15 @@ import {
 	TYPE_DATE,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import { httpRequest } from '~/services';
+import {httpRequest} from '~/services';
 import batchBillServices from '~/services/batchBillServices';
 import truckServices from '~/services/truckServices';
 import wareServices from '~/services/wareServices';
 import Pagination from '~/components/common/Pagination';
 import DataWrapper from '~/components/common/DataWrapper';
 import Moment from 'react-moment';
-import { IWeightSession } from '../MainWeightSessionAll/interfaces';
-import { convertCoin } from '~/common/funcs/convertCoin';
+import {IWeightSession} from '../MainWeightSessionAll/interfaces';
+import {convertCoin} from '~/common/funcs/convertCoin';
 import Link from 'next/link';
 import Table from '~/components/common/Table';
 import Noti from '~/components/common/DataWrapper/components/Noti';
@@ -33,7 +33,7 @@ import FilterCustom from '~/components/common/FilterCustom';
 import Search from '~/components/common/Search';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import weightSessionServices from '~/services/weightSessionServices';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import GridColumn from '~/components/layouts/GridColumn';
 import icons from '~/constants/images/icons';
 import DashbroadWeightsession from '~/components/common/DashbroadWeightsession';
@@ -43,7 +43,7 @@ import customerServices from '~/services/customerServices';
 import StateActive from '~/components/common/StateActive';
 import scalesStationServices from '~/services/scalesStationServices';
 
-function MainWeightSessionService({ }: PropsMainWeightSessionService) {
+function MainWeightSessionService({}: PropsMainWeightSessionService) {
 	const router = useRouter();
 	const {
 		_page,
@@ -63,7 +63,7 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 	} = router.query;
 
 	const [byFilter, setByFilter] = useState<boolean>(false);
-	const [formCode, setFormCode] = useState<{ codeStart: string; codeEnd: string }>({
+	const [formCode, setFormCode] = useState<{codeStart: string; codeEnd: string}>({
 		codeStart: '',
 		codeEnd: '',
 	});
@@ -110,7 +110,7 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -245,16 +245,17 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 						status: !!_status
 							? [Number(_status)]
 							: [
-								STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
-								STATUS_WEIGHT_SESSION.CAN_LAN_2,
-								STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
-								STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
-								STATUS_WEIGHT_SESSION.KCS_XONG,
-							],
+									STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+									STATUS_WEIGHT_SESSION.CAN_LAN_2,
+									STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+									STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
+									STATUS_WEIGHT_SESSION.KCS_XONG,
+							  ],
 						truckUuid: !!_truckUuid ? (_truckUuid as string) : '',
 						shipUuid: (_shipUuid as string) || '',
 						shift: !!_shift ? Number(_shift) : null,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
+						isHaveSpec: null,
 					}),
 				}),
 			select(data) {
@@ -263,7 +264,7 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 		}
 	);
 
-	const { data: dashbroadWeightsession, isLoading } = useQuery(
+	const {data: dashbroadWeightsession, isLoading} = useQuery(
 		[
 			QUERY_KEY.thong_ke_tong_hop_phieu_can_dich_vu,
 			_page,
@@ -309,12 +310,12 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 						status: !!_status
 							? [Number(_status)]
 							: [
-								STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
-								STATUS_WEIGHT_SESSION.CAN_LAN_2,
-								STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
-								STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
-								STATUS_WEIGHT_SESSION.KCS_XONG,
-							],
+									STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+									STATUS_WEIGHT_SESSION.CAN_LAN_2,
+									STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+									STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
+									STATUS_WEIGHT_SESSION.KCS_XONG,
+							  ],
 						truckUuid: !!_truckUuid ? (_truckUuid as string) : '',
 						shift: !!_shift ? Number(_shift) : null,
 						shipUuid: (_shipUuid as string) || '',
@@ -413,6 +414,10 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 										id: TYPE_BATCH.CAN_LE,
 										name: 'Cân lẻ',
 									},
+									{
+										id: TYPE_BATCH.KHONG_CAN,
+										name: 'Không qua cân',
+									},
 								]}
 							/>
 						</div>
@@ -456,7 +461,7 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 								type='checkbox'
 								id='loc_theo_phieu'
 								onChange={(e) => {
-									const { checked } = e.target;
+									const {checked} = e.target;
 
 									if (checked) {
 										setByFilter(true);
@@ -554,7 +559,7 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 								title: 'Từ',
 								render: (data: IWeightSession) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name}</p>
 										{/* <p>({data?.fromUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
@@ -575,7 +580,7 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 								title: 'Cân lần 1',
 								render: (data: IWeightSession) => (
 									<>
-										<p style={{ marginBottom: 4, color: '#2D74FF' }}>{data?.weight1?.scalesMachineUu?.name}</p>
+										<p style={{marginBottom: 4, color: '#2D74FF'}}>{data?.weight1?.scalesMachineUu?.name}</p>
 										<p>
 											<Moment date={data?.weight1?.timeScales} format='HH:mm, DD/MM/YYYY' />
 										</p>
@@ -586,7 +591,7 @@ function MainWeightSessionService({ }: PropsMainWeightSessionService) {
 								title: 'Cân lần 2',
 								render: (data: IWeightSession) => (
 									<>
-										<p style={{ marginBottom: 4, color: '#2D74FF' }}>{data?.weight2?.scalesMachineUu?.name}</p>
+										<p style={{marginBottom: 4, color: '#2D74FF'}}>{data?.weight2?.scalesMachineUu?.name}</p>
 										<p>
 											<Moment date={data?.weight2?.timeScales} format='HH:mm, DD/MM/YYYY' />
 										</p>

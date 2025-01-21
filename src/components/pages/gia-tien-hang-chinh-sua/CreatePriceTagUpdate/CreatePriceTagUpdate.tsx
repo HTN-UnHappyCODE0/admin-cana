@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { IFormCreatePriceTagUpdate, PropsCreatePriceTagUpdate } from './interfaces';
+import React, {useState} from 'react';
+import {IFormCreatePriceTagUpdate, PropsCreatePriceTagUpdate} from './interfaces';
 import styles from './CreatePriceTagUpdate.module.scss';
 import Button from '~/components/common/Button';
 import Form from '~/components/common/Form';
 import clsx from 'clsx';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_STATUS,
@@ -18,8 +18,8 @@ import {
 	STATUS_CUSTOMER,
 	TYPE_CUSTOMER,
 } from '~/constants/config/enum';
-import { httpRequest } from '~/services';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {httpRequest} from '~/services';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import DataWrapper from '~/components/common/DataWrapper';
 import Table from '~/components/common/Table';
 import customerServices from '~/services/customerServices';
@@ -28,22 +28,22 @@ import priceTagServices from '~/services/priceTagServices';
 import SelectSearch from '~/components/common/SelectSearch';
 import batchBillServices from '~/services/batchBillServices';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import { convertCoin } from '~/common/funcs/convertCoin';
+import {convertCoin} from '~/common/funcs/convertCoin';
 import Pagination from '~/components/common/Pagination';
-import { convertWeight, timeSubmit } from '~/common/funcs/optionConvert';
+import {convertWeight, timeSubmit} from '~/common/funcs/optionConvert';
 import DatePicker from '~/components/common/DatePicker';
-import { toastWarn } from '~/common/funcs/toast';
+import {toastWarn} from '~/common/funcs/toast';
 import Search from '~/components/common/Search';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import Loading from '~/components/common/Loading';
-import Select, { Option } from '~/components/common/Select';
-import { IoMdSearch } from 'react-icons/io';
+import Select, {Option} from '~/components/common/Select';
+import {IoMdSearch} from 'react-icons/io';
 import GridColumn from '~/components/layouts/GridColumn';
 
-function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
+function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 	const router = useRouter();
 
-	const { _page, _pageSize, _keyword, _dateFrom, _dateTo } = router.query;
+	const {_page, _pageSize, _keyword, _dateFrom, _dateTo} = router.query;
 
 	const [form, setForm] = useState<{
 		timeStart: Date | null;
@@ -181,6 +181,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 					typeCheckDay: 0,
 					scalesStationUuid: '',
 					storageUuid: '',
+					isHaveDryness: 0, /// thêm tạm
 				}),
 			}),
 		onSuccess(data) {
@@ -224,33 +225,32 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
 			return;
 		},
 	});
 
 	const handleSubmit = async () => {
 		if (priceTag.name === undefined || priceTag.name === '') {
-			return toastWarn({ msg: 'Vui lòng chọn giá tiền áp dụng!' });
+			return toastWarn({msg: 'Vui lòng chọn giá tiền áp dụng!'});
 		}
 		if (dataTable?.filter((v: any) => v?.isChecked).length == 0) {
-			return toastWarn({ msg: 'Vui lòng chọn các phiếu muốn thay đổi!' });
+			return toastWarn({msg: 'Vui lòng chọn các phiếu muốn thay đổi!'});
 		}
 		if (!form.timeStart) {
-			return toastWarn({ msg: 'Vui lòng chọn ngày áp dụng!' });
+			return toastWarn({msg: 'Vui lòng chọn ngày áp dụng!'});
 		}
 		if (!!form.timeEnd) {
 			const timeStart = new Date(form.timeStart);
 			const timeEnd = new Date(form.timeEnd);
 
 			if (timeStart > timeEnd) {
-				return toastWarn({ msg: 'Ngày kết thúc không hợp lệ!' });
+				return toastWarn({msg: 'Ngày kết thúc không hợp lệ!'});
 			}
 		}
 
 		return funcFixPricetag.mutate();
 	};
-
 
 	return (
 		<div className={styles.container}>
@@ -280,7 +280,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 								value={form?.customerUuid}
 								label={
 									<span>
-										Nhà cung cấp <span style={{ color: 'red' }}>*</span>
+										Nhà cung cấp <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -306,7 +306,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 									value={form?.productUuid}
 									label={
 										<span>
-											Loại hàng <span style={{ color: 'red' }}>*</span>
+											Loại hàng <span style={{color: 'red'}}>*</span>
 										</span>
 									}
 								>
@@ -405,7 +405,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 							setData={setPriceTag}
 							label={
 								<span>
-									Giá tiền mới <span style={{ color: 'red' }}>*</span>
+									Giá tiền mới <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 							placeholder='Nhập giá tiền'
@@ -415,7 +415,7 @@ function CreatePriceTagUpdate({ }: PropsCreatePriceTagUpdate) {
 							icon={true}
 							label={
 								<span>
-									Áp dụng từ ngày <span style={{ color: 'red' }}>*</span>
+									Áp dụng từ ngày <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 							placeholder='Chọn ngày áp dụng'

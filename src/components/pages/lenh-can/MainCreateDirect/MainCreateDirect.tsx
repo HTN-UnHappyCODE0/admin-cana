@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { IFormCreateDirect, PropsMainCreateDirect } from './interfaces';
+import {IFormCreateDirect, PropsMainCreateDirect} from './interfaces';
 import styles from './MainCreateDirect.module.scss';
-import Form, { FormContext, Input } from '~/components/common/Form';
+import Form, {FormContext, Input} from '~/components/common/Form';
 import Button from '~/components/common/Button';
 import clsx from 'clsx';
 import {
@@ -18,28 +18,28 @@ import {
 	TYPE_SIFT,
 	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
-import Select, { Option } from '~/components/common/Select';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import Select, {Option} from '~/components/common/Select';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import customerServices from '~/services/customerServices';
 import DatePicker from '~/components/common/DatePicker';
 import TextArea from '~/components/common/Form/components/TextArea';
 import truckServices from '~/services/truckServices';
 import ButtonSelectMany from '~/components/common/ButtonSelectMany';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import moment from 'moment';
-import { price } from '~/common/funcs/convertCoin';
+import {price} from '~/common/funcs/convertCoin';
 import Loading from '~/components/common/Loading';
-import { toastWarn } from '~/common/funcs/toast';
-import { timeSubmit } from '~/common/funcs/optionConvert';
+import {toastWarn} from '~/common/funcs/toast';
+import {timeSubmit} from '~/common/funcs/optionConvert';
 import batchBillServices from '~/services/batchBillServices';
 import shipServices from '~/services/shipServices';
 import scalesStationServices from '~/services/scalesStationServices';
 import warehouseServices from '~/services/warehouseServices';
 import storageServices from '~/services/storageServices';
-import { IDetailCustomer } from '../MainCreateImport/interfaces';
+import {IDetailCustomer} from '../MainCreateImport/interfaces';
 
-function MainCreateDirect({ }: PropsMainCreateDirect) {
+function MainCreateDirect({}: PropsMainCreateDirect) {
 	const router = useRouter();
 
 	const [listTruckChecked, setListTruckChecked] = useState<any[]>([]);
@@ -112,7 +112,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 		},
 	});
 
-	const { data: detailCustomer } = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
+	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
 		queryFn: () =>
 			httpRequest({
 				http: customerServices.getDetail({
@@ -288,7 +288,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
 			return;
 		},
 	});
@@ -298,38 +298,38 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 		const timeIntend = new Date(form.timeIntend);
 
 		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipUuid) {
-			return toastWarn({ msg: 'Vui lòng nhập mã tàu đến!' });
+			return toastWarn({msg: 'Vui lòng nhập mã tàu đến!'});
 		}
 		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipOutUuid) {
-			return toastWarn({ msg: 'Vui lòng nhập mã tàu đi!' });
+			return toastWarn({msg: 'Vui lòng nhập mã tàu đi!'});
 		}
 		if (!form.toUuid) {
-			return toastWarn({ msg: 'Vui lòng chọn khách hàng xuất!' });
+			return toastWarn({msg: 'Vui lòng chọn khách hàng xuất!'});
 		}
 		if (!form.warehouseUuid) {
-			return toastWarn({ msg: 'Vui lòng chọn kho chính!' });
+			return toastWarn({msg: 'Vui lòng chọn kho chính!'});
 		}
 		if (!form.storageTemporaryUuid) {
-			return toastWarn({ msg: 'Vui lòng chọn kho trung chuyển!' });
+			return toastWarn({msg: 'Vui lòng chọn kho trung chuyển!'});
 		}
 		if (!form.productTypeUuid) {
-			return toastWarn({ msg: 'Vui lòng chọn loại hàng!' });
+			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
 		}
 		if (!form.specificationsUuid) {
-			return toastWarn({ msg: 'Vui lòng chọn quy cách!' });
+			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
 		}
 		if (!form.scaleStationUuid) {
-			return toastWarn({ msg: 'Vui lòng chọn trạm cân!' });
+			return toastWarn({msg: 'Vui lòng chọn trạm cân!'});
 		}
 		if (!form.fromUuid) {
-			return toastWarn({ msg: 'Vui lòng chọn nhà cung cấp!' });
+			return toastWarn({msg: 'Vui lòng chọn nhà cung cấp!'});
 		}
 		if (listTruckChecked.length == 0) {
-			return toastWarn({ msg: 'Vui lòng chọn xe hàng!' });
+			return toastWarn({msg: 'Vui lòng chọn xe hàng!'});
 		}
 
 		if (today > timeIntend) {
-			return toastWarn({ msg: 'Ngày dự kiến không hợp lệ!' });
+			return toastWarn({msg: 'Ngày dự kiến không hợp lệ!'});
 		}
 
 		return funcCreateBatchBill.mutate();
@@ -349,7 +349,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 							Hủy bỏ
 						</Button>
 						<FormContext.Consumer>
-							{({ isDone }) => (
+							{({isDone}) => (
 								<Button disable={!isDone} p_10_24 rounded_2 primary>
 									Lưu lại
 								</Button>
@@ -362,7 +362,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 						<div className='col_2'>
 							<div className={styles.item}>
 								<label className={styles.label}>
-									Hình thức vận chuyển <span style={{ color: 'red' }}>*</span>
+									Hình thức vận chuyển <span style={{color: 'red'}}>*</span>
 								</label>
 								<div className={styles.group_radio}>
 									<div className={styles.item_radio}>
@@ -385,7 +385,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 
 							<div className={styles.item}>
 								<label className={styles.label}>
-									Phân loại <span style={{ color: 'red' }}>*</span>
+									Phân loại <span style={{color: 'red'}}>*</span>
 								</label>
 								<div className={styles.group_radio}>
 									<div className={styles.item_radio}>
@@ -423,7 +423,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 						</div>
 						<div className={styles.item}>
 							<label className={styles.label}>
-								In phiếu <span style={{ color: 'red' }}>*</span>
+								In phiếu <span style={{color: 'red'}}>*</span>
 							</label>
 							<div className={styles.group_radio}>
 								<div className={styles.item_radio}>
@@ -512,7 +512,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 							value={form?.fromUuid}
 							label={
 								<span>
-									Nhà cung cấp<span style={{ color: 'red' }}>*</span>
+									Nhà cung cấp<span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -542,7 +542,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 								readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
 								label={
 									<span>
-										Từ tàu <span style={{ color: 'red' }}>*</span>
+										Từ tàu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -573,7 +573,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 							value={form?.productTypeUuid}
 							label={
 								<span>
-									Loại hàng<span style={{ color: 'red' }}>*</span>
+									Loại hàng<span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -614,7 +614,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 								value={form?.specificationsUuid}
 								label={
 									<span>
-										Quy cách <span style={{ color: 'red' }}>*</span>
+										Quy cách <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -644,7 +644,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 							value={form?.warehouseUuid}
 							label={
 								<span>
-									Kho hàng <span style={{ color: 'red' }}>*</span>
+									Kho hàng <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -672,7 +672,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 								readOnly={!form.warehouseUuid || !form.productTypeUuid || !form.specificationsUuid}
 								label={
 									<span>
-										Bãi trung chuyển <span style={{ color: 'red' }}>*</span>
+										Bãi trung chuyển <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -700,7 +700,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 							value={form?.toUuid}
 							label={
 								<span>
-									Khách hàng xuất<span style={{ color: 'red' }}>*</span>
+									Khách hàng xuất<span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -728,7 +728,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 								readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
 								label={
 									<span>
-										Đến tàu <span style={{ color: 'red' }}>*</span>
+										Đến tàu <span style={{color: 'red'}}>*</span>
 									</span>
 								}
 							>
@@ -758,7 +758,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 							value={form?.scaleStationUuid}
 							label={
 								<span>
-									Trạm cân <span style={{ color: 'red' }}>*</span>
+									Trạm cân <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
@@ -790,7 +790,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 						<DatePicker
 							label={
 								<span>
-									Ngày dự kiến <span style={{ color: 'red' }}>*</span>
+									Ngày dự kiến <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 							value={form.timeIntend}
@@ -816,7 +816,7 @@ function MainCreateDirect({ }: PropsMainCreateDirect) {
 							isShowCheckAll={false}
 							label={
 								<span>
-									Xe hàng <span style={{ color: 'red' }}>*</span>
+									Xe hàng <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 							placeholder='Tìm và thêm xe hàng'

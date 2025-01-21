@@ -371,7 +371,8 @@ function PageDetailWorkshop({}: PropsPageDetailWorkshop) {
 			</div>
 
 			<Dialog
-				danger
+				danger={detailCustomer?.status == CONFIG_STATUS.HOAT_DONG}
+				green={detailCustomer?.status != CONFIG_STATUS.HOAT_DONG}
 				open={openChangeStatus}
 				onClose={() => setOpenChangeStatus(false)}
 				title={

@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { PropsMainHistoryBillSend } from './interfaces';
+import {PropsMainHistoryBillSend} from './interfaces';
 import styles from './MainHistoryBillSend.module.scss';
 import Link from 'next/link';
-import { PATH } from '~/constants/config';
-import { IoArrowBackOutline } from 'react-icons/io5';
-import { useQuery } from '@tanstack/react-query';
-import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_TRANSPORT } from '~/constants/config/enum';
-import { httpRequest } from '~/services';
+import {PATH} from '~/constants/config';
+import {IoArrowBackOutline} from 'react-icons/io5';
+import {useQuery} from '@tanstack/react-query';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_TRANSPORT} from '~/constants/config/enum';
+import {httpRequest} from '~/services';
 import priceTagServices from '~/services/priceTagServices';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
-import { convertCoin } from '~/common/funcs/convertCoin';
+import {convertCoin} from '~/common/funcs/convertCoin';
 import Moment from 'react-moment';
 import Pagination from '~/components/common/Pagination';
-import { formatDrynessAvg } from '~/common/funcs/optionConvert';
+import {formatDrynessAvg} from '~/common/funcs/optionConvert';
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import weightSessionServices from '~/services/weightSessionServices';
 
-function MainHistoryBillSend({ }: PropsMainHistoryBillSend) {
+function MainHistoryBillSend({}: PropsMainHistoryBillSend) {
 	const router = useRouter();
 
-	const { _page, _pageSize, _BillSendUuid } = router.query;
+	const {_page, _pageSize, _BillSendUuid} = router.query;
 
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 

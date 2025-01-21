@@ -1,24 +1,24 @@
-import React, { Fragment, useState } from 'react';
-import { ICompany, PropsPageCompany } from './interfaces';
+import React, {Fragment, useState} from 'react';
+import {ICompany, PropsPageCompany} from './interfaces';
 import styles from './PageCompany.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
 import Button from '~/components/common/Button';
-import { PATH } from '~/constants/config';
+import {PATH} from '~/constants/config';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import Table from '~/components/common/Table';
-import { LuPencil } from 'react-icons/lu';
+import {LuPencil} from 'react-icons/lu';
 import IconCustom from '~/components/common/IconCustom';
 import Pagination from '~/components/common/Pagination';
 import Dialog from '~/components/common/Dialog';
-import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
+import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
-import { httpRequest } from '~/services';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
+import {httpRequest} from '~/services';
 import TagStatus from '~/components/common/TagStatus';
 import Loading from '~/components/common/Loading';
 import companyServices from '~/services/companyServices';
@@ -27,11 +27,11 @@ import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import FlexLayout from '~/components/layouts/FlexLayout';
 import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
-function PageCompany({ }: PropsPageCompany) {
+function PageCompany({}: PropsPageCompany) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const { _page, _pageSize, _keyword, _manager, _dateFrom, _dateTo, _status } = router.query;
+	const {_page, _pageSize, _keyword, _manager, _dateFrom, _dateTo, _status} = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<ICompany | null>(null);
 
@@ -179,7 +179,7 @@ function PageCompany({ }: PropsPageCompany) {
 															setUuidDescription(uuidDescription ? '' : data.uuid);
 														}
 													}}
-													className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
+													className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
 												>
 													{data?.description || '---'}
 												</p>
@@ -195,7 +195,7 @@ function PageCompany({ }: PropsPageCompany) {
 									title: 'Tác vụ',
 									fixedRight: true,
 									render: (data: ICompany) => (
-										<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 											<IconCustom
 												edit
 												icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -235,7 +235,8 @@ function PageCompany({ }: PropsPageCompany) {
 			</FlexLayout>
 
 			<Dialog
-				danger
+				danger={dataStatus?.status == CONFIG_STATUS.HOAT_DONG}
+				green={dataStatus?.status != CONFIG_STATUS.HOAT_DONG}
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
 				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa KV cảng xuất khẩu' : 'Dùng KV cảng xuất khẩu'}

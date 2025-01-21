@@ -9,6 +9,7 @@ export interface IWeightSession {
 	};
 	updatedTime: string;
 	created: string;
+	weightBdmt: number;
 	weight1: {
 		weight: number;
 		timeScales: string;
@@ -45,6 +46,7 @@ export interface IWeightSession {
 		uuid: string;
 	};
 	batchUu: {
+		name: string;
 		uuid: string;
 		shipUu: any;
 		shipOutUu: any;

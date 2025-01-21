@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Image from 'next/image';
 
-import { PropsMainPageBillImport } from './interfaces';
+import {PropsMainPageBillImport} from './interfaces';
 import styles from './MainPageBillImport.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -15,24 +15,25 @@ import {
 	QUERY_KEY,
 	STATUS_BILL,
 	STATUS_CUSTOMER,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import Moment from 'react-moment';
 import IconCustom from '~/components/common/IconCustom';
-import { LuPencil } from 'react-icons/lu';
-import { Eye, Play, Trash } from 'iconsax-react';
-import { IDataBill } from '../MainPageBillAll/interfaces';
+import {LuPencil} from 'react-icons/lu';
+import {Eye, Play, RefreshSquare, SaveAdd, Trash} from 'iconsax-react';
+import {IDataBill} from '../MainPageBillAll/interfaces';
 import Link from 'next/link';
 import Popup from '~/components/common/Popup';
 import PopupDeleteBill from '../PopupDeleteBill';
@@ -42,12 +43,13 @@ import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import batchBillServices from '~/services/batchBillServices';
 import shipServices from '~/services/shipServices';
-import { convertCoin } from '~/common/funcs/convertCoin';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertCoin} from '~/common/funcs/convertCoin';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import storageServices from '~/services/storageServices';
 import scalesStationServices from '~/services/scalesStationServices';
+import FormUpdateShipBill from '../FormUpdateShipBill';
 
-function MainPageBillImport({ }: PropsMainPageBillImport) {
+function MainPageBillImport({}: PropsMainPageBillImport) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [uuidPlay, setUuidPlay] = useState<string>('');
@@ -67,6 +69,8 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 	} = router.query;
 
 	const [billUuid, setBilldUuid] = useState<string | null>(null);
+	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
+	const [billUuidReStart, setBillUuidReStart] = useState<string | null>(null);
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
 		queryFn: () =>
@@ -166,7 +170,7 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -218,6 +222,7 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
 					}),
 				}),
 			select(data) {
@@ -225,6 +230,7 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 			},
 		}
 	);
+
 	const funcStartBatchBill = useMutation({
 		mutationFn: () =>
 			httpRequest({
@@ -242,13 +248,34 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
+		},
+	});
+
+	const funcReStartBatchBill = useMutation({
+		mutationFn: () =>
+			httpRequest({
+				showMessageFailed: true,
+				showMessageSuccess: true,
+				msgSuccess: 'Tiếp tục lệnh cân thành công!',
+				http: batchBillServices.reStartBatchbill({
+					uuid: billUuidReStart!,
+				}),
+			}),
+		onSuccess(data) {
+			if (data) {
+				setBillUuidReStart('');
+				queryClient.invalidateQueries([QUERY_KEY.table_lenh_can_nhap]);
+			}
+		},
+		onError(error) {
+			console.log({error});
 		},
 	});
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading} />
+			<Loading loading={funcStartBatchBill.isLoading || funcReStartBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -372,31 +399,16 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 									</Link>
 								),
 							},
-
-							// {
-							// 	title: 'Mã tàu',
-							// 	render: (data: IDataBill) => (
-							// 		<p style={{fontWeight: 600}}>{data?.batchsUu?.shipUu?.licensePalate || '---'}</p>
-							// 	),
-							// },
-							// {
-							// 	title: 'Mã tàu xuất',
-							// 	render: (data: IDataBill) => (
-							// 		<p style={{fontWeight: 600}}>{data?.batchsUu?.shipOutUu?.licensePalate || '---'}</p>
-							// 	),
-							// },
 							{
 								title: 'Từ(Tàu/Xe)',
 								render: (data: IDataBill) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
-										{/* <p>({data?.fromUu?.parentUu?.name || '---'})</p> */}
-										{/* <p style={{fontWeight: 400, color: '#3772FF'}}>{data?.batchsUu?.shipUu?.licensePalate || '---'}</p> */}
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>{'---'}</p>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>{'---'}</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
@@ -407,19 +419,17 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 								title: 'Đến',
 								render: (data: IDataBill) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
 										)}
-
-										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
 							},
@@ -458,7 +468,7 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 							{
 								title: 'Loại cân',
 								render: (data: IDataBill) => (
-									<p style={{ fontWeight: 600 }}>
+									<p style={{fontWeight: 600}}>
 										{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
 										{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
@@ -466,6 +476,10 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 										{data?.scalesType == TYPE_SCALES.CAN_TRUC_TIEP && 'Cân xuất thẳng'}
 									</p>
 								),
+							},
+							{
+								title: 'Tàu trung chuyển',
+								render: (data: IDataBill) => <>{data?.shipTempUu?.licensePalate || '---'}</>,
 							},
 							{
 								title: 'Ngày dự kiến',
@@ -483,13 +497,13 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 								title: 'Trạng thái',
 								render: (data: IDataBill) => (
 									<>
-										{data?.status == STATUS_BILL.DA_HUY && <span style={{ color: '#D94212' }}>Đã hủy bỏ</span>}
-										{data?.status == STATUS_BILL.CHUA_CAN && <span style={{ color: '#3772FF' }}>Chưa xử lý</span>}
+										{data?.status == STATUS_BILL.DA_HUY && <span style={{color: '#D94212'}}>Đã hủy bỏ</span>}
+										{data?.status == STATUS_BILL.CHUA_CAN && <span style={{color: '#3772FF'}}>Chưa xử lý</span>}
 										{(data?.status == STATUS_BILL.DANG_CAN || data?.status == STATUS_BILL.TAM_DUNG) && (
-											<span style={{ color: '#9757D7' }}>Đang xử lý</span>
+											<span style={{color: '#9757D7'}}>Đang xử lý</span>
 										)}
 										{data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS && (
-											<span style={{ color: '#2CAE39' }}>Đã hoàn thành</span>
+											<span style={{color: '#2CAE39'}}>Đã hoàn thành</span>
 										)}
 									</>
 								),
@@ -498,7 +512,7 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IDataBill) => (
-									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
 										{data?.status == STATUS_BILL.CHUA_CAN || data?.status == STATUS_BILL.TAM_DUNG ? (
 											<IconCustom
 												edit
@@ -526,7 +540,22 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 												onClick={() => setBilldUuid(data.uuid)}
 											/>
 										)}
-
+										{data?.status == STATUS_BILL.DA_CAN_CHUA_KCS && (
+											<IconCustom
+												edit
+												icon={<RefreshSquare fontSize={20} fontWeight={600} />}
+												tooltip='Tiếp tục cân'
+												color='#777E90'
+												onClick={() => setBillUuidReStart(data.uuid)}
+											/>
+										)}
+										<IconCustom
+											edit
+											icon={<SaveAdd fontSize={20} fontWeight={600} />}
+											tooltip='Cập nhật tàu trung chuyển'
+											color='#777E90'
+											onClick={() => setBillUuidUpdateShip(data.uuid)}
+										/>
 										<IconCustom
 											edit
 											icon={<Eye fontSize={20} fontWeight={600} />}
@@ -565,9 +594,19 @@ function MainPageBillImport({ }: PropsMainPageBillImport) {
 				onClose={() => setUuidPlay('')}
 				onSubmit={funcStartBatchBill.mutate}
 			/>
+			<Dialog
+				open={!!billUuidReStart}
+				title='Tiếp tục cân'
+				note='Bạn có muốn thực hiện tiếp tục cân cho phiếu cân này không?'
+				onClose={() => setBillUuidReStart('')}
+				onSubmit={funcReStartBatchBill.mutate}
+			/>
 			{/* POPUP */}
 			<Popup open={!!billUuid} onClose={() => setBilldUuid(null)}>
 				<PopupDeleteBill uuid={billUuid} onClose={() => setBilldUuid(null)} />
+			</Popup>
+			<Popup open={!!billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)}>
+				<FormUpdateShipBill uuid={billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)} />
 			</Popup>
 		</div>
 	);

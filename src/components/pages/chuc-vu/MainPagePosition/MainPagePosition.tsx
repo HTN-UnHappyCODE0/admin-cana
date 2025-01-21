@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react';
-import { IPosition, PropsMainPagePosition } from './interfaces';
+import React, {Fragment, useState} from 'react';
+import {IPosition, PropsMainPagePosition} from './interfaces';
 import styles from './MainPagePosition.module.scss';
 import Search from '~/components/common/Search';
 import Button from '~/components/common/Button';
@@ -8,19 +8,19 @@ import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Moment from 'react-moment';
 import IconCustom from '~/components/common/IconCustom';
-import { LuPencil } from 'react-icons/lu';
+import {LuPencil} from 'react-icons/lu';
 import Pagination from '~/components/common/Pagination';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import Dialog from '~/components/common/Dialog';
 import Popup from '~/components/common/Popup';
 import FormCreatePosition from '../FormCreatePosition';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
-import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY } from '~/constants/config/enum';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import regencyServices from '~/services/regencyServices';
-import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
+import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
 import FilterCustom from '~/components/common/FilterCustom';
 import TagStatus from '~/components/common/TagStatus';
 import Loading from '~/components/common/Loading';
@@ -30,12 +30,12 @@ import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import FlexLayout from '~/components/layouts/FlexLayout';
 import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
-function MainPagePosition({ }: PropsMainPagePosition) {
+function MainPagePosition({}: PropsMainPagePosition) {
 	const router = useRouter();
 
 	const queryClient = useQueryClient();
 
-	const { _page, _pageSize, _keyword, _status } = router.query;
+	const {_page, _pageSize, _keyword, _status} = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<IPosition | null>(null);
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
@@ -164,7 +164,7 @@ function MainPagePosition({ }: PropsMainPagePosition) {
 															setUuidDescription(uuidDescription ? '' : data.uuid);
 														}
 													}}
-													className={clsx(styles.description, { [styles.active]: uuidDescription == data.uuid })}
+													className={clsx(styles.description, {[styles.active]: uuidDescription == data.uuid})}
 												>
 													{data?.description || '---'}
 												</p>
@@ -186,7 +186,7 @@ function MainPagePosition({ }: PropsMainPagePosition) {
 									title: 'Tác vụ',
 									fixedRight: true,
 									render: (data: IPosition) => (
-										<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+										<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 											<IconCustom
 												edit
 												icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -232,7 +232,8 @@ function MainPagePosition({ }: PropsMainPagePosition) {
 			</Popup>
 
 			<Dialog
-				danger
+				danger={dataStatus?.status == CONFIG_STATUS.HOAT_DONG}
+				green={dataStatus?.status != CONFIG_STATUS.HOAT_DONG}
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
 				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa hoạt động' : 'Mở khóa hoạt động'}

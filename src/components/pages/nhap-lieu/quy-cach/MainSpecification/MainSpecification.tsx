@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
-import { IWeightSession, PropsMainSpecification } from './interfaces';
+import {IWeightSession, PropsMainSpecification} from './interfaces';
 import styles from './MainSpecification.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -11,37 +11,60 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	STATUS_WEIGHT_SESSION,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_CUSTOMER,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import { useQuery } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {useQuery} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import weightSessionServices from '~/services/weightSessionServices';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import Button from '~/components/common/Button';
-import { AiOutlineFileAdd } from 'react-icons/ai';
+import {AiOutlineFileAdd} from 'react-icons/ai';
 import Popup from '~/components/common/Popup';
 import FormUpdateSpecWS from '../FormUpdateSpecWS';
-import { toastWarn } from '~/common/funcs/toast';
+import {toastWarn} from '~/common/funcs/toast';
 import Link from 'next/link';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertWeight} from '~/common/funcs/optionConvert';
+import Moment from 'react-moment';
+import scalesStationServices from '~/services/scalesStationServices';
+import storageServices from '~/services/storageServices';
+import PositionContainer from '~/components/common/PositionContainer';
+import FormUpdateWeigh from '../FormUpdateWeigh';
+import clsx from 'clsx';
 
-function MainSpecification({ }: PropsMainSpecification) {
+function MainSpecification({}: PropsMainSpecification) {
 	const router = useRouter();
 
-	const { _page, _pageSize, _keyword, _isBatch, _customerUuid, _productTypeUuid, _specUuid, _dateFrom, _dateTo, _isShift } = router.query;
+	const {
+		_page,
+		_pageSize,
+		_keyword,
+		_isBatch,
+		_customerUuid,
+		_storageUuid,
+		_scalesStationUuid,
+		_productTypeUuid,
+		_specUuid,
+		_dateFrom,
+		_dateTo,
+		_isShift,
+		_status,
+		_isHaveSpec,
+	} = router.query;
 
 	const [weightSessionSubmits, setWeightSessionSubmits] = useState<any[]>([]);
+	const [dataWeight, setDataWeight] = useState<any[]>([]);
 	const [weightSessions, setWeightSessions] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -67,6 +90,65 @@ function MainSpecification({ }: PropsMainSpecification) {
 			}),
 		select(data) {
 			return data;
+		},
+	});
+
+	useEffect(() => {
+		router.replace(
+			{
+				pathname: router.pathname,
+				query: {
+					...router.query,
+					_isHaveSpec: TYPE_ACTION_AUDIT.NO_DRY,
+				},
+			},
+			undefined,
+			{shallow: true, scroll: false}
+		);
+	}, []);
+
+	const listScalesStation = useQuery([QUERY_KEY.table_tram_can], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: scalesStationServices.listScalesStation({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					companyUuid: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listStorage = useQuery([QUERY_KEY.table_bai], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					warehouseUuid: '',
+					productUuid: '',
+					qualityUuid: '',
+					specificationsUuid: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			if (data) {
+				return data;
+			}
 		},
 	});
 
@@ -123,6 +205,10 @@ function MainSpecification({ }: PropsMainSpecification) {
 			_dateFrom,
 			_dateTo,
 			_isShift,
+			_storageUuid,
+			_scalesStationUuid,
+			_status,
+			_isHaveSpec,
 		],
 		{
 			queryFn: () =>
@@ -134,7 +220,7 @@ function MainSpecification({ }: PropsMainSpecification) {
 						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
-						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+						isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						billUuid: '',
 						codeEnd: null,
@@ -142,14 +228,22 @@ function MainSpecification({ }: PropsMainSpecification) {
 						isBatch: !!_isBatch ? Number(_isBatch) : null,
 						scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
 						specUuid: !!_specUuid ? (_specUuid as string) : null,
-						status: [STATUS_WEIGHT_SESSION.CAN_LAN_2],
-						storageUuid: '',
+						status: [
+							STATUS_WEIGHT_SESSION.CAN_LAN_2,
+							STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+							STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+							STATUS_WEIGHT_SESSION.KCS_XONG,
+							STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
+						],
+						isHaveSpec: !!_isHaveSpec ? Number(_isHaveSpec) : null,
 						truckUuid: '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						customerUuid: _customerUuid ? (_customerUuid as string) : '',
 						productTypeUuid: _productTypeUuid ? (_productTypeUuid as string) : '',
 						shift: !!_isShift ? Number(_isBatch) : null,
+						scalesStationUuid: (_scalesStationUuid as string) || '',
+						storageUuid: (_storageUuid as string) || '',
 					}),
 				}),
 			onSuccess(data) {
@@ -171,18 +265,33 @@ function MainSpecification({ }: PropsMainSpecification) {
 		const arr = weightSessions?.filter((v) => v.isChecked !== false);
 
 		if (!arr?.every((obj: any) => obj?.specificationsUu?.uuid === arr[0]?.specificationsUu?.uuid)) {
-			return toastWarn({ msg: 'Chỉ chọn được các lô có cùng quy cách!' });
+			return toastWarn({msg: 'Chỉ chọn được các lô có cùng quy cách!'});
 		} else {
 			setWeightSessionSubmits(arr);
 		}
 	};
+
+	// tính tổng lượng hàng đã chọn
+	const getTotal = weightSessions
+		?.filter((v) => v.isChecked !== false)
+		.reduce(
+			(acc, item) => {
+				return {
+					...acc,
+					data: {
+						amountMt: acc.data.amountMt + item.weightReal,
+					},
+				};
+			},
+			{data: {amountMt: 0}}
+		);
 
 	return (
 		<div className={styles.container}>
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{weightSessions?.some((x) => x.isChecked !== false) && (
-						<div style={{ height: 40 }}>
+						<div style={{height: 40}}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -193,6 +302,23 @@ function MainSpecification({ }: PropsMainSpecification) {
 								onClick={handleUpdateAll}
 							>
 								Cập nhật quy cách
+							</Button>
+						</div>
+					)}
+					{weightSessions?.some((x) => x.isChecked !== false) && (
+						<div style={{height: 40}}>
+							<Button
+								className={styles.btn}
+								rounded_2
+								maxHeight
+								p_4_12
+								orange
+								icon={<AiOutlineFileAdd size={20} />}
+								onClick={() => {
+									setDataWeight(weightSessions?.filter((v) => v.isChecked !== false));
+								}}
+							>
+								Cập nhật theo cân mẫu
 							</Button>
 						</div>
 					)}
@@ -212,6 +338,27 @@ function MainSpecification({ }: PropsMainSpecification) {
 								{
 									id: TYPE_BATCH.CAN_LE,
 									name: 'Cân lẻ',
+								},
+								{
+									id: TYPE_BATCH.KHONG_CAN,
+									name: 'Không qua cân',
+								},
+							]}
+						/>
+					</div>
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Trạng thái'
+							query='_isHaveSpec'
+							listFilter={[
+								{
+									id: TYPE_ACTION_AUDIT.NO_DRY,
+									name: 'Chưa cập nhật',
+								},
+								{
+									id: TYPE_ACTION_AUDIT.HAVE_DRY,
+									name: 'Đã cập nhật',
 								},
 							]}
 						/>
@@ -243,9 +390,35 @@ function MainSpecification({ }: PropsMainSpecification) {
 							name: v?.name,
 						}))}
 					/>
+					<FilterCustom
+						isSearch
+						name='Trạm cân'
+						query='_scalesStationUuid'
+						listFilter={listScalesStation?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
+					<FilterCustom
+						isSearch
+						name='Bãi'
+						query='_storageUuid'
+						listFilter={listStorage?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
 
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
+					</div>
+				</div>
+			</div>
+			<div className={clsx('mt')}>
+				<div className={styles.parameter}>
+					<div>
+						TỔNG LƯỢNG KL HÀNG ĐÃ CHỌN:
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getTotal?.data?.amountMt) || 0} </span>(Tấn)
 					</div>
 				</div>
 			</div>
@@ -269,9 +442,20 @@ function MainSpecification({ }: PropsMainSpecification) {
 								title: 'Mã lô',
 								fixedLeft: true,
 								render: (data: IWeightSession) => (
-									<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
-										{data?.billUu?.code}
-									</Link>
+									<>
+										{data?.billUu?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<Link href={`/nhap-xuat-ngoai/${data?.billUu?.uuid}`} className={styles.link}>
+												{data?.billUu?.code}
+											</Link>
+										) : (
+											<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
+												{data?.billUu?.code}
+											</Link>
+										)}
+										<p style={{fontWeight: 500, color: '#3772FF'}}>
+											<Moment date={data?.weight2?.timeScales} format='HH:mm - DD/MM/YYYY' />
+										</p>
+									</>
 								),
 							},
 							{
@@ -283,9 +467,23 @@ function MainSpecification({ }: PropsMainSpecification) {
 								render: (data: IWeightSession) => <>{data?.truckUu?.licensePalate || '---'}</>,
 							},
 							{
-								title: 'Khách hàng',
-								render: (data: IWeightSession) => <>{data?.fromUu?.name || '---'}</>,
+								title: 'KL hàng (Tấn)',
+								render: (data: IWeightSession) => <>{convertWeight(data?.weightReal)}</>,
 							},
+							{
+								title: 'Khách hàng',
+								render: (data: IWeightSession) => (
+									<>
+										{data?.fromUu?.name || '---'}{' '}
+										<p style={{fontWeight: 500, color: '#3772FF'}}>{data?.batchUu?.name || '---'}</p>
+									</>
+								),
+							},
+							{
+								title: 'KL quy khô (Tấn)',
+								render: (data: IWeightSession) => <>{convertWeight(data?.weightBdmt)}</>,
+							},
+
 							{
 								title: 'Kho hàng',
 								render: (data: IWeightSession) => <>{data?.toUu?.name || '---'}</>,
@@ -294,10 +492,7 @@ function MainSpecification({ }: PropsMainSpecification) {
 								title: 'Loại hàng',
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
-							{
-								title: 'KL hàng (Tấn)',
-								render: (data: IWeightSession) => <>{convertWeight(data?.weightReal)}</>,
-							},
+
 							{
 								title: 'Quy cách',
 								render: (data: IWeightSession) => <>{data?.specificationsUu?.name || '---'}</>,
@@ -347,7 +542,7 @@ function MainSpecification({ }: PropsMainSpecification) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IWeightSession) => (
-									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
 										<div>
 											<Button
 												className={styles.btn}
@@ -382,6 +577,10 @@ function MainSpecification({ }: PropsMainSpecification) {
 							_dateFrom,
 							_dateTo,
 							_isShift,
+							_storageUuid,
+							_scalesStationUuid,
+							_status,
+							_isHaveSpec,
 						]}
 					/>
 				)}
@@ -390,6 +589,36 @@ function MainSpecification({ }: PropsMainSpecification) {
 			<Popup open={weightSessionSubmits.length > 0} onClose={() => setWeightSessionSubmits([])}>
 				<FormUpdateSpecWS dataUpdateSpecWS={weightSessionSubmits} onClose={() => setWeightSessionSubmits([])} />
 			</Popup>
+
+			<PositionContainer
+				open={dataWeight.length > 0}
+				onClose={() => {
+					setDataWeight([]);
+					const {_keywordForm, _pageSample, _pageSampleSize, ...rest} = router.query;
+
+					router.replace({
+						pathname: router.pathname,
+						query: {
+							...rest,
+						},
+					});
+				}}
+			>
+				<FormUpdateWeigh
+					dataUpdateWeigh={dataWeight}
+					onClose={() => {
+						setDataWeight([]);
+						const {_keywordForm, _pageSample, _pageSampleSize, ...rest} = router.query;
+
+						router.replace({
+							pathname: router.pathname,
+							query: {
+								...rest,
+							},
+						});
+					}}
+				/>
+			</PositionContainer>
 		</div>
 	);
 }

@@ -30,6 +30,7 @@ import storageServices from '~/services/storageServices';
 import warehouseServices from '~/services/warehouseServices';
 import batchBillServices from '~/services/batchBillServices';
 import {price} from '~/common/funcs/convertCoin';
+import moment from 'moment';
 import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 import {toastWarn} from '~/common/funcs/toast';
 import uploadImageService from '~/services/uploadService';
@@ -117,7 +118,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					status: CONFIG_STATUS.HOAT_DONG,
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-					typeFind: CONFIG_TYPE_FIND.TABLE,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					customerUuid: '',
 					timeEnd: null,
 					timeStart: null,

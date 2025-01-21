@@ -101,6 +101,8 @@ export enum QUERY_KEY {
 	table_tai_khoan,
 	table_chuc_vu,
 	table_log_bat_thuong,
+	table_du_lieu_mau,
+	table_ds_can_mau,
 
 	chi_tiet_gia_tien_chinh_sua,
 	chi_tiet_cong_no_phieu,
@@ -369,4 +371,22 @@ export enum TYPE_LOGIN {
 export enum TYPE_STORE {
 	ADMIN_KHO,
 	NHAP_HANG,
+}
+
+export enum TYPE_ACTION_AUDIT {
+	NO_DRY,
+	HAVE_DRY = 1,
+}
+
+export enum TYPE_SAMPLE_SESSION {
+	QUY_CACH = 1,
+	DO_KHO,
+}
+
+export enum STATUS_SAMPLE_SESSION {
+	DELETE = -1,
+	INIT,
+	USING,
+	FINISH,
+	ACCEPT,
 }

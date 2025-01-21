@@ -34,8 +34,15 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 			}
 		}
 		if (event.key === 'Enter' || event.keyCode === 13) {
+			event.preventDefault();
 			if (index === -1) {
-				handleSubmit();
+				inputRefs.current[0]?.focus();
+			} else {
+				if (inputRefs.current[index + 1]) {
+					inputRefs.current[index + 1]?.focus();
+				} else {
+					inputRefs.current[-1]?.focus();
+				}
 			}
 		}
 	};
@@ -56,11 +63,28 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 	>([]);
 
 	useEffect(() => {
-		setForm({
-			totalSample: 0,
-			numberChecked: dataUpdateSpecWS?.length,
-			specificationsUuid: dataUpdateSpecWS?.[0]?.specificationsUu?.uuid,
-		});
+		if (dataUpdateSpecWS?.length === 1) {
+			setForm({
+				totalSample: dataUpdateSpecWS?.[0]?.specStyleUu?.[0]?.totalSample,
+				numberChecked: dataUpdateSpecWS?.length,
+				specificationsUuid: dataUpdateSpecWS?.[0]?.specificationsUu?.uuid,
+			});
+
+			setDataRules(
+				dataUpdateSpecWS?.[0]?.specStyleUu?.map((v) => ({
+					uuid: v?.criteriaUu?.uuid!,
+					title: v?.criteriaUu?.title!,
+					amountSample: v?.amountSample! || 0,
+				}))!
+			);
+		}
+		if (dataUpdateSpecWS?.length !== 1) {
+			setForm({
+				totalSample: 0,
+				numberChecked: dataUpdateSpecWS?.length,
+				specificationsUuid: dataUpdateSpecWS?.[0]?.specificationsUu?.uuid,
+			});
+		}
 	}, [dataUpdateSpecWS]);
 
 	const listSpecification = useQuery([QUERY_KEY.dropdown_quy_cach], {
@@ -99,7 +123,10 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 				}),
 			}),
 		onSuccess(data) {
-			if (data) {
+			if (
+				(data && dataUpdateSpecWS?.[0]?.specStyleUu?.length == 0 && dataUpdateSpecWS?.length == 1) ||
+				(data && dataUpdateSpecWS?.length != 1)
+			) {
 				setDataRules(
 					data?.map((v: any) => ({
 						uuid: v?.uuid,
@@ -144,6 +171,7 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 			if (data) {
 				onClose();
 				queryClient.invalidateQueries([QUERY_KEY.table_nhap_lieu_quy_cach]);
+				queryClient.invalidateQueries([QUERY_KEY.table_nhap_lieu_do_kho]);
 			}
 		},
 		onError(error) {
@@ -161,7 +189,7 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 		}
 
 		if (dataRules?.some((v) => v?.amountSample > price(form?.totalSample))) {
-			return setOpenWarning(true);
+			return toastWarn({msg: 'Đang có chí tiêu lớn hơn khối lượng cân mẫu!'});
 		} else {
 			return funcUpdateSpecWeightSession.mutate();
 		}
@@ -263,25 +291,13 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 										/>
 										<div className={styles.unit}>gr</div>
 									</div>
-									<div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : ''}</div>
+									{/* <div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : ''}</div> */}
+									<div className={styles.percent}>{!isNaN(percentage) ? `${percentage.toFixed(2)}%` : '0.00%'}</div>
 								</div>
 							</div>
 						);
 					})}
 				</div>
-
-				{/* <div className={styles.btn}>
-					<div>
-						<Button p_10_24 rounded_2 grey_outline onClick={onClose}>
-							Hủy bỏ
-						</Button>
-					</div>
-					<div>
-						<Button p_10_24 rounded_2 primary onClick={handleSubmit}>
-							Xác nhận
-						</Button>
-					</div>
-				</div> */}
 
 				<div className={styles.btn}>
 					<div>

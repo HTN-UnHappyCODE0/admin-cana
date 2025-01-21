@@ -304,7 +304,8 @@ function PageCustomerExport({}: PropsPageCustomerExport) {
 				/>
 			</div>
 			<Dialog
-				danger
+				danger={dataStatus?.status == CONFIG_STATUS.HOAT_DONG}
+				green={dataStatus?.status != CONFIG_STATUS.HOAT_DONG}
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
 				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa khách hàng xuất' : 'Dùng khách hàng xuất'}

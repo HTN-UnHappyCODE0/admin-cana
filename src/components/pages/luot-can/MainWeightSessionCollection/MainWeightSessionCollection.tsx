@@ -1,29 +1,29 @@
 import React from 'react';
 
-import { IWeightSessionByTruck, PropsMainWeightSessionCollection } from './interfaces';
+import {IWeightSessionByTruck, PropsMainWeightSessionCollection} from './interfaces';
 import styles from './MainWeightSessionCollection.module.scss';
 import Search from '~/components/common/Search';
-import { CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_DATE } from '~/constants/config/enum';
-import { useQuery } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_TYPE_FIND, QUERY_KEY, TYPE_DATE} from '~/constants/config/enum';
+import {useQuery} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import Pagination from '~/components/common/Pagination';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Moment from 'react-moment';
 import weightSessionServices from '~/services/weightSessionServices';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import DashbroadWeightsession from '~/components/common/DashbroadWeightsession';
 import icons from '~/constants/images/icons';
 import GridColumn from '~/components/layouts/GridColumn';
 import clsx from 'clsx';
 
-function MainWeightSessionCollection({ }: PropsMainWeightSessionCollection) {
+function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 	const router = useRouter();
 
-	const { _page, _pageSize, _keyword, _dateFrom, _dateTo } = router.query;
+	const {_page, _pageSize, _keyword, _dateFrom, _dateTo} = router.query;
 
 	const listWeightSessionGroupTruck = useQuery([QUERY_KEY.table_luot_can_nhom_theo_xe, _page, _pageSize, _keyword, _dateFrom, _dateTo], {
 		queryFn: () =>
@@ -58,7 +58,7 @@ function MainWeightSessionCollection({ }: PropsMainWeightSessionCollection) {
 		},
 	});
 
-	const { data: dashbroadWeightsession, isLoading } = useQuery(
+	const {data: dashbroadWeightsession, isLoading} = useQuery(
 		[QUERY_KEY.thong_ke_tong_hop_phieu_nhom_theo_xe, _page, _pageSize, _keyword, _dateFrom, _dateTo],
 		{
 			queryFn: () =>
@@ -175,12 +175,12 @@ function MainWeightSessionCollection({ }: PropsMainWeightSessionCollection) {
 							{
 								title: 'Biển số xe',
 								render: (data: IWeightSessionByTruck) => (
-									<p style={{ color: '#2D74FF', fontWeight: 600 }}>{data?.truckUu?.licensePalate}</p>
+									<p style={{color: '#2D74FF', fontWeight: 600}}>{data?.truckUu?.licensePalate}</p>
 								),
 							},
 							{
 								title: 'Số lượt cân',
-								render: (data: IWeightSessionByTruck) => <p style={{ fontWeight: 600 }}>{data?.count}</p>,
+								render: (data: IWeightSessionByTruck) => <p style={{fontWeight: 600}}>{data?.count}</p>,
 							},
 							{
 								title: 'Tổng khối lượng 1 (Tấn)',

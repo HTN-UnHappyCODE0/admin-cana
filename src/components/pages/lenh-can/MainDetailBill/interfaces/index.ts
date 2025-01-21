@@ -126,4 +126,10 @@ export interface IDetailBatchBill {
 		name: string;
 	};
 	path: string[];
+	weightMon: number;
+	shipTempUu: {
+		code: string;
+		licensePalate: string;
+		uuid: string;
+	};
 }

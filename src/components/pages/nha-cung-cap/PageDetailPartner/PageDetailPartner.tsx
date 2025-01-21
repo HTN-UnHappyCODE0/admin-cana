@@ -1,8 +1,8 @@
-import React, { Fragment, useState } from 'react';
+import React, {Fragment, useState} from 'react';
 
-import { ICustomer, IDetailPartner, PropsPageDetailPartner } from './interfaces';
+import {ICustomer, IDetailPartner, PropsPageDetailPartner} from './interfaces';
 import styles from './PageDetailPartner.module.scss';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -12,12 +12,12 @@ import {
 	STATUS_CUSTOMER,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
-import { useRouter } from 'next/router';
-import { httpRequest } from '~/services';
+import {useRouter} from 'next/router';
+import {httpRequest} from '~/services';
 import partnerServices from '~/services/partnerServices';
 import customerServices from '~/services/customerServices';
 import Link from 'next/link';
-import { IoArrowBackOutline } from 'react-icons/io5';
+import {IoArrowBackOutline} from 'react-icons/io5';
 import clsx from 'clsx';
 import GridColumn from '~/components/layouts/GridColumn';
 import TagStatus from '~/components/common/TagStatus';
@@ -26,32 +26,32 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Table from '~/components/common/Table';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Button from '~/components/common/Button';
-import { LuPencil } from 'react-icons/lu';
-import { getTextAddress } from '~/common/funcs/optionConvert';
+import {LuPencil} from 'react-icons/lu';
+import {getTextAddress} from '~/common/funcs/optionConvert';
 import Image from 'next/image';
 import icons from '~/constants/images/icons';
-import { PATH } from '~/constants/config';
-import { HiOutlineLockClosed, HiOutlineLockOpen } from 'react-icons/hi';
+import {PATH} from '~/constants/config';
+import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
 import Dialog from '~/components/common/Dialog';
 import Loading from '~/components/common/Loading';
 import IconCustom from '~/components/common/IconCustom';
-import { RiDeleteBin5Line } from 'react-icons/ri';
+import {RiDeleteBin5Line} from 'react-icons/ri';
 import Popup from '~/components/common/Popup';
 
 import ItemDashboard from '../../trang-chu/ItemDashboard';
 import PopupDeleteCustomer from '../PopupDeleteCustomer';
 
-function PageDetailPartner({ }: PropsPageDetailPartner) {
+function PageDetailPartner({}: PropsPageDetailPartner) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const { _id, _page, _pageSize, _status } = router.query;
+	const {_id, _page, _pageSize, _status} = router.query;
 
 	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
 	const [dataDeleteCustomer, setDataDeleteCustomer] = useState<ICustomer | null>(null);
 	const [dataChangeStatusCustomer, setDataChangeStatusCustomer] = useState<ICustomer | null>(null);
 
-	const { data: detailPartner, isLoading } = useQuery<IDetailPartner>([QUERY_KEY.chi_tiet_nha_cung_cap, _id], {
+	const {data: detailPartner, isLoading} = useQuery<IDetailPartner>([QUERY_KEY.chi_tiet_nha_cung_cap, _id], {
 		queryFn: () =>
 			httpRequest({
 				http: partnerServices.detailPartner({
@@ -226,44 +226,44 @@ function PageDetailPartner({ }: PropsPageDetailPartner) {
 			<div className={clsx('mt')}>
 				<table className={styles.container}>
 					<colgroup>
-						<col style={{ width: '50%' }} />
-						<col style={{ width: '50%' }} />
+						<col style={{width: '50%'}} />
+						<col style={{width: '50%'}} />
 					</colgroup>
 					<tr>
 						<td>
-							<span style={{ marginRight: 6 }}>Tên công ty: </span>
-							<span style={{ marginRight: 6, color: '#3772FF' }}>{detailPartner?.name || '---'}</span>
+							<span style={{marginRight: 6}}>Tên công ty: </span>
+							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.name || '---'}</span>
 						</td>
 						<td>
-							<span style={{ marginRight: 6 }}>KV cảng xuất khẩu:</span> {detailPartner?.companyUu?.name || '---'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{ marginRight: 6 }}>Mã công ty: </span>
-							<span style={{ marginRight: 6, color: '#3772FF' }}>{detailPartner?.code || '---'}</span>
-						</td>
-						<td>
-							<span style={{ marginRight: 6 }}>Người liên hệ:</span> {detailPartner?.director || '---'}
+							<span style={{marginRight: 6}}>KV cảng xuất khẩu:</span> {detailPartner?.companyUu?.name || '---'}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style={{ marginRight: 6 }}>Mã số thuế:</span> {detailPartner?.taxCode || '---'}
+							<span style={{marginRight: 6}}>Mã công ty: </span>
+							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
 						</td>
 						<td>
-							<span style={{ marginRight: 6 }}>Địa chỉ:</span>
+							<span style={{marginRight: 6}}>Người liên hệ:</span> {detailPartner?.director || '---'}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span style={{marginRight: 6}}>Mã số thuế:</span> {detailPartner?.taxCode || '---'}
+						</td>
+						<td>
+							<span style={{marginRight: 6}}>Địa chỉ:</span>
 							{getTextAddress(detailPartner?.detailAddress, detailPartner?.address)}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style={{ marginRight: 6 }}>Số điện thoại: </span>
+							<span style={{marginRight: 6}}>Số điện thoại: </span>
 							{detailPartner?.phoneNumber || '---'}
 						</td>
 						<td>
-							<div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-								<span style={{ marginRight: 6 }}>Trạng thái: </span>
+							<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+								<span style={{marginRight: 6}}>Trạng thái: </span>
 								<span>
 									<TagStatus status={detailPartner?.status as CONFIG_STATUS} />
 								</span>
@@ -272,23 +272,23 @@ function PageDetailPartner({ }: PropsPageDetailPartner) {
 					</tr>
 					<tr>
 						<td>
-							<span style={{ marginRight: 6 }}>Ngân hàng:</span>
+							<span style={{marginRight: 6}}>Ngân hàng:</span>
 							{detailPartner?.bankName || '---'}
 						</td>
 						<td rowSpan={4} className={styles.description}>
-							<span style={{ marginRight: 6 }}>Mô tả:</span>
+							<span style={{marginRight: 6}}>Mô tả:</span>
 							{detailPartner?.description || '---'}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style={{ marginRight: 6 }}>Email: </span>
-							<span style={{ marginRight: 6, color: '#3772FF' }}>{detailPartner?.email || '---'}</span>
+							<span style={{marginRight: 6}}>Email: </span>
+							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.email || '---'}</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style={{ marginRight: 6 }}>Số tài khoản: </span>
+							<span style={{marginRight: 6}}>Số tài khoản: </span>
 							{detailPartner?.bankAccount || '---'}
 						</td>
 					</tr>
@@ -361,7 +361,7 @@ function PageDetailPartner({ }: PropsPageDetailPartner) {
 									fixedRight: true,
 									render: (data: ICustomer) =>
 										data?.status != STATUS_CUSTOMER.DA_XOA && (
-											<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+											<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
 												<IconCustom
 													edit
 													icon={
@@ -401,7 +401,8 @@ function PageDetailPartner({ }: PropsPageDetailPartner) {
 				</div>
 			</div>
 			<Dialog
-				danger
+				danger={detailPartner?.status == CONFIG_STATUS.HOAT_DONG}
+				green={detailPartner?.status != CONFIG_STATUS.HOAT_DONG}
 				open={openChangeStatus}
 				onClose={() => setOpenChangeStatus(false)}
 				title={detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa hoạt động' : 'Mở khóa hoạt động'}
@@ -414,7 +415,8 @@ function PageDetailPartner({ }: PropsPageDetailPartner) {
 			/>
 
 			<Dialog
-				danger
+				danger={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC}
+				green={dataChangeStatusCustomer?.status != STATUS_CUSTOMER.HOP_TAC}
 				open={!!dataChangeStatusCustomer}
 				onClose={() => setDataChangeStatusCustomer(null)}
 				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa nhà cung cấp' : 'Mở khóa nhà cung cấp'}
