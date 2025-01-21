@@ -309,7 +309,8 @@ function PageCustomerService({}: PropsPageCustomerService) {
 				</FullColumnFlex>
 			</FlexLayout>
 			<Dialog
-				danger
+				danger={dataStatus?.status == CONFIG_STATUS.HOAT_DONG}
+				green={dataStatus?.status != CONFIG_STATUS.HOAT_DONG}
 				open={!!dataStatus}
 				s
 				onClose={() => setDataStatus(null)}

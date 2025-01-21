@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { ITableBillScale, PropsPageNotConfirmBill } from './interfaces';
+import {ITableBillScale, PropsPageNotConfirmBill} from './interfaces';
 import styles from './PageNotConfirmBill.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -12,37 +12,41 @@ import {
 	QUERY_KEY,
 	STATE_BILL,
 	STATUS_BILL,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 	TYPE_SIFT,
 } from '~/constants/config/enum';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import customerServices from '~/services/customerServices';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import wareServices from '~/services/wareServices';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Link from 'next/link';
-import { convertCoin } from '~/common/funcs/convertCoin';
+import {convertCoin} from '~/common/funcs/convertCoin';
 import Pagination from '~/components/common/Pagination';
 import batchBillServices from '~/services/batchBillServices';
 import IconCustom from '~/components/common/IconCustom';
-import { Eye, TickCircle } from 'iconsax-react';
+import {Eye, TickCircle} from 'iconsax-react';
 import clsx from 'clsx';
 import Button from '~/components/common/Button';
 import Loading from '~/components/common/Loading';
 import Dialog from '~/components/common/Dialog';
-import { convertWeight, formatDrynessAvg } from '~/common/funcs/optionConvert';
+import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
 import scalesStationServices from '~/services/scalesStationServices';
 import storageServices from '~/services/storageServices';
 import StateActive from '~/components/common/StateActive';
+import Moment from 'react-moment';
+import FormAccessSpecExcel from '../../phieu-can/MainDetailScales/components/FormAccessSpecExcel';
+import Popup from '~/components/common/Popup';
 
-function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
+function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
@@ -61,7 +65,7 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 	} = router.query;
 
 	const [uuidQLKConfirm, setUuidQLKConfirm] = useState<string[]>([]);
-
+	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
 
@@ -104,7 +108,7 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -178,7 +182,7 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
-						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+						isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
 						customerUuid: (_customerUuid as string) || '',
@@ -196,6 +200,7 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
 					}),
 				}),
 			onSuccess(data) {
@@ -235,19 +240,19 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
 		},
 	});
 
 	const exportExcel = useMutation({
-		mutationFn: () => {
+		mutationFn: (isHaveSpec: number) => {
 			return httpRequest({
 				http: batchBillServices.exportExcel({
 					page: Number(_page) || 1,
 					pageSize: Number(_pageSize) || 200,
 					keyword: (_keyword as string) || '',
 					isPaging: CONFIG_PAGING.IS_PAGING,
-					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
 					customerUuid: (_customerUuid as string) || '',
@@ -267,18 +272,20 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 					documentId: '',
 					shipUuid: '',
 					storageUuid: (_storageUuid as string) || '',
+					isExportSpec: isHaveSpec,
 				}),
 			});
 		},
 		onSuccess(data) {
 			if (data) {
 				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
+				setOpenExportExcel(false);
 			}
 		},
 	});
 
-	const handleExportExcel = () => {
-		return exportExcel.mutate();
+	const handleExportExcel = (isHaveSpec: number) => {
+		return exportExcel.mutate(isHaveSpec);
 	};
 
 	return (
@@ -287,7 +294,7 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{listBatchBill?.some((x) => x.isChecked !== false) && (
-						<div style={{ height: 40 }}>
+						<div style={{height: 40}}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -319,6 +326,10 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 								{
 									id: TYPE_BATCH.CAN_LE,
 									name: 'Cân lẻ',
+								},
+								{
+									id: TYPE_BATCH.KHONG_CAN,
+									name: 'Không qua cân',
 								},
 							]}
 						/>
@@ -381,7 +392,16 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 					</div>
 				</div>
 				<div className={styles.btn}>
-					<Button rounded_2 w_fit p_8_16 green bold onClick={handleExportExcel}>
+					<Button
+						rounded_2
+						w_fit
+						p_8_16
+						green
+						bold
+						onClick={() => {
+							setOpenExportExcel(true);
+						}}
+					>
 						Xuất excel
 					</Button>
 				</div>
@@ -390,19 +410,19 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 				<div className={styles.parameter}>
 					<div>
 						TỔNG LƯỢNG HÀNG TƯƠI:
-						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(getListBatch?.data?.amountMt) || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getListBatch?.data?.amountMt) || 0} </span>(Tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG HÀNG KHÔ:
-						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(getListBatch?.data?.amountBdmt) || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getListBatch?.data?.amountBdmt) || 0} </span>(Tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG QUY KHÔ TẠM TÍNH:
-						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(getListBatch?.data?.amountDemo) || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getListBatch?.data?.amountDemo) || 0} </span>(Tấn)
 					</div>
 					<div>
 						TỔNG LƯỢNG QUY KHÔ CHUẨN:
-						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(getListBatch?.data?.amountKCS) || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getListBatch?.data?.amountKCS) || 0} </span>(Tấn)
 					</div>
 				</div>
 			</div>
@@ -426,23 +446,34 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 								fixedLeft: true,
 								render: (data: ITableBillScale) => (
 									<>
-										<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
-											{data?.code}
-										</Link>
-										<p style={{ fontWeight: 500, color: '#3772FF' }}>{data?.weightSessionUu?.code || '---'}</p>
+										{data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<Link href={`/nhap-xuat-ngoai/${data.uuid}`} className={styles.link}>
+												{data?.code}
+											</Link>
+										) : (
+											<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
+												{data?.code}
+											</Link>
+										)}
+										<p style={{fontWeight: 500, color: '#3772FF'}}>{data?.weightSessionUu?.code || '---'}</p>
 									</>
 								),
 							},
 							{
-								title: 'Loại cân',
+								title: 'Loại cân/ Thời gian kết thúc',
 								render: (data: ITableBillScale) => (
-									<p style={{ fontWeight: 600 }}>
-										{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
-										{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
-										{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
-										{data?.scalesType == TYPE_SCALES.CAN_CHUYEN_KHO && 'Cân chuyển kho'}
-										{data?.scalesType == TYPE_SCALES.CAN_TRUC_TIEP && 'Cân xuất thẳng'}
-									</p>
+									<>
+										<p style={{fontWeight: 600}}>
+											{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
+											{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
+											{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
+											{data?.scalesType == TYPE_SCALES.CAN_CHUYEN_KHO && 'Cân chuyển kho'}
+											{data?.scalesType == TYPE_SCALES.CAN_TRUC_TIEP && 'Cân xuất thẳng'}
+										</p>
+										<p style={{fontWeight: 500, color: '#3772FF'}}>
+											<Moment date={data?.timeEnd} format='HH:mm - DD/MM/YYYY' />
+										</p>
+									</>
 								),
 							},
 							// {
@@ -461,14 +492,14 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 								title: 'Từ (Tàu/Xe)',
 								render: (data: ITableBillScale) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
 										{data?.isBatch == TYPE_BATCH.CAN_LO && (
-											<p style={{ fontWeight: 600, color: '#3772FF' }}>
+											<p style={{fontWeight: 600, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
 										{data?.isBatch == TYPE_BATCH.CAN_LE && (
-											<p style={{ fontWeight: 600, color: '#3772FF' }}>
+											<p style={{fontWeight: 600, color: '#3772FF'}}>
 												{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
 											</p>
 										)}
@@ -485,7 +516,7 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 							},
 							{
 								title: 'Độ khô (%)',
-								render: (data: ITableBillScale) => <>{formatDrynessAvg(data?.drynessAvg) || 0}</>,
+								render: (data: ITableBillScale) => <>{data?.drynessAvg?.toFixed(2) || 0}</>,
 							},
 							{
 								title: 'KL quy khô (Tấn)',
@@ -494,10 +525,6 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 							{
 								title: 'Quy cách',
 								render: (data: ITableBillScale) => <>{data?.specificationsUu?.name || '---'}</>,
-							},
-							{
-								title: 'KL hàng (Tấn)',
-								render: (data: ITableBillScale) => <>{convertWeight(data?.weightTotal) || 0}</>,
 							},
 							{
 								title: 'KL 1 (Tấn)',
@@ -512,8 +539,8 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 								title: 'Đến',
 								render: (data: ITableBillScale) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
-										<p style={{ fontWeight: 600, color: '#3772FF' }}>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
+										<p style={{fontWeight: 600, color: '#3772FF'}}>
 											{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 										</p>
 									</>
@@ -623,7 +650,7 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: ITableBillScale) => (
-									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
 										{/* Duyệt sản lượng */}
 										{data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS && data.state <= STATE_BILL.QLK_REJECTED ? (
 											<IconCustom
@@ -641,7 +668,11 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 											icon={<Eye fontSize={20} fontWeight={600} />}
 											tooltip='Xem chi tiết'
 											color='#777E90'
-											href={`/phieu-can/${data.uuid}`}
+											href={
+												data?.isBatch == TYPE_BATCH.KHONG_CAN
+													? `/nhap-xuat-ngoai/${data.uuid}`
+													: `/phieu-can/${data.uuid}`
+											}
 										/>
 									</div>
 								),
@@ -679,6 +710,20 @@ function PageNotConfirmBill({ }: PropsPageNotConfirmBill) {
 				onClose={() => setUuidQLKConfirm([])}
 				onSubmit={funcQLKConfirmBatchBill.mutate}
 			/>
+
+			<Popup open={openExportExcel} onClose={() => setOpenExportExcel(false)}>
+				<FormAccessSpecExcel
+					onAccess={() => {
+						handleExportExcel(1);
+					}}
+					onClose={() => {
+						setOpenExportExcel(false);
+					}}
+					onDeny={() => {
+						handleExportExcel(0);
+					}}
+				/>
+			</Popup>
 		</div>
 	);
 }

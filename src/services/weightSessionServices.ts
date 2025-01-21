@@ -26,6 +26,8 @@ const weightSessionServices = {
 			shift?: number | null;
 			shipUuid?: string;
 			scalesStationUuid?: string;
+			isHaveSpec?: number | null;
+			isHaveDryness?: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -154,10 +156,24 @@ const weightSessionServices = {
 			shift?: number | null;
 			shipUuid?: string;
 			scalesStationUuid?: string;
+			isHaveSpec?: number | null;
 		},
 		tokenAxios?: any
 	) => {
 		return axiosClient.post(`/WeightSession/export-excel-ws`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	updateMultipleDrynessWeightSession: (
+		data: {
+			lstInfo: {
+				wsUuids: string;
+				dryness: number;
+			}[];
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/WeightSession/update-dryness2`, data, {
 			cancelToken: tokenAxios,
 		});
 	},

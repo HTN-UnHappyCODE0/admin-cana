@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import TippyHeadless from '@tippyjs/react/headless';
 
-import { PropsMainDryness } from './interfaces';
+import {PropsMainDryness} from './interfaces';
 import styles from './MainDryness.module.scss';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -19,13 +19,13 @@ import {
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import customerServices from '~/services/customerServices';
-import { httpRequest } from '~/services';
+import {httpRequest} from '~/services';
 import wareServices from '~/services/wareServices';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import weightSessionServices from '~/services/weightSessionServices';
-import { IWeightSession } from '../../quy-cach/MainSpecification/interfaces';
+import {IWeightSession} from '../../quy-cach/MainSpecification/interfaces';
 import DataWrapper from '~/components/common/DataWrapper';
 import Pagination from '~/components/common/Pagination';
 import Noti from '~/components/common/DataWrapper/components/Noti';
@@ -33,36 +33,61 @@ import Table from '~/components/common/Table';
 import Tippy from '@tippyjs/react';
 import clsx from 'clsx';
 import BoxUpdateSpec from '../BoxUpdateSpec';
-import { AiOutlineFileAdd } from 'react-icons/ai';
+import {AiOutlineFileAdd} from 'react-icons/ai';
 import Button from '~/components/common/Button';
-import { Edit2 } from 'iconsax-react';
-import { toastWarn } from '~/common/funcs/toast';
+import {Edit2, TickCircle} from 'iconsax-react';
+import {toastWarn} from '~/common/funcs/toast';
 import Loading from '~/components/common/Loading';
-import { IoMdAdd } from 'react-icons/io';
-import Dialog from '~/components/common/Dialog';
+import {IoMdAdd} from 'react-icons/io';
 import Popup from '~/components/common/Popup';
 import FormUpdateDryness from '../FormUpdateDryness';
 import Link from 'next/link';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import FormUpdateSpecWS from '../../quy-cach/FormUpdateSpecWS';
+import Moment from 'react-moment';
+import Dialog from '~/components/common/Dialog';
+import storageServices from '~/services/storageServices';
+import scalesStationServices from '~/services/scalesStationServices';
+import PositionContainer from '~/components/common/PositionContainer';
+import FormUpdateWeighDryness from '../FormUpdateWeighDryness';
+import FormUpdateWeigh from '../../quy-cach/FormUpdateWeigh';
+import SelectFilterOption from '~/components/pages/trang-chu/SelectFilterOption';
+import SelectFilterState from '~/components/common/SelectFilterState';
 
-function MainDryness({ }: PropsMainDryness) {
+function MainDryness({}: PropsMainDryness) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
 	const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-	const { _page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _status, _productTypeUuid, _specUuid, _dateFrom, _dateTo } =
-		router.query;
+	const {
+		_page,
+		_pageSize,
+		_keyword,
+		_isBatch,
+		_isShift,
+		_customerUuid,
+		_storageUuid,
+		_status,
+		_productTypeUuid,
+		_specUuid,
+		_dateFrom,
+		_dateTo,
+		_scalesStationUuid,
+	} = router.query;
 
+	const [openUpdateMultipleDryness, setOpenUpdateMultipleDryness] = useState<boolean>(false);
 	const [dataUpdateSpec, setDataUpdateSpec] = useState<IWeightSession | null>(null);
 	const [dataWeightSessionSubmit, setDataWeightSessionSubmit] = useState<any[]>([]);
 	const [dataWeightSessionSpec, setDataWeightSessionSpec] = useState<any[]>([]);
-	// const [openUpdateDryness, setOpenUpdateDryness] = useState<boolean>(false);
-	const [openSentData, setOpenSentData] = useState<boolean>(false);
+	const [dataWeight, setDataWeight] = useState<any[]>([]);
+	const [status, setStatus] = useState<string>(String(STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE));
+	const [isHaveDryness, setIsHaveDryness] = useState<string>('0');
 
 	const [weightSessions, setWeightSessions] = useState<any[]>([]);
-	const [total, setTotal] = useState<number>(0);
+
+	const [openDryness, setOpenDryness] = useState<boolean>(false);
+	const [openSpec, setOpenSpec] = useState<boolean>(false);
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
 		queryFn: () =>
@@ -128,15 +153,64 @@ function MainDryness({ }: PropsMainDryness) {
 		},
 	});
 
-	useEffect(() => {
-		router.push({
-			pathname: '/nhap-lieu/do-kho',
-			query: {
-				...router.query,
-				_status: STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
-			},
-		});
-	}, []);
+	const listStorage = useQuery([QUERY_KEY.table_bai], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					warehouseUuid: '',
+					productUuid: '',
+					qualityUuid: '',
+					specificationsUuid: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			if (data) {
+				return data;
+			}
+		},
+	});
+
+	const listScalesStation = useQuery([QUERY_KEY.table_tram_can], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: scalesStationServices.listScalesStation({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					companyUuid: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	// useEffect(() => {
+	// 	router.replace(
+	// 		{
+	// 			pathname: router.pathname,
+	// 			query: {
+	// 				...router.query,
+	// 				_status: STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+	// 			},
+	// 		},
+	// 		undefined,
+	// 		{shallow: true, scroll: false}
+	// 	);
+	// }, []);
 
 	const queryWeightsession = useQuery(
 		[
@@ -151,7 +225,10 @@ function MainDryness({ }: PropsMainDryness) {
 			_dateFrom,
 			_dateTo,
 			_isShift,
-			_status,
+			status,
+			_storageUuid,
+			_scalesStationUuid,
+			isHaveDryness,
 		],
 		{
 			queryFn: () =>
@@ -162,7 +239,7 @@ function MainDryness({ }: PropsMainDryness) {
 						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
-						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+						isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						billUuid: '',
 						codeEnd: null,
@@ -170,16 +247,24 @@ function MainDryness({ }: PropsMainDryness) {
 						isBatch: !!_isBatch ? Number(_isBatch) : null,
 						scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
 						specUuid: !!_specUuid ? (_specUuid as string) : null,
-						status: !!_status
-							? [Number(_status)]
-							: [STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE, STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE],
-						storageUuid: '',
+						status: [
+							STATUS_WEIGHT_SESSION.CAN_LAN_2,
+							STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+							STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+							STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+							STATUS_WEIGHT_SESSION.KCS_XONG,
+							STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
+						],
 						truckUuid: '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						customerUuid: _customerUuid ? (_customerUuid as string) : '',
 						productTypeUuid: _productTypeUuid ? (_productTypeUuid as string) : '',
 						shift: !!_isShift ? Number(_isShift) : null,
+						scalesStationUuid: (_scalesStationUuid as string) || '',
+						storageUuid: (_storageUuid as string) || '',
+						isHaveSpec: null,
+						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 					}),
 				}),
 			onSuccess(data) {
@@ -191,14 +276,16 @@ function MainDryness({ }: PropsMainDryness) {
 							isChecked: false,
 						}))
 					);
-					setTotal(data?.pagination?.totalCount);
 				}
+			},
+			select(data) {
+				return data;
 			},
 		}
 	);
 
 	const funcUpdateDrynessWeightSession = useMutation({
-		mutationFn: (body: { uuid: string; dryness: number }) =>
+		mutationFn: (body: {uuid: string; dryness: number}) =>
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
@@ -214,7 +301,34 @@ function MainDryness({ }: PropsMainDryness) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
+			return;
+		},
+	});
+
+	const funcMultipleDrynessWeightSession = useMutation({
+		mutationFn: () =>
+			httpRequest({
+				showMessageFailed: true,
+				showMessageSuccess: true,
+				msgSuccess: 'Xác nhận độ khô thành công!',
+				http: weightSessionServices.updateMultipleDrynessWeightSession({
+					lstInfo: weightSessions
+						?.filter((v: IWeightSession) => v?.dryness)
+						?.map((x: IWeightSession) => ({
+							wsUuids: x?.uuid,
+							dryness: Number(x?.dryness),
+						})),
+				}),
+			}),
+		onSuccess(data) {
+			if (data) {
+				setOpenUpdateMultipleDryness(false);
+				queryClient.invalidateQueries([QUERY_KEY.table_nhap_lieu_do_kho]);
+			}
+		},
+		onError(error) {
+			console.log({error});
 			return;
 		},
 	});
@@ -236,7 +350,7 @@ function MainDryness({ }: PropsMainDryness) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
 			return;
 		},
 	});
@@ -251,7 +365,7 @@ function MainDryness({ }: PropsMainDryness) {
 
 	const handleDrynessChange = (uuid: string, value: number) => {
 		setWeightSessions((prevSessions) =>
-			prevSessions.map((session) => (session.uuid === uuid ? { ...session, dryness: value } : session))
+			prevSessions.map((session) => (session.uuid === uuid ? {...session, dryness: value} : session))
 		);
 	};
 
@@ -267,42 +381,73 @@ function MainDryness({ }: PropsMainDryness) {
 		}
 
 		if (event.key === 'Enter' || event.keyCode === 13) {
-			if (value < 0 || value > 100) {
-				return toastWarn({ msg: 'Giá trị độ khô không hợp lệ!' });
+			event.preventDefault();
+
+			const newIndex = index + 1;
+
+			if (inputRefs.current[newIndex]?.focus) {
+				inputRefs.current[newIndex]?.focus();
 			}
 
-			return funcUpdateDrynessWeightSession.mutate({
-				uuid: uuid,
-				dryness: value,
-			});
-		}
-	};
+			// if (value < 0 || value > 100) {
+			// 	return toastWarn({msg: 'Giá trị độ khô không hợp lệ!'});
+			// }
 
-	const handleSubmitSentData = async () => {
-		if (dataWeightSessionSubmit.some((v) => v.dryness == null)) {
-			return toastWarn({ msg: 'Nhập độ khô trước khi gửi kể toán!' });
+			// return funcUpdateDrynessWeightSession.mutate({
+			// 	uuid: uuid,
+			// 	dryness: value,
+			// });
 		}
-
-		return funcUpdateKCSWeightSession.mutate();
 	};
 
 	const handleUpdateAll = () => {
 		const arr = weightSessions?.filter((v) => v.isChecked !== false);
 
 		if (!arr?.every((obj: any) => obj?.specificationsUu?.uuid === arr[0]?.specificationsUu?.uuid)) {
-			return toastWarn({ msg: 'Chỉ chọn được các lô có cùng quy cách!' });
+			return toastWarn({msg: 'Chỉ chọn được các lô có cùng quy cách!'});
 		} else {
 			setDataWeightSessionSpec(arr);
 		}
 	};
 
+	// tính tổng lượng hàng đã chọn
+	const getTotal = weightSessions
+		?.filter((v) => v.isChecked !== false)
+		.reduce(
+			(acc, item) => {
+				return {
+					...acc,
+					data: {
+						amountMtWeb: acc.data.amountMtWeb + item.weightReal,
+						amountBDmtWeb: acc.data.amountBDmtWeb + item.weightBdmt,
+					},
+				};
+			},
+			{data: {amountMtWeb: 0, amountBDmtWeb: 0}}
+		);
+
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcUpdateDrynessWeightSession.isLoading || funcUpdateKCSWeightSession.isLoading} />
+			<Loading loading={funcUpdateKCSWeightSession.isLoading || funcMultipleDrynessWeightSession.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
+					<div style={{height: 40}}>
+						<Button
+							className={styles.btn}
+							rounded_2
+							maxHeight
+							edit
+							p_4_12
+							icon={<TickCircle size={18} />}
+							onClick={() => {
+								setOpenUpdateMultipleDryness(true);
+							}}
+						>
+							Xác nhận độ khô
+						</Button>
+					</div>
 					{weightSessions?.some((x) => x.isChecked !== false) && (
-						<div style={{ height: 40 }}>
+						<div style={{height: 40}}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -314,12 +459,12 @@ function MainDryness({ }: PropsMainDryness) {
 									setDataWeightSessionSubmit(weightSessions?.filter((v) => v.isChecked !== false));
 								}}
 							>
-								Thêm độ khô
+								Thêm nhiều độ khô
 							</Button>
 						</div>
 					)}
 					{weightSessions?.some((x) => x.isChecked !== false) && (
-						<div style={{ height: 40 }}>
+						<div style={{height: 40}}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -333,25 +478,42 @@ function MainDryness({ }: PropsMainDryness) {
 							</Button>
 						</div>
 					)}
-
-					{/* {weightSessions?.some((x) => x.isChecked !== false) && (
+					{weightSessions?.some((x) => x.isChecked !== false) && (
 						<div style={{height: 40}}>
 							<Button
 								className={styles.btn}
 								rounded_2
 								maxHeight
-								primary
 								p_4_12
-								icon={<LuFileSymlink size={18} />}
+								orange
+								icon={<AiOutlineFileAdd size={20} />}
 								onClick={() => {
-									setOpenSentData(true);
-									setDataWeightSessionSubmit(weightSessions?.filter((v) => v.isChecked !== false));
+									setDataWeight(weightSessions?.filter((v) => v.isChecked !== false));
+									setOpenSpec(true);
 								}}
 							>
-								Gửi kế toán
+								Cập nhật quy cách theo cân mẫu
 							</Button>
 						</div>
-					)} */}
+					)}
+					{weightSessions?.some((x) => x.isChecked !== false) && (
+						<div style={{height: 40}}>
+							<Button
+								className={styles.btn}
+								rounded_2
+								maxHeight
+								neutral
+								p_4_12
+								icon={<AiOutlineFileAdd size={20} />}
+								onClick={() => {
+									setDataWeight(weightSessions?.filter((v) => v.isChecked !== false));
+									setOpenDryness(true);
+								}}
+							>
+								Cập nhật độ khô theo cân mẫu
+							</Button>
+						</div>
+					)}
 
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu và mã lô hàng' />
@@ -370,11 +532,31 @@ function MainDryness({ }: PropsMainDryness) {
 									id: TYPE_BATCH.CAN_LE,
 									name: 'Cân lẻ',
 								},
+								{
+									id: TYPE_BATCH.KHONG_CAN,
+									name: 'Không qua cân',
+								},
 							]}
 						/>
 					</div>
-					<div className={styles.filter}>
-						<FilterCustom
+
+					<SelectFilterState
+						isShowAll={true}
+						uuid={isHaveDryness}
+						setUuid={setIsHaveDryness}
+						listData={[
+							{
+								uuid: String(0),
+								name: 'Chưa có',
+							},
+							{
+								uuid: String(1),
+								name: 'Đã có',
+							},
+						]}
+						placeholder='Độ khô'
+					/>
+					{/* <FilterCustom
 							isSearch
 							name='Độ khô'
 							query='_status'
@@ -388,8 +570,8 @@ function MainDryness({ }: PropsMainDryness) {
 									name: 'Đã có',
 								},
 							]}
-						/>
-					</div>
+						/> */}
+
 					<FilterCustom
 						isSearch
 						name='Khách hàng'
@@ -417,6 +599,24 @@ function MainDryness({ }: PropsMainDryness) {
 							name: v?.name,
 						}))}
 					/>
+					<FilterCustom
+						isSearch
+						name='Trạm cân'
+						query='_scalesStationUuid'
+						listFilter={listScalesStation?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
+					<FilterCustom
+						isSearch
+						name='Bãi'
+						query='_storageUuid'
+						listFilter={listStorage?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
 
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
@@ -424,10 +624,23 @@ function MainDryness({ }: PropsMainDryness) {
 				</div>
 			</div>
 
+			<div className={clsx('mt')}>
+				<div className={styles.parameter}>
+					<div>
+						TỔNG LƯỢNG KL HÀNG ĐÃ CHỌN:
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getTotal?.data?.amountMtWeb) || 0} </span>(Tấn)
+					</div>
+					<div>
+						TỔNG LƯỢNG KL QUY KHÔ ĐÃ CHỌN:
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getTotal?.data?.amountBDmtWeb) || 0}</span> (Tấn)
+					</div>
+				</div>
+			</div>
+
 			<div className={styles.table}>
 				<DataWrapper
 					data={weightSessions || []}
-					loading={queryWeightsession.isFetching}
+					loading={queryWeightsession.isLoading}
 					noti={<Noti des='Hiện tại chưa có danh sách nhập liệu nào!' disableButton />}
 				>
 					<Table
@@ -443,9 +656,20 @@ function MainDryness({ }: PropsMainDryness) {
 								title: 'Mã lô',
 								fixedLeft: true,
 								render: (data: IWeightSession) => (
-									<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
-										{data?.billUu?.code}
-									</Link>
+									<>
+										{data?.billUu?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<Link href={`/nhap-xuat-ngoai/${data?.billUu?.uuid}`} className={styles.link}>
+												{data?.billUu?.code}
+											</Link>
+										) : (
+											<Link href={`/phieu-can/${data?.billUu?.uuid}`} className={styles.link}>
+												{data?.billUu?.code}
+											</Link>
+										)}
+										<p style={{fontWeight: 500, color: '#3772FF'}}>
+											<Moment date={data?.weight2?.timeScales} format='HH:mm - DD/MM/YYYY' />
+										</p>
+									</>
 								),
 							},
 							{
@@ -457,6 +681,19 @@ function MainDryness({ }: PropsMainDryness) {
 								render: (data: IWeightSession) => <>{data?.truckUu?.licensePalate || '---'}</>,
 							},
 							{
+								title: 'KL hàng (Tấn)',
+								render: (data: IWeightSession) => <>{convertWeight(data?.weightReal)}</>,
+							},
+							{
+								title: 'Khách hàng',
+								render: (data: IWeightSession) => (
+									<>
+										{data?.fromUu?.name || '---'}
+										<p style={{fontWeight: 500, color: '#3772FF'}}>{data?.batchUu?.name || '---'}</p>
+									</>
+								),
+							},
+							{
 								title: 'Độ khô',
 								render: (data: IWeightSession, index: number) => (
 									<div className={styles.valueDryness}>
@@ -466,7 +703,7 @@ function MainDryness({ }: PropsMainDryness) {
 											className={styles.input}
 											type='number'
 											step='0.01'
-											value={data?.dryness!}
+											value={data?.dryness || ''}
 											onChange={(e) => handleDrynessChange(data.uuid, parseFloat(e.target.value))}
 											onKeyDown={(e) => handleKeyEnter(data.uuid, Number(data?.dryness), e, index)}
 										/>
@@ -477,9 +714,10 @@ function MainDryness({ }: PropsMainDryness) {
 								),
 							},
 							{
-								title: 'Khách hàng',
-								render: (data: IWeightSession) => <>{data?.fromUu?.name || '---'}</>,
+								title: 'KL quy khô (Tấn)',
+								render: (data: IWeightSession) => <>{convertWeight(data?.weightBdmt) || '---'}</>,
 							},
+
 							{
 								title: 'Kho hàng',
 								render: (data: IWeightSession) => <>{data?.toUu?.name || '---'}</>,
@@ -489,17 +727,12 @@ function MainDryness({ }: PropsMainDryness) {
 								render: (data: IWeightSession) => <>{data?.producTypeUu?.name || '---'}</>,
 							},
 							{
-								title: 'KL hàng (Tấn)',
-								render: (data: IWeightSession) => <>{convertWeight(data?.weightReal)}</>,
-							},
-							{
 								title: 'Quy cách',
 								render: (data: IWeightSession) => (
 									<TippyHeadless
 										zIndex={100}
 										maxWidth={'100%'}
 										interactive
-										// onClickOutside={() => setDataUpdateSpec(null)}
 										visible={dataUpdateSpec?.uuid == data?.uuid}
 										placement='bottom-start'
 										render={(attrs) => (
@@ -519,54 +752,28 @@ function MainDryness({ }: PropsMainDryness) {
 									</TippyHeadless>
 								),
 							},
-
-							// {
-							// 	title: 'Tác vụ',
-							// 	fixedRight: true,
-							// 	render: (data: IWeightSession) => (
-							// 		<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-							// 			<div>
-							// 				<Button
-							// 					className={styles.btn}
-							// 					rounded_2
-							// 					maxHeight
-							// 					primary
-							// 					p_4_12
-							// 					icon={<AiOutlineFileAdd size={20} />}
-							// 					disable={data?.dryness == null}
-							// 					onClick={() => {
-							// 						setOpenSentData(true);
-							// 						setDataWeightSessionSubmit([data]);
-							// 					}}
-							// 				>
-							// 					Gửi kế toán
-							// 				</Button>
-							// 			</div>
-							// 		</div>
-							// 	),
-							// },
 						]}
 					/>
 				</DataWrapper>
-				{!queryWeightsession.isFetching && (
-					<Pagination
-						currentPage={Number(_page) || 1}
-						pageSize={Number(_pageSize) || 200}
-						total={total}
-						dependencies={[
-							_pageSize,
-							_keyword,
-							_isBatch,
-							_customerUuid,
-							_productTypeUuid,
-							_specUuid,
-							_dateFrom,
-							_dateTo,
-							_isShift,
-							_status,
-						]}
-					/>
-				)}
+				<Pagination
+					currentPage={Number(_page) || 1}
+					pageSize={Number(_pageSize) || 200}
+					total={queryWeightsession?.data?.pagination?.totalCount}
+					dependencies={[
+						_pageSize,
+						_keyword,
+						_isBatch,
+						_customerUuid,
+						_productTypeUuid,
+						_specUuid,
+						_dateFrom,
+						_dateTo,
+						_isShift,
+						status,
+						_storageUuid,
+						_scalesStationUuid,
+					]}
+				/>
 			</div>
 
 			<Popup
@@ -583,20 +790,82 @@ function MainDryness({ }: PropsMainDryness) {
 				/>
 			</Popup>
 
-			<Dialog
-				open={openSentData}
-				onClose={() => {
-					setOpenSentData(false);
-					setDataWeightSessionSubmit([]);
-				}}
-				title='Xác nhận số liệu và gửi đi!'
-				note={`Đang chọn ${dataWeightSessionSubmit?.length} phiếu đã có độ khô! Bạn có chắc chắn muốn gửi đi ?`}
-				onSubmit={handleSubmitSentData}
-			/>
-
 			<Popup open={dataWeightSessionSpec.length > 0} onClose={() => setDataWeightSessionSpec([])}>
 				<FormUpdateSpecWS dataUpdateSpecWS={dataWeightSessionSpec} onClose={() => setDataWeightSessionSpec([])} />
 			</Popup>
+
+			<PositionContainer
+				open={dataWeight.length > 0 && openDryness}
+				onClose={() => {
+					setDataWeight([]);
+					setOpenDryness(false);
+					const {_keywordForm, _pageSample, _pageSampleSize, ...rest} = router.query;
+
+					router.replace({
+						pathname: router.pathname,
+						query: {
+							...rest,
+						},
+					});
+				}}
+			>
+				<FormUpdateWeighDryness
+					dataUpdateWeigh={dataWeight}
+					onClose={() => {
+						setDataWeight([]);
+						setOpenDryness(false);
+						const {_keywordForm, _pageSample, _pageSampleSize, ...rest} = router.query;
+
+						router.replace({
+							pathname: router.pathname,
+							query: {
+								...rest,
+							},
+						});
+					}}
+				/>
+			</PositionContainer>
+
+			<PositionContainer
+				open={dataWeight.length > 0 && openSpec}
+				onClose={() => {
+					setDataWeight([]);
+					setOpenSpec(false);
+					const {_keywordForm, _pageSample, _pageSampleSize, ...rest} = router.query;
+
+					router.replace({
+						pathname: router.pathname,
+						query: {
+							...rest,
+						},
+					});
+				}}
+			>
+				<FormUpdateWeigh
+					dataUpdateWeigh={dataWeight}
+					onClose={() => {
+						setDataWeight([]);
+						setOpenSpec(false);
+						const {_keywordForm, _pageSample, _pageSampleSize, ...rest} = router.query;
+
+						router.replace({
+							pathname: router.pathname,
+							query: {
+								...rest,
+							},
+						});
+					}}
+				/>
+			</PositionContainer>
+
+			<Dialog
+				danger
+				open={openUpdateMultipleDryness}
+				onClose={() => setOpenUpdateMultipleDryness(false)}
+				title='Xác nhận độ khô'
+				note='Bạn có chắc chắn muốn xác nhận hàng loạt độ khộ không?'
+				onSubmit={funcMultipleDrynessWeightSession.mutate}
+			/>
 		</div>
 	);
 }

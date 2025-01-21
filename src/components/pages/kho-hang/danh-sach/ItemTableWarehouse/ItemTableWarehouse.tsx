@@ -164,7 +164,8 @@ function ItemTableWarehouse({order, dataWarehouse, isParent = true, uuidParent =
 			) : null}
 
 			<Dialog
-				danger
+				danger={dataStatus?.status == CONFIG_STATUS.HOAT_DONG}
+				green={dataStatus?.status != CONFIG_STATUS.HOAT_DONG}
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
 				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa kho hàng' : 'Mở khóa kho hàng'}

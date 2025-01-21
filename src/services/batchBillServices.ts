@@ -27,6 +27,7 @@ const batchBillServices = {
 			typeCheckDay: number | 0;
 			scalesStationUuid: string | null;
 			storageUuid: string | null;
+			isHaveDryness: number;
 		},
 		tokenAxios?: any
 	) => {
@@ -233,6 +234,7 @@ const batchBillServices = {
 			typeCheckDay: number;
 			scalesStationUuid: string;
 			documentId: string;
+			isExportSpec?: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -287,6 +289,27 @@ const batchBillServices = {
 		tokenAxios?: any
 	) => {
 		return axiosClient.post(`/BatchBill/upsert-bill-no-scale`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	updateShipTemp: (
+		data: {
+			uuid: string;
+			shipUuid: string;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/update-ship-temp`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	reStartBatchbill: (
+		data: {
+			uuid: string;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/restart-bill`, data, {
 			cancelToken: tokenAxios,
 		});
 	},

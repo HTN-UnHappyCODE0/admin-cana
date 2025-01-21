@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { PropsMainPageScalesExport } from './interfaces';
+import {PropsMainPageScalesExport} from './interfaces';
 import styles from './MainPageScalesExport.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -12,14 +12,15 @@ import {
 	QUERY_KEY,
 	STATE_BILL,
 	STATUS_BILL,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 	TYPE_SIFT,
 } from '~/constants/config/enum';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
@@ -27,24 +28,27 @@ import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import batchBillServices from '~/services/batchBillServices';
-import { ITableBillScale } from '../MainPageScalesAll/interfaces';
+import {ITableBillScale} from '../MainPageScalesAll/interfaces';
 import Dialog from '~/components/common/Dialog';
 import IconCustom from '~/components/common/IconCustom';
-import { Eye, Play, StopCircle } from 'iconsax-react';
+import {Eye, Play, SaveAdd, StopCircle} from 'iconsax-react';
 import Loading from '~/components/common/Loading';
 import Link from 'next/link';
-import { LuPencil } from 'react-icons/lu';
+import {LuPencil} from 'react-icons/lu';
 import shipServices from '~/services/shipServices';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import clsx from 'clsx';
 import Button from '~/components/common/Button';
 import storageServices from '~/services/storageServices';
 import StateActive from '~/components/common/StateActive';
 import scalesStationServices from '~/services/scalesStationServices';
+import Popup from '~/components/common/Popup';
+import FormUpdateShipBill from '../../lenh-can/FormUpdateShipBill';
+import FormAccessSpecExcel from '../MainDetailScales/components/FormAccessSpecExcel';
 
-function MainPageScalesExport({ }: PropsMainPageScalesExport) {
+function MainPageScalesExport({}: PropsMainPageScalesExport) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
@@ -66,7 +70,8 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 
 	const [uuidPlay, setUuidPlay] = useState<string>('');
 	const [uuidStop, setUuidStop] = useState<string>('');
-
+	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
+	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
 
@@ -109,7 +114,7 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -215,22 +220,22 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 						state: !!_state
 							? [Number(_state)]
 							: [
-								STATE_BILL.NOT_CHECK,
-								STATE_BILL.QLK_REJECTED,
-								STATE_BILL.QLK_CHECKED,
-								STATE_BILL.KTK_REJECTED,
-								STATE_BILL.KTK_CHECKED,
-								STATE_BILL.END,
-							],
+									STATE_BILL.NOT_CHECK,
+									STATE_BILL.QLK_REJECTED,
+									STATE_BILL.QLK_CHECKED,
+									STATE_BILL.KTK_REJECTED,
+									STATE_BILL.KTK_CHECKED,
+									STATE_BILL.END,
+							  ],
 						status: !!_status
 							? [Number(_status)]
 							: [
-								STATUS_BILL.DANG_CAN,
-								STATUS_BILL.TAM_DUNG,
-								STATUS_BILL.DA_CAN_CHUA_KCS,
-								STATUS_BILL.DA_KCS,
-								STATUS_BILL.CHOT_KE_TOAN,
-							],
+									STATUS_BILL.DANG_CAN,
+									STATUS_BILL.TAM_DUNG,
+									STATUS_BILL.DA_CAN_CHUA_KCS,
+									STATUS_BILL.DA_KCS,
+									STATUS_BILL.CHOT_KE_TOAN,
+							  ],
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
@@ -240,6 +245,7 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
 					}),
 				}),
 			onSuccess(data) {
@@ -277,7 +283,7 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
 		},
 	});
 
@@ -298,12 +304,12 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
 		},
 	});
 
 	const exportExcel = useMutation({
-		mutationFn: () => {
+		mutationFn: (isHaveSpec: number) => {
 			return httpRequest({
 				http: batchBillServices.exportExcel({
 					page: Number(_page) || 1,
@@ -321,22 +327,22 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 					state: !!_state
 						? [Number(_state)]
 						: [
-							STATE_BILL.NOT_CHECK,
-							STATE_BILL.QLK_REJECTED,
-							STATE_BILL.QLK_CHECKED,
-							STATE_BILL.KTK_REJECTED,
-							STATE_BILL.KTK_CHECKED,
-							STATE_BILL.END,
-						],
+								STATE_BILL.NOT_CHECK,
+								STATE_BILL.QLK_REJECTED,
+								STATE_BILL.QLK_CHECKED,
+								STATE_BILL.KTK_REJECTED,
+								STATE_BILL.KTK_CHECKED,
+								STATE_BILL.END,
+						  ],
 					status: !!_status
 						? [Number(_status)]
 						: [
-							STATUS_BILL.DANG_CAN,
-							STATUS_BILL.TAM_DUNG,
-							STATUS_BILL.DA_CAN_CHUA_KCS,
-							STATUS_BILL.DA_KCS,
-							STATUS_BILL.CHOT_KE_TOAN,
-						],
+								STATUS_BILL.DANG_CAN,
+								STATUS_BILL.TAM_DUNG,
+								STATUS_BILL.DA_CAN_CHUA_KCS,
+								STATUS_BILL.DA_KCS,
+								STATUS_BILL.CHOT_KE_TOAN,
+						  ],
 					timeStart: _dateFrom ? (_dateFrom as string) : null,
 					timeEnd: _dateTo ? (_dateTo as string) : null,
 					warehouseUuid: '',
@@ -347,23 +353,25 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 					scalesStationUuid: (_scalesStationUuid as string) || '',
 					documentId: '',
 					storageUuid: (_storageUuid as string) || '',
+					isExportSpec: isHaveSpec,
 				}),
 			});
 		},
 		onSuccess(data) {
 			if (data) {
 				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
+				setOpenExportExcel(false);
 			}
 		},
 	});
 
-	const handleExportExcel = () => {
-		return exportExcel.mutate();
+	const handleExportExcel = (isHaveSpec: number) => {
+		return exportExcel.mutate(isHaveSpec);
 	};
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading || funcStopBatchBill.isLoading} />{' '}
+			<Loading loading={funcStartBatchBill.isLoading || funcStopBatchBill.isLoading || exportExcel.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -498,7 +506,16 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 					</div>
 				</div>
 				<div className={styles.btn}>
-					<Button rounded_2 w_fit p_8_16 green bold onClick={handleExportExcel}>
+					<Button
+						rounded_2
+						w_fit
+						p_8_16
+						green
+						bold
+						onClick={() => {
+							setOpenExportExcel(true);
+						}}
+					>
 						Xuất excel
 					</Button>
 				</div>
@@ -507,7 +524,7 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 				<div className={styles.parameter}>
 					<div>
 						TỔNG LƯỢNG HÀNG TƯƠI:
-						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(getListBatch?.data?.amountMt) || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(getListBatch?.data?.amountMt) || 0} </span>(Tấn)
 					</div>
 				</div>
 			</div>
@@ -545,7 +562,7 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 							{
 								title: 'Loại cân',
 								render: (data: ITableBillScale) => (
-									<p style={{ fontWeight: 600 }}>
+									<p style={{fontWeight: 600}}>
 										{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
 										{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
@@ -559,26 +576,26 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 								title: 'Từ(Tàu/Xe)',
 								render: (data: ITableBillScale) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
 											<>
 												{data?.isBatch == TYPE_BATCH.CAN_LO && (
-													<p style={{ fontWeight: 500, color: '#3772FF' }}>{'---'}</p>
+													<p style={{fontWeight: 500, color: '#3772FF'}}>{'---'}</p>
 												)}
 												{data?.isBatch == TYPE_BATCH.CAN_LE && (
-													<p style={{ fontWeight: 500, color: '#3772FF' }}>{'---'}</p>
+													<p style={{fontWeight: 500, color: '#3772FF'}}>{'---'}</p>
 												)}
 											</>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
 											<>
 												{data?.isBatch == TYPE_BATCH.CAN_LO && (
-													<p style={{ fontWeight: 500, color: '#3772FF' }}>
+													<p style={{fontWeight: 500, color: '#3772FF'}}>
 														{data?.batchsUu?.shipUu?.licensePalate || '---'}
 													</p>
 												)}
 												{data?.isBatch == TYPE_BATCH.CAN_LE && (
-													<p style={{ fontWeight: 500, color: '#3772FF' }}>
+													<p style={{fontWeight: 500, color: '#3772FF'}}>
 														{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
 													</p>
 												)}
@@ -591,19 +608,17 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 								title: 'Đến',
 								render: (data: ITableBillScale) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
 										)}
-
-										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
 							},
@@ -649,6 +664,10 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 										{data?.isSift == TYPE_SIFT.KHONG_CAN_SANG && 'Không cần sàng'}
 									</>
 								),
+							},
+							{
+								title: 'Tàu trung chuyển',
+								render: (data: ITableBillScale) => <>{data?.shipTempUu?.licensePalate || '---'}</>,
 							},
 							{
 								title: 'Xác nhận SL',
@@ -712,7 +731,7 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 													},
 													{
 														state: STATUS_BILL.DA_CAN_CHUA_KCS,
-														text: 'chưa KCS',
+														text: 'Chưa KCS',
 														textColor: '#2D74FF',
 														backgroundColor: 'rgba(45, 116, 255, 0.10)',
 													},
@@ -774,7 +793,7 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: ITableBillScale) => (
-									<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
 										{/* Bắt đầu cân */}
 										{data?.status == STATUS_BILL.CHUA_CAN || data?.status == STATUS_BILL.TAM_DUNG ? (
 											<IconCustom
@@ -797,6 +816,16 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 											/>
 										) : null}
 
+										{/* Cập nhật tàu trung chuyển */}
+										{data?.isBatch == TYPE_BATCH.CAN_LO || data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<IconCustom
+												edit
+												icon={<SaveAdd fontSize={20} fontWeight={600} />}
+												tooltip='Cập nhật tàu trung chuyển'
+												color='#777E90'
+												onClick={() => setBillUuidUpdateShip(data.uuid)}
+											/>
+										) : null}
 										{/* Chỉnh sửa phiếu */}
 										<IconCustom
 											edit
@@ -865,6 +894,23 @@ function MainPageScalesExport({ }: PropsMainPageScalesExport) {
 				onClose={() => setUuidStop('')}
 				onSubmit={funcStopBatchBill.mutate}
 			/>
+			{/* Cập nhật tàu trung chuyển */}
+			<Popup open={!!billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)}>
+				<FormUpdateShipBill uuid={billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)} />
+			</Popup>
+			<Popup open={openExportExcel} onClose={() => setOpenExportExcel(false)}>
+				<FormAccessSpecExcel
+					onAccess={() => {
+						handleExportExcel(1);
+					}}
+					onClose={() => {
+						setOpenExportExcel(false);
+					}}
+					onDeny={() => {
+						handleExportExcel(0);
+					}}
+				/>
+			</Popup>
 		</div>
 	);
 }

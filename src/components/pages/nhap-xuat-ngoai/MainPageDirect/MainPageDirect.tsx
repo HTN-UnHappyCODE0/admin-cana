@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {PropsMainPageDirect} from './interfaces';
 import styles from './MainPageDirect.module.scss';
 import DataWrapper from '~/components/common/DataWrapper';
 import Pagination from '~/components/common/Pagination';
-import {Eye} from 'iconsax-react';
+import {Eye, SaveAdd} from 'iconsax-react';
 import IconCustom from '~/components/common/IconCustom';
 import {LuPencil} from 'react-icons/lu';
 import Moment from 'react-moment';
@@ -18,6 +18,7 @@ import {
 	STATE_BILL,
 	STATUS_BILL,
 	STATUS_CUSTOMER,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
@@ -43,10 +44,15 @@ import storageServices from '~/services/storageServices';
 import customerServices from '~/services/customerServices';
 import {clsx} from 'clsx';
 import StateActive from '~/components/common/StateActive';
+import Popup from '~/components/common/Popup';
+import FormAccessSpecExcel from '../../phieu-can/MainDetailScales/components/FormAccessSpecExcel';
+import FormUpdateShipBill from '../../lenh-can/FormUpdateShipBill';
+import Loading from '~/components/common/Loading';
 
 function MainPageDirect({}: PropsMainPageDirect) {
 	const router = useRouter();
-
+	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
+	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
 	const {
 		_page,
 		_pageSize,
@@ -125,6 +131,7 @@ function MainPageDirect({}: PropsMainPageDirect) {
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
 					}),
 				}),
 			select(data) {
@@ -172,7 +179,7 @@ function MainPageDirect({}: PropsMainPageDirect) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -222,7 +229,7 @@ function MainPageDirect({}: PropsMainPageDirect) {
 	});
 
 	const exportExcel = useMutation({
-		mutationFn: () => {
+		mutationFn: (isHaveSpec: number) => {
 			return httpRequest({
 				http: batchBillServices.exportExcel({
 					page: Number(_page) || 1,
@@ -260,22 +267,25 @@ function MainPageDirect({}: PropsMainPageDirect) {
 					scalesStationUuid: (_scalesStationUuid as string) || '',
 					storageUuid: (_storageUuid as string) || '',
 					documentId: '',
+					isExportSpec: isHaveSpec,
 				}),
 			});
 		},
 		onSuccess(data) {
 			if (data) {
 				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
+				setOpenExportExcel(false);
 			}
 		},
 	});
 
-	const handleExportExcel = () => {
-		return exportExcel.mutate();
+	const handleExportExcel = (isHaveSpec: number) => {
+		return exportExcel.mutate(isHaveSpec);
 	};
 
 	return (
 		<div className={styles.container}>
+			<Loading loading={exportExcel.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -363,7 +373,7 @@ function MainPageDirect({}: PropsMainPageDirect) {
 							},
 							{
 								id: STATUS_BILL.DA_CAN_CHUA_KCS,
-								name: 'chưa KCS',
+								name: 'Chưa KCS',
 							},
 							{
 								id: STATUS_BILL.DA_KCS,
@@ -382,7 +392,16 @@ function MainPageDirect({}: PropsMainPageDirect) {
 				</div>
 
 				<div className={styles.btn}>
-					<Button rounded_2 w_fit p_8_16 green bold onClick={handleExportExcel}>
+					<Button
+						rounded_2
+						w_fit
+						p_8_16
+						green
+						bold
+						onClick={() => {
+							setOpenExportExcel(true);
+						}}
+					>
 						Xuất excel
 					</Button>
 					<div>
@@ -521,6 +540,10 @@ function MainPageDirect({}: PropsMainPageDirect) {
 								render: (data: any) => <>{data?.timeEnd ? <Moment date={data?.timeEnd} format='DD/MM/YYYY' /> : '---'}</>,
 							},
 							{
+								title: 'Tàu trung chuyển',
+								render: (data: any) => <>{data?.shipTempUu?.licensePalate || '---'}</>,
+							},
+							{
 								title: 'Xác nhận SL',
 								render: (data: any) => (
 									<StateActive
@@ -604,7 +627,16 @@ function MainPageDirect({}: PropsMainPageDirect) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: any) => (
-									<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
+										{data?.isBatch == TYPE_BATCH.CAN_LO || data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<IconCustom
+												edit
+												icon={<SaveAdd fontSize={20} fontWeight={600} />}
+												tooltip='Cập nhật tàu trung chuyển'
+												color='#777E90'
+												onClick={() => setBillUuidUpdateShip(data.uuid)}
+											/>
+										) : null}
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -647,6 +679,23 @@ function MainPageDirect({}: PropsMainPageDirect) {
 					]}
 				/>
 			</div>
+			<Popup open={openExportExcel} onClose={() => setOpenExportExcel(false)}>
+				<FormAccessSpecExcel
+					onAccess={() => {
+						handleExportExcel(1);
+					}}
+					onClose={() => {
+						setOpenExportExcel(false);
+					}}
+					onDeny={() => {
+						handleExportExcel(0);
+					}}
+				/>
+			</Popup>
+
+			<Popup open={!!billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)}>
+				<FormUpdateShipBill uuid={billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)} />
+			</Popup>
 		</div>
 	);
 }

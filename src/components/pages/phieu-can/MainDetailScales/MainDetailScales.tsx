@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {use, useState} from 'react';
 import {PropsMainDetailScales} from './interfaces';
 import styles from './MainDetailScales.module.scss';
 import TabNavLink from '~/components/common/TabNavLink';
 import {useRouter} from 'next/router';
 import TableDetail from './components/TableDetail';
 import Link from 'next/link';
-import {IoArrowBackOutline} from 'react-icons/io5';
+import {IoArrowBackOutline, IoClose} from 'react-icons/io5';
 import clsx from 'clsx';
 import TableListTruck from './components/TableListTruck';
 import {useMutation, useQuery} from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import {
 	QUERY_KEY,
 	STATE_BILL,
 	STATUS_BILL,
+	STATUS_WEIGHT_SESSION,
 	TYPE_BATCH,
 	TYPE_SCALES,
 	TYPE_SIFT,
@@ -25,7 +26,6 @@ import {httpRequest} from '~/services';
 import batchBillServices from '~/services/batchBillServices';
 import Button from '~/components/common/Button';
 import {LuPencil} from 'react-icons/lu';
-import {convertCoin} from '~/common/funcs/convertCoin';
 import {IDetailBatchBill} from '../../lenh-can/MainDetailBill/interfaces';
 import {convertWeight} from '~/common/funcs/optionConvert';
 import TableUpdateBillHistory from './components/TableUpdateBillHistory';
@@ -33,10 +33,19 @@ import StateActive from '~/components/common/StateActive';
 import Moment from 'react-moment';
 import weightSessionServices from '~/services/weightSessionServices';
 import Loading from '~/components/common/Loading';
+import Popup from '~/components/common/Popup';
+import SliderImage from '~/components/common/SliderImage';
+import FormUpdateShipBill from '../../lenh-can/FormUpdateShipBill';
+import Dialog from '~/components/common/Dialog';
+import FormAccessSpecExcel from './components/FormAccessSpecExcel';
 
 function MainDetailScales({}: PropsMainDetailScales) {
 	const router = useRouter();
 	const {_type, _id} = router.query;
+
+	const [open, setOpen] = useState<boolean>(false);
+	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
+	const [openUpdateShip, setOpenUpdateShip] = useState<boolean>(false);
 
 	const {data: detailBatchBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_phieu_can, _id], {
 		queryFn: () =>
@@ -87,7 +96,7 @@ function MainDetailScales({}: PropsMainDetailScales) {
 	};
 
 	const exportExcel = useMutation({
-		mutationFn: () => {
+		mutationFn: (isHaveSpec: number) => {
 			return httpRequest({
 				http: weightSessionServices.exportExcelWs({
 					page: 1,
@@ -100,7 +109,13 @@ function MainDetailScales({}: PropsMainDetailScales) {
 					customerUuid: '',
 					isBatch: null,
 					productTypeUuid: '',
-					status: [],
+					status: [
+						STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE,
+						STATUS_WEIGHT_SESSION.CAN_LAN_2,
+						STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE,
+						STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
+						STATUS_WEIGHT_SESSION.KCS_XONG,
+					],
 					timeStart: null,
 					timeEnd: null,
 					shipUuid: '',
@@ -112,18 +127,20 @@ function MainDetailScales({}: PropsMainDetailScales) {
 					specUuid: null,
 					truckUuid: '',
 					shift: null,
+					isHaveSpec: isHaveSpec,
 				}),
 			});
 		},
 		onSuccess(data) {
 			if (data) {
 				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
+				setOpenExportExcel(false);
 			}
 		},
 	});
 
-	const handleExportExcel = () => {
-		return exportExcel.mutate();
+	const handleExportExcel = (isHaveSpec: number) => {
+		return exportExcel.mutate(isHaveSpec);
 	};
 
 	return (
@@ -142,10 +159,21 @@ function MainDetailScales({}: PropsMainDetailScales) {
 					<p>Chi tiết phiếu cân #{detailBatchBill?.code}</p>
 				</Link>
 				<div className={styles.list_btn}>
-					<Button rounded_2 w_fit p_8_16 green bold onClick={handleExportExcel}>
+					<Button
+						rounded_2
+						w_fit
+						p_8_16
+						green
+						bold
+						onClick={() => {
+							setOpenExportExcel(true);
+						}}
+					>
 						Xuất excel
 					</Button>
-
+					<Button rounded_2 w_fit primary p_8_16 bold onClick={() => setOpenUpdateShip(true)}>
+						Cập nhật tàu trung chuyển
+					</Button>
 					<Button
 						rounded_2
 						w_fit
@@ -212,16 +240,7 @@ function MainDetailScales({}: PropsMainDetailScales) {
 					<tr>
 						<td>
 							<span>Vận chuyển:</span>
-							<span style={{marginLeft: '6px', fontWeight: 600}}>
-								{/* {detailBatchBill?.transportType == TYPE_TRANSPORT.DUONG_BO
-									? `Đường bộ (${detailBatchBill?.weightSessionUu?.truckUu?.licensePalate || '---'})`
-									: detailBatchBill?.transportType == TYPE_TRANSPORT.DUONG_THUY
-									? `Đường thủy (${detailBatchBill?.batchsUu?.shipUu?.licensePalate || '---'} - ${
-											detailBatchBill?.batchsUu?.shipOutUu?.licensePalate || '---'
-									  })`
-									: '---'} */}
-								{getlicensePalate()}
-							</span>
+							<span style={{marginLeft: '6px', fontWeight: 600}}>{getlicensePalate()}</span>
 						</td>
 						<td>
 							<span>Tổng khối lượng:</span>
@@ -254,7 +273,6 @@ function MainDetailScales({}: PropsMainDetailScales) {
 								<span style={{marginLeft: '6px', fontWeight: 600}}>{detailBatchBill?.port || '---'}</span>
 							</div>
 						</td>
-
 						<td>
 							<span>Kiểu cân:</span>
 							<span style={{marginLeft: '6px', fontWeight: 600}}>
@@ -262,6 +280,39 @@ function MainDetailScales({}: PropsMainDetailScales) {
 								{detailBatchBill?.isBatch == TYPE_BATCH.CAN_LE && 'Cân lẻ'}
 								{detailBatchBill?.isBatch == TYPE_BATCH.KHONG_CAN && 'Không qua cân'}
 							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+								<span>Tàu trung chuyển: </span>
+								<span style={{marginLeft: '6px', fontWeight: 600}}>
+									{detailBatchBill?.shipTempUu?.licensePalate || '---'}
+								</span>
+							</div>
+						</td>
+						<td>
+							<span>Lượng tươi theo mớn:</span>
+							{detailBatchBill?.weightMon ? (
+								<span style={{marginLeft: '6px', fontWeight: 600}}>
+									{convertWeight(detailBatchBill?.weightMon!)}
+									<span style={{marginLeft: '6px', fontWeight: 600}}>(Tấn)</span>
+								</span>
+							) : (
+								'---'
+							)}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+								<span>Trạm cân: </span>
+								<span style={{marginLeft: '6px', fontWeight: 600}}>{detailBatchBill?.scalesStationUu?.name || '---'}</span>
+							</div>
+						</td>
+						<td rowSpan={4} className={styles.description}>
+							<span>{detailBatchBill?.state == STATE_BILL.QLK_REJECTED ? 'Lý do' : 'Mô tả'} :</span>
+							<span style={{marginLeft: '6px', fontWeight: 600}}>{detailBatchBill?.description || '---'}</span>
 						</td>
 					</tr>
 					<tr>
@@ -305,76 +356,72 @@ function MainDetailScales({}: PropsMainDetailScales) {
 								/>
 							</span>
 						</td>
-						<td rowSpan={3} className={styles.description}>
-							<span>{detailBatchBill?.state == STATE_BILL.QLK_REJECTED ? 'Lý do' : 'Mô tả'} :</span>
-							<span style={{marginLeft: '6px', fontWeight: 600}}>{detailBatchBill?.description || '---'}</span>
-						</td>
 					</tr>
 					<tr>
 						<td>
-							<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-								<span>Trạm cân: </span>
-								<span style={{marginLeft: '6px', fontWeight: 600}}>{detailBatchBill?.scalesStationUu?.name || '---'}</span>
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							{/* <div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-								<span>Xác nhận SL: </span>
-								<span style={{marginLeft: '6px', fontWeight: 600}}>
-									{detailBatchBill?.state == STATE_BILL.NOT_CHECK && 'Chưa duyệt'}
-									{detailBatchBill?.state == STATE_BILL.QLK_REJECTED && 'QLK duyệt lại'}
-									{detailBatchBill?.state == STATE_BILL.QLK_CHECKED && 'QLK đã duyệt'}
-									{detailBatchBill?.state == STATE_BILL.KTK_REJECTED && 'KTK duyệt lại'}
-									{detailBatchBill?.state == STATE_BILL.KTK_CHECKED && 'KTK đã duyệt'}
-									{detailBatchBill?.state == STATE_BILL.END && 'Kết thúc'}
-								</span>
-							</div> */}
 							<span className={styles.state_action}>
 								<span style={{marginRight: '6px'}}>Xác nhận SL: </span>
-								<StateActive
-									stateActive={detailBatchBill?.state!}
-									listState={[
-										{
-											state: STATE_BILL.NOT_CHECK,
-											text: 'Chưa duyệt',
-											textColor: '#fff',
-											backgroundColor: '#FF5C5C',
-										},
-										{
-											state: STATE_BILL.QLK_REJECTED,
-											text: 'QLK duyệt lại',
-											textColor: '#fff',
-											backgroundColor: '#FB923C',
-										},
-										{
-											state: STATE_BILL.QLK_CHECKED,
-											text: 'QLK đã duyệt',
-											textColor: '#fff',
-											backgroundColor: '#0EA5E9',
-										},
-										{
-											state: STATE_BILL.KTK_REJECTED,
-											text: 'KTK duyệt lại',
-											textColor: '#fff',
-											backgroundColor: '#FF6838',
-										},
-										{
-											state: STATE_BILL.KTK_CHECKED,
-											text: 'KTK đã duyệt',
-											textColor: '#fff',
-											backgroundColor: '#2A85FF',
-										},
-										{
-											state: STATE_BILL.END,
-											text: 'Kết thúc',
-											textColor: '#fff',
-											backgroundColor: '#9757D7',
-										},
-									]}
-								/>
+								{detailBatchBill?.scalesType != TYPE_SCALES.CAN_XUAT ? (
+									<StateActive
+										stateActive={detailBatchBill?.state!}
+										listState={[
+											{
+												state: STATE_BILL.NOT_CHECK,
+												text: 'Chưa duyệt',
+												textColor: '#fff',
+												backgroundColor: '#FF5C5C',
+											},
+											{
+												state: STATE_BILL.QLK_REJECTED,
+												text: 'QLK duyệt lại',
+												textColor: '#fff',
+												backgroundColor: '#FB923C',
+											},
+											{
+												state: STATE_BILL.QLK_CHECKED,
+												text: 'QLK đã duyệt',
+												textColor: '#fff',
+												backgroundColor: '#0EA5E9',
+											},
+											{
+												state: STATE_BILL.KTK_REJECTED,
+												text: 'KTK duyệt lại',
+												textColor: '#fff',
+												backgroundColor: '#FF6838',
+											},
+											{
+												state: STATE_BILL.KTK_CHECKED,
+												text: 'KTK đã duyệt',
+												textColor: '#fff',
+												backgroundColor: '#2A85FF',
+											},
+											{
+												state: STATE_BILL.END,
+												text: 'Kết thúc',
+												textColor: '#fff',
+												backgroundColor: '#9757D7',
+											},
+										]}
+									/>
+								) : (
+									'---'
+								)}
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span className={styles.state_action}>
+								<span style={{marginRight: '6px'}}>File ảnh: </span>
+								{detailBatchBill?.weightMon ? (
+									<span>
+										<Button rounded_8 w_fit p_6_12 green bold onClick={() => setOpen(true)}>
+											Chi tiết
+										</Button>
+									</span>
+								) : (
+									'---'
+								)}
 							</span>
 						</td>
 					</tr>
@@ -409,6 +456,33 @@ function MainDetailScales({}: PropsMainDetailScales) {
 				{_type == 'xe-hang' && <TableListTruck />}
 				{_type == 'lich-su' && <TableUpdateBillHistory />}
 			</div>
+
+			<Popup open={open} onClose={() => setOpen(false)}>
+				<div className={styles.main_form}>
+					<SliderImage listImage={detailBatchBill?.path! || []} />
+					<div className={styles.icon_close} onClick={() => setOpen(false)}>
+						<IoClose size={24} color='#23262F' />
+					</div>
+				</div>
+			</Popup>
+
+			<Popup open={openUpdateShip} onClose={() => setOpenUpdateShip(false)}>
+				<FormUpdateShipBill uuid={detailBatchBill?.uuid!} onClose={() => setOpenUpdateShip(false)} />
+			</Popup>
+
+			<Popup open={openExportExcel} onClose={() => setOpenExportExcel(false)}>
+				<FormAccessSpecExcel
+					onAccess={() => {
+						handleExportExcel(1);
+					}}
+					onClose={() => {
+						setOpenExportExcel(false);
+					}}
+					onDeny={() => {
+						handleExportExcel(0);
+					}}
+				/>
+			</Popup>
 		</div>
 	);
 }

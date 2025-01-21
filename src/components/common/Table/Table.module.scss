@@ -8,7 +8,7 @@
 		thead {
 			position: sticky;
 			top: 0;
-			z-index: 11;
+			z-index: 21;
 		}
 	}
 
@@ -52,7 +52,6 @@
 		font-weight: 600;
 		white-space: nowrap;
 		padding-right: 24px;
-
 		&.checkBox {
 			// display: flex;
 			align-items: center;
@@ -96,7 +95,7 @@
 		font-size: 14px;
 		font-weight: 500;
 		border-bottom: 1px solid var(--border-color);
-		background-color: var(--bg-light);
+		// background-color: var(--bg-light);
 
 		.checkBox {
 			display: flex;
@@ -110,6 +109,11 @@
 		.fixedLeft,
 		.fixedRight {
 			background: #fff;
+		}
+		background-color: #fff;
+
+		.selectedRow {
+			background-color: #e2f1fb;
 		}
 
 		.fixedLeft {
@@ -130,17 +134,34 @@
 	}
 }
 
-.fixedRight {
+.stickyElement {
 	position: sticky;
-	right: 0;
 	z-index: 10;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.isTitleRow {
+	@extend .stickyElement;
+	top: 66px;
+	background-color: #fff;
+}
+
+.fixedRight {
+	@extend .stickyElement;
+	right: 0;
+	z-index: 20;
 	box-shadow: inset 0px 2px 8px rgba(99, 99, 99, 0.2);
 }
 
 .fixedLeft {
-	position: sticky;
+	@extend .stickyElement;
 	left: 0;
-	z-index: 10;
+	z-index: 20;
+}
+
+.stickyHeader,
+.stickyHeader1 {
+	z-index: 30;
 }
 
 .title_check_box {

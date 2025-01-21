@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import TippyHeadless from '@tippyjs/react/headless';
+import React, {useState} from 'react';
 
-import { IBillSend, PropsMainBillSend } from './interfaces';
+import {IBillSend, PropsMainBillSend} from './interfaces';
 import styles from './MainBillSend.module.scss';
-import { useRouter } from 'next/router';
-import { useQuery } from '@tanstack/react-query';
+import {useRouter} from 'next/router';
+import {useQuery} from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -12,13 +11,14 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	STATUS_BILL,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_CUSTOMER,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import { httpRequest } from '~/services';
+import {httpRequest} from '~/services';
 import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import Search from '~/components/common/Search';
@@ -31,19 +31,36 @@ import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
 import Moment from 'react-moment';
 import Link from 'next/link';
-import { convertWeight, formatDrynessAvg } from '~/common/funcs/optionConvert';
+import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
 import IconCustom from '~/components/common/IconCustom';
-import { Edit } from 'iconsax-react';
+import {Edit} from 'iconsax-react';
 import Popup from '~/components/common/Popup';
 import PopupChangeDryness from '../PopupChangeDryness';
 import Button from '~/components/common/Button';
 import batchBillServices from '~/services/batchBillServices';
+import scalesStationServices from '~/services/scalesStationServices';
+import storageServices from '~/services/storageServices';
+import {convertCoin} from '~/common/funcs/convertCoin';
 
-function MainBillSend({ }: PropsMainBillSend) {
+function MainBillSend({}: PropsMainBillSend) {
 	const router = useRouter();
 
-	const { _page, _pageSize, _keyword, _isBatch, _isShift, _customerUuid, _productTypeUuid, _specUuid, _dateFrom, _dateTo } = router.query;
+	const {
+		_page,
+		_pageSize,
+		_keyword,
+		_isBatch,
+		_isShift,
+		_customerUuid,
+		_productTypeUuid,
+		_specUuid,
+		_dateFrom,
+		_dateTo,
+		_storageUuid,
+		_scalesStationUuid,
+	} = router.query;
 
+	const [dataSpec, setDataSpec] = useState<IBillSend | null>(null);
 	const [total, setTotal] = useState<number>(0);
 	const [listSelectBill, setListSelectBill] = useState<any[]>([]);
 	const [listBillSend, setListBillSend] = useState<any[]>([]);
@@ -113,6 +130,51 @@ function MainBillSend({ }: PropsMainBillSend) {
 		},
 	});
 
+	const listScalesStation = useQuery([QUERY_KEY.table_tram_can], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: scalesStationServices.listScalesStation({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					companyUuid: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listStorage = useQuery([QUERY_KEY.table_bai], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					warehouseUuid: '',
+					productUuid: '',
+					qualityUuid: '',
+					specificationsUuid: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			if (data) {
+				return data;
+			}
+		},
+	});
+
 	useQuery(
 		[
 			QUERY_KEY.table_phieu_da_gui_KT,
@@ -126,6 +188,8 @@ function MainBillSend({ }: PropsMainBillSend) {
 			_dateFrom,
 			_dateTo,
 			_isShift,
+			_storageUuid,
+			_scalesStationUuid,
 		],
 		{
 			queryFn: () =>
@@ -137,12 +201,11 @@ function MainBillSend({ }: PropsMainBillSend) {
 						pageSize: Number(_pageSize) || 200,
 						keyword: (_keyword as string) || '',
 						isPaging: CONFIG_PAGING.IS_PAGING,
-						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+						isDescending: CONFIG_DESCENDING.IS_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						isBatch: !!_isBatch ? Number(_isBatch) : null,
 						scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
 						status: [STATUS_BILL.DA_KCS, STATUS_BILL.CHOT_KE_TOAN],
-						storageUuid: '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						customerUuid: _customerUuid ? (_customerUuid as string) : '',
@@ -150,12 +213,14 @@ function MainBillSend({ }: PropsMainBillSend) {
 						specificationsUuid: (_specUuid as string) || '',
 						isCreateBatch: null,
 						qualityUuid: '',
-						scalesStationUuid: '',
 						transportType: null,
 						typeCheckDay: 0,
 						warehouseUuid: '',
 						shipUuid: '',
 						state: [],
+						scalesStationUuid: (_scalesStationUuid as string) || '',
+						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
 					}),
 				}),
 			onSuccess(data) {
@@ -184,7 +249,7 @@ function MainBillSend({ }: PropsMainBillSend) {
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					{listBillSend?.some((x) => x.isChecked !== false) && (
-						<div style={{ height: 40 }}>
+						<div style={{height: 40}}>
 							<Button
 								className={styles.btn}
 								rounded_2
@@ -216,6 +281,10 @@ function MainBillSend({ }: PropsMainBillSend) {
 									id: TYPE_BATCH.CAN_LE,
 									name: 'Cân lẻ',
 								},
+								{
+									id: TYPE_BATCH.KHONG_CAN,
+									name: 'Không qua cân',
+								},
 							]}
 						/>
 					</div>
@@ -246,6 +315,24 @@ function MainBillSend({ }: PropsMainBillSend) {
 							name: v?.name,
 						}))}
 					/>
+					<FilterCustom
+						isSearch
+						name='Trạm cân'
+						query='_scalesStationUuid'
+						listFilter={listScalesStation?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
+					<FilterCustom
+						isSearch
+						name='Bãi'
+						query='_storageUuid'
+						listFilter={listStorage?.data?.map((v: any) => ({
+							id: v?.uuid,
+							name: v?.name,
+						}))}
+					/>
 
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
@@ -271,9 +358,20 @@ function MainBillSend({ }: PropsMainBillSend) {
 								title: 'Mã lô',
 								fixedLeft: true,
 								render: (data: IBillSend) => (
-									<Link href={`/phieu-can/${data?.uuid}`} className={styles.link}>
-										{data?.code}
-									</Link>
+									<>
+										{data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<Link href={`/nhap-xuat-ngoai/${data.uuid}`} className={styles.link}>
+												{data?.code}
+											</Link>
+										) : (
+											<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
+												{data?.code}
+											</Link>
+										)}
+										<p style={{fontWeight: 500, color: '#3772FF'}}>
+											<Moment date={data?.timeEnd} format='HH:mm - DD/MM/YYYY' />
+										</p>
+									</>
 								),
 							},
 							{
@@ -281,8 +379,16 @@ function MainBillSend({ }: PropsMainBillSend) {
 								render: (data: IBillSend) => <>{data?.code}</>,
 							},
 							{
-								title: 'Tổng số phiếu',
-								render: (data: IBillSend) => <>{'---'}</>,
+								title: 'KL hàng (Tấn)',
+								render: (data: IBillSend) => <>{convertWeight(data?.weightTotal)}</>,
+							},
+							{
+								title: 'KL quy khô (Tấn)',
+								render: (data: IBillSend) => <>{convertWeight(data?.weightBdmt) || 0}</>,
+							},
+							{
+								title: 'Số lượt',
+								render: (data: IBillSend) => <>{convertCoin(data?.countWs) || 0}</>,
 							},
 							{
 								title: 'Khách hàng',
@@ -296,10 +402,7 @@ function MainBillSend({ }: PropsMainBillSend) {
 								title: 'Loại hàng',
 								render: (data: IBillSend) => <>{data?.productTypeUu?.name || '---'}</>,
 							},
-							{
-								title: 'KL hàng (Tấn)',
-								render: (data: IBillSend) => <>{convertWeight(data?.weightTotal)}</>,
-							},
+
 							// {
 							// 	title: 'Quy cách',
 							// 	render: (data: IBillSend) => (
@@ -326,17 +429,19 @@ function MainBillSend({ }: PropsMainBillSend) {
 							// },
 							{
 								title: 'Độ khô',
-								render: (data: IBillSend) => <p className={styles.dryness}>{formatDrynessAvg(data?.drynessAvg)} %</p>,
+								render: (data: IBillSend) => <p className={styles.dryness}>{data?.drynessAvg?.toFixed(2)} %</p>,
 							},
 							{
 								title: 'Thời gian gửi',
-								render: (data: IBillSend) => <Moment date={data?.updatedTime} format='HH:mm, DD/MM/YYYY' />,
+								render: (data: IBillSend) => (
+									<>{data?.updatedTime ? <Moment date={data?.updatedTime} format='HH:mm, DD/MM/YYYY' /> : '---'}</>
+								),
 							},
 							{
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IBillSend) => (
-									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
 										<IconCustom
 											edit
 											icon={<Edit fontSize={20} fontWeight={600} />}
@@ -384,6 +489,8 @@ function MainBillSend({ }: PropsMainBillSend) {
 							_dateFrom,
 							_dateTo,
 							_isShift,
+							_storageUuid,
+							_scalesStationUuid,
 						]}
 					/>
 				)}

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-import { PropsMainPageAll } from './interfaces';
+import {PropsMainPageAll} from './interfaces';
 import styles from './MainPageAll.module.scss';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import Search from '~/components/common/Search';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Table from '~/components/common/Table';
 import Link from 'next/link';
 import Noti from '~/components/common/DataWrapper/components/Noti';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import Button from '~/components/common/Button';
 import Pagination from '~/components/common/Pagination';
 import {
@@ -21,6 +21,7 @@ import {
 	STATE_BILL,
 	STATUS_BILL,
 	STATUS_CUSTOMER,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
@@ -31,23 +32,30 @@ import Image from 'next/image';
 import icons from '~/constants/images/icons';
 import Moment from 'react-moment';
 import IconCustom from '~/components/common/IconCustom';
-import { AddSquare, Eye } from 'iconsax-react';
-import { LuPencil } from 'react-icons/lu';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {AddSquare, Edit, Eye, SaveAdd} from 'iconsax-react';
+import {LuPencil} from 'react-icons/lu';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import batchBillServices from '~/services/batchBillServices';
 import TippyHeadless from '@tippyjs/react/headless';
 import FilterCustom from '~/components/common/FilterCustom';
 import shipServices from '~/services/shipServices';
+import scalesStationServices from '~/services/scalesStationServices';
 import wareServices from '~/services/wareServices';
 import storageServices from '~/services/storageServices';
 import customerServices from '~/services/customerServices';
-import { clsx } from 'clsx';
+import {clsx} from 'clsx';
 import StateActive from '~/components/common/StateActive';
+import Popup from '~/components/common/Popup';
+import FormAccessSpecExcel from '../../phieu-can/MainDetailScales/components/FormAccessSpecExcel';
+import FormUpdateShipBill from '../../lenh-can/FormUpdateShipBill';
+import Loading from '~/components/common/Loading';
 
-function MainPageAll({ }: PropsMainPageAll) {
+function MainPageAll({}: PropsMainPageAll) {
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
 	const router = useRouter();
+	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
+	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
 
 	const {
 		_page,
@@ -97,13 +105,13 @@ function MainPageAll({ }: PropsMainPageAll) {
 						state: !!_state
 							? [Number(_state)]
 							: [
-								STATE_BILL.NOT_CHECK,
-								STATE_BILL.QLK_REJECTED,
-								STATE_BILL.QLK_CHECKED,
-								STATE_BILL.KTK_REJECTED,
-								STATE_BILL.KTK_CHECKED,
-								STATE_BILL.END,
-							],
+									STATE_BILL.NOT_CHECK,
+									STATE_BILL.QLK_REJECTED,
+									STATE_BILL.QLK_CHECKED,
+									STATE_BILL.KTK_REJECTED,
+									STATE_BILL.KTK_CHECKED,
+									STATE_BILL.END,
+							  ],
 						customerUuid: (_customerUuid as string) || '',
 						isBatch: TYPE_BATCH.KHONG_CAN,
 						isCreateBatch: null,
@@ -112,12 +120,12 @@ function MainPageAll({ }: PropsMainPageAll) {
 						status: !!_status
 							? [Number(_status)]
 							: [
-								STATUS_BILL.DANG_CAN,
-								STATUS_BILL.TAM_DUNG,
-								STATUS_BILL.DA_CAN_CHUA_KCS,
-								STATUS_BILL.DA_KCS,
-								STATUS_BILL.CHOT_KE_TOAN,
-							],
+									STATUS_BILL.DANG_CAN,
+									STATUS_BILL.TAM_DUNG,
+									STATUS_BILL.DA_CAN_CHUA_KCS,
+									STATUS_BILL.DA_KCS,
+									STATUS_BILL.CHOT_KE_TOAN,
+							  ],
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
@@ -127,6 +135,7 @@ function MainPageAll({ }: PropsMainPageAll) {
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
 					}),
 				}),
 			select(data) {
@@ -174,7 +183,7 @@ function MainPageAll({ }: PropsMainPageAll) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -237,7 +246,7 @@ function MainPageAll({ }: PropsMainPageAll) {
 	};
 
 	const exportExcel = useMutation({
-		mutationFn: () => {
+		mutationFn: (isHaveSpec: number) => {
 			return httpRequest({
 				http: batchBillServices.exportExcel({
 					page: Number(_page) || 1,
@@ -250,13 +259,13 @@ function MainPageAll({ }: PropsMainPageAll) {
 					state: !!_state
 						? [Number(_state)]
 						: [
-							STATE_BILL.NOT_CHECK,
-							STATE_BILL.QLK_REJECTED,
-							STATE_BILL.QLK_CHECKED,
-							STATE_BILL.KTK_REJECTED,
-							STATE_BILL.KTK_CHECKED,
-							STATE_BILL.END,
-						],
+								STATE_BILL.NOT_CHECK,
+								STATE_BILL.QLK_REJECTED,
+								STATE_BILL.QLK_CHECKED,
+								STATE_BILL.KTK_REJECTED,
+								STATE_BILL.KTK_CHECKED,
+								STATE_BILL.END,
+						  ],
 					customerUuid: (_customerUuid as string) || '',
 					isBatch: TYPE_BATCH.KHONG_CAN,
 					isCreateBatch: null,
@@ -275,22 +284,25 @@ function MainPageAll({ }: PropsMainPageAll) {
 					scalesStationUuid: (_scalesStationUuid as string) || '',
 					storageUuid: (_storageUuid as string) || '',
 					documentId: '',
+					isExportSpec: isHaveSpec,
 				}),
 			});
 		},
 		onSuccess(data) {
 			if (data) {
 				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
+				setOpenExportExcel(false);
 			}
 		},
 	});
 
-	const handleExportExcel = () => {
-		return exportExcel.mutate();
+	const handleExportExcel = (isHaveSpec: number) => {
+		return exportExcel.mutate(isHaveSpec);
 	};
 
 	return (
 		<div className={styles.container}>
+			<Loading loading={exportExcel.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -378,7 +390,7 @@ function MainPageAll({ }: PropsMainPageAll) {
 							},
 							{
 								id: STATUS_BILL.DA_CAN_CHUA_KCS,
-								name: 'chưa KCS',
+								name: 'Chưa KCS',
 							},
 							{
 								id: STATUS_BILL.DA_KCS,
@@ -397,7 +409,16 @@ function MainPageAll({ }: PropsMainPageAll) {
 				</div>
 
 				<div className={styles.btn}>
-					<Button rounded_2 w_fit p_8_16 green bold onClick={handleExportExcel}>
+					<Button
+						rounded_2
+						w_fit
+						p_8_16
+						green
+						bold
+						onClick={() => {
+							setOpenExportExcel(true);
+						}}
+					>
 						Xuất excel
 					</Button>
 					<div>
@@ -460,7 +481,7 @@ function MainPageAll({ }: PropsMainPageAll) {
 				<div className={styles.parameter}>
 					<div>
 						TỔNG LƯỢNG HÀNG TƯƠI:
-						<span style={{ color: '#2D74FF', marginLeft: 4 }}>{convertWeight(listBill?.data?.amountMt) || 0} </span>(Tấn)
+						<span style={{color: '#2D74FF', marginLeft: 4}}>{convertWeight(listBill?.data?.amountMt) || 0} </span>(Tấn)
 					</div>
 				</div>
 			</div>
@@ -491,7 +512,7 @@ function MainPageAll({ }: PropsMainPageAll) {
 							{
 								title: 'Loại cân',
 								render: (data: any) => (
-									<p style={{ fontWeight: 600 }}>
+									<p style={{fontWeight: 600}}>
 										{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
 										{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
@@ -513,15 +534,15 @@ function MainPageAll({ }: PropsMainPageAll) {
 								title: 'Từ (Tàu/Xe)',
 								render: (data: any) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
 											<>
-												<p style={{ fontWeight: 500, color: '#3772FF' }}>{'---'}</p>
+												<p style={{fontWeight: 500, color: '#3772FF'}}>{'---'}</p>
 											</>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
 											<>
-												<p style={{ fontWeight: 500, color: '#3772FF' }}>
+												<p style={{fontWeight: 500, color: '#3772FF'}}>
 													{data?.batchsUu?.shipUu?.licensePalate || '---'}
 												</p>
 											</>
@@ -533,14 +554,14 @@ function MainPageAll({ }: PropsMainPageAll) {
 								title: 'Đến',
 								render: (data: any) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
 										)}
@@ -577,6 +598,10 @@ function MainPageAll({ }: PropsMainPageAll) {
 							{
 								title: 'Ngày kết thúc',
 								render: (data: any) => <>{data?.timeEnd ? <Moment date={data?.timeEnd} format='DD/MM/YYYY' /> : '---'}</>,
+							},
+							{
+								title: 'Tàu trung chuyển',
+								render: (data: any) => <>{data?.shipTempUu?.licensePalate || '---'}</>,
 							},
 							{
 								title: 'Xác nhận SL',
@@ -662,7 +687,16 @@ function MainPageAll({ }: PropsMainPageAll) {
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: any) => (
-									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
+										{data?.isBatch == TYPE_BATCH.CAN_LO || data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<IconCustom
+												edit
+												icon={<SaveAdd fontSize={20} fontWeight={600} />}
+												tooltip='Cập nhật tàu trung chuyển'
+												color='#777E90'
+												onClick={() => setBillUuidUpdateShip(data.uuid)}
+											/>
+										) : null}
 										<IconCustom
 											edit
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
@@ -704,6 +738,24 @@ function MainPageAll({ }: PropsMainPageAll) {
 					]}
 				/>
 			</div>
+
+			<Popup open={openExportExcel} onClose={() => setOpenExportExcel(false)}>
+				<FormAccessSpecExcel
+					onAccess={() => {
+						handleExportExcel(1);
+					}}
+					onClose={() => {
+						setOpenExportExcel(false);
+					}}
+					onDeny={() => {
+						handleExportExcel(0);
+					}}
+				/>
+			</Popup>
+
+			<Popup open={!!billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)}>
+				<FormUpdateShipBill uuid={billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)} />
+			</Popup>
 		</div>
 	);
 }

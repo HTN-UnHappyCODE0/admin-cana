@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Image from 'next/image';
-import { IDataBill, PropsMainPageBillAll } from './interfaces';
+import {IDataBill, PropsMainPageBillAll} from './interfaces';
 import styles from './MainPageBillAll.module.scss';
 import Search from '~/components/common/Search';
 import FilterCustom from '~/components/common/FilterCustom';
@@ -14,23 +14,24 @@ import {
 	QUERY_KEY,
 	STATUS_BILL,
 	STATUS_CUSTOMER,
+	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 } from '~/constants/config/enum';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpRequest } from '~/services';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {httpRequest} from '~/services';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
 import DataWrapper from '~/components/common/DataWrapper';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
 import Pagination from '~/components/common/Pagination';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import Moment from 'react-moment';
 import IconCustom from '~/components/common/IconCustom';
-import { LuPencil } from 'react-icons/lu';
-import { AddSquare, Eye, Play, Trash } from 'iconsax-react';
+import {LuPencil} from 'react-icons/lu';
+import {AddSquare, Eye, Play, RefreshSquare, SaveAdd, Trash} from 'iconsax-react';
 import TippyHeadless from '@tippyjs/react/headless';
 import Link from 'next/link';
 import Popup from '~/components/common/Popup';
@@ -41,13 +42,13 @@ import customerServices from '~/services/customerServices';
 import wareServices from '~/services/wareServices';
 import batchBillServices from '~/services/batchBillServices';
 import shipServices from '~/services/shipServices';
-import { convertCoin } from '~/common/funcs/convertCoin';
-import { convertWeight } from '~/common/funcs/optionConvert';
+import {convertCoin} from '~/common/funcs/convertCoin';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import storageServices from '~/services/storageServices';
-import StateActive from '~/components/common/StateActive';
 import scalesStationServices from '~/services/scalesStationServices';
+import FormUpdateShipBill from '../FormUpdateShipBill';
 
-function MainPageBillAll({ }: PropsMainPageBillAll) {
+function MainPageBillAll({}: PropsMainPageBillAll) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
@@ -68,7 +69,9 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 	} = router.query;
 
 	const [openCreate, setOpenCreate] = useState<boolean>(false);
-	const [billUuid, setBilldUuid] = useState<string | null>(null);
+	const [billUuid, setBillUuid] = useState<string | null>(null);
+	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
+	const [billUuidReStart, setBillUuidReStart] = useState<string | null>(null);
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
 		queryFn: () =>
@@ -109,7 +112,7 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 					productUuid: '',
 					qualityUuid: '',
 					specificationsUuid: '',
-					status: null,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -220,6 +223,7 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
 					}),
 				}),
 			select(data) {
@@ -245,7 +249,28 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 			}
 		},
 		onError(error) {
-			console.log({ error });
+			console.log({error});
+		},
+	});
+
+	const funcReStartBatchBill = useMutation({
+		mutationFn: () =>
+			httpRequest({
+				showMessageFailed: true,
+				showMessageSuccess: true,
+				msgSuccess: 'Tiếp tục lệnh cân thành công!',
+				http: batchBillServices.reStartBatchbill({
+					uuid: billUuidReStart!,
+				}),
+			}),
+		onSuccess(data) {
+			if (data) {
+				setBillUuidReStart('');
+				queryClient.invalidateQueries([QUERY_KEY.table_lenh_can_tat_ca]);
+			}
+		},
+		onError(error) {
+			console.log({error});
 		},
 	});
 
@@ -270,7 +295,7 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading} />
+			<Loading loading={funcStartBatchBill.isLoading || funcReStartBatchBill.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -433,7 +458,7 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 							{
 								title: 'Loại cân',
 								render: (data: IDataBill) => (
-									<p style={{ fontWeight: 600 }}>
+									<p style={{fontWeight: 600}}>
 										{data?.scalesType == TYPE_SCALES.CAN_NHAP && 'Cân nhập'}
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && 'Cân xuất'}
 										{data?.scalesType == TYPE_SCALES.CAN_DICH_VU && 'Cân dịch vụ'}
@@ -442,32 +467,18 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 									</p>
 								),
 							},
-							// {
-							// 	title: 'Mã tàu',
-							// 	render: (data: IDataBill) => (
-							// 		<p style={{fontWeight: 600}}>{data?.batchsUu?.shipUu?.licensePalate || '---'}</p>
-							// 	),
-							// },
-							// {
-							// 	title: 'Mã tàu xuất',
-							// 	render: (data: IDataBill) => (
-							// 		<>
-							// 			<p style={{fontWeight: 600}}>{data?.batchsUu?.shipOutUu?.licensePalate || '---'}</p>
-							// 		</>
-							// 	),
-							// },
 							{
 								title: 'Từ(Tàu/Xe)',
 								render: (data: IDataBill) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.fromUu?.name || data?.customerName}</p>
-										{/* <p>({data?.fromUu?.parentUu?.name || '---'})</p> */}
-										{/* <p style={{fontWeight: 400, color: '#3772FF'}}>{data?.batchsUu?.shipUu?.licensePalate || '---'}</p> */}
+										<p style={{marginBottom: 4, fontWeight: 600}}>
+											{data?.fromUu?.name || data?.customerName || '---'}
+										</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>{'---'}</p>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>{'---'}</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
@@ -478,19 +489,17 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 								title: 'Đến',
 								render: (data: IDataBill) => (
 									<>
-										<p style={{ marginBottom: 4, fontWeight: 600 }}>{data?.toUu?.name || '---'}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{ fontWeight: 400, color: '#3772FF' }}>
+											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
 										)}
-
-										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
 							},
@@ -528,6 +537,10 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 								render: (data: IDataBill) => <>{data?.scalesStationUu?.name || '---'}</>,
 							},
 							{
+								title: 'Tàu trung chuyển',
+								render: (data: IDataBill) => <>{data?.shipTempUu?.licensePalate || '---'}</>,
+							},
+							{
 								title: 'Ngày dự kiến',
 								render: (data: IDataBill) => (
 									<>
@@ -543,51 +556,22 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 								title: 'Trạng thái',
 								render: (data: IDataBill) => (
 									<>
-										{data?.status == STATUS_BILL.DA_HUY && <span style={{ color: '#D94212' }}>Đã hủy bỏ</span>}
-										{data?.status == STATUS_BILL.CHUA_CAN && <span style={{ color: '#3772FF' }}>Chưa xử lý</span>}
+										{data?.status == STATUS_BILL.DA_HUY && <span style={{color: '#D94212'}}>Đã hủy bỏ</span>}
+										{data?.status == STATUS_BILL.CHUA_CAN && <span style={{color: '#3772FF'}}>Chưa xử lý</span>}
 										{(data?.status == STATUS_BILL.DANG_CAN || data?.status == STATUS_BILL.TAM_DUNG) && (
-											<span style={{ color: '#9757D7' }}>Đang xử lý</span>
+											<span style={{color: '#9757D7'}}>Đang xử lý</span>
 										)}
 										{data?.status >= STATUS_BILL.DA_CAN_CHUA_KCS && (
-											<span style={{ color: '#2CAE39' }}>Đã hoàn thành</span>
+											<span style={{color: '#2CAE39'}}>Đã hoàn thành</span>
 										)}
 									</>
-									// <StateActive
-									// 	stateActive={data?.status}
-									// 	listState={[
-									// 		{
-									// 			state: STATUS_BILL.DANG_CAN || STATUS_BILL.TAM_DUNG,
-									// 			text: 'Đang xử lý',
-									// 			textColor: '#9757D7',
-									// 			backgroundColor: 'rgba(151, 87, 215, 0.10)',
-									// 		},
-									// 		{
-									// 			state: STATUS_BILL.DA_HUY,
-									// 			text: 'Đã hủy bỏ',
-									// 			textColor: '#F95B5B',
-									// 			backgroundColor: 'rgba(249, 91, 91, 0.10)',
-									// 		},
-									// 		{
-									// 			state: STATUS_BILL.CHUA_CAN,
-									// 			text: 'Chưa xử lý',
-									// 			textColor: '#2D74FF',
-									// 			backgroundColor: 'rgba(45, 116, 255, 0.10)',
-									// 		},
-									// 		{
-									// 			state: STATUS_BILL.DA_CAN_CHUA_KCS || STATUS_BILL.DA_KCS || STATUS_BILL.CHOT_KE_TOAN,
-									// 			text: 'Đã hoàn thành',
-									// 			textColor: '#41CD4F',
-									// 			backgroundColor: 'rgba(65, 205, 79, 0.1)',
-									// 		},
-									// 	]}
-									// />
 								),
 							},
 							{
 								title: 'Tác vụ',
 								fixedRight: true,
 								render: (data: IDataBill) => (
-									<div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
 										{data?.status == STATUS_BILL.CHUA_CAN || data?.status == STATUS_BILL.TAM_DUNG ? (
 											<IconCustom
 												edit
@@ -610,12 +594,27 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 											<IconCustom
 												lock
 												icon={<Trash size='22' />}
-												tooltip={'Hủy phiếu'}
+												tooltip='Hủy phiếu'
 												color='#777E90'
-												onClick={() => setBilldUuid(data.uuid)}
+												onClick={() => setBillUuid(data.uuid)}
 											/>
 										)}
-
+										{data?.status == STATUS_BILL.DA_CAN_CHUA_KCS && (
+											<IconCustom
+												edit
+												icon={<RefreshSquare fontSize={20} fontWeight={600} />}
+												tooltip='Tiếp tục cân'
+												color='#777E90'
+												onClick={() => setBillUuidReStart(data.uuid)}
+											/>
+										)}
+										<IconCustom
+											edit
+											icon={<SaveAdd fontSize={20} fontWeight={600} />}
+											tooltip='Cập nhật tàu trung chuyển'
+											color='#777E90'
+											onClick={() => setBillUuidUpdateShip(data.uuid)}
+										/>
 										<IconCustom
 											edit
 											icon={<Eye fontSize={20} fontWeight={600} />}
@@ -655,10 +654,20 @@ function MainPageBillAll({ }: PropsMainPageBillAll) {
 				onClose={() => setUuidPlay('')}
 				onSubmit={funcStartBatchBill.mutate}
 			/>
+			<Dialog
+				open={!!billUuidReStart}
+				title='Tiếp tục cân'
+				note='Bạn có muốn thực hiện tiếp tục cân cho phiếu cân này không?'
+				onClose={() => setBillUuidReStart('')}
+				onSubmit={funcReStartBatchBill.mutate}
+			/>
 
 			{/* POPUP */}
-			<Popup open={!!billUuid} onClose={() => setBilldUuid(null)}>
-				<PopupDeleteBill uuid={billUuid} onClose={() => setBilldUuid(null)} />
+			<Popup open={!!billUuid} onClose={() => setBillUuid(null)}>
+				<PopupDeleteBill uuid={billUuid} onClose={() => setBillUuid(null)} />
+			</Popup>
+			<Popup open={!!billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)}>
+				<FormUpdateShipBill uuid={billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)} />
 			</Popup>
 		</div>
 	);
