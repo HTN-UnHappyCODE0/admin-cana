@@ -27,7 +27,7 @@ const batchBillServices = {
 			typeCheckDay: number | 0;
 			scalesStationUuid: string | null;
 			storageUuid: string | null;
-			isHaveDryness: number;
+			isHaveDryness: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -235,6 +235,7 @@ const batchBillServices = {
 			scalesStationUuid: string;
 			documentId: string;
 			isExportSpec?: number | null;
+			isHaveDryness?: number | null;
 		},
 		tokenAxios?: any
 	) => {
