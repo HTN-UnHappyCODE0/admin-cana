@@ -103,7 +103,7 @@ function ChartExportCompany({}: PropsChartExportCompany) {
 				http: batchBillServices.dashbroadBillOut({
 					partnerUuid: partnerUuid,
 					companyUuid: context?.companyUuid,
-					customerUuid: '',
+					customerUuid: [],
 					isShowBDMT: Number(isShowBDMT),
 					storageUuid: storageUuid,
 					warehouseUuid: '',

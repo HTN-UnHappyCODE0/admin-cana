@@ -153,7 +153,7 @@ const batchBillServices = {
 			timeEnd: string;
 			isShowBDMT: number;
 			storageUuid: string;
-			customerUuid: string;
+			customerUuid: string[];
 			warehouseUuid: string;
 		},
 		tokenAxios?: any
@@ -171,7 +171,7 @@ const batchBillServices = {
 			timeEnd: string;
 			isShowBDMT: number;
 			storageUuid: string;
-			customerUuid: string;
+			customerUuid: string[];
 			warehouseUuid: string;
 		},
 		tokenAxios?: any
@@ -189,7 +189,7 @@ const batchBillServices = {
 			timeEnd: string;
 			isShowBDMT: number;
 			storageUuid: string;
-			customerUuid: string;
+			customerUuid: string[];
 			warehouseUuid: string;
 		},
 		tokenAxios?: any

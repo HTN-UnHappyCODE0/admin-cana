@@ -104,7 +104,7 @@ function ChartImportCompany({}: PropsChartImportCompany) {
 				http: batchBillServices.dashbroadBillIn({
 					partnerUuid: partnerUuid,
 					companyUuid: context?.companyUuid,
-					customerUuid: '',
+					customerUuid: [],
 					isShowBDMT: Number(isShowBDMT),
 					storageUuid: storageUuid,
 					warehouseUuid: '',
