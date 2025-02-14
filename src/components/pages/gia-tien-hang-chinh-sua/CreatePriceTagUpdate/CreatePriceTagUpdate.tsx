@@ -182,6 +182,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 					scalesStationUuid: '',
 					storageUuid: '',
 					isHaveDryness: 0, /// thêm tạm
+					truckUuid: [],
 				}),
 			}),
 		onSuccess(data) {
