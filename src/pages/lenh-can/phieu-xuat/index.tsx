@@ -49,5 +49,9 @@ export default function Page() {
 }
 
 Page.getLayout = function (Page: ReactElement) {
-	return <BaseLayout title='Quản lý Lệnh cân xuất'>{Page}</BaseLayout>;
+	return (
+		<BaseLayout bgLight={true} title='Quản lý Lệnh cân xuất'>
+			{Page}
+		</BaseLayout>
+	);
 };
