@@ -218,6 +218,7 @@ function MainUpdate({}: PropsMainUpdate) {
 						form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid
 							? form.provinceOwnerId
 							: '',
+					companyUuid: form.companyUuid,
 				}),
 			}),
 		onSuccess(data) {
