@@ -20,7 +20,6 @@ const weightSessionServices = {
 			specUuid: string | null;
 			codeStart: number | null;
 			codeEnd: number | null;
-			customerUuid?: string | null;
 			productTypeUuid?: string | null;
 			shift?: number | null;
 			shipUuid?: string;
@@ -29,6 +28,8 @@ const weightSessionServices = {
 			isHaveDryness?: number | null;
 			truckUuid: string;
 			listTruckUuid: string[];
+			customerUuid: string;
+			listCustomerUuid: string[];
 		},
 		tokenAxios?: any
 	) => {
@@ -116,7 +117,6 @@ const weightSessionServices = {
 			truckUuid: string;
 			listTruckUuid: string[];
 			storageUuid: string;
-			customerUuid: string;
 			productTypeUuid: string;
 			shipUuid: string;
 			isBatch: number | null;
@@ -127,6 +127,8 @@ const weightSessionServices = {
 			codeEnd: number | null;
 			shift: number | null;
 			scalesStationUuid?: string;
+			customerUuid: string;
+			listCustomerUuid: string[];
 		},
 		tokenAxios?: any
 	) => {
