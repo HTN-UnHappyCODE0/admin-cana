@@ -230,7 +230,6 @@ const batchBillServices = {
 			qualityUuid: string;
 			specificationsUuid: string;
 			productTypeUuid: string;
-			customerUuid: string[];
 			storageUuid: string;
 			shipUuid: string;
 			typeCheckDay: number;
@@ -239,6 +238,8 @@ const batchBillServices = {
 			isExportSpec?: number | null;
 			isHaveDryness?: number | null;
 			truckUuid: string[];
+			customerUuid: string;
+			listCustomerUuid: string[];
 		},
 		tokenAxios?: any
 	) => {
