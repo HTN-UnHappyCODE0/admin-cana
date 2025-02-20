@@ -103,6 +103,7 @@ export enum QUERY_KEY {
 	table_log_bat_thuong,
 	table_du_lieu_mau,
 	table_ds_can_mau,
+	table_tap_chat,
 
 	chi_tiet_gia_tien_chinh_sua,
 	chi_tiet_cong_no_phieu,

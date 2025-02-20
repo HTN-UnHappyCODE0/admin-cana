@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {PropsMainPageScalesService} from './interfaces';
 import styles from './MainPageScalesService.module.scss';
@@ -33,7 +33,7 @@ import batchBillServices from '~/services/batchBillServices';
 import {ITableBillScale} from '../MainPageScalesAll/interfaces';
 import Dialog from '~/components/common/Dialog';
 import IconCustom from '~/components/common/IconCustom';
-import {Eye, Play, SaveAdd, StopCircle} from 'iconsax-react';
+import {Eye, FilterSquare, Play, SaveAdd, StopCircle} from 'iconsax-react';
 import Loading from '~/components/common/Loading';
 import Link from 'next/link';
 import {LuPencil} from 'react-icons/lu';
@@ -50,6 +50,8 @@ import FormAccessSpecExcel from '../MainDetailScales/components/FormAccessSpecEx
 import SelectFilterState from '~/components/common/SelectFilterState';
 import SelectFilterMany from '~/components/common/SelectFilterMany';
 import truckServices from '~/services/truckServices';
+import PopupWeighReject from '../PopupWeighReject';
+import companyServices from '~/services/companyServices';
 
 function MainPageScalesService({}: PropsMainPageScalesService) {
 	const router = useRouter();
@@ -58,20 +60,8 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 	const [truckUuid, setTruckUuid] = useState<string[]>([]);
 	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
 
-	const {
-		_page,
-		_pageSize,
-		_keyword,
-		_isBatch,
-		_productTypeUuid,
-		_shipUuid,
-		_status,
-		_dateFrom,
-		_dateTo,
-		_state,
-		_storageUuid,
-		_scalesStationUuid,
-	} = router.query;
+	const {_page, _pageSize, _keyword, _isBatch, _productTypeUuid, _shipUuid, _status, _dateFrom, _dateTo, _state, _scalesStationUuid} =
+		router.query;
 
 	const [uuidPlay, setUuidPlay] = useState<string>('');
 	const [uuidStop, setUuidStop] = useState<string>('');
@@ -79,8 +69,50 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
+	const [openWeighReject, setOpenWeighReject] = useState<string | null>(null);
+	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [uuidQuality, setUuidQuality] = useState<string>('');
+	const [uuidStorage, setUuidStorage] = useState<string>('');
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listQuality({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -97,6 +129,7 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
+					companyUuid: uuidCompany,
 				}),
 			}),
 		select(data) {
@@ -144,7 +177,7 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 		},
 	});
 
-	const listStorage = useQuery([QUERY_KEY.table_bai], {
+	const listStorage = useQuery([QUERY_KEY.table_bai, uuidQuality], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -157,7 +190,7 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					warehouseUuid: '',
 					productUuid: '',
-					qualityUuid: '',
+					qualityUuid: uuidQuality,
 					specificationsUuid: '',
 					status: CONFIG_STATUS.HOAT_DONG,
 				}),
@@ -221,10 +254,12 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 			_dateFrom,
 			_dateTo,
 			_state,
-			_storageUuid,
+			uuidQuality,
+			uuidStorage,
 			_scalesStationUuid,
 			isHaveDryness,
 			truckUuid,
+			uuidCompany,
 		],
 		{
 			queryFn: () =>
@@ -264,16 +299,17 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
-						qualityUuid: '',
+						qualityUuid: uuidQuality,
 						transportType: null,
 						shipUuid: (_shipUuid as string) || '',
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
-						storageUuid: (_storageUuid as string) || '',
+						storageUuid: uuidStorage,
 						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 						truckUuid: truckUuid,
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
+						companyUuid: uuidCompany,
 					}),
 				}),
 			onSuccess(data) {
@@ -375,16 +411,17 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 					timeStart: _dateFrom ? (_dateFrom as string) : null,
 					timeEnd: _dateTo ? (_dateTo as string) : null,
 					warehouseUuid: '',
-					qualityUuid: '',
+					qualityUuid: uuidQuality,
 					transportType: null,
 					shipUuid: (_shipUuid as string) || '',
 					typeCheckDay: 0,
 					scalesStationUuid: (_scalesStationUuid as string) || '',
 					documentId: '',
-					storageUuid: (_storageUuid as string) || '',
+					storageUuid: uuidStorage,
 					isExportSpec: isHaveSpec,
 					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 					truckUuid: truckUuid,
+					companyUuid: uuidCompany,
 				}),
 			});
 		},
@@ -399,6 +436,15 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 	const handleExportExcel = (isHaveSpec: number) => {
 		return exportExcel.mutate(isHaveSpec);
 	};
+
+	useEffect(() => {
+		if (uuidCompany) {
+			setCustomerUuid([]);
+		}
+		if (uuidQuality) {
+			setUuidStorage('');
+		}
+	}, [uuidCompany, uuidQuality]);
 
 	return (
 		<div className={styles.container}>
@@ -429,6 +475,15 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 							]}
 						/>
 					</div>
+					<SelectFilterState
+						uuid={uuidCompany}
+						setUuid={setUuidCompany}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Kv cảng xuất khẩu'
+					/>
 					<SelectFilterMany
 						selectedIds={customerUuid}
 						setSelectedIds={setCustomerUuid}
@@ -532,14 +587,23 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 							name: v?.name,
 						}))}
 					/>
-					<FilterCustom
-						isSearch
-						name='Bãi'
-						query='_storageUuid'
-						listFilter={listStorage?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterState
+						uuid={uuidQuality}
+						setUuid={setUuidQuality}
+						listData={listQuality?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						placeholder='Chất lượng'
+					/>
+					<SelectFilterState
+						uuid={uuidStorage}
+						setUuid={setUuidStorage}
+						listData={listStorage?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Bãi'
 					/>
 					<SelectFilterState
 						uuid={isHaveDryness}
@@ -846,6 +910,14 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 											href={`/phieu-can/chinh-sua-phieu-dich-vu?_id=${data.uuid}`}
 										/>
 
+										<IconCustom
+											edit
+											icon={<FilterSquare fontSize={20} fontWeight={600} />}
+											tooltip='Cập nhật khối lượng tạp chất'
+											color='#777E90'
+											onClick={() => setOpenWeighReject(data.uuid)}
+										/>
+
 										{/* Xem chi tiết */}
 										<IconCustom
 											edit
@@ -876,10 +948,12 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 							_dateFrom,
 							_dateTo,
 							_state,
-							_storageUuid,
+							uuidQuality,
+							uuidStorage,
 							_scalesStationUuid,
 							isHaveDryness,
 							truckUuid,
+							uuidCompany,
 						]}
 					/>
 				)}
@@ -917,6 +991,10 @@ function MainPageScalesService({}: PropsMainPageScalesService) {
 						handleExportExcel(0);
 					}}
 				/>
+			</Popup>
+
+			<Popup open={!!openWeighReject} onClose={() => setOpenWeighReject(null)}>
+				<PopupWeighReject uuid={openWeighReject} onClose={() => setOpenWeighReject(null)} />
 			</Popup>
 		</div>
 	);

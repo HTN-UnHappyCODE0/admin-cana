@@ -30,6 +30,8 @@ const batchBillServices = {
 			truckUuid: string[];
 			customerUuid: string;
 			listCustomerUuid: string[];
+			isNeedConfirmReject?: number;
+			companyUuid: string;
 		},
 		tokenAxios?: any
 	) => {
@@ -240,6 +242,8 @@ const batchBillServices = {
 			truckUuid: string[];
 			customerUuid: string;
 			listCustomerUuid: string[];
+			companyUuid: string;
+			isNeedConfirmReject?: number;
 		},
 		tokenAxios?: any
 	) => {
@@ -325,6 +329,28 @@ const batchBillServices = {
 		tokenAxios?: any
 	) => {
 		return axiosClient.post(`/BatchBill/kcs-done-bill`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	updateWeighReject: (
+		data: {
+			uuid: string;
+			weightReject: number;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/update-weight-reject`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	confirmWeighReject: (
+		data: {
+			uuid: string;
+			isConfirm: number | null;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/confirm-weight-reject`, data, {
 			cancelToken: tokenAxios,
 		});
 	},

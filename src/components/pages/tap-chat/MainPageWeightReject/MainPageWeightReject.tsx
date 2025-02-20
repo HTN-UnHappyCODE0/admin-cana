@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 
-import {PropsMainPageScalesTransfer} from './interfaces';
-import styles from './MainPageScalesTransfer.module.scss';
-import Search from '~/components/common/Search';
-import FilterCustom from '~/components/common/FilterCustom';
+import {PropsMainPageWeightReject} from './interfaces';
+import styles from './MainPageWeightReject.module.scss';
+import DataWrapper from '~/components/common/DataWrapper';
+import Pagination from '~/components/common/Pagination';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
@@ -12,64 +13,56 @@ import {
 	QUERY_KEY,
 	STATE_BILL,
 	STATUS_BILL,
-	TYPE_ACTION_AUDIT,
 	TYPE_BATCH,
 	TYPE_DATE,
 	TYPE_PRODUCT,
 	TYPE_SCALES,
 	TYPE_SIFT,
 } from '~/constants/config/enum';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {httpRequest} from '~/services';
-import customerServices from '~/services/customerServices';
+import batchBillServices from '~/services/batchBillServices';
+import storageServices from '~/services/storageServices';
+import shipServices from '~/services/shipServices';
 import wareServices from '~/services/wareServices';
+import truckServices from '~/services/truckServices';
+import scalesStationServices from '~/services/scalesStationServices';
+import customerServices from '~/services/customerServices';
+import {useRouter} from 'next/router';
+import Search from '~/components/common/Search';
+import FilterCustom from '~/components/common/FilterCustom';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
+import SelectFilterState from '~/components/common/SelectFilterState';
 import DateRangerCustom from '~/components/common/DateRangerCustom';
-import DataWrapper from '~/components/common/DataWrapper';
+import {convertWeight} from '~/common/funcs/optionConvert';
 import Noti from '~/components/common/DataWrapper/components/Noti';
 import Table from '~/components/common/Table';
-import Pagination from '~/components/common/Pagination';
-import {useRouter} from 'next/router';
-import batchBillServices from '~/services/batchBillServices';
-import {ITableBillScale} from '../MainPageScalesAll/interfaces';
-import IconCustom from '~/components/common/IconCustom';
-import {Eye, FilterSquare, Play, SaveAdd, StopCircle} from 'iconsax-react';
-import Dialog from '~/components/common/Dialog';
-import Loading from '~/components/common/Loading';
+import {ITableBillScale} from '../../phieu-can/MainPageScalesAll/interfaces';
 import Link from 'next/link';
-import {LuPencil} from 'react-icons/lu';
-import shipServices from '~/services/shipServices';
-import {convertWeight} from '~/common/funcs/optionConvert';
 import clsx from 'clsx';
-import Button from '~/components/common/Button';
-import storageServices from '~/services/storageServices';
 import StateActive from '~/components/common/StateActive';
-import scalesStationServices from '~/services/scalesStationServices';
+import Button from '~/components/common/Button';
 import Popup from '~/components/common/Popup';
-import FormUpdateShipBill from '../../lenh-can/FormUpdateShipBill';
-import FormAccessSpecExcel from '../MainDetailScales/components/FormAccessSpecExcel';
-import SelectFilterState from '~/components/common/SelectFilterState';
-import SelectFilterMany from '~/components/common/SelectFilterMany';
-import truckServices from '~/services/truckServices';
-import PopupWeighReject from '../PopupWeighReject';
+import FormAccessSpecExcel from '../../phieu-can/MainDetailScales/components/FormAccessSpecExcel';
+import FormAccessWeighReject from '../FormAccessWeighReject';
+import IconCustom from '~/components/common/IconCustom';
+import {TickCircle} from 'iconsax-react';
 import companyServices from '~/services/companyServices';
 
-function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
+function MainPageWeightReject({}: PropsMainPageWeightReject) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [isHaveDryness, setIsHaveDryness] = useState<string>('');
 	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
+	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
+	const [openConfirm, setOpenConfirm] = useState<boolean>(false);
 
 	const {_page, _pageSize, _keyword, _isBatch, _productTypeUuid, _shipUuid, _status, _dateFrom, _dateTo, _state, _scalesStationUuid} =
 		router.query;
 
-	const [uuidPlay, setUuidPlay] = useState<string>('');
-	const [uuidStop, setUuidStop] = useState<string>('');
-	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
-	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
-	const [truckUuid, setTruckUuid] = useState<string[]>([]);
-	const [openWeighReject, setOpenWeighReject] = useState<string | null>(null);
+	const [uuidConfirm, setUuidConfirm] = useState<string | null>(null);
 	const [uuidCompany, setUuidCompany] = useState<string>('');
 	const [uuidQuality, setUuidQuality] = useState<string>('');
 	const [uuidStorage, setUuidStorage] = useState<string>('');
@@ -137,48 +130,23 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 		},
 	});
 
-	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
+	const listScalesStation = useQuery([QUERY_KEY.table_tram_can], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
-				http: wareServices.listProductType({
+				http: scalesStationServices.listScalesStation({
 					page: 1,
 					pageSize: 50,
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
-					isPaging: CONFIG_PAGING.NO_PAGING,
+					companyUuid: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
-					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
 			return data;
-		},
-	});
-
-	const listStorage = useQuery([QUERY_KEY.table_bai, uuidQuality], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: storageServices.listStorage({
-					page: 1,
-					pageSize: 50,
-					keyword: '',
-					isPaging: CONFIG_PAGING.IS_PAGING,
-					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
-					warehouseUuid: '',
-					productUuid: '',
-					qualityUuid: uuidQuality,
-					specificationsUuid: '',
-					status: CONFIG_STATUS.HOAT_DONG,
-				}),
-			}),
-		select(data) {
-			if (data) {
-				return data;
-			}
 		},
 	});
 
@@ -201,6 +169,26 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 		},
 	});
 
+	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listProductType({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const listShip = useQuery([QUERY_KEY.dropdown_ma_tau], {
 		queryFn: () =>
 			httpRequest({
@@ -215,33 +203,40 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 				}),
 			}),
-		select(data) {
-			return data;
-		},
-	});
-	const listScalesStation = useQuery([QUERY_KEY.table_tram_can], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: scalesStationServices.listScalesStation({
-					page: 1,
-					pageSize: 50,
-					keyword: '',
-					companyUuid: '',
-					isPaging: CONFIG_PAGING.IS_PAGING,
-					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-					typeFind: CONFIG_TYPE_FIND.TABLE,
-					status: CONFIG_STATUS.HOAT_DONG,
-				}),
-			}),
+
 		select(data) {
 			return data;
 		},
 	});
 
+	const listStorage = useQuery([QUERY_KEY.table_bai], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.IS_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					warehouseUuid: '',
+					productUuid: '',
+					qualityUuid: '',
+					specificationsUuid: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			if (data) {
+				return data;
+			}
+		},
+	});
+
 	const getListBatch = useQuery(
 		[
-			QUERY_KEY.table_phieu_can_chuyen_kho,
+			QUERY_KEY.table_tap_chat,
 			_page,
 			_pageSize,
 			_keyword,
@@ -271,11 +266,7 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
-						scalesType: [TYPE_SCALES.CAN_CHUYEN_KHO],
-						isBatch: !!_isBatch ? Number(_isBatch) : null,
-						isCreateBatch: null,
-						productTypeUuid: (_productTypeUuid as string) || '',
-						specificationsUuid: '',
+						scalesType: [],
 						state: !!_state
 							? [Number(_state)]
 							: [
@@ -286,6 +277,10 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 									STATE_BILL.KTK_CHECKED,
 									STATE_BILL.END,
 							  ],
+						isBatch: !!_isBatch ? Number(_isBatch) : null,
+						isCreateBatch: null,
+						productTypeUuid: (_productTypeUuid as string) || '',
+						specificationsUuid: '',
 						status: !!_status
 							? [Number(_status)]
 							: [
@@ -308,6 +303,7 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 						truckUuid: truckUuid,
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
+						isNeedConfirmReject: 1,
 						companyUuid: uuidCompany,
 					}),
 				}),
@@ -329,48 +325,6 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 		}
 	);
 
-	const funcStartBatchBill = useMutation({
-		mutationFn: () =>
-			httpRequest({
-				showMessageFailed: true,
-				showMessageSuccess: true,
-				msgSuccess: 'Bắt đầu lệnh cân thành công!',
-				http: batchBillServices.startBatchbill({
-					uuid: uuidPlay,
-				}),
-			}),
-		onSuccess(data) {
-			if (data) {
-				setUuidPlay('');
-				queryClient.invalidateQueries([QUERY_KEY.table_phieu_can_chuyen_kho]);
-			}
-		},
-		onError(error) {
-			console.log({error});
-		},
-	});
-
-	const funcStopBatchBill = useMutation({
-		mutationFn: () =>
-			httpRequest({
-				showMessageFailed: true,
-				showMessageSuccess: true,
-				msgSuccess: 'Kết thúc lệnh cân thành công!',
-				http: batchBillServices.stopBatchbill({
-					uuid: uuidStop,
-				}),
-			}),
-		onSuccess(data) {
-			if (data) {
-				setUuidStop('');
-				queryClient.invalidateQueries([QUERY_KEY.table_phieu_can_chuyen_kho]);
-			}
-		},
-		onError(error) {
-			console.log({error});
-		},
-	});
-
 	const exportExcel = useMutation({
 		mutationFn: (isHaveSpec: number) => {
 			return httpRequest({
@@ -381,13 +335,7 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
-					scalesType: [TYPE_SCALES.CAN_CHUYEN_KHO],
-					customerUuid: '',
-					listCustomerUuid: customerUuid,
-					isBatch: !!_isBatch ? Number(_isBatch) : null,
-					isCreateBatch: null,
-					productTypeUuid: (_productTypeUuid as string) || '',
-					specificationsUuid: '',
+					scalesType: [],
 					state: !!_state
 						? [Number(_state)]
 						: [
@@ -398,6 +346,12 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 								STATE_BILL.KTK_CHECKED,
 								STATE_BILL.END,
 						  ],
+					customerUuid: '',
+					listCustomerUuid: customerUuid,
+					isBatch: !!_isBatch ? Number(_isBatch) : null,
+					isCreateBatch: null,
+					productTypeUuid: (_productTypeUuid as string) || '',
+					specificationsUuid: '',
 					status: !!_status
 						? [Number(_status)]
 						: [
@@ -420,6 +374,7 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 					isExportSpec: isHaveSpec,
 					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 					truckUuid: truckUuid,
+					isNeedConfirmReject: 1,
 					companyUuid: uuidCompany,
 				}),
 			});
@@ -435,6 +390,28 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 	const handleExportExcel = (isHaveSpec: number) => {
 		return exportExcel.mutate(isHaveSpec);
 	};
+
+	const accessWeighReject = useMutation({
+		mutationFn: (isConfirm: number) => {
+			return httpRequest({
+				http: batchBillServices.confirmWeighReject({
+					uuid: uuidConfirm as string,
+					isConfirm: isConfirm,
+				}),
+			});
+		},
+		onSuccess(data) {
+			if (data) {
+				setUuidConfirm(null);
+				queryClient.invalidateQueries([QUERY_KEY.table_tap_chat]);
+			}
+		},
+	});
+
+	const handleConfirm = (isConfirm: number) => {
+		return accessWeighReject.mutate(isConfirm);
+	};
+
 	useEffect(() => {
 		if (uuidCompany) {
 			setCustomerUuid([]);
@@ -446,7 +423,6 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading || funcStopBatchBill.isLoading || exportExcel.isLoading} />
 			<div className={styles.header}>
 				<div className={styles.main_search}>
 					<div className={styles.search}>
@@ -500,6 +476,7 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 						}))}
 						name='Biển số xe'
 					/>
+
 					<FilterCustom
 						isSearch
 						name='Loại hàng'
@@ -509,6 +486,7 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 							name: v?.name,
 						}))}
 					/>
+
 					<FilterCustom
 						isSearch
 						name='Mã tàu'
@@ -518,6 +496,7 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 							name: v?.licensePalate,
 						}))}
 					/>
+
 					<FilterCustom
 						isSearch
 						name='Xác nhận SL'
@@ -663,9 +642,17 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 								title: 'Mã lô',
 								fixedLeft: true,
 								render: (data: ITableBillScale) => (
-									<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
-										{data?.code}
-									</Link>
+									<>
+										{data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<Link href={`/nhap-xuat-ngoai/${data.uuid}`} className={styles.link}>
+												{data?.code}
+											</Link>
+										) : (
+											<Link href={`/phieu-can/${data.uuid}`} className={styles.link}>
+												{data?.code}
+											</Link>
+										)}
+									</>
 								),
 							},
 							{
@@ -682,19 +669,12 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 							},
 
 							{
-								title: 'Kiểu cân',
-								render: (data: ITableBillScale) => (
-									<>
-										{data?.isBatch == TYPE_BATCH.CAN_LO && 'Cân lô'}
-										{data?.isBatch == TYPE_BATCH.CAN_LE && 'Cân lẻ'}
-									</>
-								),
-							},
-							{
 								title: 'Từ(Tàu/Xe)',
 								render: (data: ITableBillScale) => (
 									<>
-										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
+										<p style={{marginBottom: 4, fontWeight: 600}}>
+											{data?.fromUu?.name || data?.customerName || '---'}
+										</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
 											<>
 												{data?.isBatch == TYPE_BATCH.CAN_LO && (
@@ -737,6 +717,8 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
 										)}
+
+										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>
 								),
 							},
@@ -826,41 +808,75 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 							{
 								title: 'Trạng thái',
 								render: (data: ITableBillScale) => (
-									<StateActive
-										stateActive={data?.status}
-										listState={[
-											{
-												state: STATUS_BILL.DANG_CAN,
-												text: 'Đang cân',
-												textColor: '#9757D7',
-												backgroundColor: 'rgba(151, 87, 215, 0.10)',
-											},
-											{
-												state: STATUS_BILL.TAM_DUNG,
-												text: 'Tạm dừng',
-												textColor: '#F95B5B',
-												backgroundColor: 'rgba(249, 91, 91, 0.10)',
-											},
-											{
-												state: STATUS_BILL.DA_CAN_CHUA_KCS,
-												text: 'Đã cân chưa KCS',
-												textColor: '#2D74FF',
-												backgroundColor: 'rgba(45, 116, 255, 0.10)',
-											},
-											{
-												state: STATUS_BILL.DA_KCS,
-												text: 'Đã KCS',
-												textColor: '#41CD4F',
-												backgroundColor: 'rgba(65, 205, 79, 0.1)',
-											},
-											{
-												state: STATUS_BILL.CHOT_KE_TOAN,
-												text: 'Chốt kế toán',
-												textColor: '#0EA5E9',
-												backgroundColor: 'rgba(14, 165, 233, 0.1)',
-											},
-										]}
-									/>
+									<>
+										{data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
+											<StateActive
+												stateActive={data?.status}
+												listState={[
+													{
+														state: STATUS_BILL.TAM_DUNG,
+														text: 'Tạm dừng',
+														textColor: '#F95B5B',
+														backgroundColor: 'rgba(249, 91, 91, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_CAN_CHUA_KCS,
+														text: 'Chưa KCS',
+														textColor: '#2D74FF',
+														backgroundColor: 'rgba(45, 116, 255, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_KCS,
+														text: 'Đã KCS',
+														textColor: '#41CD4F',
+														backgroundColor: 'rgba(65, 205, 79, 0.1)',
+													},
+													{
+														state: STATUS_BILL.CHOT_KE_TOAN,
+														text: 'Chốt kế toán',
+														textColor: '#0EA5E9',
+														backgroundColor: 'rgba(14, 165, 233, 0.1)',
+													},
+												]}
+											/>
+										) : (
+											<StateActive
+												stateActive={data?.status}
+												listState={[
+													{
+														state: STATUS_BILL.DANG_CAN,
+														text: 'Đang cân',
+														textColor: '#9757D7',
+														backgroundColor: 'rgba(151, 87, 215, 0.10)',
+													},
+													{
+														state: STATUS_BILL.TAM_DUNG,
+														text: 'Tạm dừng',
+														textColor: '#F95B5B',
+														backgroundColor: 'rgba(249, 91, 91, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_CAN_CHUA_KCS,
+														text: 'Đã cân chưa KCS',
+														textColor: '#2D74FF',
+														backgroundColor: 'rgba(45, 116, 255, 0.10)',
+													},
+													{
+														state: STATUS_BILL.DA_KCS,
+														text: 'Đã KCS',
+														textColor: '#41CD4F',
+														backgroundColor: 'rgba(65, 205, 79, 0.1)',
+													},
+													{
+														state: STATUS_BILL.CHOT_KE_TOAN,
+														text: 'Chốt kế toán',
+														textColor: '#0EA5E9',
+														backgroundColor: 'rgba(14, 165, 233, 0.1)',
+													},
+												]}
+											/>
+										)}
+									</>
 								),
 							},
 							{
@@ -868,64 +884,16 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 								fixedRight: true,
 								render: (data: ITableBillScale) => (
 									<div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px'}}>
-										{/* Bắt đầu cân */}
-										{data?.status == STATUS_BILL.CHUA_CAN || data?.status == STATUS_BILL.TAM_DUNG ? (
+										{/* Duyệt sản lượng */}
+										{data?.isNeedConfirmReject == 1 ? (
 											<IconCustom
 												edit
-												icon={<Play size={22} fontWeight={600} />}
-												tooltip='Bắt đầu cân'
-												color='#777E90'
-												onClick={() => setUuidPlay(data?.uuid)}
+												icon={<TickCircle size={22} fontWeight={600} />}
+												tooltip='Xác nhận khối lượng tạp chất'
+												color='#2CAE39'
+												onClick={() => setUuidConfirm(data?.uuid)}
 											/>
 										) : null}
-
-										{/* Kết thúc phiên cân */}
-										{data?.status == STATUS_BILL.DANG_CAN || data?.status == STATUS_BILL.TAM_DUNG ? (
-											<IconCustom
-												edit
-												icon={<StopCircle size={22} fontWeight={600} />}
-												tooltip='Kết thúc cân'
-												color='#D95656'
-												onClick={() => setUuidStop(data?.uuid)}
-											/>
-										) : null}
-
-										{/* Cập nhật tàu trung chuyển */}
-										{data?.isBatch == TYPE_BATCH.CAN_LO || data?.isBatch == TYPE_BATCH.KHONG_CAN ? (
-											<IconCustom
-												edit
-												icon={<SaveAdd fontSize={20} fontWeight={600} />}
-												tooltip='Cập nhật tàu trung chuyển'
-												color='#777E90'
-												onClick={() => setBillUuidUpdateShip(data.uuid)}
-											/>
-										) : null}
-
-										{/* Chỉnh sửa phiếu */}
-										<IconCustom
-											edit
-											icon={<LuPencil fontSize={20} fontWeight={600} />}
-											tooltip='Chỉnh sửa'
-											color='#777E90'
-											href={`/phieu-can/chinh-sua-phieu-chuyen-kho?_id=${data.uuid}`}
-										/>
-
-										<IconCustom
-											edit
-											icon={<FilterSquare fontSize={20} fontWeight={600} />}
-											tooltip='Cập nhật khối lượng tạp chất'
-											color='#777E90'
-											onClick={() => setOpenWeighReject(data.uuid)}
-										/>
-
-										{/* Xem chi tiết */}
-										<IconCustom
-											edit
-											icon={<Eye fontSize={20} fontWeight={600} />}
-											tooltip='Xem chi tiết'
-											color='#777E90'
-											href={`/phieu-can/${data.uuid}`}
-										/>
 									</div>
 								),
 							},
@@ -953,30 +921,11 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 							_scalesStationUuid,
 							isHaveDryness,
 							truckUuid,
+							uuidCompany,
 						]}
 					/>
 				)}
 			</div>
-			<Dialog
-				open={!!uuidPlay}
-				title='Bắt đầu cân'
-				note='Bạn có muốn thực hiện thao tác cân cho phiếu cân này không?'
-				onClose={() => setUuidPlay('')}
-				onSubmit={funcStartBatchBill.mutate}
-			/>
-			<Dialog
-				danger
-				open={!!uuidStop}
-				title='Kết thúc cân'
-				note='Bạn có muốn thực hiện thao tác kết thúc cho phiếu cân này không?'
-				onClose={() => setUuidStop('')}
-				onSubmit={funcStopBatchBill.mutate}
-			/>
-
-			{/* Cập nhật tàu trung chuyển */}
-			<Popup open={!!billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)}>
-				<FormUpdateShipBill uuid={billUuidUpdateShip} onClose={() => setBillUuidUpdateShip(null)} />
-			</Popup>
 
 			<Popup open={openExportExcel} onClose={() => setOpenExportExcel(false)}>
 				<FormAccessSpecExcel
@@ -991,12 +940,21 @@ function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 					}}
 				/>
 			</Popup>
-
-			<Popup open={!!openWeighReject} onClose={() => setOpenWeighReject(null)}>
-				<PopupWeighReject uuid={openWeighReject} onClose={() => setOpenWeighReject(null)} />
+			<Popup open={!!uuidConfirm} onClose={() => setUuidConfirm(null)}>
+				<FormAccessWeighReject
+					onAccess={() => {
+						handleConfirm(1);
+					}}
+					onClose={() => {
+						setUuidConfirm(null);
+					}}
+					onDeny={() => {
+						handleConfirm(0);
+					}}
+				/>
 			</Popup>
 		</div>
 	);
 }
 
-export default MainPageScalesTransfer;
+export default MainPageWeightReject;
