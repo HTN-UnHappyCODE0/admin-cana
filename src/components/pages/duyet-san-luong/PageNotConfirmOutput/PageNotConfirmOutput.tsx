@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {ITableBillScale, PropsPageNotConfirmOutput} from './interfaces';
 import styles from './PageNotConfirmOutput.module.scss';
@@ -49,6 +49,7 @@ import Moment from 'react-moment';
 import SelectFilterState from '~/components/common/SelectFilterState';
 import SelectFilterMany from '~/components/common/SelectFilterMany';
 import truckServices from '~/services/truckServices';
+import companyServices from '~/services/companyServices';
 
 function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 	const router = useRouter();
@@ -56,8 +57,7 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 	const [isHaveDryness, setIsHaveDryness] = useState<string>('');
 	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
 
-	const {_page, _pageSize, _keyword, _isBatch, _productTypeUuid, _state, _dateFrom, _scalesStationUuid, _dateTo, _storageUuid} =
-		router.query;
+	const {_page, _pageSize, _keyword, _isBatch, _productTypeUuid, _state, _dateFrom, _scalesStationUuid, _dateTo} = router.query;
 
 	const [uuidKTKConfirm, setUuidKTKConfirm] = useState<string[]>([]);
 	const [uuidKTKReject, setUuidKTKReject] = useState<string[]>([]);
@@ -65,8 +65,49 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [truckUuid, setTruckUuid] = useState<string[]>([]);
 	const [total, setTotal] = useState<number>(0);
+	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [uuidQuality, setUuidQuality] = useState<string>('');
+	const [uuidStorage, setUuidStorage] = useState<string>('');
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listQuality({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -83,6 +124,7 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
+					companyUuid: uuidCompany,
 				}),
 			}),
 		select(data) {
@@ -109,7 +151,7 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 		},
 	});
 
-	const listStorage = useQuery([QUERY_KEY.table_bai], {
+	const listStorage = useQuery([QUERY_KEY.table_bai, uuidQuality], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -122,7 +164,7 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					warehouseUuid: '',
 					productUuid: '',
-					qualityUuid: '',
+					qualityUuid: uuidQuality,
 					specificationsUuid: '',
 					status: CONFIG_STATUS.HOAT_DONG,
 				}),
@@ -187,9 +229,11 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 			_state,
 			_dateTo,
 			_scalesStationUuid,
-			_storageUuid,
+			uuidQuality,
+			uuidStorage,
 			isHaveDryness,
 			truckUuid,
+			uuidCompany,
 		],
 		{
 			queryFn: () =>
@@ -212,15 +256,16 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
-						qualityUuid: '',
+						qualityUuid: uuidQuality,
 						transportType: null,
 						typeCheckDay: TYPE_CHECK_DAY_BILL.THOI_GIAN_QLK_DUYET,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
-						storageUuid: (_storageUuid as string) || '',
+						storageUuid: uuidStorage,
 						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 						truckUuid: truckUuid,
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
+						companyUuid: uuidCompany,
 					}),
 				}),
 			onSuccess(data) {
@@ -263,6 +308,15 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 			console.log({error});
 		},
 	});
+
+	useEffect(() => {
+		if (uuidCompany) {
+			setCustomerUuid([]);
+		}
+		if (uuidQuality) {
+			setUuidStorage('');
+		}
+	}, [uuidCompany, uuidQuality]);
 
 	return (
 		<div className={styles.container}>
@@ -327,6 +381,15 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 							]}
 						/>
 					</div>
+					<SelectFilterState
+						uuid={uuidCompany}
+						setUuid={setUuidCompany}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Kv cảng xuất khẩu'
+					/>
 					<SelectFilterMany
 						selectedIds={customerUuid}
 						setSelectedIds={setCustomerUuid}
@@ -379,14 +442,23 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 						}))}
 					/>
 
-					<FilterCustom
-						isSearch
-						name='Bãi'
-						query='_storageUuid'
-						listFilter={listStorage?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterState
+						uuid={uuidQuality}
+						setUuid={setUuidQuality}
+						listData={listQuality?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						placeholder='Chất lượng'
+					/>
+					<SelectFilterState
+						uuid={uuidStorage}
+						setUuid={setUuidStorage}
+						listData={listStorage?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Bãi'
 					/>
 
 					<SelectFilterState
@@ -713,9 +785,11 @@ function PageNotConfirmOutput({}: PropsPageNotConfirmOutput) {
 							_scalesStationUuid,
 							_dateFrom,
 							_dateTo,
-							_storageUuid,
+							uuidQuality,
+							uuidStorage,
 							isHaveDryness,
 							truckUuid,
+							uuidCompany,
 						]}
 					/>
 				)}

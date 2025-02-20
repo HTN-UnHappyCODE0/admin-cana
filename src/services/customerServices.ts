@@ -25,6 +25,7 @@ const customerServices = {
 			typeCus: TYPE_CUSTOMER | null;
 			userUuid?: string;
 			parentUserUuid?: string;
+			companyUuid?: string;
 		},
 		tokenAxios?: any
 	) => {

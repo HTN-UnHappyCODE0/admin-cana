@@ -1,17 +1,17 @@
 import React from 'react';
 
-import {PropsFormAccessSpecExcel} from './interfaces';
-import styles from './FormAccessSpecExcel.module.scss';
+import {PropsFormAccessWeighReject} from './interfaces';
+import styles from './FormAccessWeighReject.module.scss';
 import Button from '~/components/common/Button';
 import {IoClose} from 'react-icons/io5';
 import {FiHelpCircle} from 'react-icons/fi';
 
-function FormAccessSpecExcel({...props}: PropsFormAccessSpecExcel) {
+function FormAccessWeighReject({...props}: PropsFormAccessWeighReject) {
 	return (
 		<div className={styles.main_export}>
 			<div className={styles.iconWarn}>{<FiHelpCircle />}</div>
 			<h4 className={styles.title_export}>Lựa chọn</h4>
-			<p className={styles.des_export}>Bạn có muốn xuất quy cách không ?</p>
+			<p className={styles.des_export}>Bạn có muốn xác nhận khối lượng tạp chất này không ?</p>
 
 			<div className={styles.control_export}>
 				<div>
@@ -33,4 +33,4 @@ function FormAccessSpecExcel({...props}: PropsFormAccessSpecExcel) {
 	);
 }
 
-export default FormAccessSpecExcel;
+export default FormAccessWeighReject;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 
 import {PropsMainPageBillDirect} from './interfaces';
@@ -50,6 +50,7 @@ import FormUpdateShipBill from '../FormUpdateShipBill';
 import SelectFilterState from '~/components/common/SelectFilterState';
 import SelectFilterMany from '~/components/common/SelectFilterMany';
 import truckServices from '~/services/truckServices';
+import companyServices from '~/services/companyServices';
 
 function MainPageBillDirect({}: PropsMainPageBillDirect) {
 	const router = useRouter();
@@ -58,26 +59,55 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 	const [isHaveDryness, setIsHaveDryness] = useState<string>('');
 	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
 
-	const {
-		_page,
-		_pageSize,
-		_keyword,
-		_isBatch,
-		_productTypeUuid,
-		_shipUuid,
-		_status,
-		_dateFrom,
-		_scalesStationUuid,
-		_storageUuid,
-		_dateTo,
-	} = router.query;
+	const {_page, _pageSize, _keyword, _isBatch, _productTypeUuid, _shipUuid, _status, _dateFrom, _scalesStationUuid, _dateTo} =
+		router.query;
 
 	const [billUuid, setBilldUuid] = useState<string | null>(null);
 	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
 	const [billUuidReStart, setBillUuidReStart] = useState<string | null>(null);
 	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [uuidQuality, setUuidQuality] = useState<string>('');
+	const [uuidStorage, setUuidStorage] = useState<string>('');
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listQuality({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -94,6 +124,7 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
+					companyUuid: uuidCompany,
 				}),
 			}),
 		select(data) {
@@ -160,7 +191,7 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 		},
 	});
 
-	const listStorage = useQuery([QUERY_KEY.table_bai], {
+	const listStorage = useQuery([QUERY_KEY.table_bai, uuidQuality], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -173,7 +204,7 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					warehouseUuid: '',
 					productUuid: '',
-					qualityUuid: '',
+					qualityUuid: uuidQuality,
 					specificationsUuid: '',
 					status: CONFIG_STATUS.HOAT_DONG,
 				}),
@@ -216,11 +247,13 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 			_status,
 			_dateFrom,
 			_dateTo,
-			_storageUuid,
+			uuidQuality,
+			uuidStorage,
 			_scalesStationUuid,
 			isHaveDryness,
 			customerUuid,
 			truckUuid,
+			uuidCompany,
 		],
 		{
 			queryFn: () =>
@@ -242,16 +275,17 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
-						qualityUuid: '',
+						qualityUuid: uuidQuality,
 						transportType: null,
 						shipUuid: (_shipUuid as string) || '',
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
-						storageUuid: (_storageUuid as string) || '',
+						storageUuid: uuidStorage,
 						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 						truckUuid: truckUuid,
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
+						companyUuid: uuidCompany,
 					}),
 				}),
 			select(data) {
@@ -301,6 +335,15 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 		},
 	});
 
+	useEffect(() => {
+		if (uuidCompany) {
+			setCustomerUuid([]);
+		}
+		if (uuidQuality) {
+			setUuidStorage('');
+		}
+	}, [uuidCompany, uuidQuality]);
+
 	return (
 		<div className={styles.container}>
 			<Loading loading={funcStartBatchBill.isLoading || funcReStartBatchBill.isLoading} />
@@ -309,7 +352,15 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
-
+					<SelectFilterState
+						uuid={uuidCompany}
+						setUuid={setUuidCompany}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Kv cảng xuất khẩu'
+					/>
 					<SelectFilterMany
 						selectedIds={customerUuid}
 						setSelectedIds={setCustomerUuid}
@@ -384,14 +435,23 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 						}))}
 					/>
 
-					<FilterCustom
-						isSearch
-						name='Bãi'
-						query='_storageUuid'
-						listFilter={listStorage?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterState
+						uuid={uuidQuality}
+						setUuid={setUuidQuality}
+						listData={listQuality?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						placeholder='Chất lượng'
+					/>
+					<SelectFilterState
+						uuid={uuidStorage}
+						setUuid={setUuidStorage}
+						listData={listStorage?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Bãi'
 					/>
 
 					<SelectFilterState
@@ -638,10 +698,12 @@ function MainPageBillDirect({}: PropsMainPageBillDirect) {
 						_status,
 						_dateFrom,
 						_dateTo,
-						_storageUuid,
+						uuidQuality,
 						_scalesStationUuid,
 						isHaveDryness,
 						truckUuid,
+						uuidCompany,
+						uuidStorage,
 					]}
 				/>
 			</div>

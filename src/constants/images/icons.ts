@@ -54,6 +54,7 @@ import khoiluonghangxuatthang from '../../../public/static/images/khoiluonghangx
 import giatienhangchinhsua from '../../../public/static/images/giahangchinhsua.svg';
 import giatienhangtuonglai from '../../../public/static/images/dollar-circle.svg';
 import nhapxuatngoai from '../../../public/static/images/nhapxuatngoai.svg';
+import tapchat from '../../../public/static/images/tapchat.svg';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -113,4 +114,5 @@ export default {
 	giatienhangchinhsua,
 	giatienhangtuonglai,
 	nhapxuatngoai,
+	tapchat,
 };
