@@ -66,6 +66,7 @@ const batchBillServices = {
 			scaleStationUuid: string;
 			portname: string;
 			storageTemporaryUuid?: string;
+			numShip?: string;
 		},
 		tokenAxios?: any
 	) => {
@@ -159,6 +160,9 @@ const batchBillServices = {
 			storageUuid: string;
 			customerUuid: string[];
 			warehouseUuid: string;
+			userOwnerUuid: string;
+			provinceId: string;
+			transportType: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -177,6 +181,9 @@ const batchBillServices = {
 			storageUuid: string;
 			customerUuid: string[];
 			warehouseUuid: string;
+			userOwnerUuid: string;
+			provinceId: string;
+			transportType: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -195,6 +202,9 @@ const batchBillServices = {
 			storageUuid: string;
 			customerUuid: string[];
 			warehouseUuid: string;
+			userOwnerUuid: string;
+			provinceId: string;
+			transportType: number | null;
 		},
 		tokenAxios?: any
 	) => {
