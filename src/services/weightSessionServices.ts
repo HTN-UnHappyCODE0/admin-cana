@@ -84,7 +84,7 @@ const weightSessionServices = {
 			isPaging: CONFIG_PAGING;
 			scalesType: number[];
 			billUuid: string;
-			truckUuid: string[];
+			truckUuid: string;
 			storageUuid: string;
 			customerUuid: string;
 			productTypeUuid: string;
@@ -96,6 +96,15 @@ const weightSessionServices = {
 			codeEnd: number | null;
 			shift: number | null;
 			groupBy: number | null;
+
+			listTruckUuid: string[];
+			listCustomerUuid?: string[];
+			companyUuid?: string;
+			scalesStationUuid?: string;
+			shipUuid?: string;
+			isHaveSpec?: number;
+			isHaveDryness?: number;
+			isExportSpec?: number;
 		},
 		tokenAxios?: any
 	) => {
