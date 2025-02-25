@@ -66,6 +66,7 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 	const [uuidCompany, setUuidCompany] = useState<string>('');
 	const [uuidQuality, setUuidQuality] = useState<string>('');
 	const [uuidStorage, setUuidStorage] = useState<string>('');
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
 	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
 		queryFn: () =>
@@ -105,7 +106,7 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 		},
 	});
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -122,7 +123,8 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
-					companyUuid: uuidCompany,
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -232,6 +234,7 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 			uuidCompany,
 			uuidStorage,
 			uuidQuality,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -264,6 +267,7 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			onSuccess(data) {
@@ -356,13 +360,13 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 	};
 
 	useEffect(() => {
-		if (uuidCompany) {
+		if (listCompanyUuid) {
 			setCustomerUuid([]);
 		}
 		if (uuidQuality) {
 			setUuidStorage('');
 		}
-	}, [uuidCompany, uuidQuality]);
+	}, [listCompanyUuid, uuidQuality]);
 
 	return (
 		<div className={styles.container}>
@@ -411,7 +415,7 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 						/>
 					</div>
 
-					<SelectFilterState
+					{/* <SelectFilterState
 						uuid={uuidCompany}
 						setUuid={setUuidCompany}
 						listData={listCompany?.data?.map((v: any) => ({
@@ -419,6 +423,15 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 							name: v?.name,
 						}))}
 						placeholder='Kv cảng xuất khẩu'
+					/> */}
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Kv cảng xuất khẩu'
 					/>
 					<SelectFilterMany
 						selectedIds={customerUuid}
@@ -820,6 +833,7 @@ function PageNotConfirmBill({}: PropsPageNotConfirmBill) {
 							truckUuid,
 							uuidCompany,
 							uuidStorage,
+							listCompanyUuid,
 						]}
 					/>
 				)}

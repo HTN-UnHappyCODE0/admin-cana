@@ -53,6 +53,7 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
 	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
 		queryFn: () =>
@@ -92,7 +93,7 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 		},
 	});
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -109,7 +110,8 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
-					companyUuid: uuidCompany,
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -168,6 +170,7 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 			_dateTo,
 			truckUuid,
 			uuidCompany,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -207,6 +210,7 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			onSuccess(data) {
@@ -225,10 +229,10 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 	);
 
 	useEffect(() => {
-		if (uuidCompany) {
+		if (listCompanyUuid) {
 			setCustomerUuid([]);
 		}
-	}, [uuidCompany]);
+	}, [listCompanyUuid]);
 
 	return (
 		<div className={styles.container}>
@@ -263,7 +267,7 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 							name: v?.name,
 						}))}
 					/> */}
-					<SelectFilterState
+					{/* <SelectFilterState
 						uuid={uuidCompany}
 						setUuid={setUuidCompany}
 						listData={listCompany?.data?.map((v: any) => ({
@@ -271,6 +275,15 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 							name: v?.name,
 						}))}
 						placeholder='Kv cảng xuất khẩu'
+					/> */}
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Kv cảng xuất khẩu'
 					/>
 
 					<SelectFilterMany
@@ -463,6 +476,7 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 							truckUuid,
 							uuidCompany,
 							uuidQuality,
+							listCompanyUuid,
 						]}
 					/>
 				)}

@@ -63,6 +63,7 @@ function MainPageExport({}: PropsMainPageExport) {
 	const [uuidCompany, setUuidCompany] = useState<string>('');
 	const [uuidQuality, setUuidQuality] = useState<string>('');
 	const [uuidStorage, setUuidStorage] = useState<string>('');
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
 	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
 		queryFn: () =>
@@ -144,6 +145,7 @@ function MainPageExport({}: PropsMainPageExport) {
 			isHaveDryness,
 			truckUuid,
 			uuidCompany,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -194,6 +196,7 @@ function MainPageExport({}: PropsMainPageExport) {
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			select(data) {
@@ -202,7 +205,7 @@ function MainPageExport({}: PropsMainPageExport) {
 		}
 	);
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -219,7 +222,8 @@ function MainPageExport({}: PropsMainPageExport) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
-					companyUuid: uuidCompany,
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -335,6 +339,7 @@ function MainPageExport({}: PropsMainPageExport) {
 					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 					truckUuid: truckUuid,
 					companyUuid: uuidCompany,
+					listCompanyUuid: listCompanyUuid,
 				}),
 			});
 		},
@@ -350,13 +355,13 @@ function MainPageExport({}: PropsMainPageExport) {
 		return exportExcel.mutate(isHaveSpec);
 	};
 	useEffect(() => {
-		if (uuidCompany) {
+		if (listCompanyUuid) {
 			setCustomerUuid([]);
 		}
 		if (uuidQuality) {
 			setUuidStorage('');
 		}
-	}, [uuidCompany, uuidQuality]);
+	}, [listCompanyUuid, uuidQuality]);
 	return (
 		<div className={styles.container}>
 			<Loading loading={exportExcel.isLoading} />
@@ -365,14 +370,14 @@ function MainPageExport({}: PropsMainPageExport) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
-					<SelectFilterState
-						uuid={uuidCompany}
-						setUuid={setUuidCompany}
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
 						listData={listCompany?.data?.map((v: any) => ({
 							uuid: v?.uuid,
 							name: v?.name,
 						}))}
-						placeholder='Kv cảng xuất khẩu'
+						name='Kv cảng xuất khẩu'
 					/>
 					<SelectFilterMany
 						selectedIds={customerUuid}
@@ -794,6 +799,7 @@ function MainPageExport({}: PropsMainPageExport) {
 						isHaveDryness,
 						truckUuid,
 						uuidCompany,
+						listCompanyUuid,
 					]}
 				/>
 			</div>
