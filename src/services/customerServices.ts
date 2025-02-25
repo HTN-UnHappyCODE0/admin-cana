@@ -26,6 +26,8 @@ const customerServices = {
 			userUuid?: string;
 			parentUserUuid?: string;
 			companyUuid?: string;
+			listCompanyUuid?: string[];
+			listPartnerUUid?: string[];
 		},
 		tokenAxios?: any
 	) => {

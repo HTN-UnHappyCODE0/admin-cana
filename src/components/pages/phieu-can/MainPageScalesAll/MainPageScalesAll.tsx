@@ -69,6 +69,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
 	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [uuidCompany, setUuidCompany] = useState<string>('');
 	const [uuidQuality, setUuidQuality] = useState<string>('');
@@ -112,7 +113,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 		},
 	});
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -129,7 +130,8 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
-					companyUuid: uuidCompany,
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -261,6 +263,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 			truckUuid,
 			uuidCompany,
 			uuidQuality,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -311,6 +314,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			onSuccess(data) {
@@ -423,6 +427,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 					truckUuid: truckUuid,
 					companyUuid: uuidCompany,
+					listCompanyUuid: listCompanyUuid,
 				}),
 			});
 		},
@@ -471,13 +476,13 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 	};
 
 	useEffect(() => {
-		if (uuidCompany) {
+		if (listCompanyUuid) {
 			setCustomerUuid([]);
 		}
 		if (uuidQuality) {
 			setUuidStorage('');
 		}
-	}, [uuidCompany, uuidQuality]);
+	}, [listCompanyUuid, uuidQuality]);
 
 	return (
 		<div className={styles.container}>
@@ -508,7 +513,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 							]}
 						/>
 					</div>
-					<SelectFilterState
+					{/* <SelectFilterState
 						uuid={uuidCompany}
 						setUuid={setUuidCompany}
 						listData={listCompany?.data?.map((v: any) => ({
@@ -516,6 +521,15 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 							name: v?.name,
 						}))}
 						placeholder='Kv cảng xuất khẩu'
+					/> */}
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Kv cảng xuất khẩu'
 					/>
 
 					<SelectFilterMany
@@ -1039,6 +1053,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 							truckUuid,
 							uuidCompany,
 							uuidQuality,
+							listCompanyUuid,
 						]}
 					/>
 				)}

@@ -66,6 +66,7 @@ function MainPageAll({}: PropsMainPageAll) {
 	const [uuidCompany, setUuidCompany] = useState<string>('');
 	const [uuidQuality, setUuidQuality] = useState<string>('');
 	const [uuidStorage, setUuidStorage] = useState<string>('');
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
 	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
 		queryFn: () =>
@@ -128,6 +129,7 @@ function MainPageAll({}: PropsMainPageAll) {
 			isHaveDryness,
 			truckUuid,
 			uuidCompany,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -178,6 +180,7 @@ function MainPageAll({}: PropsMainPageAll) {
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			select(data) {
@@ -186,7 +189,7 @@ function MainPageAll({}: PropsMainPageAll) {
 		}
 	);
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, uuidCompany], {
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -203,7 +206,8 @@ function MainPageAll({}: PropsMainPageAll) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
-					companyUuid: uuidCompany,
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -349,6 +353,7 @@ function MainPageAll({}: PropsMainPageAll) {
 					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
 					truckUuid: truckUuid,
 					companyUuid: uuidCompany,
+					listCompanyUuid: listCompanyUuid,
 				}),
 			});
 		},
@@ -365,13 +370,13 @@ function MainPageAll({}: PropsMainPageAll) {
 	};
 
 	useEffect(() => {
-		if (uuidCompany) {
+		if (listCompanyUuid) {
 			setCustomerUuid([]);
 		}
 		if (uuidQuality) {
 			setUuidStorage('');
 		}
-	}, [uuidCompany, uuidQuality]);
+	}, [listCompanyUuid, uuidQuality]);
 
 	return (
 		<div className={styles.container}>
@@ -381,14 +386,14 @@ function MainPageAll({}: PropsMainPageAll) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
-					<SelectFilterState
-						uuid={uuidCompany}
-						setUuid={setUuidCompany}
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
 						listData={listCompany?.data?.map((v: any) => ({
 							uuid: v?.uuid,
 							name: v?.name,
 						}))}
-						placeholder='Kv cảng xuất khẩu'
+						name='Kv cảng xuất khẩu'
 					/>
 					<SelectFilterMany
 						selectedIds={customerUuid}
@@ -854,6 +859,7 @@ function MainPageAll({}: PropsMainPageAll) {
 						isHaveDryness,
 						truckUuid,
 						uuidCompany,
+						listCompanyUuid,
 					]}
 				/>
 			</div>
