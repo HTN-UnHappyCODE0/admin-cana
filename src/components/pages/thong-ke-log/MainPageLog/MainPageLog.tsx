@@ -115,7 +115,7 @@ function MainPageLog({}: PropsMainPageLog) {
 					currentPage={Number(_page) || 1}
 					pageSize={Number(_pageSize) || 200}
 					total={listLog?.data?.pagination?.totalCount}
-					dependencies={[_keyword, _pageSize]}
+					dependencies={[_keyword, _pageSize, _userUuid, _status, _dateFrom, _dateTo]}
 				/>
 			</div>
 		</Fragment>
