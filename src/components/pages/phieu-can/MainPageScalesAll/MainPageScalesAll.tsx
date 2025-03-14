@@ -492,27 +492,7 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
-					<div className={styles.filter}>
-						<FilterCustom
-							isSearch
-							name='Kiểu cân'
-							query='_isBatch'
-							listFilter={[
-								{
-									id: TYPE_BATCH.CAN_LO,
-									name: 'Cân lô',
-								},
-								{
-									id: TYPE_BATCH.CAN_LE,
-									name: 'Cân lẻ',
-								},
-								{
-									id: TYPE_BATCH.KHONG_CAN,
-									name: 'Không qua cân',
-								},
-							]}
-						/>
-					</div>
+
 					{/* <SelectFilterState
 						uuid={uuidCompany}
 						setUuid={setUuidCompany}
@@ -541,6 +521,27 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 						}))}
 						name='Khách hàng'
 					/>
+					<div className={styles.filter}>
+						<FilterCustom
+							isSearch
+							name='Kiểu cân'
+							query='_isBatch'
+							listFilter={[
+								{
+									id: TYPE_BATCH.CAN_LO,
+									name: 'Cân lô',
+								},
+								{
+									id: TYPE_BATCH.CAN_LE,
+									name: 'Cân lẻ',
+								},
+								{
+									id: TYPE_BATCH.KHONG_CAN,
+									name: 'Không qua cân',
+								},
+							]}
+						/>
+					</div>
 					<SelectFilterMany
 						selectedIds={truckUuid}
 						setSelectedIds={setTruckUuid}
@@ -783,16 +784,40 @@ function MainPageScalesAll({}: PropsMainPageScalesAll) {
 								render: (data: ITableBillScale) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipUu?.licensePalate || '---'}
-											</p>
-										)}
-										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
-											</p>
-										)}
+										{
+											data?.scalesType == TYPE_SCALES.CAN_XUAT &&
+												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.numShip || '---'} . {data?.batchsUu?.shipUu?.licensePalate || '---'}
+													</p>
+												) : (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.batchsUu?.shipUu?.licensePalate || '---'}
+													</p>
+												))
+											// (
+											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
+											// 		{data?.batchsUu?.shipUu?.licensePalate || '---'}
+											// 	</p>
+											// )
+										}
+										{
+											!(data?.scalesType == TYPE_SCALES.CAN_XUAT) &&
+												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.numShip || '---'} . {data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+													</p>
+												) : (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+													</p>
+												))
+											// (
+											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
+											// 		{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+											// 	</p>
+											// )
+										}
 
 										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>

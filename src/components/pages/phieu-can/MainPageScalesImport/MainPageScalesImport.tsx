@@ -459,6 +459,25 @@ function MainPageScalesImport({}: PropsMainPageScalesImport) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
+
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Kv cảng xuất khẩu'
+					/>
+					<SelectFilterMany
+						selectedIds={customerUuid}
+						setSelectedIds={setCustomerUuid}
+						listData={listCustomer?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Khách hàng'
+					/>
 					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
@@ -480,24 +499,6 @@ function MainPageScalesImport({}: PropsMainPageScalesImport) {
 							]}
 						/>
 					</div>
-					<SelectFilterMany
-						selectedIds={listCompanyUuid}
-						setSelectedIds={setListCompanyUuid}
-						listData={listCompany?.data?.map((v: any) => ({
-							uuid: v?.uuid,
-							name: v?.name,
-						}))}
-						name='Kv cảng xuất khẩu'
-					/>
-					<SelectFilterMany
-						selectedIds={customerUuid}
-						setSelectedIds={setCustomerUuid}
-						listData={listCustomer?.data?.map((v: any) => ({
-							uuid: v?.uuid,
-							name: v?.name,
-						}))}
-						name='Khách hàng'
-					/>
 					<SelectFilterMany
 						selectedIds={truckUuid}
 						setSelectedIds={setTruckUuid}
@@ -745,7 +746,41 @@ function MainPageScalesImport({}: PropsMainPageScalesImport) {
 								render: (data: ITableBillScale) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
+										{
+											data?.scalesType == TYPE_SCALES.CAN_XUAT &&
+												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.numShip || '---'} . {data?.batchsUu?.shipUu?.licensePalate || '---'}
+													</p>
+												) : (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.batchsUu?.shipUu?.licensePalate || '---'}
+													</p>
+												))
+											// (
+											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
+											// 		{data?.batchsUu?.shipUu?.licensePalate || '---'}
+											// 	</p>
+											// )
+										}
+										{
+											!(data?.scalesType == TYPE_SCALES.CAN_XUAT) &&
+												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.numShip || '---'} . {data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+													</p>
+												) : (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+													</p>
+												))
+											// (
+											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
+											// 		{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+											// 	</p>
+											// )
+										}
+										{/* {data?.scalesType == TYPE_SCALES.CAN_XUAT && (
 											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipUu?.licensePalate || '---'}
 											</p>
@@ -754,7 +789,7 @@ function MainPageScalesImport({}: PropsMainPageScalesImport) {
 											<p style={{fontWeight: 400, color: '#3772FF'}}>
 												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
 											</p>
-										)}
+										)} */}
 
 										{/* <p>({data?.toUu?.parentUu?.name || '---'})</p> */}
 									</>
