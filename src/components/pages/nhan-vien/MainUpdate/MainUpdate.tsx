@@ -85,7 +85,7 @@ function MainUpdate({}: PropsMainUpdate) {
 				isDropdown: true,
 				http: commonServices.listProvince({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 				}),
 			}),
 		select(data) {
@@ -99,7 +99,7 @@ function MainUpdate({}: PropsMainUpdate) {
 				isDropdown: true,
 				http: commonServices.listDistrict({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					idParent: form?.provinceId,
 				}),
 			}),
@@ -115,7 +115,7 @@ function MainUpdate({}: PropsMainUpdate) {
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					idParent: form.districtId,
 				}),
 			}),
@@ -218,6 +218,7 @@ function MainUpdate({}: PropsMainUpdate) {
 						form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Quản lý nhập hàng'])?.uuid
 							? form.provinceOwnerId
 							: '',
+					companyUuid: form.companyUuid,
 				}),
 			}),
 		onSuccess(data) {

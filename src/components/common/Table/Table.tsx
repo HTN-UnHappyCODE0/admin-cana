@@ -18,10 +18,8 @@ function Table({data, column, onSetData, fixedHeader = false, isDisableCheckBox}
 	};
 
 	useEffect(() => {
-		// Check scroll on component mount
 		checkForHorizontalScroll();
 
-		// Set up resize event listener
 		window.addEventListener('resize', checkForHorizontalScroll);
 
 		return () => {
@@ -29,7 +27,6 @@ function Table({data, column, onSetData, fixedHeader = false, isDisableCheckBox}
 		};
 	}, []);
 
-	/*---------- Handle CheckBox ----------*/
 	useEffect(() => {
 		onSetData &&
 			onSetData((prev: any[]) =>
@@ -39,7 +36,6 @@ function Table({data, column, onSetData, fixedHeader = false, isDisableCheckBox}
 					index: index,
 				}))
 			);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleCheckAll = (e: any) => {
@@ -115,7 +111,7 @@ function Table({data, column, onSetData, fixedHeader = false, isDisableCheckBox}
 				</thead>
 				<tbody>
 					{data.map((row: any, rowIndex: number) => (
-						<tr key={rowIndex}>
+						<tr key={rowIndex} className={styles.tr_data}>
 							{column.map((col: any, colIndex: number) => {
 								const isTitle = typeof col.isTitle === 'function' ? col.isTitle(row, rowIndex) : col.isTitle;
 

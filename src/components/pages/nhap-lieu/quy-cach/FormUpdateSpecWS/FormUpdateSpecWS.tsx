@@ -263,7 +263,9 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 						value={form.totalSample}
 						onChange={(e) => setForm((prev) => ({...prev, totalSample: e.target.value}))}
 						onKeyDown={(e) => handleKeyEnter(e, -1)}
-						ref={(el) => (inputRefs.current[-1] = el)}
+						ref={(el) => {
+							inputRefs.current[-1] = el;
+						}}
 					/>
 					<div className={styles.unit}>gr</div>
 				</div>
@@ -287,7 +289,9 @@ function FormUpdateSpecWS({dataUpdateSpecWS, onClose}: PropsFormUpdateSpecWS) {
 											value={v?.amountSample}
 											onChange={(e) => handleChange(v, parseFloat(e.target.value))}
 											onKeyDown={(e) => handleKeyEnter(e, i)}
-											ref={(el) => (inputRefs.current[i] = el)}
+											ref={(el) => {
+												inputRefs.current[-1] = el;
+											}}
 										/>
 										<div className={styles.unit}>gr</div>
 									</div>

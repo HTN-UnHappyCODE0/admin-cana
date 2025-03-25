@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {ITableBillScale, PropsPageUpdatePort} from './interfaces';
 import styles from './PageUpdatePort.module.scss';
@@ -36,18 +36,64 @@ import Popup from '~/components/common/Popup';
 import FormUpdatePort from '../FormUpdatePort';
 import Button from '~/components/common/Button';
 import {convertWeight, formatDrynessAvg} from '~/common/funcs/optionConvert';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
+import truckServices from '~/services/truckServices';
+import companyServices from '~/services/companyServices';
+import SelectFilterState from '~/components/common/SelectFilterState';
 
 function PageUpdatePort({}: PropsPageUpdatePort) {
 	const router = useRouter();
 
-	const {_page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo} = router.query;
+	const {_page, _pageSize, _keyword, _productTypeUuid, _dateFrom, _dateTo} = router.query;
 
 	const [listBatchBillSubmit, setListBatchBillSubmit] = useState<ITableBillScale[]>([]);
-
+	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
+	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [uuidQuality, setUuidQuality] = useState<string>('');
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
+	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listQuality({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -64,6 +110,8 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -91,8 +139,39 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 		},
 	});
 
+	const listTruck = useQuery([QUERY_KEY.dropdown_xe_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: truckServices.listTruck({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
 	const getListBatch = useQuery(
-		[QUERY_KEY.table_cang_boc_do, _page, _pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo],
+		[
+			QUERY_KEY.table_cang_boc_do,
+			_page,
+			_pageSize,
+			customerUuid,
+			_keyword,
+			_productTypeUuid,
+			_dateFrom,
+			_dateTo,
+			truckUuid,
+			uuidCompany,
+			listCompanyUuid,
+		],
 		{
 			queryFn: () =>
 				httpRequest({
@@ -105,7 +184,6 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						scalesType: [],
-						customerUuid: (_customerUuid as string) || '',
 						isBatch: TYPE_BATCH.CAN_LO,
 						isCreateBatch: null,
 						productTypeUuid: (_productTypeUuid as string) || '',
@@ -122,12 +200,17 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
-						qualityUuid: '',
+						qualityUuid: uuidQuality,
 						transportType: null,
 						typeCheckDay: 0,
 						scalesStationUuid: '',
 						storageUuid: '',
 						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
+						truckUuid: truckUuid,
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
+						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			onSuccess(data) {
@@ -144,6 +227,12 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 			},
 		}
 	);
+
+	useEffect(() => {
+		if (listCompanyUuid) {
+			setCustomerUuid([]);
+		}
+	}, [listCompanyUuid]);
 
 	return (
 		<div className={styles.container}>
@@ -169,7 +258,7 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
 
-					<FilterCustom
+					{/* <FilterCustom
 						isSearch
 						name='Khách hàng'
 						query='_customerUuid'
@@ -177,6 +266,43 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 							id: v?.uuid,
 							name: v?.name,
 						}))}
+					/> */}
+					{/* <SelectFilterState
+						uuid={uuidCompany}
+						setUuid={setUuidCompany}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Kv cảng xuất khẩu'
+					/> */}
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Kv cảng xuất khẩu'
+					/>
+
+					<SelectFilterMany
+						selectedIds={customerUuid}
+						setSelectedIds={setCustomerUuid}
+						listData={listCustomer?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Khách hàng'
+					/>
+					<SelectFilterMany
+						selectedIds={truckUuid}
+						setSelectedIds={setTruckUuid}
+						listData={listTruck?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.licensePalate,
+						}))}
+						name='Biển số xe'
 					/>
 					<FilterCustom
 						isSearch
@@ -186,6 +312,15 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 							id: v?.uuid,
 							name: v?.name,
 						}))}
+					/>
+					<SelectFilterState
+						uuid={uuidQuality}
+						setUuid={setUuidQuality}
+						listData={listQuality?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Quốc gia'
 					/>
 
 					<div className={styles.filter}>
@@ -331,7 +466,18 @@ function PageUpdatePort({}: PropsPageUpdatePort) {
 						currentPage={Number(_page) || 1}
 						pageSize={Number(_pageSize) || 200}
 						total={total}
-						dependencies={[_pageSize, _keyword, _customerUuid, _productTypeUuid, _dateFrom, _dateTo]}
+						dependencies={[
+							_pageSize,
+							_keyword,
+							customerUuid,
+							_productTypeUuid,
+							_dateFrom,
+							_dateTo,
+							truckUuid,
+							uuidCompany,
+							uuidQuality,
+							listCompanyUuid,
+						]}
 					/>
 				)}
 			</div>

@@ -48,6 +48,7 @@ function TableListTruck({}: PropsTableListTruck) {
 					productTypeUuid: '',
 					shift: null,
 					status: [],
+					listTruckUuid: [],
 				}),
 			}),
 		select(data) {

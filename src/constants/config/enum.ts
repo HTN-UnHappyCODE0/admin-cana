@@ -44,6 +44,12 @@ export enum QUERY_KEY {
 	dropdown_quan_ly_nhap_hang,
 	dropdown_loai_hang,
 	dropdown_nguoi_kt_quan_ly,
+	dropdown_bai_xuat,
+	dropdown_tinh_thanh_pho_xuat,
+	dropdown_cong_ty_xuat,
+	dropdown_bai_dich_vu,
+	dropdown_tinh_thanh_pho_dich_vu,
+	dropdown_cong_ty_dich_vu,
 
 	table_phieu_da_gui_KT,
 	table_cang_boc_do,
@@ -103,6 +109,7 @@ export enum QUERY_KEY {
 	table_log_bat_thuong,
 	table_du_lieu_mau,
 	table_ds_can_mau,
+	table_tap_chat,
 
 	chi_tiet_gia_tien_chinh_sua,
 	chi_tiet_cong_no_phieu,

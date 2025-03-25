@@ -35,6 +35,7 @@ import customerServices from '~/services/customerServices';
 import useDebounce from '~/common/hooks/useDebounce';
 import scalesStationServices from '~/services/scalesStationServices';
 import StateActive from '~/components/common/StateActive';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
 
 function TableDetail({}: PropsTableDetail) {
 	const router = useRouter();
@@ -44,12 +45,10 @@ function TableDetail({}: PropsTableDetail) {
 		_page,
 		_pageSize,
 		_keyword,
-		_truckUuid,
 		_specUuid,
 		_status,
 		_dateFrom,
 		_dateTo,
-		_customerUuid,
 		_storageUuid,
 		_isBatch,
 		_shipUuid,
@@ -58,13 +57,13 @@ function TableDetail({}: PropsTableDetail) {
 	} = router.query;
 
 	const [uuidDescription, setUuidDescription] = useState<string>('');
-
+	const [truckUuid, setTruckUuid] = useState<string[]>([]);
 	const [byFilter, setByFilter] = useState<boolean>(false);
 	const [formCode, setFormCode] = useState<{codeStart: string; codeEnd: string}>({
 		codeStart: '',
 		codeEnd: '',
 	});
-
+	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
 	const debounceCodeStart = useDebounce(formCode.codeStart, 500);
 	const debounceCodeEnd = useDebounce(formCode.codeEnd, 500);
 
@@ -203,7 +202,7 @@ function TableDetail({}: PropsTableDetail) {
 			_page,
 			_pageSize,
 			_keyword,
-			_truckUuid,
+			truckUuid,
 			_specUuid,
 			_status,
 			_dateFrom,
@@ -211,7 +210,7 @@ function TableDetail({}: PropsTableDetail) {
 			byFilter,
 			debounceCodeStart,
 			debounceCodeEnd,
-			_customerUuid,
+			customerUuid,
 			_storageUuid,
 			_isBatch,
 			_shipUuid,
@@ -235,7 +234,8 @@ function TableDetail({}: PropsTableDetail) {
 						storageUuid: (_storageUuid as string) || '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
-						customerUuid: (_customerUuid as string) || '',
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
 						productTypeUuid: '',
 						billUuid: (_id as string) || '',
 						codeEnd: byFilter && !!debounceCodeEnd ? Number(debounceCodeEnd) : null,
@@ -252,11 +252,12 @@ function TableDetail({}: PropsTableDetail) {
 									STATUS_WEIGHT_SESSION.KCS_XONG,
 									STATUS_WEIGHT_SESSION.DA_HUY,
 							  ],
-						truckUuid: !!_truckUuid ? (_truckUuid as string) : '',
 						shipUuid: (_shipUuid as string) || '',
 						shift: !!_shift ? Number(_shift) : null,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						isHaveSpec: null,
+						truckUuid: '',
+						listTruckUuid: truckUuid,
 					}),
 				}),
 			select(data) {
@@ -312,15 +313,15 @@ function TableDetail({}: PropsTableDetail) {
 								<Search type='number' keyName='_shift' placeholder='Tìm kiếm theo ca' />
 							</div>
 
-							{/* <FilterCustom
-								isSearch
-								name='Khách hàng'
-								query='_customerUuid'
-								listFilter={listCustomer?.data?.map((v: any) => ({
-									id: v?.uuid,
-									name: v?.name,
-								}))}
-							/>
+							{/* <SelectFilterMany
+						selectedIds={customerUuid}
+						setSelectedIds={setCustomerUuid}
+						listData={listCustomer?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Khách hàng'
+					/>
 
 							
 							{/* <FilterCustom
@@ -333,14 +334,14 @@ function TableDetail({}: PropsTableDetail) {
 								}))}
 							/> */}
 
-							<FilterCustom
-								isSearch
-								name='Biển số xe'
-								query='_truckUuid'
-								listFilter={listTruck?.data?.map((v: any) => ({
-									id: v?.uuid,
+							<SelectFilterMany
+								selectedIds={truckUuid}
+								setSelectedIds={setTruckUuid}
+								listData={listTruck?.data?.map((v: any) => ({
+									uuid: v?.uuid,
 									name: v?.licensePalate,
 								}))}
+								name='Biển số xe'
 							/>
 							<div className={styles.filter}>
 								<FilterCustom
@@ -656,7 +657,7 @@ function TableDetail({}: PropsTableDetail) {
 						_id,
 						_pageSize,
 						_keyword,
-						_truckUuid,
+						truckUuid,
 						_specUuid,
 						_status,
 						_dateFrom,
@@ -664,7 +665,7 @@ function TableDetail({}: PropsTableDetail) {
 						byFilter,
 						debounceCodeStart,
 						debounceCodeEnd,
-						_customerUuid,
+						customerUuid,
 						_storageUuid,
 						_isBatch,
 						_shipUuid,

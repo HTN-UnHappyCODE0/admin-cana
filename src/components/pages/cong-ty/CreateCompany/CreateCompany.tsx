@@ -8,7 +8,7 @@ import Form, {FormContext, Input} from '~/components/common/Form';
 import clsx from 'clsx';
 import TextArea from '~/components/common/Form/components/TextArea';
 import {useMutation, useQuery} from '@tanstack/react-query';
-import {CONFIG_STATUS, QUERY_KEY} from '~/constants/config/enum';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import commonServices from '~/services/commonServices';
 import companyServices from '~/services/companyServices';
@@ -29,6 +29,26 @@ function CreateCompany({}: PropsCreateCompany) {
 		districtId: '',
 		townId: '',
 		dirrector: '',
+		parentCompanyUuid: '',
+	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -37,7 +57,7 @@ function CreateCompany({}: PropsCreateCompany) {
 				isDropdown: true,
 				http: commonServices.listProvince({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 				}),
 			}),
 		select(data) {
@@ -51,7 +71,7 @@ function CreateCompany({}: PropsCreateCompany) {
 				isDropdown: true,
 				http: commonServices.listDistrict({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					idParent: form?.provinceId,
 				}),
 			}),
@@ -67,7 +87,7 @@ function CreateCompany({}: PropsCreateCompany) {
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					idParent: form.districtId,
 				}),
 			}),
@@ -92,6 +112,7 @@ function CreateCompany({}: PropsCreateCompany) {
 					townId: form?.townId,
 					address: form?.address,
 					description: form?.description,
+					parentCompanyUuid: form?.parentCompanyUuid,
 				}),
 			}),
 		onSuccess(data) {
@@ -105,6 +126,7 @@ function CreateCompany({}: PropsCreateCompany) {
 					districtId: '',
 					townId: '',
 					dirrector: '',
+					parentCompanyUuid: '',
 				});
 				router.replace(PATH.CongTy, undefined, {
 					scroll: false,
@@ -155,22 +177,39 @@ function CreateCompany({}: PropsCreateCompany) {
 				</div>
 
 				<div className={styles.form}>
-					<div className={clsx('mt')}>
+					<div className={clsx('mt', 'col_2')}>
 						<div>
 							<Input
 								name='name'
-								value={form.name || ''}
-								isRequired
+								value={form.name}
 								blur={true}
+								isRequired
 								max={255}
 								label={
 									<span>
-										Tên KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
+										Tên KV cảng <span style={{color: 'red'}}>*</span>
 									</span>
 								}
-								placeholder='Nhập tên KV cảng xuất khẩu'
+								placeholder='Nhập tên KV cảng'
 							/>
 						</div>
+						<Select
+							isSearch
+							name='parentCompanyUuid'
+							placeholder='Chọn khu vực cảng xuất khẩu'
+							value={form?.parentCompanyUuid}
+							onChange={(e: any) =>
+								setForm((prev: any) => ({
+									...prev,
+									parentCompanyUuid: e.target.value,
+								}))
+							}
+							label={<span>Khu vực cảng xuất khẩu</span>}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
@@ -178,14 +217,9 @@ function CreateCompany({}: PropsCreateCompany) {
 							type='number'
 							name='phoneNumber'
 							value={form.phoneNumber || ''}
-							isRequired
 							isPhone
 							blur={true}
-							label={
-								<span>
-									Số điện thoại<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Số điện thoại</span>}
 							placeholder='Nhập số điện thoại'
 						/>
 						<div>

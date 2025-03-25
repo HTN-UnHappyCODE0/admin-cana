@@ -40,6 +40,7 @@ const companyServices = {
 			provinceId: string;
 			dictrictId: string;
 			townId: string;
+			parentCompanyUuid: string;
 		},
 		tokenAxios?: any
 	) => {
@@ -54,6 +55,18 @@ const companyServices = {
 		tokenAxios?: any
 	) => {
 		return axiosClient.post(`/Companies/detail-company`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	updatePriceTransport: (
+		data: {
+			uuid: string;
+			timeStart: string | null;
+			priceMt: number;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/Companies/update-price-transport`, data, {
 			cancelToken: tokenAxios,
 		});
 	},

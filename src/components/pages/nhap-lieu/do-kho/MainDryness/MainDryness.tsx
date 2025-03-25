@@ -53,6 +53,8 @@ import FormUpdateWeighDryness from '../FormUpdateWeighDryness';
 import FormUpdateWeigh from '../../quy-cach/FormUpdateWeigh';
 import SelectFilterOption from '~/components/pages/trang-chu/SelectFilterOption';
 import SelectFilterState from '~/components/common/SelectFilterState';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
+import companyServices from '~/services/companyServices';
 
 function MainDryness({}: PropsMainDryness) {
 	const router = useRouter();
@@ -66,7 +68,6 @@ function MainDryness({}: PropsMainDryness) {
 		_keyword,
 		_isBatch,
 		_isShift,
-		_customerUuid,
 		_storageUuid,
 		_status,
 		_productTypeUuid,
@@ -83,6 +84,8 @@ function MainDryness({}: PropsMainDryness) {
 	const [dataWeight, setDataWeight] = useState<any[]>([]);
 	const [status, setStatus] = useState<string>(String(STATUS_WEIGHT_SESSION.UPDATE_SPEC_DONE));
 	const [isHaveDryness, setIsHaveDryness] = useState<string>('0');
+	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
 	const [weightSessions, setWeightSessions] = useState<any[]>([]);
 
@@ -125,7 +128,7 @@ function MainDryness({}: PropsMainDryness) {
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
-					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+					type: [TYPE_PRODUCT.CONG_TY],
 				}),
 			}),
 		select(data) {
@@ -146,6 +149,25 @@ function MainDryness({}: PropsMainDryness) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					status: CONFIG_STATUS.HOAT_DONG,
 					qualityUuid: '',
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -219,7 +241,7 @@ function MainDryness({}: PropsMainDryness) {
 			_pageSize,
 			_keyword,
 			_isBatch,
-			_customerUuid,
+			customerUuid,
 			_productTypeUuid,
 			_specUuid,
 			_dateFrom,
@@ -229,6 +251,7 @@ function MainDryness({}: PropsMainDryness) {
 			_storageUuid,
 			_scalesStationUuid,
 			isHaveDryness,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -256,15 +279,19 @@ function MainDryness({}: PropsMainDryness) {
 							STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
 						],
 						truckUuid: '',
+						listTruckUuid: [],
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
-						customerUuid: _customerUuid ? (_customerUuid as string) : '',
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
 						productTypeUuid: _productTypeUuid ? (_productTypeUuid as string) : '',
 						shift: !!_isShift ? Number(_isShift) : null,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
 						isHaveSpec: null,
 						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
+						typeProduct: TYPE_PRODUCT.CONG_TY,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			onSuccess(data) {
@@ -519,6 +546,17 @@ function MainDryness({}: PropsMainDryness) {
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu và mã lô hàng' />
 					</div>
 					<div className={styles.filter}>
+						<SelectFilterMany
+							selectedIds={listCompanyUuid}
+							setSelectedIds={setListCompanyUuid}
+							listData={listCompany?.data?.map((v: any) => ({
+								uuid: v?.uuid,
+								name: v?.name,
+							}))}
+							name='Kv cảng xuất khẩu'
+						/>
+					</div>
+					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
 							name='Kiểu cân'
@@ -572,14 +610,14 @@ function MainDryness({}: PropsMainDryness) {
 							]}
 						/> */}
 
-					<FilterCustom
-						isSearch
-						name='Khách hàng'
-						query='_customerUuid'
-						listFilter={listCustomer?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterMany
+						selectedIds={customerUuid}
+						setSelectedIds={setCustomerUuid}
+						listData={listCustomer?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						name='Khách hàng'
 					/>
 					<FilterCustom
 						isSearch
@@ -698,7 +736,9 @@ function MainDryness({}: PropsMainDryness) {
 								render: (data: IWeightSession, index: number) => (
 									<div className={styles.valueDryness}>
 										<input
-											ref={(el) => (inputRefs.current[index] = el)}
+											ref={(el) => {
+												inputRefs.current[index] = el;
+											}}
 											tabIndex={index + 1}
 											className={styles.input}
 											type='number'
@@ -763,7 +803,7 @@ function MainDryness({}: PropsMainDryness) {
 						_pageSize,
 						_keyword,
 						_isBatch,
-						_customerUuid,
+						customerUuid,
 						_productTypeUuid,
 						_specUuid,
 						_dateFrom,
@@ -772,6 +812,7 @@ function MainDryness({}: PropsMainDryness) {
 						status,
 						_storageUuid,
 						_scalesStationUuid,
+						listCompanyUuid,
 					]}
 				/>
 			</div>

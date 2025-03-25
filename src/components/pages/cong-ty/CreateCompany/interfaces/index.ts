@@ -8,4 +8,5 @@ export interface IFormCreateCompany {
 	districtId: string;
 	townId: string;
 	dirrector: string;
+	parentCompanyUuid: string;
 }

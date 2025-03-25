@@ -27,6 +27,10 @@ import TippyHeadless from '@tippyjs/react/headless';
 import clsx from 'clsx';
 import FlexLayout from '~/components/layouts/FlexLayout';
 import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
+import Popup from '~/components/common/Popup';
+import {FilterSquare, MoneyChange} from 'iconsax-react';
+import PopupPriceTransport from '../PopupPriceTransport';
+import {convertCoin} from '~/common/funcs/convertCoin';
 function PageCompany({}: PropsPageCompany) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
@@ -34,6 +38,7 @@ function PageCompany({}: PropsPageCompany) {
 	const {_page, _pageSize, _keyword, _manager, _dateFrom, _dateTo, _status} = router.query;
 	const [uuidDescription, setUuidDescription] = useState<string>('');
 	const [dataStatus, setDataStatus] = useState<ICompany | null>(null);
+	const [uuidPriceTransport, setUuidPriceTransport] = useState<string | null>(null);
 
 	// Lấy danh sách KV cảng xuất khẩu
 	const listCompany = useQuery([QUERY_KEY.table_cong_ty, _page, _pageSize, _keyword, _status], {
@@ -136,13 +141,29 @@ function PageCompany({}: PropsPageCompany) {
 									title: 'STT',
 									render: (data: ICompany, index: number) => <>{index + 1}</>,
 								},
-
 								{
-									title: 'Tên KV cảng xuất khẩu',
+									title: 'Tên KV cảng',
 									fixedLeft: true,
 									render: (data: ICompany) => <>{data?.name || '---'}</>,
 								},
-
+								{
+									title: 'Loại cảng',
+									render: (data: ICompany) => (
+										<>
+											{data?.parentCompanyUu == null && 'Cảng xuất khẩu'}
+											{data?.parentCompanyUu != null && 'Cảng trung chuyển'}
+										</>
+									),
+								},
+								{
+									title: 'Tên KV cảng xuất khẩu',
+									fixedLeft: true,
+									render: (data: ICompany) => <>{data?.parentCompanyUu?.name || '---'}</>,
+								},
+								{
+									title: 'Gia tiền thay đổi',
+									render: (data: ICompany) => <>{convertCoin(data?.transportPrice) || '---'}</>,
+								},
 								{
 									title: 'Số điện thoại',
 									render: (data: ICompany) => <>{data?.phoneNumber || '---'}</>,
@@ -219,6 +240,13 @@ function PageCompany({}: PropsPageCompany) {
 													setDataStatus(data);
 												}}
 											/>
+											<IconCustom
+												edit
+												icon={<MoneyChange fontSize={20} fontWeight={600} />}
+												tooltip='Cập nhật giá tiền thay đổi'
+												color='#777E90'
+												onClick={() => setUuidPriceTransport(data.uuid)}
+											/>
 										</div>
 									),
 								},
@@ -247,6 +275,10 @@ function PageCompany({}: PropsPageCompany) {
 				}
 				onSubmit={funcChangeStatus.mutate}
 			/>
+
+			<Popup open={!!uuidPriceTransport} onClose={() => setUuidPriceTransport(null)}>
+				<PopupPriceTransport uuid={uuidPriceTransport} onClose={() => setUuidPriceTransport(null)} />
+			</Popup>
 		</Fragment>
 	);
 }

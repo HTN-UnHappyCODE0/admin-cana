@@ -57,7 +57,7 @@ function MainCreateWarehouse({}: PropsMainCreateWarehouse) {
 				isDropdown: true,
 				http: commonServices.listProvince({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 				}),
 			}),
 		select(data) {
@@ -90,7 +90,7 @@ function MainCreateWarehouse({}: PropsMainCreateWarehouse) {
 				isDropdown: true,
 				http: commonServices.listDistrict({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					idParent: form?.provinceId,
 				}),
 			}),
@@ -106,7 +106,7 @@ function MainCreateWarehouse({}: PropsMainCreateWarehouse) {
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					idParent: form.dictrictId,
 				}),
 			}),

@@ -43,6 +43,7 @@ import shipServices from '~/services/shipServices';
 import {ST} from 'next/dist/shared/lib/utils';
 import StateActive from '~/components/common/StateActive';
 import scalesStationServices from '~/services/scalesStationServices';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
 
 function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 	const router = useRouter();
@@ -50,11 +51,9 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 		_page,
 		_pageSize,
 		_keyword,
-		_truckUuid,
 		_specUuid,
 		_dateFrom,
 		_dateTo,
-		_customerUuid,
 		_status,
 		_shift,
 		_shipUuid,
@@ -63,12 +62,13 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 		_scalesStationUuid,
 	} = router.query;
 
+	const [truckUuid, setTruckUuid] = useState<string[]>([]);
 	const [byFilter, setByFilter] = useState<boolean>(false);
 	const [formCode, setFormCode] = useState<{codeStart: string; codeEnd: string}>({
 		codeStart: '',
 		codeEnd: '',
 	});
-
+	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
 	const debounceCodeStart = useDebounce(formCode.codeStart, 500);
 	const debounceCodeEnd = useDebounce(formCode.codeEnd, 500);
 
@@ -204,14 +204,14 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 			_page,
 			_pageSize,
 			_keyword,
-			_truckUuid,
+			truckUuid,
 			_specUuid,
 			_dateFrom,
 			_dateTo,
 			byFilter,
 			debounceCodeStart,
 			debounceCodeEnd,
-			_customerUuid,
+			customerUuid,
 			_status,
 			_shift,
 			_shipUuid,
@@ -235,7 +235,8 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 						storageUuid: (_storageUuid as string) || '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
-						customerUuid: (_customerUuid as string) || '',
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
 						productTypeUuid: '',
 						billUuid: '',
 						codeEnd: byFilter && !!debounceCodeEnd ? Number(debounceCodeEnd) : null,
@@ -250,11 +251,12 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 									STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
 									STATUS_WEIGHT_SESSION.KCS_XONG,
 							  ],
-						truckUuid: !!_truckUuid ? (_truckUuid as string) : '',
 						shipUuid: (_shipUuid as string) || '',
 						shift: !!_shift ? Number(_shift) : null,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						isHaveSpec: null,
+						truckUuid: '',
+						listTruckUuid: truckUuid,
 					}),
 				}),
 			select(data) {
@@ -269,14 +271,14 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 			_page,
 			_pageSize,
 			_keyword,
-			_truckUuid,
+			truckUuid,
 			_specUuid,
 			_dateFrom,
 			_dateTo,
 			byFilter,
 			debounceCodeStart,
 			debounceCodeEnd,
-			_customerUuid,
+			customerUuid,
 			_status,
 			_shift,
 			_shipUuid,
@@ -300,7 +302,8 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 						storageUuid: (_storageUuid as string) || '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
-						customerUuid: (_customerUuid as string) || '',
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
 						productTypeUuid: '',
 						billUuid: '',
 						codeEnd: byFilter && !!debounceCodeEnd ? Number(debounceCodeEnd) : null,
@@ -315,7 +318,8 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 									STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
 									STATUS_WEIGHT_SESSION.KCS_XONG,
 							  ],
-						truckUuid: !!_truckUuid ? (_truckUuid as string) : '',
+						truckUuid: '',
+						listTruckUuid: truckUuid,
 						shift: !!_shift ? Number(_shift) : null,
 						shipUuid: (_shipUuid as string) || '',
 						scalesStationUuid: (_scalesStationUuid as string) || '',
@@ -341,14 +345,14 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 							<Search type='number' keyName='_shift' placeholder='Tìm kiếm theo ca' />
 						</div>
 
-						<FilterCustom
-							isSearch
-							name='Khách hàng'
-							query='_customerUuid'
-							listFilter={listCustomer?.data?.map((v: any) => ({
-								id: v?.uuid,
+						<SelectFilterMany
+							selectedIds={customerUuid}
+							setSelectedIds={setCustomerUuid}
+							listData={listCustomer?.data?.map((v: any) => ({
+								uuid: v?.uuid,
 								name: v?.name,
 							}))}
+							name='Khách hàng'
 						/>
 
 						<FilterCustom
@@ -380,14 +384,14 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 							}))}
 						/>
 
-						<FilterCustom
-							isSearch
-							name='Biển số xe'
-							query='_truckUuid'
-							listFilter={listTruck?.data?.map((v: any) => ({
-								id: v?.uuid,
+						<SelectFilterMany
+							selectedIds={truckUuid}
+							setSelectedIds={setTruckUuid}
+							listData={listTruck?.data?.map((v: any) => ({
+								uuid: v?.uuid,
 								name: v?.licensePalate,
 							}))}
+							name='Biển số xe'
 						/>
 						<div className={styles.filter}>
 							<FilterCustom
@@ -677,14 +681,14 @@ function MainWeightSessionImport({}: PropsMainWeightSessionImport) {
 					dependencies={[
 						_pageSize,
 						_keyword,
-						_truckUuid,
+						truckUuid,
 						_specUuid,
 						byFilter,
 						_dateFrom,
 						_dateTo,
 						debounceCodeStart,
 						debounceCodeEnd,
-						_customerUuid,
+						customerUuid,
 						_status,
 						_shift,
 						_shipUuid,

@@ -1,4 +1,4 @@
-import { IAddress } from "~/constants/config/interfaces";
+import {IAddress} from '~/constants/config/interfaces';
 
 export interface PropsPageCompany {}
 export interface ICompany {
@@ -14,4 +14,11 @@ export interface ICompany {
 	name: string;
 	status: number;
 	uuid: string;
+	parentCompanyUu: {
+		code: string;
+		name: string;
+		status: number;
+		uuid: string;
+	};
+	transportPrice: number;
 }

@@ -154,36 +154,6 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		enabled: listRegency.isSuccess,
 	});
 
-	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listProvince({
-					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-	});
-
-	const listDistrict = useQuery([QUERY_KEY.dropdown_quan_huyen, form?.provinceId], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listDistrict({
-					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
-					idParent: form?.provinceId,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-		enabled: !!form?.provinceId,
-	});
-
 	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
 		queryFn: () =>
 			httpRequest({
@@ -203,13 +173,43 @@ function PageUpdateWorkshop({}: PropsPageUpdateWorkshop) {
 		},
 	});
 
+	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: commonServices.listProvince({
+					keyword: '',
+					status: null,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listDistrict = useQuery([QUERY_KEY.dropdown_quan_huyen, form?.provinceId], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: commonServices.listDistrict({
+					keyword: '',
+					status: null,
+					idParent: form?.provinceId,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+		enabled: !!form?.provinceId,
+	});
+
 	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form.districtId], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
-					status: CONFIG_STATUS.HOAT_DONG,
+					status: null,
 					idParent: form.districtId,
 				}),
 			}),

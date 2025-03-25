@@ -42,6 +42,8 @@ import storageServices from '~/services/storageServices';
 import PositionContainer from '~/components/common/PositionContainer';
 import FormUpdateWeigh from '../FormUpdateWeigh';
 import clsx from 'clsx';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
+import companyServices from '~/services/companyServices';
 
 function MainSpecification({}: PropsMainSpecification) {
 	const router = useRouter();
@@ -51,7 +53,6 @@ function MainSpecification({}: PropsMainSpecification) {
 		_pageSize,
 		_keyword,
 		_isBatch,
-		_customerUuid,
 		_storageUuid,
 		_scalesStationUuid,
 		_productTypeUuid,
@@ -68,6 +69,8 @@ function MainSpecification({}: PropsMainSpecification) {
 	const [weightSessions, setWeightSessions] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
 		queryFn: () =>
@@ -86,6 +89,25 @@ function MainSpecification({}: PropsMainSpecification) {
 					typeCus: TYPE_CUSTOMER.NHA_CUNG_CAP,
 					provinceId: '',
 					specUuid: '',
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
@@ -164,7 +186,7 @@ function MainSpecification({}: PropsMainSpecification) {
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
-					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+					type: [TYPE_PRODUCT.CONG_TY],
 				}),
 			}),
 		select(data) {
@@ -199,7 +221,7 @@ function MainSpecification({}: PropsMainSpecification) {
 			_pageSize,
 			_keyword,
 			_isBatch,
-			_customerUuid,
+			customerUuid,
 			_productTypeUuid,
 			_specUuid,
 			_dateFrom,
@@ -209,6 +231,7 @@ function MainSpecification({}: PropsMainSpecification) {
 			_scalesStationUuid,
 			_status,
 			_isHaveSpec,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -236,14 +259,19 @@ function MainSpecification({}: PropsMainSpecification) {
 							STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
 						],
 						isHaveSpec: !!_isHaveSpec ? Number(_isHaveSpec) : null,
+						listTruckUuid: [],
 						truckUuid: '',
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
-						customerUuid: _customerUuid ? (_customerUuid as string) : '',
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
 						productTypeUuid: _productTypeUuid ? (_productTypeUuid as string) : '',
 						shift: !!_isShift ? Number(_isBatch) : null,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: (_storageUuid as string) || '',
+						isHaveDryness: null,
+						listCompanyUuid: listCompanyUuid,
+						typeProduct: TYPE_PRODUCT.CONG_TY,
 					}),
 				}),
 			onSuccess(data) {
@@ -326,6 +354,18 @@ function MainSpecification({}: PropsMainSpecification) {
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo số phiếu và mã lô hàng' />
 					</div>
 					<div className={styles.filter}>
+						<SelectFilterMany
+							selectedIds={listCompanyUuid}
+							setSelectedIds={setListCompanyUuid}
+							listData={listCompany?.data?.map((v: any) => ({
+								uuid: v?.uuid,
+								name: v?.name,
+							}))}
+							name='Kv cảng xuất khẩu'
+						/>
+					</div>
+
+					<div className={styles.filter}>
 						<FilterCustom
 							isSearch
 							name='Kiểu cân'
@@ -363,14 +403,14 @@ function MainSpecification({}: PropsMainSpecification) {
 							]}
 						/>
 					</div>
-					<FilterCustom
-						isSearch
-						name='Khách hàng'
-						query='_customerUuid'
-						listFilter={listCustomer?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterMany
+						selectedIds={customerUuid}
+						setSelectedIds={setCustomerUuid}
+						listData={listCustomer?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						name='Khách hàng'
 					/>
 					<FilterCustom
 						isSearch
@@ -571,7 +611,7 @@ function MainSpecification({}: PropsMainSpecification) {
 							_pageSize,
 							_keyword,
 							_isBatch,
-							_customerUuid,
+							customerUuid,
 							_productTypeUuid,
 							_specUuid,
 							_dateFrom,
@@ -581,6 +621,7 @@ function MainSpecification({}: PropsMainSpecification) {
 							_scalesStationUuid,
 							_status,
 							_isHaveSpec,
+							listCompanyUuid,
 						]}
 					/>
 				)}

@@ -19,7 +19,6 @@ const batchBillServices = {
 			timeEnd: string | null;
 			specificationsUuid: string;
 			warehouseUuid: string;
-			customerUuid: string;
 			productTypeUuid: string;
 			qualityUuid: string;
 			transportType: number | null;
@@ -27,7 +26,18 @@ const batchBillServices = {
 			typeCheckDay: number | 0;
 			scalesStationUuid: string | null;
 			storageUuid: string | null;
-			isHaveDryness: number;
+			isHaveDryness: number | null;
+			truckUuid: string[];
+			customerUuid: string;
+			listCustomerUuid: string[];
+			isNeedConfirmReject?: number;
+			companyUuid: string;
+			listIsBatch?: number[];
+			documentId?: string;
+			isExportSpec?: number;
+			listCompanyUuid?: string[];
+			listPartnerUuid?: string[];
+			typeProduct?: number;
 		},
 		tokenAxios?: any
 	) => {
@@ -62,6 +72,7 @@ const batchBillServices = {
 			scaleStationUuid: string;
 			portname: string;
 			storageTemporaryUuid?: string;
+			numShip?: string;
 		},
 		tokenAxios?: any
 	) => {
@@ -153,8 +164,11 @@ const batchBillServices = {
 			timeEnd: string;
 			isShowBDMT: number;
 			storageUuid: string;
-			customerUuid: string;
+			customerUuid: string[];
 			warehouseUuid: string;
+			userOwnerUuid: string;
+			provinceId: string;
+			transportType: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -171,8 +185,11 @@ const batchBillServices = {
 			timeEnd: string;
 			isShowBDMT: number;
 			storageUuid: string;
-			customerUuid: string;
+			customerUuid: string[];
 			warehouseUuid: string;
+			userOwnerUuid: string;
+			provinceId: string;
+			transportType: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -189,8 +206,11 @@ const batchBillServices = {
 			timeEnd: string;
 			isShowBDMT: number;
 			storageUuid: string;
-			customerUuid: string;
+			customerUuid: string[];
 			warehouseUuid: string;
+			userOwnerUuid: string;
+			provinceId: string;
+			transportType: number | null;
 		},
 		tokenAxios?: any
 	) => {
@@ -228,13 +248,22 @@ const batchBillServices = {
 			qualityUuid: string;
 			specificationsUuid: string;
 			productTypeUuid: string;
-			customerUuid: string;
 			storageUuid: string;
 			shipUuid: string;
 			typeCheckDay: number;
 			scalesStationUuid: string;
 			documentId: string;
 			isExportSpec?: number | null;
+			isHaveDryness?: number | null;
+			truckUuid: string[];
+			customerUuid: string;
+			listCustomerUuid: string[];
+			companyUuid: string;
+			isNeedConfirmReject?: number;
+			listIsBatch?: number[];
+			typeProduct?: number;
+			listCompanyUuid?: string[];
+			listPartnerUuid?: string[];
 		},
 		tokenAxios?: any
 	) => {
@@ -310,6 +339,38 @@ const batchBillServices = {
 		tokenAxios?: any
 	) => {
 		return axiosClient.post(`/BatchBill/restart-bill`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	kcsDoneBill: (
+		data: {
+			uuid: string[];
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/kcs-done-bill`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	updateWeighReject: (
+		data: {
+			uuid: string;
+			weightReject: number;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/update-weight-reject`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	confirmWeighReject: (
+		data: {
+			uuid: string;
+			isConfirm: number | null;
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/BatchBill/confirm-weight-reject`, data, {
 			cancelToken: tokenAxios,
 		});
 	},

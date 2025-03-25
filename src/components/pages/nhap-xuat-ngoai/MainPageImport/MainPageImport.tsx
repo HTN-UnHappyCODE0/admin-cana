@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {PropsMainPageImport} from './interfaces';
 import styles from './MainPageImport.module.scss';
@@ -48,26 +48,82 @@ import Popup from '~/components/common/Popup';
 import FormAccessSpecExcel from '../../phieu-can/MainDetailScales/components/FormAccessSpecExcel';
 import FormUpdateShipBill from '../../lenh-can/FormUpdateShipBill';
 import Loading from '~/components/common/Loading';
+import SelectFilterState from '~/components/common/SelectFilterState';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
+import truckServices from '~/services/truckServices';
+import companyServices from '~/services/companyServices';
 
 function MainPageImport({}: PropsMainPageImport) {
 	const router = useRouter();
 	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
-	const {
-		_page,
-		_pageSize,
-		_keyword,
-		_dateFrom,
-		_dateTo,
-		_isBatch,
-		_state,
-		_status,
-		_customerUuid,
-		_productTypeUuid,
-		_shipUuid,
-		_storageUuid,
-		_scalesStationUuid,
-	} = router.query;
+	const [isHaveDryness, setIsHaveDryness] = useState<string>('');
+	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
+	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [uuidQuality, setUuidQuality] = useState<string>('');
+	const [uuidStorage, setUuidStorage] = useState<string>('');
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
+
+	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listQuality({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const {_page, _pageSize, _keyword, _dateFrom, _dateTo, _isBatch, _state, _status, _productTypeUuid, _shipUuid, _scalesStationUuid} =
+		router.query;
+
+	const listTruck = useQuery([QUERY_KEY.dropdown_xe_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: truckServices.listTruck({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
 
 	const listBill = useQuery(
 		[
@@ -76,15 +132,20 @@ function MainPageImport({}: PropsMainPageImport) {
 			_pageSize,
 			_keyword,
 			_isBatch,
-			_customerUuid,
+			customerUuid,
 			_productTypeUuid,
 			_shipUuid,
 			_status,
 			_dateFrom,
 			_dateTo,
 			_state,
-			_storageUuid,
+			uuidQuality,
+			uuidStorage,
 			_scalesStationUuid,
+			isHaveDryness,
+			truckUuid,
+			uuidCompany,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -108,7 +169,6 @@ function MainPageImport({}: PropsMainPageImport) {
 									STATE_BILL.KTK_CHECKED,
 									STATE_BILL.END,
 							  ],
-						customerUuid: (_customerUuid as string) || '',
 						isBatch: TYPE_BATCH.KHONG_CAN,
 						isCreateBatch: null,
 						productTypeUuid: (_productTypeUuid as string) || '',
@@ -125,13 +185,18 @@ function MainPageImport({}: PropsMainPageImport) {
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
-						qualityUuid: '',
+						qualityUuid: uuidQuality,
 						transportType: null,
 						shipUuid: (_shipUuid as string) || '',
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
-						storageUuid: (_storageUuid as string) || '',
-						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
+						storageUuid: uuidStorage,
+						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
+						truckUuid: truckUuid,
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
+						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			select(data) {
@@ -140,7 +205,7 @@ function MainPageImport({}: PropsMainPageImport) {
 		}
 	);
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -157,6 +222,8 @@ function MainPageImport({}: PropsMainPageImport) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -164,7 +231,7 @@ function MainPageImport({}: PropsMainPageImport) {
 		},
 	});
 
-	const listStorage = useQuery([QUERY_KEY.table_bai], {
+	const listStorage = useQuery([QUERY_KEY.table_bai, uuidQuality], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -177,7 +244,7 @@ function MainPageImport({}: PropsMainPageImport) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					warehouseUuid: '',
 					productUuid: '',
-					qualityUuid: '',
+					qualityUuid: uuidQuality,
 					specificationsUuid: '',
 					status: CONFIG_STATUS.HOAT_DONG,
 				}),
@@ -249,7 +316,8 @@ function MainPageImport({}: PropsMainPageImport) {
 								STATE_BILL.KTK_CHECKED,
 								STATE_BILL.END,
 						  ],
-					customerUuid: (_customerUuid as string) || '',
+					customerUuid: '',
+					listCustomerUuid: customerUuid,
 					isBatch: TYPE_BATCH.KHONG_CAN,
 					isCreateBatch: null,
 					productTypeUuid: (_productTypeUuid as string) || '',
@@ -266,14 +334,18 @@ function MainPageImport({}: PropsMainPageImport) {
 					timeStart: _dateFrom ? (_dateFrom as string) : null,
 					timeEnd: _dateTo ? (_dateTo as string) : null,
 					warehouseUuid: '',
-					qualityUuid: '',
+					qualityUuid: uuidQuality,
 					transportType: null,
 					shipUuid: (_shipUuid as string) || '',
 					typeCheckDay: 0,
 					scalesStationUuid: (_scalesStationUuid as string) || '',
-					storageUuid: (_storageUuid as string) || '',
+					storageUuid: uuidStorage,
 					documentId: '',
 					isExportSpec: isHaveSpec,
+					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
+					truckUuid: truckUuid,
+					companyUuid: uuidCompany,
+					listCompanyUuid: listCompanyUuid,
 				}),
 			});
 		},
@@ -288,7 +360,14 @@ function MainPageImport({}: PropsMainPageImport) {
 	const handleExportExcel = (isHaveSpec: number) => {
 		return exportExcel.mutate(isHaveSpec);
 	};
-
+	useEffect(() => {
+		if (listCompanyUuid) {
+			setCustomerUuid([]);
+		}
+		if (uuidQuality) {
+			setUuidStorage('');
+		}
+	}, [listCompanyUuid, uuidQuality]);
 	return (
 		<div className={styles.container}>
 			<Loading loading={exportExcel.isLoading} />
@@ -297,15 +376,33 @@ function MainPageImport({}: PropsMainPageImport) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
-
-					<FilterCustom
-						isSearch
-						name='Khách hàng'
-						query='_customerUuid'
-						listFilter={listCustomer?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						name='Kv cảng xuất khẩu'
+					/>
+					<SelectFilterMany
+						selectedIds={customerUuid}
+						setSelectedIds={setCustomerUuid}
+						listData={listCustomer?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Khách hàng'
+					/>
+
+					<SelectFilterMany
+						selectedIds={truckUuid}
+						setSelectedIds={setTruckUuid}
+						listData={listTruck?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.licensePalate,
+						}))}
+						name='Biển số xe'
 					/>
 
 					<FilterCustom
@@ -328,14 +425,23 @@ function MainPageImport({}: PropsMainPageImport) {
 						}))}
 					/>
 
-					<FilterCustom
-						isSearch
-						name='Bãi'
-						query='_storageUuid'
-						listFilter={listStorage?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterState
+						uuid={uuidQuality}
+						setUuid={setUuidQuality}
+						listData={listQuality?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						placeholder='Quốc gia'
+					/>
+					<SelectFilterState
+						uuid={uuidStorage}
+						setUuid={setUuidStorage}
+						listData={listStorage?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Bãi'
 					/>
 					<FilterCustom
 						isSearch
@@ -390,6 +496,22 @@ function MainPageImport({}: PropsMainPageImport) {
 								name: 'Chốt kế toán',
 							},
 						]}
+					/>
+
+					<SelectFilterState
+						uuid={isHaveDryness}
+						setUuid={setIsHaveDryness}
+						listData={[
+							{
+								uuid: String(0),
+								name: 'Chưa có',
+							},
+							{
+								uuid: String(1),
+								name: 'Đã có',
+							},
+						]}
+						placeholder='Độ khô'
 					/>
 
 					<div className={styles.filter}>
@@ -677,11 +799,16 @@ function MainPageImport({}: PropsMainPageImport) {
 						_isBatch,
 						_state,
 						_status,
-						_customerUuid,
+						customerUuid,
 						_productTypeUuid,
 						_shipUuid,
-						_storageUuid,
+						uuidQuality,
+						uuidStorage,
 						_scalesStationUuid,
+						isHaveDryness,
+						truckUuid,
+						uuidCompany,
+						listCompanyUuid,
 					]}
 				/>
 			</div>

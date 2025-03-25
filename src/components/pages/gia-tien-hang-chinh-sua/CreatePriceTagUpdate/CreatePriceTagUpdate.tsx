@@ -162,7 +162,6 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 					typeFind: CONFIG_TYPE_FIND.TABLE,
 					scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP], // Can thang -> can truc tiep
 					transportType: Number(form.transformUuid) || null,
-					customerUuid: form?.customerUuid || '',
 					isBatch: null,
 					isCreateBatch: null,
 					productTypeUuid: form?.productUuid || '',
@@ -182,6 +181,10 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 					scalesStationUuid: '',
 					storageUuid: '',
 					isHaveDryness: 0, /// thêm tạm
+					truckUuid: [],
+					customerUuid: '',
+					listCustomerUuid: form?.customerUuid ? [form?.customerUuid] : [],
+					companyUuid: '',
 				}),
 			}),
 		onSuccess(data) {

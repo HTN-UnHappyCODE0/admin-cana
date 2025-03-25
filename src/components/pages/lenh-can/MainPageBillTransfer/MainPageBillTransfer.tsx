@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import {PropsMainPageBillTransfer} from './interfaces';
 import styles from './MainPageBillTransfer.module.scss';
@@ -47,31 +47,67 @@ import {convertWeight} from '~/common/funcs/optionConvert';
 import storageServices from '~/services/storageServices';
 import scalesStationServices from '~/services/scalesStationServices';
 import FormUpdateShipBill from '../FormUpdateShipBill';
+import SelectFilterState from '~/components/common/SelectFilterState';
+import SelectFilterMany from '~/components/common/SelectFilterMany';
+import truckServices from '~/services/truckServices';
+import companyServices from '~/services/companyServices';
 
 function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [uuidPlay, setUuidPlay] = useState<string>('');
 	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
+	const [isHaveDryness, setIsHaveDryness] = useState<string>('');
+	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
+	const [truckUuid, setTruckUuid] = useState<string[]>([]);
 
-	const {
-		_page,
-		_pageSize,
-		_keyword,
-		_customerUuid,
-		_productTypeUuid,
-		_shipUuid,
-		_status,
-		_dateFrom,
-		_scalesStationUuid,
-		_dateTo,
-		_storageUuid,
-	} = router.query;
+	const {_page, _pageSize, _keyword, _productTypeUuid, _shipUuid, _status, _dateFrom, _scalesStationUuid, _dateTo} = router.query;
 
 	const [billUuid, setBilldUuid] = useState<string | null>(null);
 	const [billUuidReStart, setBillUuidReStart] = useState<string | null>(null);
+	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [uuidQuality, setUuidQuality] = useState<string>('');
+	const [uuidStorage, setUuidStorage] = useState<string>('');
+	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
 
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listQuality({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang, listCompanyUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -88,6 +124,8 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 					typeCus: null,
 					provinceId: '',
 					specUuid: '',
+					companyUuid: '',
+					listCompanyUuid: listCompanyUuid,
 				}),
 			}),
 		select(data) {
@@ -135,7 +173,26 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 		},
 	});
 
-	const listStorage = useQuery([QUERY_KEY.table_bai], {
+	const listTruck = useQuery([QUERY_KEY.dropdown_xe_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: truckServices.listTruck({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listStorage = useQuery([QUERY_KEY.table_bai, uuidQuality], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -148,7 +205,7 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
 					warehouseUuid: '',
 					productUuid: '',
-					qualityUuid: '',
+					qualityUuid: uuidQuality,
 					specificationsUuid: '',
 					status: CONFIG_STATUS.HOAT_DONG,
 				}),
@@ -185,14 +242,19 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 			_page,
 			_pageSize,
 			_keyword,
-			_customerUuid,
+			customerUuid,
 			_productTypeUuid,
 			_shipUuid,
 			_status,
 			_dateFrom,
 			_dateTo,
-			_storageUuid,
+			uuidQuality,
+			uuidStorage,
 			_scalesStationUuid,
+			isHaveDryness,
+			truckUuid,
+			uuidCompany,
+			listCompanyUuid,
 		],
 		{
 			queryFn: () =>
@@ -206,7 +268,6 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
 						scalesType: [TYPE_SCALES.CAN_CHUYEN_KHO],
-						customerUuid: (_customerUuid as string) || '',
 						isBatch: TYPE_BATCH.CAN_LO,
 						isCreateBatch: 1,
 						productTypeUuid: (_productTypeUuid as string) || '',
@@ -215,13 +276,18 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 						timeStart: _dateFrom ? (_dateFrom as string) : null,
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						warehouseUuid: '',
-						qualityUuid: '',
+						qualityUuid: uuidQuality,
 						transportType: null,
 						shipUuid: (_shipUuid as string) || '',
 						typeCheckDay: 0,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
-						storageUuid: (_storageUuid as string) || '',
-						isHaveDryness: TYPE_ACTION_AUDIT.NO_DRY,
+						storageUuid: uuidStorage,
+						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
+						truckUuid: truckUuid,
+						customerUuid: '',
+						listCustomerUuid: customerUuid,
+						companyUuid: uuidCompany,
+						listCompanyUuid: listCompanyUuid,
 					}),
 				}),
 			select(data) {
@@ -271,6 +337,15 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 		},
 	});
 
+	useEffect(() => {
+		if (listCompanyUuid) {
+			setCustomerUuid([]);
+		}
+		if (uuidQuality) {
+			setUuidStorage('');
+		}
+	}, [listCompanyUuid, uuidQuality]);
+
 	return (
 		<div className={styles.container}>
 			<Loading loading={funcStartBatchBill.isLoading || funcReStartBatchBill.isLoading} />
@@ -279,15 +354,33 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
-
-					<FilterCustom
-						isSearch
-						name='Khách hàng'
-						query='_customerUuid'
-						listFilter={listCustomer?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterMany
+						selectedIds={listCompanyUuid}
+						setSelectedIds={setListCompanyUuid}
+						listData={listCompany?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						name='Kv cảng xuất khẩu'
+					/>
+					<SelectFilterMany
+						selectedIds={customerUuid}
+						setSelectedIds={setCustomerUuid}
+						listData={listCustomer?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						name='Khách hàng'
+					/>
+
+					<SelectFilterMany
+						selectedIds={truckUuid}
+						setSelectedIds={setTruckUuid}
+						listData={listTruck?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.licensePalate,
+						}))}
+						name='Biển số xe'
 					/>
 
 					<FilterCustom
@@ -343,16 +436,39 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 						}))}
 					/>
 
-					<FilterCustom
-						isSearch
-						name='Bãi'
-						query='_storageUuid'
-						listFilter={listStorage?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterState
+						uuid={uuidQuality}
+						setUuid={setUuidQuality}
+						listData={listQuality?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						placeholder='Quốc gia'
 					/>
-
+					<SelectFilterState
+						uuid={uuidStorage}
+						setUuid={setUuidStorage}
+						listData={listStorage?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.name,
+						}))}
+						placeholder='Bãi'
+					/>
+					<SelectFilterState
+						uuid={isHaveDryness}
+						setUuid={setIsHaveDryness}
+						listData={[
+							{
+								uuid: String(0),
+								name: 'Chưa có',
+							},
+							{
+								uuid: String(1),
+								name: 'Đã có',
+							},
+						]}
+						placeholder='Độ khô'
+					/>
 					<div className={styles.filter}>
 						<DateRangerCustom titleTime='Thời gian' typeDateDefault={TYPE_DATE.TODAY} />
 					</div>
@@ -418,16 +534,40 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 								render: (data: IDataBill) => (
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
-										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipUu?.licensePalate || '---'}
-											</p>
-										)}
-										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
-											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
-											</p>
-										)}
+										{
+											data?.scalesType == TYPE_SCALES.CAN_XUAT &&
+												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.numShip || '---'} . {data?.batchsUu?.shipUu?.licensePalate || '---'}
+													</p>
+												) : (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.batchsUu?.shipUu?.licensePalate || '---'}
+													</p>
+												))
+											// (
+											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
+											// 		{data?.batchsUu?.shipUu?.licensePalate || '---'}
+											// 	</p>
+											// )
+										}
+										{
+											!(data?.scalesType == TYPE_SCALES.CAN_XUAT) &&
+												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.numShip || '---'} . {data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+													</p>
+												) : (
+													<p style={{fontWeight: 400, color: '#3772FF'}}>
+														{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+													</p>
+												))
+											// (
+											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
+											// 		{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+											// 	</p>
+											// )
+										}
 									</>
 								),
 							},
@@ -574,14 +714,19 @@ function MainPageBillTransfer({}: PropsMainPageBillTransfer) {
 					dependencies={[
 						_pageSize,
 						_keyword,
-						_customerUuid,
+						customerUuid,
 						_productTypeUuid,
 						_shipUuid,
 						_status,
 						_dateFrom,
 						_dateTo,
-						_storageUuid,
+						uuidStorage,
+						uuidQuality,
 						_scalesStationUuid,
+						isHaveDryness,
+						truckUuid,
+						uuidCompany,
+						listCompanyUuid,
 					]}
 				/>
 			</div>

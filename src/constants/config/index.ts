@@ -173,6 +173,9 @@ export enum PATH {
 	NhapXuatNgoaiNhapHang = '/nhap-xuat-ngoai/nhap-hang',
 	NhapXuatNgoaiXuatHang = '/nhap-xuat-ngoai/xuat-hang',
 	NhapXuatNgoaiXuatThang = '/nhap-xuat-ngoai/xuat-thang',
+
+	// Tạp chất
+	TapChat = '/tap-chat',
 }
 
 export const Menu: {
@@ -224,6 +227,7 @@ export const Menu: {
 			{title: 'Lệnh cân', icon: icons.phieudukien, path: PATH.PhieuDuKienTatCa, pathActive: PATH.PhieuDuKien},
 			{title: 'Phiếu cân', icon: icons.phieudacan, path: PATH.PhieuCanTatCa, pathActive: PATH.PhieuCan},
 			{title: 'Lượt cân', icon: icons.luotcan, path: PATH.LuotCanTatCa, pathActive: PATH.LuotCan},
+			{title: 'Tạp chất', icon: icons.tapchat, path: PATH.TapChat, pathActive: PATH.TapChat},
 			// {title: 'Nhập liệu', icon: icons.nhaplieu, path: PATH.NhapLieuQuyCach, pathActive: PATH.NhapLieu},
 		],
 	},

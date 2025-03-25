@@ -193,7 +193,9 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 							value={form.totalSample}
 							onChange={(e) => setForm((prev) => ({...prev, totalSample: e.target.value}))}
 							onKeyDown={(e) => handleKeyEnter(e, -1)}
-							ref={(el) => (inputRefs.current[-1] = el)}
+							ref={(el) => {
+								inputRefs.current[-1] = el;
+							}}
 						/>
 						<div className={styles.unit}>gr</div>
 					</div>
@@ -218,7 +220,9 @@ function BoxUpdateSpec({dataUpdateSpec, onClose}: PropsBoxUpdateSpec) {
 												value={v?.amountSample}
 												onChange={(e) => handleChange(v, parseFloat(e.target.value))}
 												onKeyDown={(e) => handleKeyEnter(e, i)}
-												ref={(el) => (inputRefs.current[i] = el)}
+												ref={(el) => {
+													inputRefs.current[-1] = el;
+												}}
 											/>
 											<div className={styles.unit}>gr</div>
 										</div>
