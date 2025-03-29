@@ -157,7 +157,6 @@ function PageCompany({}: PropsPageCompany) {
 								},
 								{
 									title: 'Tên KV cảng xuất khẩu',
-									fixedLeft: true,
 									render: (data: ICompany) => <>{data?.parentCompanyUu?.name || '---'}</>,
 								},
 								{
