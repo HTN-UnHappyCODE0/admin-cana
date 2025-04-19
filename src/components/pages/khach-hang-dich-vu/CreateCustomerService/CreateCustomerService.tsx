@@ -376,15 +376,10 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							<Input
 								name='regencyName'
 								value={form.regencyName || ''}
-								isRequired
 								max={255}
 								blur={true}
 								isUppercase
-								label={
-									<span>
-										Tên chức vụ của người đại diện <span style={{color: 'red'}}>*</span>
-									</span>
-								}
+								label={<span>Tên chức vụ của người đại diện</span>}
 								placeholder='Nhập tên chức vụ'
 							/>
 						</div>
