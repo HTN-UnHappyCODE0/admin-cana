@@ -50,6 +50,7 @@ export enum QUERY_KEY {
 	dropdown_bai_dich_vu,
 	dropdown_tinh_thanh_pho_dich_vu,
 	dropdown_cong_ty_dich_vu,
+	dropdown_cong_ty_nhan,
 
 	table_phieu_da_gui_KT,
 	table_cang_boc_do,
@@ -110,6 +111,10 @@ export enum QUERY_KEY {
 	table_du_lieu_mau,
 	table_ds_can_mau,
 	table_tap_chat,
+	table_tong_hop_cong_no_doi_tac,
+	table_cong_no_phieu_nha_cung_cap,
+	table_lich_su_thanh_toan_doi_tac,
+	table_lich_su_hop_dong,
 
 	chi_tiet_gia_tien_chinh_sua,
 	chi_tiet_cong_no_phieu,
@@ -249,6 +254,7 @@ export enum TYPE_BATCH {
 	CAN_LE,
 	CAN_LO,
 	KHONG_CAN,
+	IMPORT_EXCEL,
 }
 
 export enum TYPE_SCALES {
@@ -396,4 +402,10 @@ export enum STATUS_SAMPLE_SESSION {
 	USING,
 	FINISH,
 	ACCEPT,
+}
+
+export enum TYPE_GROUPBY {
+	NGAY = 1, // Xem theo ngày
+	THANG, // Xem theo tháng
+	THOI_GIAN_LOC, // Xem theo khoảng thời gian lọc
 }

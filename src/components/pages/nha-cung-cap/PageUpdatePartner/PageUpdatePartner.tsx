@@ -49,9 +49,12 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 		bankAccount: '',
 		companyUuid: '',
 		userKtUuid: '',
+		codeName: '',
+		fullName: '',
+		regencyName: '',
 	});
 
-	useQuery<IDetailPartner>([QUERY_KEY.chi_tiet_doi_tac, _id], {
+	useQuery<any>([QUERY_KEY.chi_tiet_doi_tac, _id], {
 		queryFn: () =>
 			httpRequest({
 				http: partnerServices.detailPartner({
@@ -62,6 +65,8 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 			setForm({
 				description: data?.description || '',
 				name: data?.name || '',
+				codeName: data?.codeName || '',
+				fullName: data?.fullName || '',
 				taxCode: data?.taxCode || '',
 				email: data?.email || '',
 				address: data?.address || '',
@@ -75,6 +80,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 				bankAccount: data?.bankAccount || '',
 				companyUuid: data?.companyUu?.uuid || '',
 				userKtUuid: data?.ktUu?.uuid || '',
+				regencyName: data?.regencyName || '',
 			});
 		},
 		enabled: !!_id,
@@ -237,6 +243,9 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					type: TYPE_PARTNER.NCC,
 					companyUuid: form?.companyUuid,
 					ktUuid: form?.userKtUuid,
+					fullName: form?.fullName,
+					codeName: form?.codeName,
+					regencyName: form?.regencyName,
 				}),
 			}),
 		onSuccess(data) {
@@ -287,20 +296,53 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					</div>
 				</div>
 				<div className={styles.form}>
-					<Input
-						name='name'
-						value={form.name || ''}
-						isRequired
-						isUppercase
-						max={255}
-						blur={true}
-						label={
-							<span>
-								Tên công ty <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-						placeholder='Nhập tên công ty'
-					/>
+					<div className={clsx('mt', 'col_3')}>
+						<Input
+							name='fullName'
+							value={form.fullName || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên công ty <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên công ty'
+						/>
+						<div>
+							<Input
+								name='codeName'
+								value={form.codeName || ''}
+								isRequired
+								max={255}
+								blur={true}
+								isUppercase
+								label={
+									<span>
+										Mã công ty <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập mã công ty'
+							/>
+						</div>
+
+						<Input
+							name='name'
+							value={form.name || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên hiển thị <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên hiển thị'
+						/>
+					</div>
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
@@ -333,7 +375,34 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='companyUuid'
+							placeholder='Chọn khu vực cảng xuất khẩu'
+							value={form?.companyUuid}
+							onChange={(e: any) =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: e.target.value,
+								}))
+							}
+							label={<span>Khu vực cảng xuất khẩu</span>}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
+
+						<Input
+							name='taxCode'
+							value={form.taxCode || ''}
+							max={255}
+							label={<span>Mã số thuế</span>}
+							placeholder='Nhập mã số thuế'
+						/>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
 							name='director'
 							value={form.director || ''}
@@ -347,45 +416,21 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							}
 							placeholder='Nhập tên người liên hệ'
 						/>
-						<Select
-							isSearch
-							name='userOwenerUuid'
-							placeholder='Quản lý mua hàng'
-							value={form?.userOwenerUuid}
-							onChange={(e: any) =>
-								setForm((prev: any) => ({
-									...prev,
-									userOwenerUuid: e.target.value,
-								}))
-							}
-							label={
-								<span>
-									Quản lý mua hàng <span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
-							{listUser?.data?.map((v: any) => (
-								<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
-							))}
-						</Select>
 						<div>
-							<Select
-								isSearch
-								name='userKtUuid'
-								placeholder='Kế toán quản lý'
-								value={form?.userKtUuid}
-								onChange={(e: any) =>
-									setForm((prev: any) => ({
-										...prev,
-										userKtUuid: e.target.value,
-									}))
+							<Input
+								name='regencyName'
+								value={form.regencyName || ''}
+								isRequired
+								max={255}
+								blur={true}
+								isUppercase
+								label={
+									<span>
+										Tên chức vụ của người đại diện <span style={{color: 'red'}}>*</span>
+									</span>
 								}
-								label={<span>Kế toán quản lý</span>}
-							>
-								{listUserKt?.data?.map((v: any) => (
-									<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
-								))}
-							</Select>
+								placeholder='Nhập tên chức vụ'
+							/>
 						</div>
 					</div>
 					<div className={clsx('mt', 'col_2')}>

@@ -51,6 +51,9 @@ const partnerServices = {
 			bankAccount: string;
 			companyUuid: string;
 			ktUuid: string;
+			fullName: string;
+			codeName: string;
+			regencyName: string;
 		},
 		tokenAxios?: any
 	) => {

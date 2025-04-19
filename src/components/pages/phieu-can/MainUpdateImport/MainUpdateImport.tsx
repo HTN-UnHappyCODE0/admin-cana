@@ -426,7 +426,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 							placeholder='Nhập tổng khối lượng hàng'
 						/>
 						<DatePicker
-							readonly={true}
+							readOnly={true}
 							label={<span>Thời gian bắt đầu cân</span>}
 							value={form.timeStart}
 							onSetValue={(date) =>
@@ -438,7 +438,7 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 							placeholder='Chọn thời gian bắt đầu cân'
 						/>
 						<DatePicker
-							readonly={true}
+							readOnly={true}
 							label={<span>Thời gian kết thúc</span>}
 							value={form.timeEnd}
 							onSetValue={(date) =>
