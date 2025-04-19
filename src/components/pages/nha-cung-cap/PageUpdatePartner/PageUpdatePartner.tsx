@@ -347,38 +347,6 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 						<Select
 							isSearch
 							name='companyUuid'
-							placeholder='Chọn KV cảng xuất khẩu'
-							readOnly={true}
-							value={form?.companyUuid}
-							onChange={(e: any) =>
-								setForm((prev: any) => ({
-									...prev,
-									companyUuid: e.target.value,
-								}))
-							}
-							label={
-								<span>
-									KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
-							{listCompany?.data?.map((v: any) => (
-								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
-							))}
-						</Select>
-
-						<Input
-							name='taxCode'
-							value={form.taxCode || ''}
-							max={255}
-							label={<span>Mã số thuế</span>}
-							placeholder='Nhập mã số thuế'
-						/>
-					</div>
-					<div className={clsx('mt', 'col_2')}>
-						<Select
-							isSearch
-							name='companyUuid'
 							placeholder='Chọn khu vực cảng xuất khẩu'
 							value={form?.companyUuid}
 							onChange={(e: any) =>
@@ -431,6 +399,48 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 								}
 								placeholder='Nhập tên chức vụ'
 							/>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
+						<Select
+							isSearch
+							name='userOwenerUuid'
+							placeholder='Quản lý mua hàng'
+							value={form?.userOwenerUuid}
+							onChange={(e: any) =>
+								setForm((prev: any) => ({
+									...prev,
+									userOwenerUuid: e.target.value,
+								}))
+							}
+							label={
+								<span>
+									Quản lý mua hàng <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+						>
+							{listUser?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
+							))}
+						</Select>
+						<div>
+							<Select
+								isSearch
+								name='userKtUuid'
+								placeholder='Kế toán quản lý'
+								value={form?.userKtUuid}
+								onChange={(e: any) =>
+									setForm((prev: any) => ({
+										...prev,
+										userKtUuid: e.target.value,
+									}))
+								}
+								label={<span>Kế toán quản lý</span>}
+							>
+								{listUserKt?.data?.map((v: any) => (
+									<Option key={v?.uuid} value={v?.uuid} title={v?.fullName} />
+								))}
+							</Select>
 						</div>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
