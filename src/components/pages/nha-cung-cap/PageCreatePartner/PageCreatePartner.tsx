@@ -46,6 +46,9 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 		bankAccount: '',
 		companyUuid: '',
 		userKtUuid: '',
+		fullName: '',
+		codeName: '',
+		regencyName: '',
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -205,6 +208,9 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					type: TYPE_PARTNER.NCC,
 					companyUuid: form?.companyUuid,
 					ktUuid: form?.userKtUuid,
+					fullName: form?.fullName,
+					codeName: form?.codeName,
+					regencyName: form?.regencyName,
 				}),
 			}),
 		onSuccess(data) {
@@ -225,6 +231,9 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					bankAccount: '',
 					companyUuid: '',
 					userKtUuid: '',
+					codeName: '',
+					fullName: '',
+					regencyName: '',
 				});
 				router.back();
 			}
@@ -271,20 +280,54 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					</div>
 				</div>
 				<div className={styles.form}>
-					<Input
-						name='name'
-						value={form.name || ''}
-						isRequired
-						max={255}
-						blur={true}
-						isUppercase
-						label={
-							<span>
-								Tên công ty <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-						placeholder='Nhập tên công ty'
-					/>
+					<div className={clsx('mt', 'col_3')}>
+						<Input
+							name='fullName'
+							value={form.fullName || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên công ty <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên công ty'
+						/>
+						<div>
+							<Input
+								name='codeName'
+								value={form.codeName || ''}
+								isRequired
+								max={255}
+								blur={true}
+								isUppercase
+								label={
+									<span>
+										Mã công ty <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập mã công ty'
+							/>
+						</div>
+
+						<Input
+							name='name'
+							value={form.name || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên hiển thị <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên hiển thị'
+						/>
+					</div>
+
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
@@ -297,11 +340,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 									companyUuid: e.target.value,
 								}))
 							}
-							label={
-								<span>
-									Khu vực cảng xuất khẩu<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Khu vực cảng xuất khẩu</span>}
 						>
 							{listCompany?.data?.map((v: any) => (
 								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
@@ -316,7 +355,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
 							name='director'
 							value={form.director || ''}
@@ -330,6 +369,24 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							}
 							placeholder='Nhập tên người liên hệ'
 						/>
+						<div>
+							<Input
+								name='regencyName'
+								value={form.regencyName || ''}
+								isRequired
+								max={255}
+								blur={true}
+								isUppercase
+								label={
+									<span>
+										Tên chức vụ của người đại diện <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập tên chức vụ'
+							/>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='userOwenerUuid'

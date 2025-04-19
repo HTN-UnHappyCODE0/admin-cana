@@ -46,6 +46,9 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 		bankAccount: '',
 		companyUuid: '',
 		userKtUuid: '',
+		fullName: '',
+		codeName: '',
+		regencyName: '',
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -205,6 +208,9 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					type: TYPE_PARTNER.KH_DICH_VU,
 					companyUuid: form?.companyUuid,
 					ktUuid: form?.userKtUuid,
+					fullName: form?.fullName,
+					codeName: form?.codeName,
+					regencyName: form?.regencyName,
 				}),
 			}),
 		onSuccess(data) {
@@ -225,6 +231,9 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					bankAccount: '',
 					companyUuid: '',
 					userKtUuid: '',
+					fullName: '',
+					codeName: '',
+					regencyName: '',
 				});
 				router.back();
 			}
@@ -271,19 +280,54 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					</div>
 				</div>
 				<div className={styles.form}>
-					<Input
-						name='name'
-						value={form.name || ''}
-						isRequired
-						max={255}
-						blur={true}
-						label={
-							<span>
-								Tên khách hàng <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-						placeholder='Nhập tên khách hàng'
-					/>
+					<div className={clsx('mt', 'col_3')}>
+						<Input
+							name='fullName'
+							value={form.fullName || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên khách hàng <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên khách hàng'
+						/>
+						<div>
+							<Input
+								name='codeName'
+								value={form.codeName || ''}
+								isRequired
+								max={255}
+								blur={true}
+								isUppercase
+								label={
+									<span>
+										Mã công ty <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập mã công ty'
+							/>
+						</div>
+
+						<Input
+							name='name'
+							value={form.name || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên hiển thị <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên hiển thị'
+						/>
+					</div>
+
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
@@ -314,7 +358,7 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
 							name='director'
 							value={form.director || ''}
@@ -326,8 +370,26 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 									Người liên hệ <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên người liên hệ (cho khách hàng)'
+							placeholder='Nhập tên người liên hệ'
 						/>
+						<div>
+							<Input
+								name='regencyName'
+								value={form.regencyName || ''}
+								isRequired
+								max={255}
+								blur={true}
+								isUppercase
+								label={
+									<span>
+										Tên chức vụ của người đại diện <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập tên chức vụ'
+							/>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='userOwenerUuid'

@@ -16,4 +16,7 @@ export interface IFormUpdatePartner {
 	description: string;
 	companyUuid: string;
 	userKtUuid: string;
+	fullName: string;
+	codeName: string;
+	regencyName: string;
 }
