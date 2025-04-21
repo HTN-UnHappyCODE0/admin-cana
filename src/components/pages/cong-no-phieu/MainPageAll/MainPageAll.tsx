@@ -122,6 +122,7 @@ function MainPageAll({}: PropsMainPageAll) {
 						timeEnd: _dateTo ? (_dateTo as string) : null,
 						companyUuid: '',
 						isBatch: [TYPE_BATCH.CAN_LO, TYPE_BATCH.CAN_LE, TYPE_BATCH.KHONG_CAN, TYPE_BATCH.IMPORT_EXCEL],
+						isHaveDocMaster: null,
 					}),
 				}),
 			select(data) {

@@ -216,7 +216,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 						light_outline
 						p_8_16
 						bold
-						href={`/cong-no-ncc/chinh-sua/${detailPartner?.uuid}`}
+						href={`/nha-cung-cap/chinh-sua/${detailPartner?.uuid}`}
 						icon={<LuPencil color='#23262F' fontSize={16} fontWeight={600} />}
 					>
 						Chỉnh sửa

@@ -365,7 +365,6 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 								value={form.regencyName || ''}
 								max={255}
 								blur={true}
-								isUppercase
 								label={<span>Tên chức vụ của người đại diện</span>}
 								placeholder='Nhập tên chức vụ'
 							/>
