@@ -118,6 +118,7 @@ function TableImport({}: PropsTableImport) {
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						listCompanyUuid: listCompanyUuid,
 						typeProduct: TYPE_PRODUCT.CONG_TY,
+						isHaveDocMaster: null,
 					}),
 				}),
 			select(data) {

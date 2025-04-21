@@ -25,6 +25,7 @@ const debtBillServices = {
 			listScalesStationUuid?: string[];
 			listCompanyUuid?: string[];
 			listPartnerUuid?: string[];
+			isHaveDocMaster: number | null;
 		},
 		tokenAxios?: any
 	) => {
