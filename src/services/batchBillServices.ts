@@ -162,13 +162,20 @@ const batchBillServices = {
 			typeFindDay: number;
 			timeStart: string;
 			timeEnd: string;
-			isShowBDMT: number;
+			isShowBDMT: number | null;
 			storageUuid: string;
 			customerUuid: string[];
 			warehouseUuid: string;
-			userOwnerUuid: string;
-			provinceId: string;
+			userOwnerUuid: string[];
+			provinceId: string[];
 			transportType: number | null;
+			listCompanyUuid: string[];
+			listPartnerUuid: string[];
+			userPartnerUuid?: string[];
+			typeShow?: number;
+			productTypeUuid?: string;
+			qualityUuid?: string;
+			specificationUuid?: string;
 		},
 		tokenAxios?: any
 	) => {
@@ -183,13 +190,20 @@ const batchBillServices = {
 			typeFindDay: number;
 			timeStart: string;
 			timeEnd: string;
-			isShowBDMT: number;
+			isShowBDMT: number | null;
 			storageUuid: string;
 			customerUuid: string[];
 			warehouseUuid: string;
-			userOwnerUuid: string;
-			provinceId: string;
+			userOwnerUuid: string[];
+			provinceId: string[];
 			transportType: number | null;
+			listCompanyUuid: string[];
+			listPartnerUuid: string[];
+			userPartnerUuid?: string[];
+			typeShow?: number;
+			productTypeUuid?: string;
+			qualityUuid?: string;
+			specificationUuid?: string;
 		},
 		tokenAxios?: any
 	) => {
@@ -204,13 +218,20 @@ const batchBillServices = {
 			typeFindDay: number;
 			timeStart: string;
 			timeEnd: string;
-			isShowBDMT: number;
+			isShowBDMT: number | null;
 			storageUuid: string;
 			customerUuid: string[];
 			warehouseUuid: string;
-			userOwnerUuid: string;
-			provinceId: string;
+			userOwnerUuid: string[];
+			provinceId: string[];
 			transportType: number | null;
+			listCompanyUuid: string[];
+			listPartnerUuid: string[];
+			userPartnerUuid?: string[];
+			typeShow?: number;
+			productTypeUuid?: string;
+			qualityUuid?: string;
+			specificationUuid?: string;
 		},
 		tokenAxios?: any
 	) => {
