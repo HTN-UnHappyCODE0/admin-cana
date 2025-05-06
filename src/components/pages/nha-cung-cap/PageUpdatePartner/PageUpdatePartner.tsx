@@ -11,6 +11,7 @@ import {
 	QUERY_KEY,
 	REGENCY_NAME,
 	TYPE_PARTNER,
+	TYPE_ISCREATE_DOCS,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import partnerServices from '~/services/partnerServices';
@@ -52,6 +53,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 		codeName: '',
 		fullName: '',
 		regencyName: '',
+		isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
 	});
 
 	useQuery<any>([QUERY_KEY.chi_tiet_doi_tac, _id], {
@@ -81,6 +83,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 				companyUuid: data?.companyUu?.uuid || '',
 				userKtUuid: data?.ktUu?.uuid || '',
 				regencyName: data?.regencyName || '',
+				isCreateDocs: data?.isCreateDocmaster,
 			});
 		},
 		enabled: !!_id,
@@ -246,6 +249,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					fullName: form?.fullName,
 					codeName: form?.codeName,
 					regencyName: form?.regencyName,
+					isCreateDocs: form?.isCreateDocs,
 				}),
 			}),
 		onSuccess(data) {
@@ -296,6 +300,47 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					</div>
 				</div>
 				<div className={styles.form}>
+					<div className={clsx('mt')}>
+						<div className='col_2'>
+							<div className={styles.item}>
+								<label className={styles.label}>
+									Tạo biên bản <span style={{color: 'red'}}>*</span>
+								</label>
+								<div className={styles.group_radio}>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='tao_bien_ban'
+											name='isCreateDocs'
+											checked={form.isCreateDocs == TYPE_ISCREATE_DOCS.IS_CREATE_DOCS}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isCreateDocs: TYPE_ISCREATE_DOCS.IS_CREATE_DOCS,
+												}))
+											}
+										/>
+										<label htmlFor='tao_bien_ban'>Có</label>
+									</div>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='khong_tao_bien_ban'
+											name='isCreateDocs'
+											checked={form.isCreateDocs == TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
+												}))
+											}
+										/>
+										<label htmlFor='khong_tao_bien_ban'>Không</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div className={clsx('mt', 'col_3')}>
 						<Input
 							name='fullName'
