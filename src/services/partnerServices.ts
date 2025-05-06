@@ -56,6 +56,7 @@ const partnerServices = {
 			fullName: string;
 			codeName: string;
 			regencyName: string;
+			isCreateDocs: number;
 		},
 		tokenAxios?: any
 	) => {

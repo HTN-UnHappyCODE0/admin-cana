@@ -18,5 +18,6 @@ export interface IFormCreatePartner {
 	userKtUuid: string;
 	fullName: string;
 	codeName: string;
+	isCreateDocs: number;
 	regencyName: string;
 }

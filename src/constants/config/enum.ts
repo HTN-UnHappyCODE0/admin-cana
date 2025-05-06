@@ -413,3 +413,8 @@ export enum TYPE_GROUPBY {
 	THANG, // Xem theo tháng
 	THOI_GIAN_LOC, // Xem theo khoảng thời gian lọc
 }
+
+export enum TYPE_ISCREATE_DOCS {
+	IS_CREATE_DOCS = 1,
+	NOT_CREATE_DOCS = 0,
+}

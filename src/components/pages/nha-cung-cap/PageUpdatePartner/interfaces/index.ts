@@ -19,4 +19,5 @@ export interface IFormUpdatePartner {
 	fullName: string;
 	codeName: string;
 	regencyName: string;
+	isCreateDocs: number;
 }
