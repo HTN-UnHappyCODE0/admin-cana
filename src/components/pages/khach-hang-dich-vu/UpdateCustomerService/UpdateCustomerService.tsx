@@ -11,6 +11,7 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	REGENCY_NAME,
+	TYPE_ISCREATE_DOCS,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
@@ -246,6 +247,7 @@ function UpdateCustomerService({}: PropsUpdateCustomerService) {
 					fullName: form?.name,
 					codeName: form?.name,
 					regencyName: form?.director,
+					isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
 				}),
 			}),
 		onSuccess(data) {
