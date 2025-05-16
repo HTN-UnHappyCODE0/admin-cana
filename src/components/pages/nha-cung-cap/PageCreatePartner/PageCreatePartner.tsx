@@ -333,7 +333,6 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							isRequired
 							max={255}
 							blur={true}
-							isUppercase
 							label={
 								<span>
 									Tên công ty <span style={{color: 'red'}}>*</span>

@@ -281,7 +281,6 @@ function CreateCustomerExport({}: PropsCreateCustomerExport) {
 							isRequired
 							max={255}
 							blur={true}
-							isUppercase
 							label={
 								<span>
 									Tên khách hàng <span style={{color: 'red'}}>*</span>
