@@ -359,15 +359,10 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							<Input
 								name='codeName'
 								value={form.codeName || ''}
-								isRequired
 								max={255}
 								blur={true}
 								isUppercase
-								label={
-									<span>
-										Mã công ty <span style={{color: 'red'}}>*</span>
-									</span>
-								}
+								label={<span>Mã công ty</span>}
 								placeholder='Nhập mã công ty'
 							/>
 						</div>
