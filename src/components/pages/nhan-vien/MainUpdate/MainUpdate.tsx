@@ -291,6 +291,8 @@ function MainUpdate({}: PropsMainUpdate) {
 		return funUpdateUser.mutate();
 	};
 
+	console.log({form});
+
 	return (
 		<div className={styles.container}>
 			<Loading loading={funUpdateUser.isLoading} />
@@ -402,6 +404,12 @@ function MainUpdate({}: PropsMainUpdate) {
 								setForm((prev: any) => ({
 									...prev,
 									companyUuid: e.target.value,
+								}))
+							}
+							onClean={() =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: null,
 								}))
 							}
 							label={<span>Khu vực cảng xuất khẩu</span>}

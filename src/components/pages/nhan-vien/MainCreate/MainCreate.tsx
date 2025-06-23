@@ -362,6 +362,12 @@ function MainCreate({}: PropsMainCreate) {
 									companyUuid: e.target.value,
 								}))
 							}
+							onClean={() =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: null,
+								}))
+							}
 							label={<span>Khu vực cảng xuất khẩu</span>}
 						>
 							{listCompany?.data?.map((v: any) => (
