@@ -9,7 +9,7 @@ import {PropsSelectFilterMany} from './interfaces';
 import styles from './SelectFilterMany.module.scss';
 import Button from '~/components/common/Button';
 
-function SelectFilterMany({selectedIds, setSelectedIds, listData, name, isShowAll = true}: PropsSelectFilterMany) {
+function SelectFilterMany({selectedIds, setSelectedIds, setSelectedNames, listData, name, isShowAll = true}: PropsSelectFilterMany) {
 	const [keyword, setKeyword] = useState<string>('');
 	const [openDropdown, setOpenDropdown] = useState<boolean>(false);
 	const [tempSelectedIds, setTempSelectedIds] = useState<string[]>(selectedIds); // Danh sách tạm thời
@@ -34,6 +34,9 @@ function SelectFilterMany({selectedIds, setSelectedIds, listData, name, isShowAl
 
 	const handleConfirm = () => {
 		setSelectedIds(tempSelectedIds);
+		const selectedNames = listData?.filter((item) => tempSelectedIds.includes(item.uuid))?.map((item) => item.name) ?? [];
+
+		setSelectedNames?.(selectedNames);
 		setOpenDropdown(false);
 	};
 

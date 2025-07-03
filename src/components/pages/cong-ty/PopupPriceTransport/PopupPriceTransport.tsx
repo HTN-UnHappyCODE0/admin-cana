@@ -27,7 +27,7 @@ function PopupPriceTransport({uuid, onClose}: PropsPopupPriceTransport) {
 			return httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Cập nhật giá tiền thay đổi thành công!',
+				msgSuccess: 'Cập nhật giá tiền vận chuyển thành công!',
 				http: companyServices.updatePriceTransport({
 					uuid: uuid as string,
 					priceMt: price(form.priceMt),
@@ -45,7 +45,7 @@ function PopupPriceTransport({uuid, onClose}: PropsPopupPriceTransport) {
 
 	const handleSubmit = () => {
 		if (price(form.priceMt) == 0) {
-			return toastWarn({msg: 'Vui lòng nhập giá tiền thay đổi'});
+			return toastWarn({msg: 'Vui lòng nhập giá tiền vận chuyển'});
 		}
 
 		if (form.timeStart && new Date(form.timeStart).getTime() > new Date().getTime()) {
@@ -60,8 +60,8 @@ function PopupPriceTransport({uuid, onClose}: PropsPopupPriceTransport) {
 			{/* <div className={styles.iconWarn}>
 				<IoHelpCircleOutline />
 			</div> */}
-			<p className={styles.title}>Chỉnh sửa giá tiền thay đổi</p>
-			{/* <p className={styles.note}>Chỉnh sửa giá tiền thay đổi</p> */}
+			<p className={styles.title}>Chỉnh sửa giá tiền vận chuyển</p>
+			{/* <p className={styles.note}>Chỉnh sửa giá tiền vận chuyển</p> */}
 			<div className={clsx('mt')}>
 				<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 					<div className='mt'>
@@ -74,7 +74,7 @@ function PopupPriceTransport({uuid, onClose}: PropsPopupPriceTransport) {
 							blur={true}
 							label={
 								<span>
-									Giá tiền thay đổi <span style={{color: 'red'}}>*</span>
+									Giá tiền vận chuyển <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 							placeholder='Nhập số tiền'
