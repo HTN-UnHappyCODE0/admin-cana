@@ -101,14 +101,14 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 				setListTruckChecked(
 					data?.lstTruck?.map((v: any) => ({
 						uuid: v?.uuid,
-						name: v?.licensePalate,
+						name: v?.licensePlate,
 						code: v?.code,
 					}))
 				);
 				setListTruckBatchBill(
 					data?.lstTruck?.map((v: any) => ({
 						uuid: v?.uuid,
-						name: v?.licensePalate,
+						name: v?.licensePlate,
 						code: v?.code,
 					}))
 				);
@@ -333,10 +333,10 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 					fromUuid: form.fromUuid,
 					toUuid: form?.toUuid,
 					isPrint: form.isPrint,
-					lstTruckAddUuid: listTruckChecked
+					lstTruckPlateAdd: listTruckChecked
 						.filter((v) => !listTruckBatchBill.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
-					lstTruckRemoveUuid: listTruckBatchBill
+					lstTruckPlateRemove: listTruckBatchBill
 						.filter((v) => !listTruckChecked.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
 					scaleStationUuid: form.scaleStationUuid,
@@ -840,8 +840,8 @@ function MainUpdateTransfer({}: PropsMainUpdateTransfer) {
 							description='Thêm và lựa chọn xe hàng'
 							dataList={
 								listTruck?.data?.map((v: any) => ({
-									uuid: v?.uuid,
-									name: v?.licensePalate,
+									uuid: v?.licensePlate,
+									name: v?.licensePlate,
 									code: v?.code,
 								})) || []
 							}

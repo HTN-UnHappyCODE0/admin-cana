@@ -104,14 +104,14 @@ function MainUpdateService({}: PropsMainUpdateService) {
 				setListTruckChecked(
 					data?.lstTruck?.map((v: any) => ({
 						uuid: v?.uuid,
-						name: v?.licensePalate,
+						name: v?.licensePlate,
 						code: v?.code,
 					}))
 				);
 				setListTruckBatchBill(
 					data?.lstTruck?.map((v: any) => ({
 						uuid: v?.uuid,
-						name: v?.licensePalate,
+						name: v?.licensePlate,
 						code: v?.code,
 					}))
 				);
@@ -303,10 +303,10 @@ function MainUpdateService({}: PropsMainUpdateService) {
 					toUuid: form.storageUuid,
 					isPrint: form.isPrint,
 					scaleStationUuid: form?.scaleStationUuid,
-					lstTruckAddUuid: listTruckChecked
+					lstTruckPlateAdd: listTruckChecked
 						.filter((v) => !listTruckBatchBill.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
-					lstTruckRemoveUuid: listTruckBatchBill
+					lstTruckPlateRemove: listTruckBatchBill
 						.filter((v) => !listTruckChecked.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
 					reason: form.reason,
@@ -532,7 +532,7 @@ function MainUpdateService({}: PropsMainUpdateService) {
 								<Option
 									key={v?.uuid}
 									value={v?.uuid}
-									title={v?.licensePalate}
+									title={v?.licensePlate}
 									onClick={() =>
 										setForm((prev) => ({
 											...prev,
@@ -735,8 +735,8 @@ function MainUpdateService({}: PropsMainUpdateService) {
 							description='Thêm và lựa chọn xe hàng'
 							dataList={
 								listTruck?.data?.map((v: any) => ({
-									uuid: v?.uuid,
-									name: v?.licensePalate,
+									uuid: v?.licensePlate,
+									name: v?.licensePlate,
 									code: v?.code,
 								})) || []
 							}

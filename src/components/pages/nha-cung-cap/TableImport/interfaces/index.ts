@@ -63,13 +63,13 @@ export interface IDebtBill {
 	port: string;
 	shipUu: {
 		code: string;
-		licensePalate: string;
+		licensePlate: string;
 		status: number;
 		uuid: string;
 	};
 	truckUu: {
 		code: string;
-		licensePalate: string;
+		licensePlate: string;
 		status: number;
 		uuid: string;
 	};

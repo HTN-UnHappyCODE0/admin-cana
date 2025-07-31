@@ -82,7 +82,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 
 	const [dataWeightSessionSubmit, setDataWeightSessionSubmit] = useState<any[]>([]);
 	const [openSentData, setOpenSentData] = useState<boolean>(false);
-	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [truckPlate, setTruckPlate] = useState<string[]>([]);
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [weightSessions, setWeightSessions] = useState<any[]>([]);
@@ -258,7 +258,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 	// 					scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
 	// 					specUuid: !!_specUuid ? (_specUuid as string) : null,
 	// 					status: [STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE],
-	// 					truckUuid: '',
+	// 					truckPlate: '',
 	// 					timeStart: _dateFrom ? (_dateFrom as string) : null,
 	// 					timeEnd: _dateTo ? (_dateTo as string) : null,
 	// 					customerUuid: _customerUuid ? (_customerUuid as string) : '',
@@ -319,7 +319,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 	// 					scalesType: [TYPE_SCALES.CAN_NHAP, TYPE_SCALES.CAN_TRUC_TIEP],
 	// 					specUuid: !!_specUuid ? (_specUuid as string) : null,
 	// 					status: [STATUS_WEIGHT_SESSION.UPDATE_DRY_DONE],
-	// 					truckUuid: '',
+	// 					truckPlate: '',
 	// 					timeStart: _dateFrom ? (_dateFrom as string) : null,
 	// 					timeEnd: _dateTo ? (_dateTo as string) : null,
 	// 					customerUuid: _customerUuid ? (_customerUuid as string) : '',
@@ -357,7 +357,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 			_dateFrom,
 			_dateTo,
 			_scalesStationUuid,
-			truckUuid,
+			truckPlate,
 			uuidCompany,
 			uuidQuality,
 			uuidStorage,
@@ -390,7 +390,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: uuidStorage,
 						isHaveDryness: TYPE_ACTION_AUDIT.HAVE_DRY,
-						truckUuid: truckUuid,
+						truckPlates: truckPlate,
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						companyUuid: uuidCompany,
@@ -578,11 +578,11 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 						name='Khách hàng'
 					/>
 					<SelectFilterMany
-						selectedIds={truckUuid}
-						setSelectedIds={setTruckUuid}
+						selectedIds={truckPlate}
+						setSelectedIds={setTruckPlate}
 						listData={listTruck?.data?.map((v: any) => ({
-							uuid: v?.uuid,
-							name: v?.licensePalate,
+							uuid: v?.licensePlate,
+							name: v?.licensePlate,
 						}))}
 						name='Biển số xe'
 					/>
@@ -682,7 +682,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 												{data?.code}
 											</Link>
 										)}
-										<p style={{fontWeight: 500, color: '#3772FF'}}>{data?.weightSessionUu?.code || '---'}</p>
+										<p style={{fontWeight: 500, color: '#3772FF'}}>{data?.weightSessionUu?.truckUu?.code || '---'}</p>
 									</>
 								),
 							},
@@ -706,13 +706,13 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 							// {
 							// 	title: 'Mã tàu',
 							// 	render: (data: ITableBillScale) => (
-							// 		<p style={{fontWeight: 600}}>{data?.batchsUu?.shipUu?.licensePalate || '---'}</p>
+							// 		<p style={{fontWeight: 600}}>{data?.batchsUu?.shipUu?.licensePlate || '---'}</p>
 							// 	),
 							// },
 							// {
 							// 	title: 'Mã tàu xuất',
 							// 	render: (data: ITableBillScale) => (
-							// 		<p style={{fontWeight: 600}}>{data?.batchsUu?.shipOutUu?.licensePalate || '---'}</p>
+							// 		<p style={{fontWeight: 600}}>{data?.batchsUu?.shipOutUu?.licensePlate || '---'}</p>
 							// 	),
 							// },
 							{
@@ -722,12 +722,12 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.fromUu?.name || data?.customerName}</p>
 										{data?.isBatch == TYPE_BATCH.CAN_LO && (
 											<p style={{fontWeight: 600, color: '#3772FF'}}>
-												{data?.batchsUu?.shipUu?.licensePalate || '---'}
+												{data?.batchsUu?.shipUu?.licensePlate || '---'}
 											</p>
 										)}
 										{data?.isBatch == TYPE_BATCH.CAN_LE && (
 											<p style={{fontWeight: 600, color: '#3772FF'}}>
-												{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
+												{data?.weightSessionUu?.truckUu?.licensePlate || '---'}
 											</p>
 										)}
 									</>
@@ -768,7 +768,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 									<>
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
 										<p style={{fontWeight: 600, color: '#3772FF'}}>
-											{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+											{data?.batchsUu?.shipOutUu?.licensePlate || '---'}
 										</p>
 									</>
 								),
@@ -922,7 +922,7 @@ function MainSendAccountant({}: PropsMainSendAccountant) {
 							uuidStorage,
 							_scalesStationUuid,
 							_state,
-							truckUuid,
+							truckPlate,
 							uuidCompany,
 							listCompanyUuid,
 						]}

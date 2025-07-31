@@ -33,7 +33,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 	const {_page, _pageSize, _keyword, _status} = router.query;
 
 	const [dataStatus, setDataStatus] = useState<ITruck | null>(null);
-	const [uuidTruck, setUuidTruck] = useState<string>('');
+	const [licensePlateTruck, setLicensePlateTruck] = useState<string>('');
 
 	const listTruck = useQuery([QUERY_KEY.table_xe_hang, _page, _pageSize, _keyword, _status], {
 		queryFn: () =>
@@ -61,7 +61,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 				showMessageSuccess: true,
 				msgSuccess: dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa thành công' : 'Mở khóa thành công',
 				http: truckServices.changeStatus({
-					uuid: dataStatus?.uuid!,
+					licensePlate: dataStatus?.licensePlate!,
 					status: dataStatus?.status! == CONFIG_STATUS.HOAT_DONG ? CONFIG_STATUS.BI_KHOA : CONFIG_STATUS.HOAT_DONG,
 				}),
 			});
@@ -142,7 +142,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 							},
 							{
 								title: 'Biển số',
-								render: (data: ITruck) => <>{data?.licensePalate || '---'}</>,
+								render: (data: ITruck) => <>{data?.licensePlate || '---'}</>,
 							},
 							{
 								title: 'RFID',
@@ -151,8 +151,8 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 										<TippyHeadless
 											maxWidth={'100%'}
 											interactive
-											onClickOutside={() => setUuidTruck('')}
-											visible={uuidTruck == data?.uuid}
+											onClickOutside={() => setLicensePlateTruck('')}
+											visible={licensePlateTruck == data?.licensePlate}
 											placement='bottom'
 											render={(attrs) => (
 												<div className={styles.main_ruler}>
@@ -173,10 +173,12 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 														if (data?.rfid?.length == 0) {
 															return;
 														} else {
-															setUuidTruck(uuidTruck ? '' : data.uuid);
+															setLicensePlateTruck(licensePlateTruck ? '' : data.licensePlate);
 														}
 													}}
-													className={clsx(styles.value, {[styles.active]: uuidTruck == data.uuid})}
+													className={clsx(styles.value, {
+														[styles.active]: licensePlateTruck == data.licensePlate,
+													})}
 												>
 													{data?.rfid.length || 0}
 												</p>
@@ -220,7 +222,7 @@ function MainPageDelverTruck({}: PropsMainPageDelverTruck) {
 											icon={<LuPencil fontSize={20} fontWeight={600} />}
 											tooltip='Chỉnh sửa'
 											color='#777E90'
-											href={`/xe-hang/chinh-sua?_id=${data?.uuid}`}
+											href={`/xe-hang/chinh-sua?_id=${data?.licensePlate}`}
 										/>
 
 										<IconCustom

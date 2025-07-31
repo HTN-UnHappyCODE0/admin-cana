@@ -29,7 +29,6 @@ function UpdateCompany({}: PropsUpdateCompany) {
 		provinceId: '',
 		townId: '',
 		dirrector: '',
-		districtId: '',
 		parentCompanyUuid: '',
 	});
 
@@ -48,7 +47,6 @@ function UpdateCompany({}: PropsUpdateCompany) {
 				phoneNumber: data?.phoneNumber,
 				provinceId: data?.detailAddress?.province?.uuid,
 				townId: data?.detailAddress?.town?.uuid,
-				districtId: data?.detailAddress?.district?.uuid,
 				dirrector: data?.dirrector,
 				parentCompanyUuid: data?.parentCompanyUu?.uuid,
 			});
@@ -89,36 +87,20 @@ function UpdateCompany({}: PropsUpdateCompany) {
 		},
 	});
 
-	const listDistrict = useQuery([QUERY_KEY.dropdown_quan_huyen, form.provinceId], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listDistrict({
-					keyword: '',
-					status: null,
-					idParent: form?.provinceId,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-		enabled: !!form?.provinceId,
-	});
-
-	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.districtId], {
+	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.provinceId], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
 					status: null,
-					idParent: form.districtId,
+					idParent: form.provinceId,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!form?.districtId,
+		enabled: !!form?.provinceId,
 	});
 
 	const funcUpdateCompany = useMutation({
@@ -133,7 +115,6 @@ function UpdateCompany({}: PropsUpdateCompany) {
 					phoneNumber: form?.phoneNumber,
 					dirrector: form?.dirrector,
 					provinceId: form?.provinceId,
-					dictrictId: form?.districtId,
 					townId: form?.townId,
 					address: form?.address,
 					description: form?.description,
@@ -239,17 +220,13 @@ function UpdateCompany({}: PropsUpdateCompany) {
 						</div>
 					</div>
 
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='provinceId'
 							value={form.provinceId}
 							placeholder='Chọn tỉnh/thành phố'
-							label={
-								<span>
-									Tỉnh/Thành phố<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Tỉnh/Thành phố</span>}
 						>
 							{listProvince?.data?.map((v: any) => (
 								<Option
@@ -260,7 +237,6 @@ function UpdateCompany({}: PropsUpdateCompany) {
 										setForm((prev: any) => ({
 											...prev,
 											provinceId: v?.matp,
-											districtId: '',
 											townId: '',
 										}))
 									}
@@ -268,58 +244,22 @@ function UpdateCompany({}: PropsUpdateCompany) {
 							))}
 						</Select>
 						<div>
-							<Select
-								isSearch
-								name='districtId'
-								value={form.districtId}
-								placeholder='Chọn quận/huyện'
-								label={
-									<span>
-										Quận/Huyện<span style={{color: 'red'}}>*</span>
-									</span>
-								}
-							>
-								{listDistrict?.data?.map((v: any) => (
+							<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
+								{listTown?.data?.map((v: any) => (
 									<Option
-										key={v?.maqh}
-										value={v?.maqh}
+										key={v?.xaid}
+										value={v?.xaid}
 										title={v?.name}
 										onClick={() =>
 											setForm((prev: any) => ({
 												...prev,
-												districtId: v?.maqh,
-												townId: '',
+												townId: v?.xaid,
 											}))
 										}
 									/>
 								))}
 							</Select>
 						</div>
-						<Select
-							isSearch
-							name='townId'
-							value={form.townId}
-							placeholder='Chọn xã/phường'
-							label={
-								<span>
-									Xã/phường<span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
-							{listTown?.data?.map((v: any) => (
-								<Option
-									key={v?.xaid}
-									value={v?.xaid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											townId: v?.xaid,
-										}))
-									}
-								/>
-							))}
-						</Select>
 					</div>
 
 					<div className={clsx('mt')}>

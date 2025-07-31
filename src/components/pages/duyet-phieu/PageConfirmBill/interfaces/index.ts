@@ -9,7 +9,7 @@ export interface ITableBillScale {
 	};
 	lstTruck: {
 		code: string;
-		licensePalate: string;
+		licensePlate: string;
 		status: number;
 		uuid: number;
 	}[];
@@ -58,13 +58,13 @@ export interface ITableBillScale {
 		timeIntend: string;
 		shipUu: {
 			code: string;
-			licensePalate: string;
+			licensePlate: string;
 			status: number;
 			uuid: string;
 		};
 		shipOutUu: {
 			code: string;
-			licensePalate: string;
+			licensePlate: string;
 			status: number;
 			uuid: string;
 		};
@@ -115,9 +115,8 @@ export interface ITableBillScale {
 	weightSessionUu: {
 		truckUu: {
 			code: string;
-			licensePalate: string;
+			licensePlate: string;
 			status: number;
-			uuid: string;
 		};
 		status: number;
 		code: string;
@@ -125,5 +124,4 @@ export interface ITableBillScale {
 	};
 	weigth1: number;
 	weigth2: number;
-	weightMon: number;
 }

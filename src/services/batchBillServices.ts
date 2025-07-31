@@ -27,7 +27,7 @@ const batchBillServices = {
 			scalesStationUuid: string | null;
 			storageUuid: string | null;
 			isHaveDryness: number | null;
-			truckUuid: string[];
+			truckPlates: string[];
 			customerUuid: string;
 			listCustomerUuid: string[];
 			isNeedConfirmReject?: number;
@@ -66,8 +66,8 @@ const batchBillServices = {
 			isPrint: number | null;
 			specificationsUuid: string;
 			productTypeUuid: string;
-			lstTruckAddUuid: string[];
-			lstTruckRemoveUuid: string[];
+			lstTruckPlateAdd: string[];
+			lstTruckPlateRemove: string[];
 			reason?: string;
 			scaleStationUuid: string;
 			portname: string;
@@ -276,7 +276,7 @@ const batchBillServices = {
 			documentId: string;
 			isExportSpec?: number | null;
 			isHaveDryness?: number | null;
-			truckUuid: string[];
+			truckPlates: string[];
 			customerUuid: string;
 			listCustomerUuid: string[];
 			companyUuid: string;
@@ -325,8 +325,8 @@ const batchBillServices = {
 			isPrint: number | null;
 			specificationsUuid: string;
 			productTypeUuid: string;
-			lstTruckAddUuid: string[];
-			lstTruckRemoveUuid: string[];
+			lstTruckPlateAdd: string[];
+			lstTruckPlateRemove: string[];
 			reason?: string;
 			scaleStationUuid: string | null;
 			portname: string;

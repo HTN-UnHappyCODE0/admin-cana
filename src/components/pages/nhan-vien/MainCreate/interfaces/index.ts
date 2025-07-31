@@ -13,7 +13,6 @@ export interface IFormCreate {
 	linkImage: string;
 	ownerUuid: string;
 	provinceId: string;
-	districtId: string;
 	townId: string;
 	provinceOwnerId: string;
 	companyUuid: string;

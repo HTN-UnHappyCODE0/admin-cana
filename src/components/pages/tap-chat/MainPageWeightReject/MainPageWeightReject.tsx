@@ -53,7 +53,7 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 	const queryClient = useQueryClient();
 	const [isHaveDryness, setIsHaveDryness] = useState<string>('');
 	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
-	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [truckPlate, setTruckPlate] = useState<string[]>([]);
 	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [openConfirm, setOpenConfirm] = useState<boolean>(false);
 
@@ -254,7 +254,7 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 			uuidStorage,
 			_scalesStationUuid,
 			isHaveDryness,
-			truckUuid,
+			truckPlate,
 			uuidCompany,
 			listCompanyUuid,
 		],
@@ -303,7 +303,7 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						storageUuid: uuidStorage,
 						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
-						truckUuid: truckUuid,
+						truckPlates: truckPlate,
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						isNeedConfirmReject: 1,
@@ -377,7 +377,7 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 					storageUuid: uuidStorage,
 					isExportSpec: isHaveSpec,
 					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
-					truckUuid: truckUuid,
+					truckPlates: truckPlate,
 					isNeedConfirmReject: 1,
 					companyUuid: uuidCompany,
 					listCompanyUuid: listCompanyUuid,
@@ -473,11 +473,11 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 						name='Khách hàng'
 					/>
 					<SelectFilterMany
-						selectedIds={truckUuid}
-						setSelectedIds={setTruckUuid}
+						selectedIds={truckPlate}
+						setSelectedIds={setTruckPlate}
 						listData={listTruck?.data?.map((v: any) => ({
-							uuid: v?.uuid,
-							name: v?.licensePalate,
+							uuid: v?.licensePlate,
+							name: v?.licensePlate,
 						}))}
 						name='Biển số xe'
 					/>
@@ -498,7 +498,7 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 						query='_shipUuid'
 						listFilter={listShip?.data?.map((v: any) => ({
 							id: v?.uuid,
-							name: v?.licensePalate,
+							name: v?.licensePlate,
 						}))}
 					/>
 
@@ -694,12 +694,12 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 											<>
 												{data?.isBatch == TYPE_BATCH.CAN_LO && (
 													<p style={{fontWeight: 500, color: '#3772FF'}}>
-														{data?.batchsUu?.shipUu?.licensePalate || '---'}
+														{data?.batchsUu?.shipUu?.licensePlate || '---'}
 													</p>
 												)}
 												{data?.isBatch == TYPE_BATCH.CAN_LE && (
 													<p style={{fontWeight: 500, color: '#3772FF'}}>
-														{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
+														{data?.weightSessionUu?.truckUu?.licensePlate || '---'}
 													</p>
 												)}
 											</>
@@ -714,12 +714,12 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 										<p style={{marginBottom: 4, fontWeight: 600}}>{data?.toUu?.name || '---'}</p>
 										{data?.scalesType == TYPE_SCALES.CAN_XUAT && (
 											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipUu?.licensePalate || '---'}
+												{data?.batchsUu?.shipUu?.licensePlate || '---'}
 											</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
 											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+												{data?.batchsUu?.shipOutUu?.licensePlate || '---'}
 											</p>
 										)}
 
@@ -762,7 +762,7 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 							},
 							{
 								title: 'Tàu trung chuyển',
-								render: (data: ITableBillScale) => <>{data?.shipTempUu?.licensePalate || '---'}</>,
+								render: (data: ITableBillScale) => <>{data?.shipTempUu?.licensePlate || '---'}</>,
 							},
 							{
 								title: 'Xác nhận SL',
@@ -925,7 +925,7 @@ function MainPageWeightReject({}: PropsMainPageWeightReject) {
 							uuidStorage,
 							_scalesStationUuid,
 							isHaveDryness,
-							truckUuid,
+							truckPlate,
 							uuidCompany,
 							listCompanyUuid,
 						]}

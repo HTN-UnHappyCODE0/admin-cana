@@ -277,8 +277,8 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					scaleStationUuid: '',
 					storageTemporaryUuid: form?.storageTemporaryUuid,
 					portname: '',
-					lstTruckAddUuid: [],
-					lstTruckRemoveUuid: [],
+					lstTruckPlateAdd: [],
+					lstTruckPlateRemove: [],
 					timeEnd: form?.timeEnd ? timeSubmit(new Date(form?.timeEnd!), true) : null,
 					timeStart: form?.timeStart ? timeSubmit(new Date(form?.timeStart!)) : null,
 					descriptionWs: '',
@@ -478,7 +478,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 										<Option
 											key={v?.uuid}
 											value={v?.uuid}
-											title={v?.licensePalate}
+											title={v?.licensePlate}
 											onClick={() =>
 												setForm((prev) => ({
 													...prev,
@@ -654,7 +654,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 										<Option
 											key={v?.uuid}
 											value={v?.uuid}
-											title={v?.licensePalate}
+											title={v?.licensePlate}
 											onClick={() =>
 												setForm((prev) => ({
 													...prev,

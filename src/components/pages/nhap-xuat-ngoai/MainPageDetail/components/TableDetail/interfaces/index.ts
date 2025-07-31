@@ -71,7 +71,7 @@ export interface IWeightSession {
 	};
 	truckUu: {
 		code: string;
-		licensePalate: string;
+		licensePlate: string;
 		status: number;
 		uuid: string;
 	};

@@ -5,7 +5,6 @@ export interface IFormCreateCompany {
 	address: string;
 	phoneNumber: string;
 	provinceId: string;
-	districtId: string;
 	townId: string;
 	dirrector: string;
 	parentCompanyUuid: string;

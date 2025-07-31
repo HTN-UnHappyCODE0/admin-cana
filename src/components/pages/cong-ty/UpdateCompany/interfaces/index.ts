@@ -5,7 +5,6 @@ export interface IFormUpdateCompany {
 	address: string;
 	phoneNumber: string;
 	provinceId: string;
-	districtId: string;
 	townId: string;
 	dirrector: string;
 	parentCompanyUuid: string;

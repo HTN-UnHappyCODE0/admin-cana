@@ -225,16 +225,16 @@ function TableImport({}: PropsTableImport) {
 							{
 								title: 'Mã tàu/xe',
 								render: (data: IDebtBill) => (
-									<>{data?.shipUu?.licensePalate || data?.weightSessionUu?.truckUu?.licensePalate || '---'}</>
+									<>{data?.shipUu?.licensePlate || data?.weightSessionUu?.truckUu?.licensePlate || '---'}</>
 								),
 							},
 							// {
 							// 	title: 'Mã tàu',
-							// 	render: (data: IDebtBill) => <>{data?.shipUu?.licensePalate || '---'}</>,
+							// 	render: (data: IDebtBill) => <>{data?.shipUu?.licensePlate || '---'}</>,
 							// },
 							// {
 							// 	title: 'Biển số xe',
-							// 	render: (data: IDebtBill) => <>{data?.truckUu?.licensePalate || '---'}</>,
+							// 	render: (data: IDebtBill) => <>{data?.truckUu?.licensePlate || '---'}</>,
 							// },
 							{
 								title: 'Loại hàng',

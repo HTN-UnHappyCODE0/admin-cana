@@ -248,8 +248,8 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					toUuid: form?.toUuid,
 					isPrint: form.isPrint,
 					transportType: form?.transportType,
-					lstTruckAddUuid: listTruckChecked?.map((v) => v.uuid),
-					lstTruckRemoveUuid: [],
+					lstTruckPlateAdd: listTruckChecked?.map((v) => v.uuid),
+					lstTruckPlateRemove: [],
 					scaleStationUuid: form?.scaleStationUuid,
 					portname: form.portname,
 				}),
@@ -535,7 +535,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 								<Option
 									key={v?.uuid}
 									value={v?.uuid}
-									title={v?.licensePalate}
+									title={v?.licensePlate}
 									onClick={() =>
 										setForm((prev) => ({
 											...prev,
@@ -761,8 +761,8 @@ function MainCreateImport({}: PropsMainCreateImport) {
 							description='Thêm và lựa chọn xe hàng'
 							dataList={
 								listTruck?.data?.map((v: any) => ({
-									uuid: v?.uuid,
-									name: v?.licensePalate,
+									uuid: v?.licensePlate,
+									name: v?.licensePlate,
 									code: v?.code,
 								})) || []
 							}
