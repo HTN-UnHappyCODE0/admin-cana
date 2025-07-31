@@ -3,13 +3,14 @@ import clsx from 'clsx';
 import styles from './TabNavLink.module.scss';
 import {useRouter} from 'next/router';
 
-function TabNavLink({listHref, query, outline}: PropsTabNavLink) {
+function TabNavLink({listHref, query, listKeyRemove = [], outline}: PropsTabNavLink) {
 	const router = useRouter();
 
 	const handleActive = (value: string | null) => {
-		const {[query]: str, ...rest} = router.query;
+		const newQuery = Object.fromEntries(Object.entries(router.query).filter(([key]) => !listKeyRemove.includes(key)));
 
 		if (value == null) {
+			const {[query]: str, ...rest} = newQuery;
 			return router.replace(
 				{
 					query: {
@@ -26,7 +27,7 @@ function TabNavLink({listHref, query, outline}: PropsTabNavLink) {
 		return router.replace(
 			{
 				query: {
-					...router.query,
+					...newQuery,
 					[query]: value,
 				},
 			},

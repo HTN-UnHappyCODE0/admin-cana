@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {PropsMainStatisticalWarehouse} from './interfaces';
 import styles from './MainStatisticalWarehouse.module.scss';
@@ -9,11 +9,13 @@ import warehouseServices from '~/services/warehouseServices';
 import DashboardWarehouse from '../DashboardWarehouse';
 
 function MainStatisticalWarehouse({}: PropsMainStatisticalWarehouse) {
-	const {data: dataWarehouse} = useQuery([QUERY_KEY.thong_ke_kho_hang], {
+	const [uuidCompany, setUuidCompany] = useState<string>('');
+	const [uuidTypeProduct, setUuidTypeProduct] = useState<number | null>(null);
+	const {data: dataWarehouse} = useQuery([QUERY_KEY.thong_ke_kho_hang, uuidCompany, uuidTypeProduct], {
 		queryFn: () =>
 			httpRequest({
 				isData: true,
-				http: warehouseServices.dashbroadWarehouse({typeProduct: TYPE_STORE.ADMIN_KHO}),
+				http: warehouseServices.dashbroadWarehouse({typeProduct: uuidTypeProduct, companyUuid: uuidCompany as string}),
 			}),
 		select(data) {
 			if (data) {
@@ -30,6 +32,8 @@ function MainStatisticalWarehouse({}: PropsMainStatisticalWarehouse) {
 				productTotal={dataWarehouse?.productTotal}
 				qualityTotal={dataWarehouse?.qualityTotal}
 				specTotal={dataWarehouse?.specTotal}
+				setUuidCompany={setUuidCompany}
+				setUuidTypeProduct={setUuidTypeProduct}
 			/>
 			{dataWarehouse?.detailWarehouseSpec?.map((v: any) => (
 				<DashboardWarehouse dataWarehouse={v} key={v?.uuid} isTotal={false} />

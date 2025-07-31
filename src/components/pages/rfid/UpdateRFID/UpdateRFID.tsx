@@ -19,10 +19,10 @@ import {toastWarn} from '~/common/funcs/toast';
 function UpdateRFID({dataUpdateRFID, onClose}: PropsUpdateRFID) {
 	const queryClient = useQueryClient();
 
-	const [form, setForm] = useState<{uuid: string; code: string; truckUuid: string; description: string}>({
+	const [form, setForm] = useState<{uuid: string; code: string; truckPlate: string; description: string}>({
 		uuid: '',
 		code: '',
-		truckUuid: '',
+		truckPlate: '',
 		description: '',
 	});
 
@@ -31,7 +31,7 @@ function UpdateRFID({dataUpdateRFID, onClose}: PropsUpdateRFID) {
 			setForm({
 				uuid: dataUpdateRFID.uuid || '',
 				code: dataUpdateRFID.code || '',
-				truckUuid: dataUpdateRFID?.truckUu?.uuid!,
+				truckPlate: dataUpdateRFID?.truckUu?.licensePlate!,
 				description: dataUpdateRFID?.description,
 			});
 		}
@@ -65,7 +65,7 @@ function UpdateRFID({dataUpdateRFID, onClose}: PropsUpdateRFID) {
 				http: rfidServices.upsertRFID({
 					uuid: form.uuid,
 					code: form.code,
-					truckUuid: form.truckUuid,
+					truckPlate: form.truckPlate,
 					description: form.description,
 				}),
 			}),
@@ -74,7 +74,7 @@ function UpdateRFID({dataUpdateRFID, onClose}: PropsUpdateRFID) {
 				setForm({
 					uuid: '',
 					code: '',
-					truckUuid: '',
+					truckPlate: '',
 					description: '',
 				});
 				onClose();
@@ -115,19 +115,19 @@ function UpdateRFID({dataUpdateRFID, onClose}: PropsUpdateRFID) {
 					<div className={clsx('mt')}>
 						<Select
 							isSearch
-							name='truckUuid'
+							name='truckPlate'
 							placeholder='Chọn xe'
-							value={form?.truckUuid}
+							value={form?.truckPlate}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
 									...prev,
-									truckUuid: e.target.value,
+									truckPlate: e.target.value,
 								}))
 							}
 							label={<span>Xe hàng </span>}
 						>
 							{listTruck?.data?.map((v: any) => (
-								<Option key={v?.uuid} value={v?.uuid} title={`${v?.licensePalate} - (${v?.code})`} />
+								<Option key={v?.licensePlate} value={v?.licensePlate} title={`${v?.licensePlate} - (${v?.code})`} />
 							))}
 						</Select>
 					</div>

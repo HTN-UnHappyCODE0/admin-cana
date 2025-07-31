@@ -11,6 +11,7 @@ import {
 	QUERY_KEY,
 	REGENCY_NAME,
 	TYPE_PARTNER,
+	TYPE_ISCREATE_DOCS,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
 import partnerServices from '~/services/partnerServices';
@@ -41,7 +42,6 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 		address: '',
 		phoneNumber: '',
 		provinceId: '',
-		districtId: '',
 		townId: '',
 		userOwenerUuid: '',
 		director: '',
@@ -49,9 +49,13 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 		bankAccount: '',
 		companyUuid: '',
 		userKtUuid: '',
+		codeName: '',
+		fullName: '',
+		regencyName: '',
+		isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
 	});
 
-	useQuery<IDetailPartner>([QUERY_KEY.chi_tiet_doi_tac, _id], {
+	useQuery<any>([QUERY_KEY.chi_tiet_doi_tac, _id], {
 		queryFn: () =>
 			httpRequest({
 				http: partnerServices.detailPartner({
@@ -62,12 +66,13 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 			setForm({
 				description: data?.description || '',
 				name: data?.name || '',
+				codeName: data?.codeName || '',
+				fullName: data?.fullName || '',
 				taxCode: data?.taxCode || '',
 				email: data?.email || '',
 				address: data?.address || '',
 				phoneNumber: data?.phoneNumber || '',
 				provinceId: data?.detailAddress?.province?.uuid || '',
-				districtId: data?.detailAddress?.district?.uuid || '',
 				townId: data?.detailAddress?.town?.uuid || '',
 				userOwenerUuid: data?.userOwnerUu?.uuid || '',
 				director: data?.director || '',
@@ -75,6 +80,8 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 				bankAccount: data?.bankAccount || '',
 				companyUuid: data?.companyUu?.uuid || '',
 				userKtUuid: data?.ktUu?.uuid || '',
+				regencyName: data?.regencyName || '',
+				isCreateDocs: data?.isCreateDocmaster,
 			});
 		},
 		enabled: !!_id,
@@ -113,36 +120,20 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 		},
 	});
 
-	const listDistrict = useQuery([QUERY_KEY.dropdown_quan_huyen, form?.provinceId], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listDistrict({
-					keyword: '',
-					status: null,
-					idParent: form?.provinceId,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-		enabled: !!form?.provinceId,
-	});
-
-	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.districtId], {
+	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.provinceId], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
 					status: null,
-					idParent: form.districtId,
+					idParent: form.provinceId,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!form?.districtId,
+		enabled: !!form?.provinceId,
 	});
 
 	const listRegency = useQuery([QUERY_KEY.dropdown_chuc_vu], {
@@ -227,7 +218,6 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					email: form?.email,
 					director: form?.director,
 					provinceId: form?.provinceId,
-					districtId: form?.districtId,
 					townId: form?.townId,
 					address: form?.address,
 					description: form?.description,
@@ -237,6 +227,10 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					type: TYPE_PARTNER.NCC,
 					companyUuid: form?.companyUuid,
 					ktUuid: form?.userKtUuid,
+					fullName: form?.fullName,
+					codeName: form?.codeName,
+					regencyName: form?.regencyName,
+					isCreateDocs: form?.isCreateDocs,
 				}),
 			}),
 		onSuccess(data) {
@@ -254,9 +248,6 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 	const handleSubmit = async () => {
 		// if (!form.provinceId) {
 		// 	return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
-		// }
-		// if (!form.districtId) {
-		// 	return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
 		// }
 		// if (!form.townId) {
 		// 	return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
@@ -287,26 +278,93 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 					</div>
 				</div>
 				<div className={styles.form}>
-					<Input
-						name='name'
-						value={form.name || ''}
-						isRequired
-						isUppercase
-						max={255}
-						blur={true}
-						label={
-							<span>
-								Tên công ty <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-						placeholder='Nhập tên công ty'
-					/>
+					<div className={clsx('mt')}>
+						<div className='col_2'>
+							<div className={styles.item}>
+								<label className={styles.label}>
+									Tạo biên bản <span style={{color: 'red'}}>*</span>
+								</label>
+								<div className={styles.group_radio}>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='tao_bien_ban'
+											name='isCreateDocs'
+											checked={form.isCreateDocs == TYPE_ISCREATE_DOCS.IS_CREATE_DOCS}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isCreateDocs: TYPE_ISCREATE_DOCS.IS_CREATE_DOCS,
+												}))
+											}
+										/>
+										<label htmlFor='tao_bien_ban'>Có</label>
+									</div>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='khong_tao_bien_ban'
+											name='isCreateDocs'
+											checked={form.isCreateDocs == TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
+												}))
+											}
+										/>
+										<label htmlFor='khong_tao_bien_ban'>Không</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_3')}>
+						<Input
+							name='fullName'
+							value={form.fullName || ''}
+							isRequired
+							max={255}
+							blur={true}
+							label={
+								<span>
+									Tên công ty <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên công ty'
+						/>
+						<div>
+							<Input
+								name='codeName'
+								value={form.codeName || ''}
+								max={255}
+								blur={true}
+								isUppercase
+								label={<span>Mã công ty</span>}
+								placeholder='Nhập mã công ty'
+							/>
+						</div>
+
+						<Input
+							name='name'
+							value={form.name || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên hiển thị <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên hiển thị'
+						/>
+					</div>
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='companyUuid'
-							placeholder='Chọn KV cảng xuất khẩu'
-							readOnly={true}
+							placeholder='Chọn khu vực cảng xuất khẩu'
 							value={form?.companyUuid}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
@@ -314,11 +372,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 									companyUuid: e.target.value,
 								}))
 							}
-							label={
-								<span>
-									KV cảng xuất khẩu <span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Khu vực cảng xuất khẩu</span>}
 						>
 							{listCompany?.data?.map((v: any) => (
 								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
@@ -333,7 +387,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
 							name='director'
 							value={form.director || ''}
@@ -347,6 +401,18 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							}
 							placeholder='Nhập tên người liên hệ'
 						/>
+						<div>
+							<Input
+								name='regencyName'
+								value={form.regencyName || ''}
+								max={255}
+								blur={true}
+								label={<span>Tên chức vụ của người đại diện</span>}
+								placeholder='Nhập tên chức vụ'
+							/>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='userOwenerUuid'
@@ -426,7 +492,7 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							placeholder='Nhập số tài khoản'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='provinceId'
@@ -443,7 +509,6 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 										setForm((prev: any) => ({
 											...prev,
 											provinceId: v?.matp,
-											districtId: '',
 											townId: '',
 										}))
 									}
@@ -451,44 +516,22 @@ function PageUpdatePartner({}: PropsPageUpdatePartner) {
 							))}
 						</Select>
 						<div>
-							<Select
-								isSearch
-								name='districtId'
-								value={form.districtId}
-								placeholder='Chọn quận/huyện'
-								label={<span>Quận/Huyện</span>}
-							>
-								{listDistrict?.data?.map((v: any) => (
+							<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
+								{listTown?.data?.map((v: any) => (
 									<Option
-										key={v?.maqh}
-										value={v?.maqh}
+										key={v?.xaid}
+										value={v?.xaid}
 										title={v?.name}
 										onClick={() =>
 											setForm((prev: any) => ({
 												...prev,
-												districtId: v?.maqh,
-												townId: '',
+												townId: v?.xaid,
 											}))
 										}
 									/>
 								))}
 							</Select>
 						</div>
-						<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
-							{listTown?.data?.map((v: any) => (
-								<Option
-									key={v?.xaid}
-									value={v?.xaid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											townId: v?.xaid,
-										}))
-									}
-								/>
-							))}
-						</Select>
 					</div>
 
 					<div className={clsx('mt')}>

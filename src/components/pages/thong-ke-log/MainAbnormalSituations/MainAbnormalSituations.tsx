@@ -87,7 +87,7 @@ function MainAbnormalSituations({}: PropsMainAbnormalSituations) {
 								},
 								{
 									title: 'Biển số xe',
-									render: (data: ILog) => <>{data?.weightSessionUu?.truckUu?.licensePalate || '---'}</>,
+									render: (data: ILog) => <>{data?.weightSessionUu?.truckUu?.licensePlate || '---'}</>,
 								},
 
 								{

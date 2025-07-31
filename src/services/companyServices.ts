@@ -38,7 +38,6 @@ const companyServices = {
 			dirrector: string;
 			description: string;
 			provinceId: string;
-			dictrictId: string;
 			townId: string;
 			parentCompanyUuid: string;
 		},

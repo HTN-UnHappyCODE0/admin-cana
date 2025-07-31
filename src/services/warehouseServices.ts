@@ -39,7 +39,6 @@ const warehouseServices = {
 			address: string;
 			scaleStationUuid: string | null;
 			provinceId: string;
-			dictrictId: string;
 			townId: string;
 			description: string;
 			companyUuid: string;
@@ -60,7 +59,7 @@ const warehouseServices = {
 			cancelToken: tokenAxios,
 		});
 	},
-	dashbroadWarehouse: (data: {typeProduct: number | null}, tokenAxios?: any) => {
+	dashbroadWarehouse: (data: {typeProduct: number | null; companyUuid: string}, tokenAxios?: any) => {
 		return axiosClient.post(`/Warehouse/dashbroad-warehouse`, data, {
 			cancelToken: tokenAxios,
 		});

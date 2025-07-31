@@ -19,7 +19,7 @@ function DatePicker({
 	className,
 	blockOldDay,
 	futureDayblock,
-	readonly,
+	readOnly = false,
 }: PropsDatePicker) {
 	const [show, setShow] = useState<boolean>(false);
 
@@ -51,15 +51,9 @@ function DatePicker({
 					className={clsx(styles.calendar, className, {
 						[styles.placeholder]: !value,
 						[styles.focus]: show,
-						[styles.readonly]: readonly,
+						[styles.readOnly]: readOnly,
 					})}
-					onClick={() => {
-						if (readonly) {
-							return null;
-						} else {
-							setShow(!show);
-						}
-					}}
+					onClick={() => !readOnly && setShow(!show)}
 				>
 					{icon && (
 						<div className={styles.icon}>
@@ -68,7 +62,7 @@ function DatePicker({
 					)}
 					<div className={styles.value}>{value ? convertDate(value).getDateFormat() : placeholder}</div>
 
-					{onClean && !!value && (
+					{onClean && !!value && !readOnly && (
 						<div className={clsx(styles.clean, styles.icon)} onClick={handleClean}>
 							<RiCloseCircleFill color='#29303c' />
 						</div>

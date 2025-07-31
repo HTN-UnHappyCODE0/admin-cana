@@ -157,11 +157,10 @@ function PageCompany({}: PropsPageCompany) {
 								},
 								{
 									title: 'Tên KV cảng xuất khẩu',
-									fixedLeft: true,
 									render: (data: ICompany) => <>{data?.parentCompanyUu?.name || '---'}</>,
 								},
 								{
-									title: 'Gia tiền thay đổi',
+									title: 'Giá tiền vận chuyển',
 									render: (data: ICompany) => <>{convertCoin(data?.transportPrice) || '---'}</>,
 								},
 								{

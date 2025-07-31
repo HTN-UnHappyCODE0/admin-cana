@@ -37,7 +37,6 @@ function MainCreate({}: PropsMainCreate) {
 		linkImage: '',
 		ownerUuid: '',
 		provinceId: '',
-		districtId: '',
 		townId: '',
 		provinceOwnerId: '',
 		companyUuid: '',
@@ -57,36 +56,20 @@ function MainCreate({}: PropsMainCreate) {
 		},
 	});
 
-	const listDistrict = useQuery([QUERY_KEY.dropdown_quan_huyen, form.provinceId], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listDistrict({
-					keyword: '',
-					status: null,
-					idParent: form?.provinceId,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-		enabled: !!form?.provinceId,
-	});
-
-	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.districtId], {
+	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.provinceId], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
 					status: null,
-					idParent: form.districtId,
+					idParent: form.provinceId,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!form?.districtId,
+		enabled: !!form?.provinceId,
 	});
 
 	const listRegency = useQuery([QUERY_KEY.dropdown_chuc_vu], {
@@ -172,7 +155,6 @@ function MainCreate({}: PropsMainCreate) {
 					linkImage: '',
 					ownerUuid: form.ownerUuid,
 					provinceId: form.provinceId,
-					districtId: form.districtId,
 					townId: form.townId,
 					provinceOwnerId: form.provinceOwnerId,
 					companyUuid: form?.companyUuid,
@@ -193,7 +175,6 @@ function MainCreate({}: PropsMainCreate) {
 					linkImage: '',
 					ownerUuid: '',
 					provinceId: '',
-					districtId: '',
 					townId: '',
 					provinceOwnerId: '',
 					companyUuid: '',
@@ -362,6 +343,12 @@ function MainCreate({}: PropsMainCreate) {
 									companyUuid: e.target.value,
 								}))
 							}
+							onClean={() =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: null,
+								}))
+							}
 							label={<span>Khu vực cảng xuất khẩu</span>}
 						>
 							{listCompany?.data?.map((v: any) => (
@@ -369,7 +356,7 @@ function MainCreate({}: PropsMainCreate) {
 							))}
 						</Select>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='provinceId'
@@ -386,7 +373,6 @@ function MainCreate({}: PropsMainCreate) {
 										setForm((prev: any) => ({
 											...prev,
 											provinceId: v?.matp,
-											districtId: '',
 											townId: '',
 										}))
 									}
@@ -394,44 +380,22 @@ function MainCreate({}: PropsMainCreate) {
 							))}
 						</Select>
 						<div>
-							<Select
-								isSearch
-								name='districtId'
-								value={form.districtId}
-								placeholder='Chọn quận/huyện'
-								label={<span>Quận/Huyện</span>}
-							>
-								{listDistrict?.data?.map((v: any) => (
+							<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
+								{listTown?.data?.map((v: any) => (
 									<Option
-										key={v?.maqh}
-										value={v?.maqh}
+										key={v?.xaid}
+										value={v?.xaid}
 										title={v?.name}
 										onClick={() =>
 											setForm((prev: any) => ({
 												...prev,
-												districtId: v?.maqh,
-												townId: '',
+												townId: v?.xaid,
 											}))
 										}
 									/>
 								))}
 							</Select>
 						</div>
-						<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
-							{listTown?.data?.map((v: any) => (
-								<Option
-									key={v?.xaid}
-									value={v?.xaid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											townId: v?.xaid,
-										}))
-									}
-								/>
-							))}
-						</Select>
 					</div>
 					<div className={clsx('mt')}>
 						<Input

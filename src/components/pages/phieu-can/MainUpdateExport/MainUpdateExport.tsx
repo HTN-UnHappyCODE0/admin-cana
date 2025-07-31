@@ -119,14 +119,14 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 				setListTruckChecked(
 					data?.lstTruck?.map((v: any) => ({
 						uuid: v?.uuid,
-						name: v?.licensePalate,
+						name: v?.licensePlate,
 						code: v?.code,
 					}))
 				);
 				setListTruckBatchBill(
 					data?.lstTruck?.map((v: any) => ({
 						uuid: v?.uuid,
-						name: v?.licensePalate,
+						name: v?.licensePlate,
 						code: v?.code,
 					}))
 				);
@@ -340,10 +340,10 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					isBatch: form.isBatch,
 					shipOutUuid: '',
 					reason: form.reason,
-					lstTruckAddUuid: listTruckChecked
+					lstTruckPlateAdd: listTruckChecked
 						.filter((v) => !listTruckBatchBill.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
-					lstTruckRemoveUuid: listTruckBatchBill
+					lstTruckPlateRemove: listTruckBatchBill
 						.filter((v) => !listTruckChecked.some((x) => v.uuid === x.uuid))
 						?.map((item) => item.uuid),
 					scaleStationUuid: form?.scaleStationUuid,
@@ -444,7 +444,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 							placeholder='Nhập tổng khối lượng hàng'
 						/>
 						<DatePicker
-							readonly={true}
+							readOnly={true}
 							label={<span>Thời gian bắt đầu cân</span>}
 							value={form.timeStart}
 							onSetValue={(date) =>
@@ -456,7 +456,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 							placeholder='Chọn thời gian bắt đầu cân'
 						/>
 						<DatePicker
-							readonly={true}
+							readOnly={true}
 							label={<span>Thời gian kết thúc</span>}
 							value={form.timeEnd}
 							onSetValue={(date) =>
@@ -676,7 +676,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 								<Option
 									key={v?.uuid}
 									value={v?.uuid}
-									title={v?.licensePalate}
+									title={v?.licensePlate}
 									onClick={() =>
 										setForm((prev) => ({
 											...prev,
@@ -869,8 +869,8 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 							description='Thêm và lựa chọn xe hàng'
 							dataList={
 								listTruck?.data?.map((v: any) => ({
-									uuid: v?.uuid,
-									name: v?.licensePalate,
+									uuid: v?.licensePlate,
+									name: v?.licensePlate,
 									code: v?.code,
 								})) || []
 							}

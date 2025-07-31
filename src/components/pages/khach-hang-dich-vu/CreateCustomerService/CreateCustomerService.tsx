@@ -11,6 +11,7 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	REGENCY_NAME,
+	TYPE_ISCREATE_DOCS,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
@@ -38,7 +39,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 		address: '',
 		phoneNumber: '',
 		provinceId: '',
-		districtId: '',
 		townId: '',
 		userOwenerUuid: '',
 		director: '',
@@ -46,6 +46,9 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 		bankAccount: '',
 		companyUuid: '',
 		userKtUuid: '',
+		fullName: '',
+		codeName: '',
+		regencyName: '',
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -81,36 +84,20 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 		},
 	});
 
-	const listDistrict = useQuery([QUERY_KEY.dropdown_quan_huyen, form?.provinceId], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listDistrict({
-					keyword: '',
-					status: null,
-					idParent: form?.provinceId,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-		enabled: !!form?.provinceId,
-	});
-
-	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.districtId], {
+	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.provinceId], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
 					status: null,
-					idParent: form.districtId,
+					idParent: form.provinceId,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!form?.districtId,
+		enabled: !!form?.provinceId,
 	});
 
 	const listRegency = useQuery([QUERY_KEY.dropdown_chuc_vu], {
@@ -195,7 +182,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					email: form?.email,
 					director: form?.director,
 					provinceId: form?.provinceId,
-					districtId: form?.districtId,
 					townId: form?.townId,
 					address: form?.address,
 					description: form?.description,
@@ -205,6 +191,10 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					type: TYPE_PARTNER.KH_DICH_VU,
 					companyUuid: form?.companyUuid,
 					ktUuid: form?.userKtUuid,
+					fullName: form?.fullName,
+					codeName: form?.codeName,
+					regencyName: form?.regencyName,
+					isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
 				}),
 			}),
 		onSuccess(data) {
@@ -217,7 +207,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					address: '',
 					phoneNumber: '',
 					provinceId: '',
-					districtId: '',
 					townId: '',
 					userOwenerUuid: '',
 					director: '',
@@ -225,6 +214,9 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					bankAccount: '',
 					companyUuid: '',
 					userKtUuid: '',
+					fullName: '',
+					codeName: '',
+					regencyName: '',
 				});
 				router.back();
 			}
@@ -236,15 +228,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 	});
 
 	const handleSubmit = async () => {
-		if (!form.provinceId) {
-			return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
-		}
-		if (!form.districtId) {
-			return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
-		}
-		if (!form.townId) {
-			return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
-		}
 		return funcCreatePartner.mutate();
 	};
 
@@ -271,19 +254,53 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 					</div>
 				</div>
 				<div className={styles.form}>
-					<Input
-						name='name'
-						value={form.name || ''}
-						isRequired
-						max={255}
-						blur={true}
-						label={
-							<span>
-								Tên khách hàng <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-						placeholder='Nhập tên khách hàng'
-					/>
+					<div className={clsx('mt', 'col_3')}>
+						<Input
+							name='fullName'
+							value={form.fullName || ''}
+							isRequired
+							max={255}
+							blur={true}
+							label={
+								<span>
+									Tên khách hàng <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên khách hàng'
+						/>
+						<div>
+							<Input
+								name='codeName'
+								value={form.codeName || ''}
+								isRequired
+								max={255}
+								blur={true}
+								isUppercase
+								label={
+									<span>
+										Mã công ty <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập mã công ty'
+							/>
+						</div>
+
+						<Input
+							name='name'
+							value={form.name || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên hiển thị <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên hiển thị'
+						/>
+					</div>
+
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
@@ -314,7 +331,7 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
 							name='director'
 							value={form.director || ''}
@@ -326,8 +343,20 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 									Người liên hệ <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập tên người liên hệ (cho khách hàng)'
+							placeholder='Nhập tên người liên hệ'
 						/>
+						<div>
+							<Input
+								name='regencyName'
+								value={form.regencyName || ''}
+								max={255}
+								blur={true}
+								label={<span>Tên chức vụ của người đại diện</span>}
+								placeholder='Nhập tên chức vụ'
+							/>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='userOwenerUuid'
@@ -407,17 +436,13 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							placeholder='Nhập số tài khoản'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='provinceId'
 							value={form.provinceId}
 							placeholder='Chọn tỉnh/thành phố'
-							label={
-								<span>
-									Tỉnh/Thành phố<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Tỉnh/Thành phố</span>}
 						>
 							{listProvince?.data?.map((v: any) => (
 								<Option
@@ -428,7 +453,6 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 										setForm((prev: any) => ({
 											...prev,
 											provinceId: v?.matp,
-											districtId: '',
 											townId: '',
 										}))
 									}
@@ -436,58 +460,22 @@ function CreateCustomerService({}: PropsCreateCustomerService) {
 							))}
 						</Select>
 						<div>
-							<Select
-								isSearch
-								name='districtId'
-								value={form.districtId}
-								placeholder='Chọn quận/huyện'
-								label={
-									<span>
-										Quận/Huyện<span style={{color: 'red'}}>*</span>
-									</span>
-								}
-							>
-								{listDistrict?.data?.map((v: any) => (
+							<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
+								{listTown?.data?.map((v: any) => (
 									<Option
-										key={v?.maqh}
-										value={v?.maqh}
+										key={v?.xaid}
+										value={v?.xaid}
 										title={v?.name}
 										onClick={() =>
 											setForm((prev: any) => ({
 												...prev,
-												districtId: v?.maqh,
-												townId: '',
+												townId: v?.xaid,
 											}))
 										}
 									/>
 								))}
 							</Select>
 						</div>
-						<Select
-							isSearch
-							name='townId'
-							value={form.townId}
-							placeholder='Chọn xã/phường'
-							label={
-								<span>
-									Xã/phường<span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
-							{listTown?.data?.map((v: any) => (
-								<Option
-									key={v?.xaid}
-									value={v?.xaid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											townId: v?.xaid,
-										}))
-									}
-								/>
-							))}
-						</Select>
 					</div>
 
 					<div className={clsx('mt')}>

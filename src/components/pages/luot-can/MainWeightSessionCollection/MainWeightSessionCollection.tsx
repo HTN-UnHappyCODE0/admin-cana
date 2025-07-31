@@ -45,13 +45,13 @@ function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 					storageUuid: '',
 					timeStart: _dateFrom ? (_dateFrom as string) : null,
 					timeEnd: _dateTo ? (_dateTo as string) : null,
-					truckUuid: '',
+					truckPlate: '',
 					customerUuid: '',
 					groupBy: 1,
 					productTypeUuid: '',
 					shift: null,
 					status: [],
-					listTruckUuid: [],
+					listTruckPlate: [],
 				}),
 			}),
 		select(data) {
@@ -85,8 +85,8 @@ function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 						codeStart: null,
 						specUuid: '',
 						status: [],
-						truckUuid: '',
-						listTruckUuid: [],
+						truckPlate: '',
+						listTruckPlate: [],
 						shift: null,
 						shipUuid: '',
 					}),
@@ -178,7 +178,7 @@ function MainWeightSessionCollection({}: PropsMainWeightSessionCollection) {
 							{
 								title: 'Biển số xe',
 								render: (data: IWeightSessionByTruck) => (
-									<p style={{color: '#2D74FF', fontWeight: 600}}>{data?.truckUu?.licensePalate || '---'}</p>
+									<p style={{color: '#2D74FF', fontWeight: 600}}>{data?.truckUu?.licensePlate || '---'}</p>
 								),
 							},
 							{

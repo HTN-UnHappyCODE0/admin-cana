@@ -11,6 +11,7 @@ import {
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
 	REGENCY_NAME,
+	TYPE_ISCREATE_DOCS,
 	TYPE_PARTNER,
 } from '~/constants/config/enum';
 import {httpRequest} from '~/services';
@@ -38,7 +39,6 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 		address: '',
 		phoneNumber: '',
 		provinceId: '',
-		districtId: '',
 		townId: '',
 		userOwenerUuid: '',
 		director: '',
@@ -46,6 +46,10 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 		bankAccount: '',
 		companyUuid: '',
 		userKtUuid: '',
+		fullName: '',
+		codeName: '',
+		regencyName: '',
+		isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
 	});
 
 	const listProvince = useQuery([QUERY_KEY.dropdown_tinh_thanh_pho], {
@@ -78,20 +82,20 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 		enabled: !!form?.provinceId,
 	});
 
-	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.districtId], {
+	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.provinceId], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
 					status: null,
-					idParent: form.districtId,
+					idParent: form.provinceId,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!form?.districtId,
+		enabled: !!form?.provinceId,
 	});
 
 	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
@@ -195,7 +199,6 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					email: form?.email,
 					director: form?.director,
 					provinceId: form?.provinceId,
-					districtId: form?.districtId,
 					townId: form?.townId,
 					address: form?.address,
 					description: form?.description,
@@ -205,6 +208,10 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					type: TYPE_PARTNER.NCC,
 					companyUuid: form?.companyUuid,
 					ktUuid: form?.userKtUuid,
+					fullName: form?.fullName,
+					codeName: form?.codeName,
+					regencyName: form?.regencyName,
+					isCreateDocs: form?.isCreateDocs,
 				}),
 			}),
 		onSuccess(data) {
@@ -217,7 +224,6 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					address: '',
 					phoneNumber: '',
 					provinceId: '',
-					districtId: '',
 					townId: '',
 					userOwenerUuid: '',
 					director: '',
@@ -225,6 +231,10 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					bankAccount: '',
 					companyUuid: '',
 					userKtUuid: '',
+					codeName: '',
+					fullName: '',
+					regencyName: '',
+					isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
 				});
 				router.back();
 			}
@@ -239,12 +249,10 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 		// if (!form.provinceId) {
 		// 	return toastWarn({msg: 'Vui lòng chọn tỉnh/thành phố!'});
 		// }
-		// if (!form.districtId) {
-		// 	return toastWarn({msg: 'Vui lòng chọn quận/huyện!'});
-		// }
 		// if (!form.townId) {
 		// 	return toastWarn({msg: 'Vui lòng chọn xã/phường!'});
 		// }
+
 		return funcCreatePartner.mutate();
 	};
 
@@ -271,20 +279,89 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 					</div>
 				</div>
 				<div className={styles.form}>
-					<Input
-						name='name'
-						value={form.name || ''}
-						isRequired
-						max={255}
-						blur={true}
-						isUppercase
-						label={
-							<span>
-								Tên công ty <span style={{color: 'red'}}>*</span>
-							</span>
-						}
-						placeholder='Nhập tên công ty'
-					/>
+					<div className={clsx('mt')}>
+						<div className='col_2'>
+							<div className={styles.item}>
+								<label className={styles.label}>
+									Tạo biên bản <span style={{color: 'red'}}>*</span>
+								</label>
+								<div className={styles.group_radio}>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='tao_bien_ban'
+											name='isCreateDocs'
+											checked={form.isCreateDocs == TYPE_ISCREATE_DOCS.IS_CREATE_DOCS}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isCreateDocs: TYPE_ISCREATE_DOCS.IS_CREATE_DOCS,
+												}))
+											}
+										/>
+										<label htmlFor='tao_bien_ban'>Có</label>
+									</div>
+									<div className={styles.item_radio}>
+										<input
+											type='radio'
+											id='khong_tao_bien_ban'
+											name='isCreateDocs'
+											checked={form.isCreateDocs == TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS}
+											onChange={() =>
+												setForm((prev) => ({
+													...prev,
+													isCreateDocs: TYPE_ISCREATE_DOCS.NOT_CREATE_DOCS,
+												}))
+											}
+										/>
+										<label htmlFor='khong_tao_bien_ban'>Không</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_3')}>
+						<Input
+							name='fullName'
+							value={form.fullName || ''}
+							isRequired
+							max={255}
+							blur={true}
+							label={
+								<span>
+									Tên công ty <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên công ty'
+						/>
+						<div>
+							<Input
+								name='codeName'
+								value={form.codeName || ''}
+								max={255}
+								blur={true}
+								isUppercase
+								label={<span>Mã công ty</span>}
+								placeholder='Nhập mã công ty'
+							/>
+						</div>
+
+						<Input
+							name='name'
+							value={form.name || ''}
+							isRequired
+							max={255}
+							blur={true}
+							isUppercase
+							label={
+								<span>
+									Tên hiển thị <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập tên hiển thị'
+						/>
+					</div>
+
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
@@ -297,11 +374,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 									companyUuid: e.target.value,
 								}))
 							}
-							label={
-								<span>
-									Khu vực cảng xuất khẩu<span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							label={<span>Khu vực cảng xuất khẩu</span>}
 						>
 							{listCompany?.data?.map((v: any) => (
 								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
@@ -316,7 +389,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							placeholder='Nhập mã số thuế'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Input
 							name='director'
 							value={form.director || ''}
@@ -330,6 +403,18 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							}
 							placeholder='Nhập tên người liên hệ'
 						/>
+						<div>
+							<Input
+								name='regencyName'
+								value={form.regencyName || ''}
+								max={255}
+								blur={true}
+								label={<span>Tên chức vụ của người đại diện</span>}
+								placeholder='Nhập tên chức vụ'
+							/>
+						</div>
+					</div>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='userOwenerUuid'
@@ -409,7 +494,7 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							placeholder='Nhập số tài khoản'
 						/>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='provinceId'
@@ -426,7 +511,6 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 										setForm((prev: any) => ({
 											...prev,
 											provinceId: v?.matp,
-											districtId: '',
 											townId: '',
 										}))
 									}
@@ -434,44 +518,22 @@ function PageCreatePartner({}: PropsPageCreatePartner) {
 							))}
 						</Select>
 						<div>
-							<Select
-								isSearch
-								name='districtId'
-								value={form.districtId}
-								placeholder='Chọn quận/huyện'
-								label={<span>Quận/Huyện</span>}
-							>
-								{listDistrict?.data?.map((v: any) => (
+							<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
+								{listTown?.data?.map((v: any) => (
 									<Option
-										key={v?.maqh}
-										value={v?.maqh}
+										key={v?.xaid}
+										value={v?.xaid}
 										title={v?.name}
 										onClick={() =>
 											setForm((prev: any) => ({
 												...prev,
-												districtId: v?.maqh,
-												townId: '',
+												townId: v?.xaid,
 											}))
 										}
 									/>
 								))}
 							</Select>
 						</div>
-						<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
-							{listTown?.data?.map((v: any) => (
-								<Option
-									key={v?.xaid}
-									value={v?.xaid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											townId: v?.xaid,
-										}))
-									}
-								/>
-							))}
-						</Select>
 					</div>
 
 					<div className={clsx('mt')}>

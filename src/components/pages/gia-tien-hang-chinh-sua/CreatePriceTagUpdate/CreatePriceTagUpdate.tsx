@@ -181,7 +181,7 @@ function CreatePriceTagUpdate({}: PropsCreatePriceTagUpdate) {
 					scalesStationUuid: '',
 					storageUuid: '',
 					isHaveDryness: 0, /// thêm tạm
-					truckUuid: [],
+					truckPlates: [],
 					customerUuid: '',
 					listCustomerUuid: form?.customerUuid ? [form?.customerUuid] : [],
 					companyUuid: '',

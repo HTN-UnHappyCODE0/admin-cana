@@ -1,8 +1,8 @@
 $color-placeholder: #b4b5bc;
 $color-focus: #2367ed;
 $bg-focus: #fff;
-$bg-disable: #f4f5f6;
-$border-disable: #e1e5ed;
+$bg-disable-input: #f4f5f6;
+$border-disable-input: #e1e5ed;
 
 .calendar {
 	position: relative;
@@ -26,10 +26,13 @@ $border-disable: #e1e5ed;
 		background-color: $bg-focus !important;
 	}
 
-	&.readonly {
-		cursor: default;
-		border: 1px solid $border-disable !important;
-		background-color: $bg-disable !important;
+	&.readOnly {
+		background-color: $bg-disable-input;
+		border: 1px solid $border-disable-input;
+
+		.inputElement {
+			background-color: $bg-disable-input;
+		}
 	}
 
 	.icon {

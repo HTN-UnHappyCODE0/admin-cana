@@ -19,7 +19,7 @@ import {toastWarn} from '~/common/funcs/toast';
 function CreateRFID({onClose}: PropsCreateRFID) {
 	const queryClient = useQueryClient();
 
-	const [form, setForm] = useState<{code: string; truckUuid: string; description: string}>({code: '', truckUuid: '', description: ''});
+	const [form, setForm] = useState<{code: string; truckPlate: string; description: string}>({code: '', truckPlate: '', description: ''});
 
 	const listTruck = useQuery([QUERY_KEY.dropdown_xe_hang], {
 		queryFn: () =>
@@ -49,7 +49,7 @@ function CreateRFID({onClose}: PropsCreateRFID) {
 				http: rfidServices.upsertRFID({
 					uuid: '',
 					code: form.code,
-					truckUuid: form.truckUuid,
+					truckPlate: form.truckPlate,
 					description: form.description,
 				}),
 			}),
@@ -57,7 +57,7 @@ function CreateRFID({onClose}: PropsCreateRFID) {
 			if (data) {
 				setForm({
 					code: '',
-					truckUuid: '',
+					truckPlate: '',
 					description: '',
 				});
 				onClose();
@@ -97,19 +97,19 @@ function CreateRFID({onClose}: PropsCreateRFID) {
 					<div className={clsx('mt')}>
 						<Select
 							isSearch
-							name='truckUuid'
+							name='truckPlate'
 							placeholder='Chọn xe'
-							value={form?.truckUuid}
+							value={form?.truckPlate}
 							onChange={(e: any) =>
 								setForm((prev: any) => ({
 									...prev,
-									truckUuid: e.target.value,
+									truckPlate: e.target.value,
 								}))
 							}
 							label={<span>Xe hàng</span>}
 						>
 							{listTruck?.data?.map((v: any) => (
-								<Option key={v?.uuid} value={v?.uuid} title={`${v?.licensePalate} - (${v?.code})`} />
+								<Option key={v?.licensePlate} value={v?.licensePlate} title={`${v?.licensePlate} - (${v?.code})`} />
 							))}
 						</Select>
 					</div>

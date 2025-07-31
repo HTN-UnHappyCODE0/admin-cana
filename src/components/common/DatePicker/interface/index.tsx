@@ -9,5 +9,5 @@ export interface PropsDatePicker {
 	futureDayblock?: number;
 	onSetValue(any: any): void;
 	onClean?: boolean;
-	readonly?: boolean;
+	readOnly?: boolean;
 }

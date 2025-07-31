@@ -267,8 +267,8 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 					scaleStationUuid: '',
 					storageTemporaryUuid: '',
 					portname: form?.portname,
-					lstTruckAddUuid: [],
-					lstTruckRemoveUuid: [],
+					lstTruckPlateAdd: [],
+					lstTruckPlateRemove: [],
 					timeEnd: form?.timeEnd ? timeSubmit(new Date(form?.timeEnd!), true) : null,
 					timeStart: form?.timeStart ? timeSubmit(new Date(form?.timeStart!)) : null,
 					descriptionWs: '',
@@ -457,7 +457,7 @@ function MainUpdateExport({}: PropsMainUpdateExport) {
 								<Option
 									key={v?.uuid}
 									value={v?.uuid}
-									title={v?.licensePalate}
+									title={v?.licensePlate}
 									onClick={() =>
 										setForm((prev) => ({
 											...prev,

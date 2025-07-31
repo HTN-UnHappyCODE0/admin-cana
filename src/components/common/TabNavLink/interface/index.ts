@@ -1,5 +1,6 @@
 export interface PropsTabNavLink {
-	outline?: boolean;
 	query: string;
+	outline?: boolean;
 	listHref: Array<{title: string; pathname: string; query: string | null}>;
+	listKeyRemove?: string[];
 }

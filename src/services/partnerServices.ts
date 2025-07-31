@@ -14,6 +14,8 @@ const partnerServices = {
 			userUuid: string;
 			provinceId: string;
 			type: number | null;
+			listCompanyUuid?: string[];
+			listUserUuid?: string[];
 		},
 		tokenAxios?: any
 	) => {
@@ -41,7 +43,6 @@ const partnerServices = {
 			phoneNumber: string;
 			email: string;
 			director: string;
-			districtId: string;
 			provinceId: string;
 			townId: string;
 			address: string;
@@ -51,6 +52,10 @@ const partnerServices = {
 			bankAccount: string;
 			companyUuid: string;
 			ktUuid: string;
+			fullName: string;
+			codeName: string;
+			regencyName: string;
+			isCreateDocs: number;
 		},
 		tokenAxios?: any
 	) => {

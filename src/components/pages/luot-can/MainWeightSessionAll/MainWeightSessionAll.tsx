@@ -64,7 +64,7 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 		codeStart: '',
 		codeEnd: '',
 	});
-	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [truckPlate, setTruckPlate] = useState<string[]>([]);
 	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
 	const debounceCodeStart = useDebounce(formCode.codeStart, 500);
 	const debounceCodeEnd = useDebounce(formCode.codeEnd, 500);
@@ -201,7 +201,7 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 			_page,
 			_pageSize,
 			_keyword,
-			truckUuid,
+			truckPlate,
 			_specUuid,
 			_status,
 			_dateFrom,
@@ -253,8 +253,8 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 						shift: !!_shift ? Number(_shift) : null,
 						scalesStationUuid: (_scalesStationUuid as string) || '',
 						isHaveSpec: null,
-						truckUuid: '',
-						listTruckUuid: truckUuid,
+						truckPlate: '',
+						listTruckPlate: truckPlate,
 					}),
 				}),
 			select(data) {
@@ -269,7 +269,7 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 			_page,
 			_pageSize,
 			_keyword,
-			truckUuid,
+			truckPlate,
 			_specUuid,
 			_status,
 			_dateFrom,
@@ -316,8 +316,8 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 									STATUS_WEIGHT_SESSION.CHOT_KE_TOAN,
 									STATUS_WEIGHT_SESSION.KCS_XONG,
 							  ],
-						truckUuid: '',
-						listTruckUuid: truckUuid,
+						truckPlate: '',
+						listTruckPlate: truckPlate,
 						shift: !!_shift ? Number(_shift) : null,
 						shipUuid: (_shipUuid as string) || '',
 						scalesStationUuid: (_scalesStationUuid as string) || '',
@@ -377,25 +377,25 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 							query='_shipUuid'
 							listFilter={listShip?.data?.map((v: any) => ({
 								id: v?.uuid,
-								name: v?.licensePalate,
+								name: v?.licensePlate,
 							}))}
 						/>
 
 						{/* <FilterCustom
 							isSearch
 							name='Biển số xe'
-							query='_truckUuid'
+							query='_truckPlate'
 							listFilter={listTruck?.data?.map((v: any) => ({
-								id: v?.uuid,
-								name: v?.licensePalate,
+								id: v?.licensePlate,
+								name: v?.licensePlate,
 							}))}
 						/> */}
 						<SelectFilterMany
-							selectedIds={truckUuid}
-							setSelectedIds={setTruckUuid}
+							selectedIds={truckPlate}
+							setSelectedIds={setTruckPlate}
 							listData={listTruck?.data?.map((v: any) => ({
-								uuid: v?.uuid,
-								name: v?.licensePalate,
+								uuid: v?.licensePlate,
+								name: v?.licensePlate,
 							}))}
 							name='Biển số xe'
 						/>
@@ -608,7 +608,7 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 							},
 							{
 								title: 'Biển số xe',
-								render: (data: IWeightSession) => <>{data?.truckUu?.licensePalate}</>,
+								render: (data: IWeightSession) => <>{data?.truckUu?.licensePlate}</>,
 							},
 							{
 								title: 'Từ',
@@ -732,7 +732,7 @@ function MainWeightSessionAll({}: PropsMainWeightSessionAll) {
 					dependencies={[
 						_pageSize,
 						_keyword,
-						truckUuid,
+						truckPlate,
 						_specUuid,
 						_status,
 						_dateFrom,

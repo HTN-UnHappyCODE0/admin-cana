@@ -212,7 +212,8 @@ function MainSpecifications({}: PropsMainSpecifications) {
 							},
 							{
 								title: 'Thời gian tạo',
-								render: (data: ISpecifications) => <Moment date={data?.created} format='HH:mm - DD/MM/YYYY'></Moment>,
+								render: (data: ISpecifications) =>
+									data?.created ? <Moment date={data?.created} format='HH:mm - DD/MM/YYYY' /> : '---',
 							},
 							{
 								title: 'Trạng thái',
@@ -255,7 +256,7 @@ function MainSpecifications({}: PropsMainSpecifications) {
 
 			<Dialog
 				danger={dataStatus?.status == CONFIG_STATUS.HOAT_DONG}
-				green={dataStatus?.status != CONFIG_STATUS.HOAT_DONG}
+				green={dataStatus?.status == CONFIG_STATUS.BI_KHOA}
 				open={!!dataStatus}
 				onClose={() => setDataStatus(null)}
 				title={dataStatus?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa quy cách' : 'Mở khóa quy cách'}

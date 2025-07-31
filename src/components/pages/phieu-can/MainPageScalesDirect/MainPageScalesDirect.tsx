@@ -52,28 +52,40 @@ import SelectFilterMany from '~/components/common/SelectFilterMany';
 import truckServices from '~/services/truckServices';
 import PopupWeighReject from '../PopupWeighReject';
 import companyServices from '~/services/companyServices';
+import weightSessionServices from '~/services/weightSessionServices';
+import Image from 'next/image';
+import icons from '~/constants/images/icons';
 
 function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [isHaveDryness, setIsHaveDryness] = useState<string>('');
 	const [customerUuid, setCustomerUuid] = useState<string[]>([]);
-	const [truckUuid, setTruckUuid] = useState<string[]>([]);
+	const [truckPlate, setTruckPlate] = useState<string[]>([]);
 
-	const {_page, _pageSize, _keyword, _isBatch, _productTypeUuid, _shipUuid, _status, _dateFrom, _dateTo, _state, _scalesStationUuid} =
-		router.query;
+	const {_page, _pageSize, _keyword, _isBatch, _status, _dateFrom, _dateTo, _state} = router.query;
 
 	const [uuidPlay, setUuidPlay] = useState<string>('');
 	const [uuidStop, setUuidStop] = useState<string>('');
 	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
+	const [listCompanyName, setListCompanyName] = useState<any[]>([]);
 	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [listBatchBill, setListBatchBill] = useState<any[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [openWeighReject, setOpenWeighReject] = useState<string | null>(null);
 	const [uuidCompany, setUuidCompany] = useState<string>('');
 	const [uuidQuality, setUuidQuality] = useState<string>('');
+	const [nameQuality, setNameQuality] = useState<string>('');
 	const [uuidStorage, setUuidStorage] = useState<string>('');
+	const [nameStorage, setNameStorage] = useState<string>('');
 	const [listCompanyUuid, setListCompanyUuid] = useState<any[]>([]);
+	const [uuidProduct, setUuidProduct] = useState<string>('');
+	const [nameProduct, setNameProduct] = useState<string>('');
+	const [uuidShip, setUuidShip] = useState<string>('');
+	const [nameShip, setNameShip] = useState<string>('');
+	const [uuidScalesStation, setUuidScalesStation] = useState<string>('');
+	const [nameScalesStation, setNameScalesStation] = useState<string>('');
+	const [dataBatchBillSelect, setDataBatchBillSelect] = useState<any[]>([]);
 
 	const listQuality = useQuery([QUERY_KEY.dropdown_quoc_gia], {
 		queryFn: () =>
@@ -250,17 +262,17 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 			_keyword,
 			_isBatch,
 			customerUuid,
-			_productTypeUuid,
-			_shipUuid,
+			uuidProduct,
+			uuidShip,
 			_status,
 			_dateFrom,
 			_dateTo,
 			_state,
 			uuidQuality,
 			uuidStorage,
-			_scalesStationUuid,
+			uuidScalesStation,
 			isHaveDryness,
-			truckUuid,
+			truckPlate,
 			uuidCompany,
 			listCompanyUuid,
 		],
@@ -278,7 +290,7 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 						scalesType: [TYPE_SCALES.CAN_TRUC_TIEP],
 						isBatch: !!_isBatch ? Number(_isBatch) : null,
 						isCreateBatch: null,
-						productTypeUuid: (_productTypeUuid as string) || '',
+						productTypeUuid: (uuidProduct as string) || '',
 						specificationsUuid: '',
 						state: !!_state
 							? [Number(_state)]
@@ -304,12 +316,12 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 						warehouseUuid: '',
 						qualityUuid: uuidQuality,
 						transportType: null,
-						shipUuid: (_shipUuid as string) || '',
+						shipUuid: (uuidShip as string) || '',
 						typeCheckDay: 0,
-						scalesStationUuid: (_scalesStationUuid as string) || '',
+						scalesStationUuid: (uuidScalesStation as string) || '',
 						storageUuid: uuidStorage,
 						isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
-						truckUuid: truckUuid,
+						truckPlates: truckPlate,
 						customerUuid: '',
 						listCustomerUuid: customerUuid,
 						companyUuid: uuidCompany,
@@ -376,6 +388,35 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 		},
 	});
 
+	const exportExcelGroupTruck = useMutation({
+		mutationFn: () => {
+			return httpRequest({
+				http: weightSessionServices.exportExcelWsGroupTruck({
+					page: Number(_page) || 1,
+					pageSize: Number(_pageSize) || 200,
+					timeStart: _dateFrom ? (_dateFrom as string) : null,
+					timeEnd: _dateTo ? (_dateTo as string) : null,
+					billUuids: dataBatchBillSelect.map((v: any) => v.uuid),
+					companyName: listCompanyName.join(', '),
+					scaleStationName: nameScalesStation as string,
+					storageName: nameStorage as string,
+					qualityName: nameQuality as string,
+					shipName: nameShip as string,
+					productName: nameProduct as string,
+				}),
+			});
+		},
+		onSuccess(data) {
+			if (data) {
+				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
+				setOpenExportExcel(false);
+			}
+		},
+	});
+	const handleExportExcelGroupTruck = () => {
+		setDataBatchBillSelect(listBatchBill?.filter((v) => v.isChecked !== false));
+		return exportExcelGroupTruck.mutate();
+	};
 	const exportExcel = useMutation({
 		mutationFn: (isHaveSpec: number) => {
 			return httpRequest({
@@ -391,7 +432,7 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 					listCustomerUuid: customerUuid,
 					isBatch: !!_isBatch ? Number(_isBatch) : null,
 					isCreateBatch: null,
-					productTypeUuid: (_productTypeUuid as string) || '',
+					productTypeUuid: (uuidProduct as string) || '',
 					specificationsUuid: '',
 					state: !!_state
 						? [Number(_state)]
@@ -417,14 +458,14 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 					warehouseUuid: '',
 					qualityUuid: uuidQuality,
 					transportType: null,
-					shipUuid: (_shipUuid as string) || '',
+					shipUuid: (uuidShip as string) || '',
 					typeCheckDay: 0,
-					scalesStationUuid: (_scalesStationUuid as string) || '',
+					scalesStationUuid: (uuidScalesStation as string) || '',
 					documentId: '',
 					storageUuid: uuidStorage,
 					isExportSpec: isHaveSpec,
 					isHaveDryness: isHaveDryness ? Number(isHaveDryness) : null,
-					truckUuid: truckUuid,
+					truckPlates: truckPlate,
 					companyUuid: uuidCompany,
 					listCompanyUuid: listCompanyUuid,
 				}),
@@ -453,9 +494,28 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={funcStartBatchBill.isLoading || funcStopBatchBill.isLoading || exportExcel.isLoading} />
+			<Loading
+				loading={
+					funcStartBatchBill.isLoading || funcStopBatchBill.isLoading || exportExcel.isLoading || exportExcelGroupTruck.isLoading
+				}
+			/>
 			<div className={styles.header}>
 				<div className={styles.main_search}>
+					{listBatchBill?.some((x) => x.isChecked !== false) && (
+						<div style={{height: 40}}>
+							<Button
+								className={styles.btn}
+								rounded_2
+								maxHeight
+								green
+								p_4_12
+								icon={<Image alt='icon export' src={icons.export_excel} width={20} height={20} />}
+								onClick={handleExportExcelGroupTruck}
+							>
+								Xuất excel nhóm theo xe
+							</Button>
+						</div>
+					)}
 					<div className={styles.search}>
 						<Search keyName='_keyword' placeholder='Tìm kiếm theo mã lô hàng' />
 					</div>
@@ -463,6 +523,7 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 					<SelectFilterMany
 						selectedIds={listCompanyUuid}
 						setSelectedIds={setListCompanyUuid}
+						setSelectedNames={setListCompanyName}
 						listData={listCompany?.data?.map((v: any) => ({
 							uuid: v?.uuid,
 							name: v?.name,
@@ -500,31 +561,34 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 						/>
 					</div>
 					<SelectFilterMany
-						selectedIds={truckUuid}
-						setSelectedIds={setTruckUuid}
+						selectedIds={truckPlate}
+						setSelectedIds={setTruckPlate}
 						listData={listTruck?.data?.map((v: any) => ({
-							uuid: v?.uuid,
-							name: v?.licensePalate,
+							uuid: v?.licensePlate,
+							name: v?.licensePlate,
 						}))}
 						name='Biển số xe'
 					/>
-					<FilterCustom
-						isSearch
-						name='Loại hàng'
-						query='_productTypeUuid'
-						listFilter={listProductType?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterState
+						uuid={uuidProduct}
+						setUuid={setUuidProduct}
+						setName={setNameProduct}
+						listData={listProductType?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						placeholder='Loại hàng'
 					/>
-					<FilterCustom
-						isSearch
-						name='Mã tàu'
-						query='_shipUuid'
-						listFilter={listShip?.data?.map((v: any) => ({
-							id: v?.uuid,
-							name: v?.licensePalate,
+
+					<SelectFilterState
+						uuid={uuidShip}
+						setUuid={setUuidShip}
+						setName={setNameShip}
+						listData={listShip?.data?.map((v: any) => ({
+							uuid: v?.uuid,
+							name: v?.licensePlate,
 						}))}
+						placeholder='Mã tàu'
 					/>
 					<FilterCustom
 						isSearch
@@ -584,18 +648,20 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 							},
 						]}
 					/>
-					<FilterCustom
-						isSearch
-						name='Trạm cân'
-						query='_scalesStationUuid'
-						listFilter={listScalesStation?.data?.map((v: any) => ({
-							id: v?.uuid,
+					<SelectFilterState
+						uuid={uuidScalesStation}
+						setUuid={setUuidScalesStation}
+						setName={setNameScalesStation}
+						listData={listScalesStation?.data?.map((v: any) => ({
+							uuid: v?.uuid,
 							name: v?.name,
 						}))}
+						placeholder='Trạm cân'
 					/>
 					<SelectFilterState
 						uuid={uuidQuality}
 						setUuid={setUuidQuality}
+						setName={setNameQuality}
 						listData={listQuality?.data?.map((v: any) => ({
 							uuid: v?.uuid,
 							name: v?.name,
@@ -605,6 +671,7 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 					<SelectFilterState
 						uuid={uuidStorage}
 						setUuid={setUuidStorage}
+						setName={setNameStorage}
 						listData={listStorage?.data?.map((v: any) => ({
 							uuid: v?.uuid,
 							name: v?.name,
@@ -666,6 +733,7 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 						column={[
 							{
 								title: 'STT',
+								checkBox: true,
 								render: (data: ITableBillScale, index: number) => <>{index + 1}</>,
 							},
 							{
@@ -717,12 +785,12 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 											<>
 												{data?.isBatch == TYPE_BATCH.CAN_LO && (
 													<p style={{fontWeight: 500, color: '#3772FF'}}>
-														{data?.batchsUu?.shipUu?.licensePalate || '---'}
+														{data?.batchsUu?.shipUu?.licensePlate || '---'}
 													</p>
 												)}
 												{data?.isBatch == TYPE_BATCH.CAN_LE && (
 													<p style={{fontWeight: 500, color: '#3772FF'}}>
-														{data?.weightSessionUu?.truckUu?.licensePalate || '---'}
+														{data?.weightSessionUu?.truckUu?.licensePlate || '---'}
 													</p>
 												)}
 											</>
@@ -739,16 +807,16 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 											data?.scalesType == TYPE_SCALES.CAN_XUAT &&
 												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
 													<p style={{fontWeight: 400, color: '#3772FF'}}>
-														{data?.numShip || '---'} . {data?.batchsUu?.shipUu?.licensePalate || '---'}
+														{data?.batchsUu?.shipUu?.licensePlate || '---'} . {data?.numShip || '---'}
 													</p>
 												) : (
 													<p style={{fontWeight: 400, color: '#3772FF'}}>
-														{data?.batchsUu?.shipUu?.licensePalate || '---'}
+														{data?.batchsUu?.shipUu?.licensePlate || '---'}
 													</p>
 												))
 											// (
 											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
-											// 		{data?.batchsUu?.shipUu?.licensePalate || '---'}
+											// 		{data?.batchsUu?.shipUu?.licensePlate || '---'}
 											// 	</p>
 											// )
 										}
@@ -756,27 +824,27 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 											!(data?.scalesType == TYPE_SCALES.CAN_XUAT) &&
 												(data?.isBatch == TYPE_BATCH.CAN_LO ? (
 													<p style={{fontWeight: 400, color: '#3772FF'}}>
-														{data?.numShip || '---'} . {data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+														{data?.batchsUu?.shipOutUu?.licensePlate || '---'} . {data?.numShip || '---'}
 													</p>
 												) : (
 													<p style={{fontWeight: 400, color: '#3772FF'}}>
-														{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+														{data?.batchsUu?.shipOutUu?.licensePlate || '---'}
 													</p>
 												))
 											// (
 											// 	<p style={{fontWeight: 400, color: '#3772FF'}}>
-											// 		{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+											// 		{data?.batchsUu?.shipOutUu?.licensePlate || '---'}
 											// 	</p>
 											// )
 										}
 										{/* {data?.scalesType == TYPE_SCALES.CAN_XUAT && (
 											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipUu?.licensePalate || '---'}
+												{data?.batchsUu?.shipUu?.licensePlate || '---'}
 											</p>
 										)}
 										{!(data?.scalesType == TYPE_SCALES.CAN_XUAT) && (
 											<p style={{fontWeight: 400, color: '#3772FF'}}>
-												{data?.batchsUu?.shipOutUu?.licensePalate || '---'}
+												{data?.batchsUu?.shipOutUu?.licensePlate || '---'}
 											</p>
 										)} */}
 									</>
@@ -827,7 +895,7 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 							},
 							{
 								title: 'Tàu trung chuyển',
-								render: (data: ITableBillScale) => <>{data?.shipTempUu?.licensePalate || '---'}</>,
+								render: (data: ITableBillScale) => <>{data?.shipTempUu?.licensePlate || '---'}</>,
 							},
 							{
 								title: 'Xác nhận SL',
@@ -1036,17 +1104,17 @@ function MainPageScalesDirect({}: PropsMainPageScalesDirect) {
 							_keyword,
 							_isBatch,
 							customerUuid,
-							_productTypeUuid,
-							_shipUuid,
+							uuidProduct,
+							uuidShip,
 							_status,
 							_dateFrom,
 							_dateTo,
 							_state,
 							uuidQuality,
 							uuidStorage,
-							_scalesStationUuid,
+							uuidScalesStation,
 							isHaveDryness,
-							truckUuid,
+							truckPlate,
 							listCompanyUuid,
 						]}
 					/>

@@ -3,6 +3,7 @@ import axiosClient from '.';
 
 const weightSessionServices = {
 	listWeightsession: (
+		///test001
 		data: {
 			pageSize: number;
 			page: number;
@@ -26,8 +27,8 @@ const weightSessionServices = {
 			scalesStationUuid?: string;
 			isHaveSpec?: number | null;
 			isHaveDryness?: number | null;
-			truckUuid: string;
-			listTruckUuid: string[];
+			truckPlate: string;
+			listTruckPlate: string[];
 			customerUuid: string;
 			listCustomerUuid: string[];
 			listCompanyUuid?: string[];
@@ -86,7 +87,7 @@ const weightSessionServices = {
 			isPaging: CONFIG_PAGING;
 			scalesType: number[];
 			billUuid: string;
-			truckUuid: string;
+			truckPlate: string;
 			storageUuid: string;
 			customerUuid: string;
 			productTypeUuid: string;
@@ -99,7 +100,7 @@ const weightSessionServices = {
 			shift: number | null;
 			groupBy: number | null;
 
-			listTruckUuid: string[];
+			listTruckPlate: string[];
 			listCustomerUuid?: string[];
 			companyUuid?: string;
 			scalesStationUuid?: string;
@@ -125,8 +126,8 @@ const weightSessionServices = {
 			isPaging: CONFIG_PAGING;
 			scalesType: number[];
 			billUuid: string;
-			truckUuid: string;
-			listTruckUuid: string[];
+			truckPlate: string;
+			listTruckPlate: string[];
 			storageUuid: string;
 			productTypeUuid: string;
 			shipUuid: string;
@@ -158,7 +159,7 @@ const weightSessionServices = {
 			isPaging: CONFIG_PAGING;
 			scalesType: number[];
 			billUuid: string;
-			truckUuid: string;
+			truckPlate: string;
 			storageUuid: string;
 			isBatch: number | null;
 			timeStart: string | null;
@@ -189,6 +190,26 @@ const weightSessionServices = {
 		tokenAxios?: any
 	) => {
 		return axiosClient.post(`/WeightSession/update-dryness2`, data, {
+			cancelToken: tokenAxios,
+		});
+	},
+	exportExcelWsGroupTruck: (
+		data: {
+			pageSize: number;
+			page: number;
+			timeStart: string | null;
+			timeEnd: string | null;
+			companyName: string;
+			scaleStationName: string;
+			shipName: string;
+			productName: string;
+			qualityName: string;
+			storageName: string;
+			billUuids: string[];
+		},
+		tokenAxios?: any
+	) => {
+		return axiosClient.post(`/WeightSession/export-excel-ws-group-truck`, data, {
 			cancelToken: tokenAxios,
 		});
 	},

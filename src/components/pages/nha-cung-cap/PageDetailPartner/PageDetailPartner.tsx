@@ -1,144 +1,204 @@
-import React, {Fragment, useState} from 'react';
-
-import {ICustomer, IDetailPartner, PropsPageDetailPartner} from './interfaces';
+import React, {useState} from 'react';
+import {IDetailPartner, PropsPageDetailPartner} from './interfaces';
 import styles from './PageDetailPartner.module.scss';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {
-	CONFIG_DESCENDING,
-	CONFIG_PAGING,
-	CONFIG_STATUS,
-	CONFIG_TYPE_FIND,
-	QUERY_KEY,
-	STATUS_CUSTOMER,
-	TYPE_PARTNER,
-} from '~/constants/config/enum';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {CONFIG_DESCENDING, CONFIG_PAGING, CONFIG_STATUS, CONFIG_TYPE_FIND, QUERY_KEY} from '~/constants/config/enum';
 import {useRouter} from 'next/router';
 import {httpRequest} from '~/services';
 import partnerServices from '~/services/partnerServices';
-import customerServices from '~/services/customerServices';
 import Link from 'next/link';
-import {IoArrowBackOutline} from 'react-icons/io5';
+import {IoArrowBackOutline, IoClose} from 'react-icons/io5';
 import clsx from 'clsx';
 import GridColumn from '~/components/layouts/GridColumn';
 import TagStatus from '~/components/common/TagStatus';
-import Pagination from '~/components/common/Pagination';
-import DataWrapper from '~/components/common/DataWrapper';
-import Table from '~/components/common/Table';
-import Noti from '~/components/common/DataWrapper/components/Noti';
 import Button from '~/components/common/Button';
 import {LuPencil} from 'react-icons/lu';
-import {getTextAddress} from '~/common/funcs/optionConvert';
-import Image from 'next/image';
-import icons from '~/constants/images/icons';
-import {PATH} from '~/constants/config';
-import {HiOutlineLockClosed, HiOutlineLockOpen} from 'react-icons/hi';
-import Dialog from '~/components/common/Dialog';
-import Loading from '~/components/common/Loading';
-import IconCustom from '~/components/common/IconCustom';
-import {RiDeleteBin5Line} from 'react-icons/ri';
-import Popup from '~/components/common/Popup';
 
+import {getTextAddress, timeSubmit} from '~/common/funcs/optionConvert';
+import TabNavLink from '~/components/common/TabNavLink';
+import TableImport from '../TableImport';
+import TablePay from '../TablePay';
+import TableDebt from '../TableDebt';
+import debtBillServices from '~/services/debtBillServices';
+import Loading from '~/components/common/Loading';
+import Popup from '~/components/common/Popup';
+import DatePicker from '~/components/common/DatePicker';
+import {toastWarn} from '~/common/funcs/toast';
+import FlexLayout from '~/components/layouts/FlexLayout';
+import FullColumnFlex from '~/components/layouts/FlexLayout/components/FullColumnFlex';
+import Select, {Option} from '~/components/common/Select';
+import companyServices from '~/services/companyServices';
+import dashbroadServices from '~/services/dashbroadServices';
 import ItemDashboard from '../../trang-chu/ItemDashboard';
-import PopupDeleteCustomer from '../PopupDeleteCustomer';
+import TableContract from '../TableContract';
 
 function PageDetailPartner({}: PropsPageDetailPartner) {
 	const router = useRouter();
-	const queryClient = useQueryClient();
 
-	const {_id, _page, _pageSize, _status} = router.query;
+	const {_uuid, _type} = router.query;
 
-	const [openChangeStatus, setOpenChangeStatus] = useState<boolean>(false);
-	const [dataDeleteCustomer, setDataDeleteCustomer] = useState<ICustomer | null>(null);
-	const [dataChangeStatusCustomer, setDataChangeStatusCustomer] = useState<ICustomer | null>(null);
+	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
+	const [openSendMail, setOpenSendMail] = useState<boolean>(false);
+	const [openRefreshMonthly, setOpenFreshMonthly] = useState<boolean>(false);
+	const [timeStart, setTimeStart] = useState<Date | null>(null);
+	const [timeEnd, setTimeEnd] = useState<Date | null>(null);
+	const [timeStartRefresh, setTimeStartRefresh] = useState<Date | null>(null);
+	const [timeEndRefresh, setTimeEndRefresh] = useState<Date | null>(null);
+	const [companyUuid, setCompanyUuid] = useState<string | null>(null);
 
-	const {data: detailPartner, isLoading} = useQuery<IDetailPartner>([QUERY_KEY.chi_tiet_nha_cung_cap, _id], {
+	const {data: detailPartner, isLoading} = useQuery<IDetailPartner>([QUERY_KEY.chi_tiet_doi_tac, _uuid], {
 		queryFn: () =>
 			httpRequest({
 				http: partnerServices.detailPartner({
-					uuid: _id as string,
+					uuid: _uuid as string,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!_id,
+		enabled: !!_uuid,
 	});
 
-	const listCustomer = useQuery([QUERY_KEY.table_khach_hang_doi_tac, _id, _page, _pageSize], {
+	const listCompany = useQuery([QUERY_KEY.dropdown_cong_ty], {
 		queryFn: () =>
 			httpRequest({
-				isList: true,
-				http: customerServices.listCustomer({
-					page: Number(_page) || 1,
-					pageSize: Number(_pageSize) || 200,
+				isDropdown: true,
+				http: companyServices.listCompany({
+					page: 1,
+					pageSize: 50,
 					keyword: '',
-					specUuid: '',
-					userUuid: '',
-					provinceId: '',
-					status: !!_status ? Number(_status) : null,
-					typeCus: null,
-					partnerUUid: _id as string,
+					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-					typeFind: CONFIG_TYPE_FIND.TABLE,
-					isPaging: CONFIG_PAGING.IS_PAGING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!_id,
 	});
 
-	const funcChangeStatusPartner = useMutation({
+	const exportExcel = useMutation({
 		mutationFn: () => {
 			return httpRequest({
-				showMessageFailed: true,
-				showMessageSuccess: true,
-				msgSuccess: detailPartner?.status == CONFIG_STATUS.BI_KHOA ? 'Mở khóa thành công' : 'Khóa thành công',
-				http: partnerServices.changeStatus({
-					uuid: detailPartner?.uuid!,
-					status: detailPartner?.status! == CONFIG_STATUS.HOAT_DONG ? CONFIG_STATUS.BI_KHOA : CONFIG_STATUS.HOAT_DONG,
+				http: debtBillServices.exportExcel({
+					partnerUuid: _uuid as string,
+					timeStart: timeSubmit(timeStart),
+					timeEnd: timeSubmit(timeEnd, true),
+					companyUuid: companyUuid || '',
 				}),
 			});
 		},
-		onSuccess: (data) => {
+		onSuccess(data) {
 			if (data) {
-				setOpenChangeStatus(false);
-				queryClient.invalidateQueries([QUERY_KEY.chi_tiet_nha_cung_cap]);
+				handleCloseExportExcel();
+				window.open(`${process.env.NEXT_PUBLIC_PATH_EXPORT}/${data}`, '_blank');
 			}
 		},
 	});
 
-	const funcChangeStatusCustomer = useMutation({
+	const handleCloseExportExcel = () => {
+		setOpenExportExcel(false);
+		setTimeStart(null);
+		setTimeEnd(null);
+		setCompanyUuid(null);
+	};
+
+	const handleExportExcel = () => {
+		const dateStart = new Date(timeStart!);
+		const dateEnd = new Date(timeSubmit(timeEnd!)!);
+
+		if (dateStart > dateEnd) {
+			return toastWarn({msg: 'Bộ lọc không hợp lệ!'});
+		}
+
+		return exportExcel.mutate();
+	};
+
+	const sendMail = useMutation({
 		mutationFn: () => {
 			return httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: dataChangeStatusCustomer?.status == CONFIG_STATUS.BI_KHOA ? 'Mở khóa thành công' : 'Khóa thành công',
-				http: customerServices.changeStatus({
-					uuid: dataChangeStatusCustomer?.uuid!,
-					status:
-						dataChangeStatusCustomer?.status! == STATUS_CUSTOMER.HOP_TAC
-							? STATUS_CUSTOMER.DUNG_HOP_TAC
-							: STATUS_CUSTOMER.HOP_TAC,
+				msgSuccess: 'Gửi email thành công!',
+				http: debtBillServices.sendMail({
+					timeStart: timeSubmit(timeStart),
+					timeEnd: timeSubmit(timeEnd, true),
+					partnerUuid: [_uuid as string],
 				}),
 			});
 		},
-		onSuccess: (data) => {
+		onSuccess(data) {
 			if (data) {
-				setDataChangeStatusCustomer(null);
-				queryClient.invalidateQueries([QUERY_KEY.table_khach_hang_doi_tac]);
-				queryClient.invalidateQueries([QUERY_KEY.chi_tiet_nha_cung_cap]);
+				handleCloseSendMail();
 			}
 		},
 	});
+	const refreshMonthlyDebt = useMutation({
+		mutationFn: () => {
+			return httpRequest({
+				showMessageFailed: true,
+				showMessageSuccess: true,
+				msgSuccess: 'Tính toán lại công nợ thành công!',
+				http: dashbroadServices.refreshMonthlyDebt({
+					timeStart: timeSubmit(timeStartRefresh),
+					timeEnd: timeSubmit(timeEndRefresh, true),
+					partnerUuid: [_uuid as string],
+				}),
+			});
+		},
+		onSuccess(data) {
+			if (data) {
+				handleCloseRefreshMonthlyDebt();
+			}
+		},
+	});
+
+	const handleSendMail = () => {
+		const dateStart = new Date(timeStart!);
+		const dateEnd = new Date(timeSubmit(timeEnd!)!);
+
+		if (dateStart > dateEnd) {
+			return toastWarn({msg: 'Bộ lọc không hợp lệ!'});
+		}
+
+		return sendMail.mutate();
+	};
+
+	const handleRefreshMonthlyDebt = () => {
+		const dateStart = new Date(timeStart!);
+		const dateEnd = new Date(timeSubmit(timeEnd!)!);
+
+		if (dateStart > dateEnd) {
+			return toastWarn({msg: 'Bộ lọc không hợp lệ!'});
+		}
+
+		return refreshMonthlyDebt.mutate();
+	};
+
+	const handleOpenFreshMonthly = () => {
+		setOpenFreshMonthly(true);
+		setTimeEndRefresh(new Date());
+	};
+
+	const handleCloseSendMail = () => {
+		setOpenSendMail(false);
+		setTimeStart(null);
+		setTimeEnd(null);
+	};
+
+	const handleCloseRefreshMonthlyDebt = () => {
+		setOpenFreshMonthly(false);
+		setTimeStartRefresh(null);
+		setTimeEndRefresh(null);
+	};
 
 	return (
-		<Fragment>
-			<Loading loading={funcChangeStatusPartner.isLoading || funcChangeStatusCustomer.isLoading} />
+		<FlexLayout isPage={true}>
+			<Loading loading={exportExcel.isLoading || sendMail.isLoading} />
 			<div className={styles.header}>
 				<Link
-					href={PATH.NhaCungCap}
+					href='#'
 					onClick={(e) => {
 						e.preventDefault();
 						window.history.back();
@@ -148,6 +208,7 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					<IoArrowBackOutline fontSize={20} fontWeight={600} />
 					<p>Chi tiết công ty {detailPartner?.name}</p>
 				</Link>
+
 				<div className={styles.list_btn}>
 					<Button
 						rounded_2
@@ -160,278 +221,413 @@ function PageDetailPartner({}: PropsPageDetailPartner) {
 					>
 						Chỉnh sửa
 					</Button>
+					<Button rounded_2 w_fit orange p_8_16 bold onClick={handleOpenFreshMonthly}>
+						Tính lại công nợ
+					</Button>
 
-					<Button
-						rounded_2
-						w_fit
-						light_outline
-						p_8_16
-						bold
-						icon={
-							detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? (
-								<HiOutlineLockClosed color='#23262F' fontSize={18} fontWeight={600} />
-							) : (
-								<HiOutlineLockOpen color='#23262F' fontSize={18} fontWeight={600} />
-							)
-						}
-						onClick={() => setOpenChangeStatus(true)}
-					>
-						{detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa' : 'Mở khóa'}
+					<Button rounded_2 w_fit p_8_16 green bold onClick={() => setOpenExportExcel(true)}>
+						Xuất báo cáo gửi KH
+					</Button>
+					<Button className={styles.btn} rounded_2 maxHeight p_8_16 onClick={() => setOpenSendMail(true)}>
+						Gửi Email
 					</Button>
 				</div>
 			</div>
-			<div>
-				<div className={clsx('mt')}>
-					<GridColumn col_4>
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Công nợ tạm tính'
-							value={detailPartner?.debtDemo!}
-							unit='VND'
-						/>
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Công nợ chuẩn'
-							value={detailPartner?.debtReal!}
-							unit='VND'
-						/>
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Tổng công nợ'
-							value={detailPartner?.debtDemo! + detailPartner?.debtReal!}
-							unit='VND'
-						/>
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Tổng tiền thuế' value={detailPartner?.tax} unit='VND' />
-					</GridColumn>
-				</div>
-
-				<div className={clsx('mt')}>
-					<GridColumn col_5>
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Nhà cung cấp' value={detailPartner?.countCustomer!} />
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu chưa KCS' value={detailPartner?.totalBillDemo!} />
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Phiếu đã KCS' value={detailPartner?.totalBillKCS!} />
-						<ItemDashboard isLoading={isLoading} color='#3772FF' text='Số lần thu' value={detailPartner?.totalTransactionIn!} />
-						<ItemDashboard
-							isLoading={isLoading}
-							color='#3772FF'
-							text='Số lần chi'
-							value={detailPartner?.totalTransactionOut!}
-						/>
-					</GridColumn>
-				</div>
-			</div>
 			<div className={clsx('mt')}>
-				<table className={styles.container}>
-					<colgroup>
-						<col style={{width: '50%'}} />
-						<col style={{width: '50%'}} />
-					</colgroup>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Tên công ty: </span>
-							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.name || '---'}</span>
-						</td>
-						<td>
-							<span style={{marginRight: 6}}>KV cảng xuất khẩu:</span> {detailPartner?.companyUu?.name || '---'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Mã công ty: </span>
-							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.code || '---'}</span>
-						</td>
-						<td>
-							<span style={{marginRight: 6}}>Người liên hệ:</span> {detailPartner?.director || '---'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Mã số thuế:</span> {detailPartner?.taxCode || '---'}
-						</td>
-						<td>
-							<span style={{marginRight: 6}}>Địa chỉ:</span>
-							{getTextAddress(detailPartner?.detailAddress, detailPartner?.address)}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Số điện thoại: </span>
-							{detailPartner?.phoneNumber || '---'}
-						</td>
-						<td>
-							<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-								<span style={{marginRight: 6}}>Trạng thái: </span>
-								<span>
-									<TagStatus status={detailPartner?.status as CONFIG_STATUS} />
-								</span>
+				<TabNavLink
+					listHref={[
+						{
+							title: 'Tổng quan',
+							pathname: router.pathname,
+							query: null,
+						},
+						{
+							title: 'Lịch sử nhập hàng',
+							pathname: router.pathname,
+							query: 'history-import',
+						},
+						{
+							title: 'Lịch sử thanh toán',
+							pathname: router.pathname,
+							query: 'history-pay',
+						},
+						{
+							title: 'Lịch sử công nợ',
+							pathname: router.pathname,
+							query: 'history-debt',
+						},
+						{
+							title: 'Lịch sử hợp đồng',
+							pathname: router.pathname,
+							query: 'history-contract',
+						},
+					]}
+					query='_type'
+					listKeyRemove={[
+						'_typeDate',
+						'_dateFrom',
+						'_dateTo',
+						'_page',
+						'_pageSize',
+						'_q',
+						'_k',
+						'_companiUuid',
+						'_date',
+						'_typeTranfer',
+					]}
+				/>
+			</div>
+			<FullColumnFlex>
+				{!_type && (
+					<>
+						<div className={clsx('mt')}>
+							<div>
+								<ItemDashboard
+									isLoading={isLoading}
+									color='#FB923C'
+									text='Công nợ phải trả'
+									value={detailPartner?.debtTotal!}
+									unit='VNĐ'
+								/>
 							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Ngân hàng:</span>
-							{detailPartner?.bankName || '---'}
-						</td>
-						<td rowSpan={4} className={styles.description}>
-							<span style={{marginRight: 6}}>Mô tả:</span>
-							{detailPartner?.description || '---'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Email: </span>
-							<span style={{marginRight: 6, color: '#3772FF'}}>{detailPartner?.email || '---'}</span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style={{marginRight: 6}}>Số tài khoản: </span>
-							{detailPartner?.bankAccount || '---'}
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div className={clsx('mt')}>
-				<div className={styles.btn_header}>
-					<div className={styles.main_table}>
-						<h1 className={styles.list_title}>
-							Danh sách nhà cung cấp thuộc công ty ({listCustomer?.data?.pagination?.totalCount})
-						</h1>
-					</div>
-					<div>
-						<Button
-							href={`${PATH.ThemMoiXuong}?_partnerUuid=${_id}&_typeCus=${TYPE_PARTNER.NCC}`}
-							p_8_16
-							rounded_2
-							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
-						>
-							Thêm nhà cung cấp
-						</Button>
-					</div>
-				</div>
-			</div>
-			<div className={clsx('mt')}>
-				<div className={styles.table}>
-					<DataWrapper
-						data={listCustomer.data?.items || []}
-						loading={listCustomer.isLoading}
-						noti={<Noti disableButton des='Hiện tại chưa có nhà cung cấp nào!' />}
-					>
-						<Table
-							data={listCustomer.data?.items || []}
-							column={[
-								{
-									title: 'Mã nhà cung cấp',
-									render: (data: ICustomer) => <>{data.code}</>,
-								},
-								{
-									title: 'Tên nhà cung cấp',
-									fixedLeft: true,
-									render: (data: ICustomer) => (
-										<Link href={`/xuong/${data?.uuid}?_typeCus=${TYPE_PARTNER.NCC}`} className={styles.link}>
-											{data?.name || '---'}
-										</Link>
-									),
-								},
-								{
-									title: 'Kho hàng',
-									render: (data: ICustomer) => <>{data?.warehouseUu?.name || '---'}</>,
-								},
-								{
-									title: 'Số điện thoại',
-									render: (data: ICustomer) => <>{data.phoneNumber || '---'}</>,
-								},
-								{
-									title: 'Email',
-									render: (data: ICustomer) => <>{data.email || '---'}</>,
-								},
-								{
-									title: 'Nhân viên',
-									render: (data: ICustomer) => <>{data?.userUu?.fullName || '---'}</>,
-								},
-								{
-									title: 'Trạng thái',
-									render: (data: ICustomer) => <TagStatus status={data?.status} />,
-								},
-								{
-									title: 'Tác vụ',
-									fixedRight: true,
-									render: (data: ICustomer) =>
-										data?.status != STATUS_CUSTOMER.DA_XOA && (
-											<div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-												<IconCustom
-													edit
-													icon={
-														data?.status == STATUS_CUSTOMER.HOP_TAC ? (
-															<HiOutlineLockClosed fontSize={22} fontWeight={600} />
-														) : (
-															<HiOutlineLockOpen fontSize={22} fontWeight={600} />
-														)
-													}
-													tooltip={data?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa' : 'Mở khóa'}
-													color='#777E90'
-													onClick={() => {
-														setDataChangeStatusCustomer(data);
-													}}
-												/>
-												<IconCustom
-													edit
-													icon={<RiDeleteBin5Line fontSize={21} fontWeight={600} />}
-													tooltip='Xóa bỏ'
-													color='#777E90'
-													onClick={() => {
-														setDataDeleteCustomer(data);
-													}}
-												/>
-											</div>
-										),
-								},
-							]}
+							<div className={clsx('mt')}>
+								<GridColumn col_5>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Dư đầu kỳ'
+										value={detailPartner?.debtBefore!}
+										unit='VNĐ'
+									/>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Tiền hàng trong tháng'
+										value={detailPartner?.money!}
+										unit='VNĐ'
+									/>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='VAT'
+										value={detailPartner?.tax!}
+										unit='VNĐ'
+									/>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Nộp trả lại'
+										value={detailPartner?.moneyReceived!}
+										unit='VNĐ'
+									/>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Đã thanh toán'
+										value={detailPartner?.moneyPay!}
+										unit='VNĐ'
+									/>
+								</GridColumn>
+							</div>
+
+							<div className={clsx('mt')}>
+								<GridColumn col_3>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Nhà cung cấp'
+										value={detailPartner?.countCustomer!}
+									/>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Phiếu chưa KCS'
+										value={detailPartner?.totalBillDemo!}
+									/>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Phiếu đã KCS'
+										value={detailPartner?.totalBillKCS!}
+									/>
+									{/* <ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Số lần thu'
+										value={detailPartner?.totalTransactionIn!}
+									/>
+									<ItemDashboard
+										isLoading={isLoading}
+										color='#3772FF'
+										text='Số lần chi'
+										value={detailPartner?.totalTransactionOut!}
+									/> */}
+								</GridColumn>
+							</div>
+						</div>
+						<div className={clsx('mt')}>
+							<table className={styles.container}>
+								<colgroup>
+									<col style={{width: '50%'}} />
+									<col style={{width: '50%'}} />
+								</colgroup>
+								<tr>
+									<td>
+										<span style={{marginRight: 6}}>Mã công ty:</span>
+										<span style={{color: 'rgb(55, 114, 255)'}}>{detailPartner?.code || '---'}</span>
+									</td>
+									<td>
+										<span style={{marginRight: 6}}>Người đại diện:</span> {detailPartner?.director || '---'}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span style={{marginRight: 6}}>Tên công ty:</span>
+										<span style={{color: 'rgb(55, 114, 255)'}}>{detailPartner?.name || '---'}</span>
+									</td>
+									<td>
+										<span style={{marginRight: 6}}>Khu vực cảng xuất khẩu:</span>
+										{detailPartner?.companyUu?.name || '---'}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span style={{marginRight: 6}}>Mã số thuế:</span>
+										{detailPartner?.taxCode || '---'}
+									</td>
+									<td>
+										<span style={{marginRight: 6}}>Địa chỉ:</span>
+										{getTextAddress(detailPartner?.detailAddress, detailPartner?.address)}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span style={{marginRight: 6}}>Số điện thoại:</span>
+										{detailPartner?.phoneNumber || '---'}
+									</td>
+									<td>
+										<div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
+											<span style={{marginRight: 6}}>Trạng thái:</span>
+											<span>
+												<TagStatus status={detailPartner?.status!} />
+											</span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span style={{marginRight: 6}}>Ngân hàng:</span>
+										{detailPartner?.bankName || '---'}
+									</td>
+									<td>
+										<span style={{marginRight: 6}}>Chức vụ người đại diện:</span>
+										{detailPartner?.regencyName || '---'}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span style={{marginRight: 6}}>Số tài khoản:</span>
+										{detailPartner?.bankAccount || '---'}
+									</td>
+									<td rowSpan={3} className={styles.description}>
+										<span style={{marginRight: 6}}>Mô tả:</span>
+										{detailPartner?.description || '---'}
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span style={{marginRight: 6}}>Email:</span>
+										{detailPartner?.email || '---'}
+									</td>
+								</tr>
+							</table>
+						</div>
+					</>
+				)}
+				{_type == 'history-import' && <TableImport />}
+				{_type == 'history-pay' && <TablePay />}
+				{_type == 'history-debt' && <TableDebt />}
+				{_type == 'history-contract' && <TableContract />}
+			</FullColumnFlex>
+
+			<Popup open={openExportExcel} onClose={handleCloseExportExcel}>
+				<div className={styles.main_export}>
+					<h4 className={styles.title_export}>Xuất báo cáo gửi khách hàng</h4>
+					<p className={styles.des_export}>Chọn khoảng thời gian muốn xuất báo cáo gửi khách hàng</p>
+
+					<div className={styles.time_export}>
+						<DatePicker
+							label={
+								<span>
+									Từ ngày <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày'
+							value={timeStart}
+							onSetValue={setTimeStart}
+							name='timeStart'
+							onClean={true}
+							icon={true}
 						/>
-					</DataWrapper>
-					<Pagination
-						currentPage={Number(_page) || 1}
-						total={listCustomer?.data?.pagination?.totalCount}
-						pageSize={Number(_pageSize) || 200}
-						dependencies={[_pageSize, _id]}
-					/>
+						<DatePicker
+							label={
+								<span>
+									Đến ngày <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày'
+							value={timeEnd}
+							onSetValue={setTimeEnd}
+							name='setTimeEnd'
+							onClean={true}
+							icon={true}
+						/>
+					</div>
+					<div className='mt'>
+						<Select
+							isSearch
+							name='companyUuid'
+							placeholder='Chọn KV cảng xuất khẩu'
+							value={companyUuid}
+							onChange={(e: any) => setCompanyUuid(e.target.value === '' ? null : e.target.value)}
+							label={<span>KV cảng xuất khẩu</span>}
+						>
+							{listCompany?.data?.map((v: any) => (
+								<Option key={v?.uuid} value={v?.uuid} title={v?.name} />
+							))}
+						</Select>
+					</div>
+
+					<div className={styles.control_export}>
+						<div>
+							<Button p_10_24 rounded_2 grey_outline onClick={handleCloseExportExcel}>
+								Hủy bỏ
+							</Button>
+						</div>
+						<div>
+							<Button disable={!timeStart || !timeEnd} p_10_24 rounded_2 primary onClick={handleExportExcel}>
+								Xác nhận
+							</Button>
+						</div>
+					</div>
+
+					<div className={styles.icon_close_export} onClick={handleCloseExportExcel}>
+						<IoClose size={24} color='#23262F' />
+					</div>
 				</div>
-			</div>
-			<Dialog
-				danger={detailPartner?.status == CONFIG_STATUS.HOAT_DONG}
-				green={detailPartner?.status != CONFIG_STATUS.HOAT_DONG}
-				open={openChangeStatus}
-				onClose={() => setOpenChangeStatus(false)}
-				title={detailPartner?.status == CONFIG_STATUS.HOAT_DONG ? 'Khóa hoạt động' : 'Mở khóa hoạt động'}
-				note={
-					detailPartner?.status == CONFIG_STATUS.HOAT_DONG
-						? 'Bạn có chắc chắn muốn khóa hoạt động công ty này?'
-						: 'Bạn có chắc chắn muốn mở khóa hoạt động công ty này?'
-				}
-				onSubmit={funcChangeStatusPartner.mutate}
-			/>
-
-			<Dialog
-				danger={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC}
-				green={dataChangeStatusCustomer?.status != STATUS_CUSTOMER.HOP_TAC}
-				open={!!dataChangeStatusCustomer}
-				onClose={() => setDataChangeStatusCustomer(null)}
-				title={dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC ? 'Khóa nhà cung cấp' : 'Mở khóa nhà cung cấp'}
-				note={
-					dataChangeStatusCustomer?.status == STATUS_CUSTOMER.HOP_TAC
-						? 'Bạn có chắc chắn muốn khóa hoạt động nhà cung cấp này?'
-						: 'Bạn có chắc chắn muốn mở khóa hoạt động nhà cung cấp này?'
-				}
-				onSubmit={funcChangeStatusCustomer.mutate}
-			/>
-
-			<Popup open={!!dataDeleteCustomer} onClose={() => setDataDeleteCustomer(null)}>
-				<PopupDeleteCustomer onClose={() => setDataDeleteCustomer(null)} uuid={dataDeleteCustomer?.uuid!} />
 			</Popup>
-		</Fragment>
+			<Popup open={openSendMail} onClose={handleCloseSendMail}>
+				<div className={styles.main_export}>
+					<h4 className={styles.title_export}>Gửi email</h4>
+					<p className={styles.des_export}>Chọn khoảng thời gian lấy dữ liệu</p>
+
+					<div className={styles.time_export}>
+						<DatePicker
+							label={
+								<span>
+									Từ ngày <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày'
+							value={timeStart}
+							onSetValue={setTimeStart}
+							name='timeStart'
+							onClean={true}
+							icon={true}
+						/>
+						<DatePicker
+							label={
+								<span>
+									Đến ngày <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày'
+							value={timeEnd}
+							onSetValue={setTimeEnd}
+							name='setTimeEnd'
+							onClean={true}
+							icon={true}
+						/>
+					</div>
+
+					<div className={styles.control_export}>
+						<div>
+							<Button p_10_24 rounded_2 grey_outline onClick={handleCloseSendMail}>
+								Hủy bỏ
+							</Button>
+						</div>
+						<div>
+							<Button disable={!timeStart || !timeEnd} p_10_24 rounded_2 primary onClick={handleSendMail}>
+								Xác nhận
+							</Button>
+						</div>
+					</div>
+
+					<div className={styles.icon_close_export} onClick={handleCloseSendMail}>
+						<IoClose size={24} color='#23262F' />
+					</div>
+				</div>
+			</Popup>
+			<Popup open={openRefreshMonthly} onClose={handleCloseRefreshMonthlyDebt}>
+				<div className={styles.main_export}>
+					<h4 className={styles.title_export}>Tính lại công nợ</h4>
+					<p className={styles.des_export}>Chọn khoảng thời gian bắt đầu</p>
+
+					<div className={styles.time_export}>
+						<DatePicker
+							label={
+								<span>
+									Từ ngày <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày'
+							value={timeStartRefresh}
+							onSetValue={setTimeStartRefresh}
+							name='timeStartRefresh'
+							onClean={true}
+							icon={true}
+						/>
+						<DatePicker
+							readOnly={true}
+							label={
+								<span>
+									Đến ngày <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Chọn ngày'
+							value={timeEndRefresh}
+							onSetValue={setTimeEndRefresh}
+							name='setTimeEndRefresh'
+							onClean={true}
+							icon={true}
+						/>
+					</div>
+
+					<div className={styles.control_export}>
+						<div>
+							<Button p_10_24 rounded_2 grey_outline onClick={handleCloseRefreshMonthlyDebt}>
+								Hủy bỏ
+							</Button>
+						</div>
+						<div>
+							<Button
+								disable={!timeStartRefresh || !timeEndRefresh}
+								p_10_24
+								rounded_2
+								primary
+								onClick={handleRefreshMonthlyDebt}
+							>
+								Xác nhận
+							</Button>
+						</div>
+					</div>
+
+					<div className={styles.icon_close_export} onClick={handleCloseRefreshMonthlyDebt}>
+						<IoClose size={24} color='#23262F' />
+					</div>
+				</div>
+			</Popup>
+		</FlexLayout>
 	);
 }
 

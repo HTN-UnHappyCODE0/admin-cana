@@ -3,6 +3,8 @@ import {IAddress} from '~/constants/config/interfaces';
 export interface PropsPageDetailPartner {}
 
 export interface IDetailPartner {
+	budgetCash: number;
+	budgetBank: number;
 	code: string;
 	name: string;
 	status: number;
@@ -18,6 +20,7 @@ export interface IDetailPartner {
 	updated: string;
 	lstCustomer: any[];
 	debtDemo: number;
+	regencyName: string;
 	debtReal: number;
 	tax: number;
 	countCustomer: number;
@@ -38,18 +41,23 @@ export interface IDetailPartner {
 	totalBillKCS: number;
 	totalTransactionIn: number;
 	totalTransactionOut: number;
+	budget: number;
 	companyUu: {
 		code: string;
 		name: string;
 		status: number;
 		uuid: string;
 	};
-	ktUu: {
-		username: string;
-		status: number;
-		user: any;
-		uuid: string;
-	};
+
+	debt: number;
+	debtBefore: number;
+	weightMt: number;
+	weightBdmt: number;
+	money: number;
+	moneyReceived: number;
+	moneyPay: number;
+	debtTotal: number;
+	debtKcs: number;
 }
 
 export interface IUserOwnerUu {
@@ -57,46 +65,4 @@ export interface IUserOwnerUu {
 	fullName: string;
 	uuid: string;
 	provinceOwner: string | null;
-}
-
-export interface ICustomer {
-	taxCode: string;
-	email: string;
-	director: string;
-	description: string;
-	address: string;
-	customerSpec: ICustomerSpec[];
-	phoneNumber: string;
-	isSift: number;
-	status: number;
-	detailAddress: IAddress;
-	partnerUu: {
-		code: string;
-		name: string;
-		status: number;
-		uuid: string;
-	};
-	warehouseUu: {
-		code: string;
-		name: string;
-		status: number;
-		uuid: string;
-	};
-	userUu: {
-		code: string;
-		fullName: string;
-		uuid: string;
-	};
-	code: string;
-	name: string;
-	uuid: string;
-	created: string;
-	updated: string;
-}
-
-export interface ICustomerSpec {
-	status: number;
-	specUuid: string;
-	productTypeUuid: string;
-	uuid: string;
 }

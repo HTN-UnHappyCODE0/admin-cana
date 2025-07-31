@@ -10,10 +10,13 @@ export interface IFormCreatePartner {
 	bankName: string;
 	bankAccount: string;
 	provinceId: string;
-	districtId: string;
 	townId: string;
 	address: string;
 	description: string;
 	companyUuid: string;
 	userKtUuid: string;
+	fullName: string;
+	codeName: string;
+	isCreateDocs: number;
+	regencyName: string;
 }

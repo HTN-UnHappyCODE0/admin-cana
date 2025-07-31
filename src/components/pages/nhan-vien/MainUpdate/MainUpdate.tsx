@@ -40,7 +40,6 @@ function MainUpdate({}: PropsMainUpdate) {
 		linkImage: '',
 		ownerUuid: '',
 		provinceId: '',
-		districtId: '',
 		townId: '',
 		provinceOwnerId: '',
 		companyUuid: '',
@@ -67,7 +66,6 @@ function MainUpdate({}: PropsMainUpdate) {
 				linkImage: data?.linkImage,
 				ownerUuid: data?.userOwnerUu?.uuid,
 				provinceId: data?.detailAddress?.province?.uuid,
-				districtId: data?.detailAddress?.district?.uuid,
 				townId: data?.detailAddress?.town?.uuid,
 				provinceOwnerId: data?.provinceOwner || '',
 				companyUuid: data?.companyUu?.uuid || '',
@@ -93,36 +91,20 @@ function MainUpdate({}: PropsMainUpdate) {
 		},
 	});
 
-	const listDistrict = useQuery([QUERY_KEY.dropdown_quan_huyen, form.provinceId], {
-		queryFn: () =>
-			httpRequest({
-				isDropdown: true,
-				http: commonServices.listDistrict({
-					keyword: '',
-					status: null,
-					idParent: form?.provinceId,
-				}),
-			}),
-		select(data) {
-			return data;
-		},
-		enabled: !!form?.provinceId,
-	});
-
-	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.districtId], {
+	const listTown = useQuery([QUERY_KEY.dropdown_xa_phuong, form?.provinceId], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
 				http: commonServices.listTown({
 					keyword: '',
 					status: null,
-					idParent: form.districtId,
+					idParent: form.provinceId,
 				}),
 			}),
 		select(data) {
 			return data;
 		},
-		enabled: !!form?.districtId,
+		enabled: !!form?.provinceId,
 	});
 
 	const listRegency = useQuery([QUERY_KEY.dropdown_chuc_vu], {
@@ -211,7 +193,6 @@ function MainUpdate({}: PropsMainUpdate) {
 							? form.ownerUuid
 							: '',
 					provinceId: form.provinceId,
-					districtId: form.districtId,
 					townId: form.townId,
 					provinceOwnerId:
 						form.regencyUuid == listRegency?.data?.find((x: any) => x?.code == REGENCY_NAME['Nhân viên thị trường'])?.uuid ||
@@ -236,7 +217,6 @@ function MainUpdate({}: PropsMainUpdate) {
 					linkImage: '',
 					ownerUuid: '',
 					provinceId: '',
-					districtId: '',
 					townId: '',
 					provinceOwnerId: '',
 					companyUuid: '',
@@ -290,6 +270,8 @@ function MainUpdate({}: PropsMainUpdate) {
 
 		return funUpdateUser.mutate();
 	};
+
+	console.log({form});
 
 	return (
 		<div className={styles.container}>
@@ -404,6 +386,12 @@ function MainUpdate({}: PropsMainUpdate) {
 									companyUuid: e.target.value,
 								}))
 							}
+							onClean={() =>
+								setForm((prev: any) => ({
+									...prev,
+									companyUuid: null,
+								}))
+							}
 							label={<span>Khu vực cảng xuất khẩu</span>}
 						>
 							{listCompany?.data?.map((v: any) => (
@@ -411,7 +399,7 @@ function MainUpdate({}: PropsMainUpdate) {
 							))}
 						</Select>
 					</div>
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='provinceId'
@@ -428,7 +416,6 @@ function MainUpdate({}: PropsMainUpdate) {
 										setForm((prev: any) => ({
 											...prev,
 											provinceId: v?.matp,
-											districtId: '',
 											townId: '',
 										}))
 									}
@@ -436,44 +423,22 @@ function MainUpdate({}: PropsMainUpdate) {
 							))}
 						</Select>
 						<div>
-							<Select
-								isSearch
-								name='districtId'
-								value={form.districtId}
-								placeholder='Chọn quận/huyện'
-								label={<span>Quận/Huyện</span>}
-							>
-								{listDistrict?.data?.map((v: any) => (
+							<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
+								{listTown?.data?.map((v: any) => (
 									<Option
-										key={v?.maqh}
-										value={v?.maqh}
+										key={v?.xaid}
+										value={v?.xaid}
 										title={v?.name}
 										onClick={() =>
 											setForm((prev: any) => ({
 												...prev,
-												districtId: v?.maqh,
-												townId: '',
+												townId: v?.xaid,
 											}))
 										}
 									/>
 								))}
 							</Select>
 						</div>
-						<Select isSearch name='townId' value={form.townId} placeholder='Chọn xã/phường' label={<span>Xã/phường</span>}>
-							{listTown?.data?.map((v: any) => (
-								<Option
-									key={v?.xaid}
-									value={v?.xaid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											townId: v?.xaid,
-										}))
-									}
-								/>
-							))}
-						</Select>
 					</div>
 					<div className={clsx('mt')}>
 						<Input
