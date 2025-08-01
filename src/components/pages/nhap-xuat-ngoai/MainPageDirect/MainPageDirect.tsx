@@ -108,7 +108,7 @@ function MainPageDirect({}: PropsMainPageDirect) {
 
 	const listBill = useQuery(
 		[
-			QUERY_KEY.table_phieu_can_tat_ca,
+			QUERY_KEY.table_phieu_can_thang_ngoai,
 			_page,
 			_pageSize,
 			_keyword,
@@ -394,7 +394,7 @@ function MainPageDirect({}: PropsMainPageDirect) {
 						selectedIds={truckPlate}
 						setSelectedIds={setTruckPlate}
 						listData={listTruck?.data?.map((v: any) => ({
-							uuid: v?.licensePlate,
+							uuid: v?.uuid,
 							name: v?.licensePlate,
 						}))}
 						name='Biển số xe'
@@ -635,7 +635,14 @@ function MainPageDirect({}: PropsMainPageDirect) {
 									</>
 								),
 							},
-
+							{
+								title: 'Độ khô (%)',
+								render: (data: any) => <>{data?.drynessAvg || '---'}</>,
+							},
+							{
+								title: 'KL quy khô (Tấn)',
+								render: (data: any) => <>{convertWeight(data?.weightBdmt) || '---'}</>,
+							},
 							{
 								title: 'Quy cách',
 								render: (data: any) => <>{data?.specificationsUu?.name || '---'}</>,

@@ -9,13 +9,15 @@ export interface IFormCreateDirect {
 	toUuid: string;
 	productTypeUuid: string;
 	specificationsUuid: string;
-	weightIntent: number;
+	weight1: number;
+	weight2: number;
 	documentId: string;
 	description: string;
 	warehouseUuid: string;
 	storageTemporaryUuid: string;
 	timeStart: string | Date;
 	timeEnd: string | Date;
+	dryness: number;
 }
 
 export interface IDetailCustomer {

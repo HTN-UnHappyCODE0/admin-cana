@@ -8,7 +8,8 @@ export interface IFormCreateImport {
 	specificationsUuid: string;
 	warehouseUuid: string;
 	toUuid: string;
-	weightIntent: number;
+	weight1: number;
+	weight2: number;
 	description: string;
 	timeStart: string | Date | null;
 	timeEnd: string | Date | null;
@@ -16,6 +17,7 @@ export interface IFormCreateImport {
 	documentId: string;
 	portname: string;
 	shipUuid: string;
+	dryness: number;
 }
 
 export interface IDetailCustomer {

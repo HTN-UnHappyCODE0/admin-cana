@@ -5,7 +5,8 @@ export interface IFormCreateExport {
 	specificationsUuid: string;
 	warehouseUuid: string;
 	toUuid: string;
-	weightIntent: number;
+	weight1: number;
+	weight2: number;
 	timeEnd: string | Date | null;
 	description: string;
 	transportType: number;
@@ -13,4 +14,5 @@ export interface IFormCreateExport {
 	documentId: string;
 	portname: string;
 	shipUuid: string;
+	dryness: number;
 }

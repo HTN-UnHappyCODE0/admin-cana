@@ -81,11 +81,11 @@ function TableListTruck({}: PropsTableListTruck) {
 								title: 'STT',
 								render: (data: any, index: number) => <>{index + 1}</>,
 							},
-							{
-								title: 'Logo xe',
-								fixedLeft: true,
-								render: (data: any) => <>{data?.truckUu?.code}</>,
-							},
+							// {
+							// 	title: 'Logo xe',
+							// 	fixedLeft: true,
+							// 	render: (data: any) => <>{data?.truckUu?.code}</>,
+							// },
 							{
 								title: 'Biển số xe',
 								render: (data: any) => <>{data?.truckUu?.licensePlate}</>,

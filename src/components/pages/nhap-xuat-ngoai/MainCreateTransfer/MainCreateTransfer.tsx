@@ -1,107 +1,101 @@
-import React, {useState} from 'react';
-
-import {IFormCreateImport, PropsMainCreateImport} from './interfaces';
-import styles from './MainCreateImport.module.scss';
-import TextArea from '~/components/common/Form/components/TextArea';
-import Form, {FormContext, Input} from '~/components/common/Form';
-import Select, {Option} from '~/components/common/Select';
-import Button from '~/components/common/Button';
-import Loading from '~/components/common/Loading';
-import {clsx} from 'clsx';
 import {useRouter} from 'next/router';
+import {useState} from 'react';
+import {IFormCreateTransfer, PropsMainCreateTransfer} from './interfaces';
 import {
 	CONFIG_DESCENDING,
 	CONFIG_PAGING,
 	CONFIG_STATUS,
 	CONFIG_TYPE_FIND,
 	QUERY_KEY,
-	STATUS_CUSTOMER,
 	TYPE_BATCH,
-	TYPE_CUSTOMER,
+	TYPE_PRODUCT,
 	TYPE_SCALES,
 	TYPE_SIFT,
 	TYPE_TRANSPORT,
 } from '~/constants/config/enum';
-import customerServices from '~/services/customerServices';
-import {httpRequest} from '~/services';
 import {useMutation, useQuery} from '@tanstack/react-query';
-import {IDetailCustomer} from '../../lenh-can/MainCreateImport/interfaces';
-import storageServices from '~/services/storageServices';
-import warehouseServices from '~/services/warehouseServices';
-import batchBillServices from '~/services/batchBillServices';
-import {price} from '~/common/funcs/convertCoin';
+import {httpRequest} from '~/services';
+import wareServices from '~/services/wareServices';
+import truckServices from '~/services/truckServices';
 import moment from 'moment';
-import UploadMultipleFile from '~/components/common/UploadMultipleFile';
+import {price} from '~/common/funcs/convertCoin';
 import {toastWarn} from '~/common/funcs/toast';
-import uploadImageService from '~/services/uploadService';
+import styles from './MainCreateTransfer.module.scss';
+import Loading from '~/components/common/Loading';
+import Form, {FormContext, Input} from '~/components/common/Form';
+import Button from '~/components/common/Button';
+import clsx from 'clsx';
+import Select, {Option} from '~/components/common/Select';
+import warehouseServices from '~/services/warehouseServices';
+import storageServices from '~/services/storageServices';
+import DatePicker from '~/components/common/DatePicker';
+import ButtonSelectMany from '~/components/common/ButtonSelectMany';
+import TextArea from '~/components/common/Form/components/TextArea';
 import {timeSubmit} from '~/common/funcs/optionConvert';
-import shipServices from '~/services/shipServices';
+import batchBillServices from '~/services/batchBillServices';
+import scalesStationServices from '~/services/scalesStationServices';
+import uploadImageService from '~/services/uploadService';
+import UploadMultipleFile from '~/components/common/UploadMultipleFile';
 
-function MainCreateImport({}: PropsMainCreateImport) {
+function MainCreateTransfer({}: PropsMainCreateTransfer) {
 	const router = useRouter();
+
 	const [loading, setLoading] = useState<boolean>(false);
 	const [images, setImages] = useState<any[]>([]);
 
-	const [form, setForm] = useState<IFormCreateImport>({
+	const [form, setForm] = useState<IFormCreateTransfer>({
+		timeIntend: new Date(),
 		weight1: 0,
 		weight2: 0,
+		isSift: TYPE_SIFT.KHONG_CAN_SANG,
 		specificationsUuid: '',
-		warehouseUuid: '',
+		warehouseToUuid: '',
+		warehouseFromUuid: '',
 		productTypeUuid: '',
 		description: '',
-		documentId: '',
 		fromUuid: '',
 		toUuid: '',
-		transportType: TYPE_TRANSPORT.DUONG_THUY,
+		isPrint: 0,
+		transportType: TYPE_TRANSPORT.DUONG_BO,
 		timeStart: null,
 		timeEnd: null,
-		portname: '',
-		shipUuid: '',
 		dryness: 0,
 	});
 
-	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
-		queryFn: () =>
-			httpRequest({
-				http: customerServices.getDetail({
-					uuid: form.fromUuid,
-				}),
-			}),
-		onSuccess(data) {
-			if (data) {
-				const listspecUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.specUu?.uuid, v])).values()];
-				const listProductTypeUu: any[] = [...new Map(data?.customerSpec?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()];
-
-				setForm((prev) => ({
-					...prev,
-					specificationsUuid: listspecUu?.[0]?.specUu?.uuid || '',
-					productTypeUuid: listProductTypeUu?.[0]?.productTypeUu?.uuid || '',
-				}));
-			}
-		},
-		select(data) {
-			return data;
-		},
-		enabled: !!form.fromUuid,
-	});
-
-	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang], {
+	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
-				http: customerServices.listCustomer({
+				http: wareServices.listProductType({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.FILTER,
+					type: [TYPE_PRODUCT.CONG_TY, TYPE_PRODUCT.DUNG_CHUNG],
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listSpecification = useQuery([QUERY_KEY.dropdown_quy_cach, form?.productTypeUuid], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: wareServices.listSpecification({
 					page: 1,
 					pageSize: 50,
 					keyword: '',
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
-					typeFind: CONFIG_TYPE_FIND.TABLE,
-					partnerUUid: '',
-					userUuid: '',
-					status: STATUS_CUSTOMER.HOP_TAC,
-					typeCus: TYPE_CUSTOMER.NHA_CUNG_CAP,
-					provinceId: '',
-					specUuid: '',
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+					qualityUuid: '',
+					productTypeUuid: form?.productTypeUuid,
 				}),
 			}),
 		select(data) {
@@ -109,7 +103,46 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		},
 	});
 
-	const listWarehouse = useQuery([QUERY_KEY.dropdown_kho_hang], {
+	const listScaleStation = useQuery([QUERY_KEY.dropdown_tram_can], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: scalesStationServices.listScalesStation({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					companyUuid: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listTruck = useQuery([QUERY_KEY.dropdown_xe_hang], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: truckServices.listTruck({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					status: CONFIG_STATUS.HOAT_DONG,
+				}),
+			}),
+		select(data) {
+			return data;
+		},
+	});
+
+	const listWarehouseFrom = useQuery([QUERY_KEY.dropdown_kho_hang_nguon], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -131,18 +164,21 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		},
 	});
 
-	const listShip = useQuery([QUERY_KEY.dropdown_tau_hang], {
+	const listWarehouseTo = useQuery([QUERY_KEY.dropdown_kho_hang_den], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
-				http: shipServices.listShip({
+				http: warehouseServices.listWarehouse({
 					page: 1,
 					pageSize: 50,
 					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
-					status: CONFIG_STATUS.HOAT_DONG,
+					customerUuid: '',
+					timeEnd: null,
+					timeStart: null,
 				}),
 			}),
 		select(data) {
@@ -150,7 +186,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		},
 	});
 
-	const listStorage = useQuery([QUERY_KEY.dropdown_bai, form.specificationsUuid, form.productTypeUuid, form.warehouseUuid], {
+	const listStorageFrom = useQuery([QUERY_KEY.dropdown_bai_nguon, form.warehouseFromUuid], {
 		queryFn: () =>
 			httpRequest({
 				isDropdown: true,
@@ -162,62 +198,96 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					isPaging: CONFIG_PAGING.NO_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.DROPDOWN,
+					productUuid: '',
 					qualityUuid: '',
-					specificationsUuid: form.specificationsUuid,
-					warehouseUuid: form.warehouseUuid,
-					productUuid: form.productTypeUuid,
+					specificationsUuid: '',
+					warehouseUuid: form.warehouseFromUuid,
 				}),
 			}),
 		onSuccess(data) {
 			if (data) {
 				setForm((prev) => ({
 					...prev,
-					toUuid: data?.[0]?.uuid || '',
+					fromUuid: data?.[0]?.uuid || '',
 				}));
 			}
 		},
 		select(data) {
 			return data;
 		},
-		enabled: !!form.warehouseUuid && !!form.productTypeUuid && !!form.specificationsUuid,
+		enabled: !!form.warehouseFromUuid,
 	});
 
-	const funcCreatBill = useMutation({
+	const listStorageTo = useQuery([QUERY_KEY.dropdown_bai_dich, form.warehouseToUuid], {
+		queryFn: () =>
+			httpRequest({
+				isDropdown: true,
+				http: storageServices.listStorage({
+					page: 1,
+					pageSize: 50,
+					keyword: '',
+					status: CONFIG_STATUS.HOAT_DONG,
+					isPaging: CONFIG_PAGING.NO_PAGING,
+					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
+					typeFind: CONFIG_TYPE_FIND.TABLE,
+					productUuid: '',
+					qualityUuid: '',
+					warehouseUuid: form.warehouseToUuid,
+					specificationsUuid: '',
+				}),
+			}),
+		onSuccess(data) {
+			if (data) {
+				setForm((prev) => ({
+					...prev,
+					toUuid: data?.filter((x: any) => x?.uuid != form?.fromUuid)?.[0]?.uuid || '',
+					productTypeUuid: data?.filter((x: any) => x?.uuid != form?.fromUuid)?.[0]?.productUu?.uuid,
+					specificationsUuid: data?.filter((x: any) => x?.uuid != form?.fromUuid)?.[0]?.specificationsUu?.uuid,
+				}));
+			}
+		},
+		select(data) {
+			return data;
+		},
+		enabled: !!form.warehouseToUuid,
+	});
+
+	const funcCreateBatchBill = useMutation({
 		mutationFn: (body: {paths: string[]}) =>
 			httpRequest({
 				showMessageFailed: true,
 				showMessageSuccess: true,
-				msgSuccess: 'Thêm mới thành công!',
+				msgSuccess: 'Thêm mới chuyển kho ngoài hệ thống thành công!',
 				http: batchBillServices.upsertBillNoScales({
 					batchUuid: '',
 					billUuid: '',
+					shipUuid: '',
 					shipOutUuid: '',
-					customerName: '',
-					isCreateBatch: 1,
-					shipUuid: form.shipUuid,
+					transportType: form.transportType,
 					timeIntend: null,
 					weight1: price(form?.weight1),
 					weight2: price(form?.weight2),
 					isBatch: TYPE_BATCH.KHONG_CAN,
+					isCreateBatch: 1,
 					isSift: TYPE_SIFT.KHONG_CAN_SANG,
-					scalesType: TYPE_SCALES.CAN_NHAP,
+					scalesType: TYPE_SCALES.CAN_CHUYEN_KHO,
 					specificationsUuid: form.specificationsUuid,
 					productTypeUuid: form.productTypeUuid,
-					documentId: form.documentId,
+					documentId: '',
 					description: form.description,
+					customerName: '',
 					fromUuid: form.fromUuid,
 					toUuid: form?.toUuid,
 					isPrint: 0,
-					transportType: form?.transportType,
 					lstTruckPlateAdd: [],
 					lstTruckPlateRemove: [],
 					scaleStationUuid: '',
-					portname: form.portname,
+					portname: '',
 					descriptionWs: '',
 					paths: body.paths,
 					timeEnd: form?.timeEnd ? timeSubmit(new Date(form?.timeEnd!), true) : null,
 					timeStart: form?.timeStart ? timeSubmit(new Date(form?.timeStart!)) : null,
-					dryness: Number(form.dryness),
+					dryness: Number(form.dryness || 0),
 				}),
 			}),
 		onSuccess(data) {
@@ -238,11 +308,11 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		const tomorrow = new Date(today);
 		tomorrow.setDate(today.getDate() + 1);
 
-		if (form.transportType == TYPE_TRANSPORT.DUONG_THUY && !form.shipUuid) {
-			return toastWarn({msg: 'Vui lòng chọn tàu!'});
-		}
 		if (!form.fromUuid) {
-			return toastWarn({msg: 'Vui lòng chọn nhà cũng cấp!'});
+			return toastWarn({msg: 'Vui lòng chọn bãi chuyển!'});
+		}
+		if (!form.toUuid) {
+			return toastWarn({msg: 'Vui lòng chọn bãi đích!'});
 		}
 		if (!form.productTypeUuid) {
 			return toastWarn({msg: 'Vui lòng chọn loại hàng!'});
@@ -250,15 +320,21 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		if (!form.specificationsUuid) {
 			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
 		}
-		if (!form.warehouseUuid) {
-			return toastWarn({msg: 'Vui lòng chọn kho chính!'});
-		}
-		if (!form.toUuid) {
-			return toastWarn({msg: 'Vui lòng chọn bãi!'});
-		}
 
+		if (form?.fromUuid == form.toUuid) {
+			return toastWarn({msg: 'Trùng kho đích!'});
+		}
 		if (form.dryness < 0 || form.dryness > 100) {
 			return toastWarn({msg: 'Độ khô không hợp lệ!'});
+		}
+		if (Math.abs(Number(form.weight1) - Number(form.weight2)) < 0.01) {
+			return toastWarn({msg: 'Khối lượng cân lần 1 và lần 2 chưa đúng!'});
+		}
+		if (!form?.timeStart) {
+			return toastWarn({msg: 'Vui lòng chọn ngày bắt đầu!'});
+		}
+		if (!form?.timeEnd) {
+			return toastWarn({msg: 'Vui lòng chọn ngày kết thúc!'});
 		}
 
 		if (tomorrow < timeStart) {
@@ -273,11 +349,6 @@ function MainCreateImport({}: PropsMainCreateImport) {
 			return toastWarn({msg: 'Ngày kết thúc phải lớn hơn ngày bắt đầu!'});
 		}
 
-		// trị tuyệt đối weight1 - weight 2 > 0
-		if (Math.abs(Number(form.weight1) - Number(form.weight2)) < 0.01) {
-			return toastWarn({msg: 'Khối lượng cân lần 1 và lần 2 chưa đúng!'});
-		}
-
 		const imgs = images?.map((v: any) => v?.file);
 
 		if (imgs.length > 0) {
@@ -287,14 +358,14 @@ function MainCreateImport({}: PropsMainCreateImport) {
 				http: uploadImageService.uploadMutilImage(imgs),
 			});
 			if (dataImage?.error?.code == 0) {
-				return funcCreatBill.mutate({
+				return funcCreateBatchBill.mutate({
 					paths: dataImage.items,
 				});
 			} else {
 				return toastWarn({msg: 'Upload ảnh thất bại!'});
 			}
 		} else {
-			return funcCreatBill.mutate({
+			return funcCreateBatchBill.mutate({
 				...form,
 				paths: [],
 			});
@@ -303,12 +374,12 @@ function MainCreateImport({}: PropsMainCreateImport) {
 
 	return (
 		<div className={styles.container}>
-			<Loading loading={loading || funcCreatBill.isLoading} />
+			<Loading loading={loading || funcCreateBatchBill.isLoading} />
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Thêm phiếu nhập hàng</h4>
-						<p>Điền đầy đủ các thông tin phiếu nhập hàng</p>
+						<h4>Thêm mới chuyển kho ngoài hệ thống</h4>
+						<p>Điền đầy đủ các thông tin chuyển kho ngoài hệ thống</p>
 					</div>
 					<div className={styles.right}>
 						<Button p_10_24 rounded_2 grey_outline onClick={() => router.back()}>
@@ -324,7 +395,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 					</div>
 				</div>
 				<div className={styles.form}>
-					<div className={clsx('mt', 'col_2')}>
+					<div className={clsx('mb')}>
 						<div className='col_2'>
 							<div className={styles.item}>
 								<label className={styles.label}>
@@ -364,59 +435,21 @@ function MainCreateImport({}: PropsMainCreateImport) {
 									</div>
 								</div>
 							</div>
-
-							{/* <div className={styles.item}>
-								<label className={styles.label}>
-									Phân loại <span style={{color: 'red'}}>*</span>
-								</label>
-								<div className={styles.group_radio}>
-									<div className={styles.item_radio}>
-										<input
-											type='radio'
-											id='phan_loai_da_sang'
-											name='isSift'
-											checked={form.isSift == TYPE_SIFT.CAN_SANG}
-											onChange={() =>
-												setForm((prev) => ({
-													...prev,
-													isSift: TYPE_SIFT.CAN_SANG,
-												}))
-											}
-										/>
-										<label htmlFor='phan_loai_da_sang'>Cần sàng</label>
-									</div>
-									<div className={styles.item_radio}>
-										<input
-											type='radio'
-											id='phan_loai_chua_sang'
-											name='isSift'
-											checked={form.isSift == TYPE_SIFT.KHONG_CAN_SANG}
-											onChange={() =>
-												setForm((prev) => ({
-													...prev,
-													isSift: TYPE_SIFT.KHONG_CAN_SANG,
-												}))
-											}
-										/>
-										<label htmlFor='phan_loai_chua_sang'>Không cần sàng</label>
-									</div>
-								</div>
-							</div> */}
 						</div>
 					</div>
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
-							name='fromUuid'
-							placeholder='Chọn nhà cung cấp'
-							value={form?.fromUuid}
+							name='warehouseFromUuid'
+							placeholder='Chọn kho'
+							value={form?.warehouseFromUuid}
 							label={
 								<span>
-									Nhà cung cấp <span style={{color: 'red'}}>*</span>
+									Từ kho chính <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
-							{listCustomer?.data?.map((v: any) => (
+							{listWarehouseFrom?.data?.map((v: any) => (
 								<Option
 									key={v?.uuid}
 									value={v?.uuid}
@@ -424,64 +457,104 @@ function MainCreateImport({}: PropsMainCreateImport) {
 									onClick={() =>
 										setForm((prev: any) => ({
 											...prev,
-											fromUuid: v?.uuid,
-											transportType: v?.transportType,
-											isSift: v?.isSift,
-											productTypeUuid: '',
-											specificationsUuid: '',
+											warehouseFromUuid: v?.uuid,
+											fromUuid: '',
 										}))
 									}
 								/>
 							))}
 						</Select>
-
 						<div>
-							<Input
-								name='documentId'
-								value={form.documentId || ''}
-								max={255}
-								type='text'
-								label={<span>Số chứng từ</span>}
-								placeholder='Nhập số chứng từ'
-							/>
+							<Select
+								isSearch
+								name='fromUuid'
+								placeholder='Chọn bãi phụ'
+								value={form?.fromUuid}
+								readOnly={!form.warehouseFromUuid}
+								label={
+									<span>
+										Từ bãi phụ <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								{listStorageFrom?.data?.map((v: any) => (
+									<Option
+										key={v?.uuid}
+										value={v?.uuid}
+										title={v?.name}
+										onClick={() =>
+											setForm((prev: any) => ({
+												...prev,
+												fromUuid: v?.uuid,
+											}))
+										}
+									/>
+								))}
+							</Select>
 						</div>
 					</div>
+
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
-							name='shipUuid'
-							placeholder='Chọn tàu'
-							value={form?.shipUuid}
-							readOnly={form.transportType == TYPE_TRANSPORT.DUONG_BO}
+							name='warehouseToUuid'
+							placeholder='Chọn kho'
+							value={form?.warehouseToUuid}
 							label={
 								<span>
-									Tàu <span style={{color: 'red'}}>*</span>
+									Chọn kho chính <span style={{color: 'red'}}>*</span>
 								</span>
 							}
 						>
-							{listShip?.data?.map((v: any) => (
+							{listWarehouseTo?.data?.map((v: any) => (
 								<Option
 									key={v?.uuid}
 									value={v?.uuid}
-									title={v?.licensePlate}
+									title={v?.name}
 									onClick={() =>
-										setForm((prev) => ({
+										setForm((prev: any) => ({
 											...prev,
-											shipUuid: v?.uuid,
+											warehouseToUuid: v?.uuid,
+											toUuid: '',
+											// scaleStationUuid: v?.scaleStationUu?.uuid || '',
 										}))
 									}
 								/>
 							))}
 						</Select>
-						<Input
-							name='portname'
-							value={form.portname}
-							type='text'
-							label={<span>Cảng bốc dỡ</span>}
-							placeholder='Nhập cảng bốc dỡ'
-						/>
+						<div>
+							<Select
+								isSearch
+								name='toUuid'
+								placeholder='Chọn bãi địch'
+								value={form?.toUuid}
+								readOnly={!form.warehouseToUuid}
+								label={
+									<span>
+										Chọn bãi đích <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+							>
+								{listStorageTo?.data
+									?.filter((x: any) => x?.uuid != form?.fromUuid)
+									?.map((v: any) => (
+										<Option
+											key={v?.uuid}
+											value={v?.uuid}
+											title={v?.name}
+											onClick={() =>
+												setForm((prev: any) => ({
+													...prev,
+													toUuid: v?.uuid,
+													productTypeUuid: v?.productUu?.uuid,
+													specificationsUuid: v?.specificationsUu?.uuid,
+												}))
+											}
+										/>
+									))}
+							</Select>
+						</div>
 					</div>
-
 					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
@@ -494,22 +567,20 @@ function MainCreateImport({}: PropsMainCreateImport) {
 								</span>
 							}
 						>
-							{[...new Map(detailCustomer?.customerSpec?.map((v: any) => [v?.productTypeUu?.uuid, v])).values()]?.map(
-								(v: any) => (
-									<Option
-										key={v?.uuid}
-										value={v?.productTypeUu?.uuid}
-										title={v?.productTypeUu?.name}
-										onClick={() =>
-											setForm((prev: any) => ({
-												...prev,
-												productTypeUuid: v?.productTypeUu?.uuid,
-												toUuid: '',
-											}))
-										}
-									/>
-								)
-							)}
+							{listProductType?.data?.map((v: any) => (
+								<Option
+									key={v?.uuid}
+									value={v?.uuid}
+									title={v?.name}
+									onClick={() =>
+										setForm((prev: any) => ({
+											...prev,
+											productTypeUuid: v?.uuid,
+											specificationsUuid: '',
+										}))
+									}
+								/>
+							))}
 						</Select>
 						<div>
 							<Select
@@ -523,67 +594,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 									</span>
 								}
 							>
-								{[...new Map(detailCustomer?.customerSpec?.map((v: any) => [v?.specUu?.uuid, v])).values()]?.map(
-									(v: any) => (
-										<Option
-											key={v?.specUu?.uuid}
-											value={v?.specUu?.uuid}
-											title={v?.specUu?.name}
-											onClick={() =>
-												setForm((prev: any) => ({
-													...prev,
-													specificationsUuid: v?.specUu?.uuid,
-													toUuid: '',
-												}))
-											}
-										/>
-									)
-								)}
-							</Select>
-						</div>
-					</div>
-					<div className={clsx('mt', 'col_2')}>
-						<Select
-							isSearch
-							name='warehouseUuid'
-							placeholder='Chọn kho hàng chính'
-							value={form?.warehouseUuid}
-							label={
-								<span>
-									Kho hàng chính <span style={{color: 'red'}}>*</span>
-								</span>
-							}
-						>
-							{listWarehouse?.data?.map((v: any) => (
-								<Option
-									key={v?.uuid}
-									value={v?.uuid}
-									title={v?.name}
-									onClick={() =>
-										setForm((prev: any) => ({
-											...prev,
-											warehouseUuid: v?.uuid,
-											toUuid: '',
-											// scaleStationUuid: v?.scaleStationUu?.uuid || '',
-										}))
-									}
-								/>
-							))}
-						</Select>
-						<div>
-							<Select
-								isSearch
-								name='toUuid'
-								placeholder='Chọn bãi'
-								value={form?.toUuid}
-								readOnly={!form.warehouseUuid || !form.productTypeUuid || !form.specificationsUuid}
-								label={
-									<span>
-										Bãi <span style={{color: 'red'}}>*</span>
-									</span>
-								}
-							>
-								{listStorage?.data?.map((v: any) => (
+								{listSpecification?.data?.map((v: any) => (
 									<Option
 										key={v?.uuid}
 										value={v?.uuid}
@@ -591,7 +602,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 										onClick={() =>
 											setForm((prev: any) => ({
 												...prev,
-												toUuid: v?.uuid,
+												specificationsUuid: v?.uuid,
 											}))
 										}
 									/>
@@ -599,33 +610,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 							</Select>
 						</div>
 					</div>
-					{/* <div className={clsx('mt', 'col_3')}>
-						<Input
-							name='weightIntent'
-							value={form.weightIntent || ''}
-							type='text'
-							isMoney
-							unit='KG'
-							label={
-								<span>
-									Khối lượng hàng <span style={{color: 'red'}}>*</span>
-								</span>
-							}
-							placeholder='Nhập khối lượng hàng'
-						/>
 
-						<div>
-							<Input
-								name='dryness'
-								value={form.dryness || ''}
-								unit='%'
-								type='number'
-								blur={true}
-								placeholder='Nhập độ khô'
-								label={<span>Độ khô</span>}
-							/>
-						</div>
-					</div> */}
 					<div className={clsx('mt', 'col_3')}>
 						<Input
 							name='weight1'
@@ -668,23 +653,8 @@ function MainCreateImport({}: PropsMainCreateImport) {
 							/>
 						</div>
 					</div>
-					<div className={clsx('mt', 'col_2')}>
-						{/* <DatePicker
-							label={
-								<span>
-									Ngày bắt đầu <span style={{color: 'red'}}>*</span>
-								</span>
-							}
-							value={form.timeStart}
-							onSetValue={(date) =>
-								setForm((prev: any) => ({
-									...prev,
-									timeStart: date,
-								}))
-							}
-							placeholder='Chọn ngày bắt đầu'
-						/> */}
 
+					<div className={clsx('mt', 'col_2')}>
 						<Input
 							type='date'
 							name='timeStart'
@@ -699,21 +669,6 @@ function MainCreateImport({}: PropsMainCreateImport) {
 							placeholder='Chọn ngày bắt đầu'
 						/>
 						<div>
-							{/* <DatePicker
-								label={
-									<span>
-										Ngày kết thúc <span style={{color: 'red'}}>*</span>
-									</span>
-								}
-								value={form.timeEnd}
-								onSetValue={(date) =>
-									setForm((prev: any) => ({
-										...prev,
-										timeEnd: date,
-									}))
-								}
-								placeholder='Chọn ngày kết thúc'
-							/> */}
 							<Input
 								type='date'
 								name='timeEnd'
@@ -729,6 +684,32 @@ function MainCreateImport({}: PropsMainCreateImport) {
 							/>
 						</div>
 					</div>
+					{/* <div className={clsx('mt', 'col_2')}>
+						<Input
+							name='weightIntent'
+							value={form.weightIntent || ''}
+							type='text'
+							isMoney
+							unit='KG'
+							label={
+								<span>
+									Khối lượng hàng <span style={{color: 'red'}}>*</span>
+								</span>
+							}
+							placeholder='Nhập khối lượng hàng'
+						/>
+						<div>
+							<Input
+								name='dryness'
+								value={form.dryness || ''}
+								unit='%'
+								type='number'
+								blur={true}
+								placeholder='Nhập độ khô'
+								label={<span>Độ khô</span>}
+							/>
+						</div>
+					</div> */}
 
 					<div className={clsx('mt')}>
 						<TextArea name='description' placeholder='Nhập ghi chú' max={5000} blur label={<span>Ghi chú</span>} />
@@ -743,4 +724,4 @@ function MainCreateImport({}: PropsMainCreateImport) {
 	);
 }
 
-export default MainCreateImport;
+export default MainCreateTransfer;
