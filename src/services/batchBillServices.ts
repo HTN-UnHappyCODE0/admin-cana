@@ -311,7 +311,8 @@ const batchBillServices = {
 			shipOutUuid: string;
 			transportType: number | null;
 			timeIntend: string | null;
-			weightIntent: number | null;
+			weight1: number | null;
+			weight2: number | null;
 			customerName: string;
 			billUuid: string;
 			isBatch: number | null;
@@ -335,6 +336,7 @@ const batchBillServices = {
 			timeEnd: string | null;
 			descriptionWs: string;
 			paths: string[];
+			dryness: number | null;
 		},
 		tokenAxios?: any
 	) => {

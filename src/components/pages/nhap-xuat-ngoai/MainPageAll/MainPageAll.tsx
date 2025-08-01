@@ -303,9 +303,13 @@ function MainPageAll({}: PropsMainPageAll) {
 		if (data.scalesType == TYPE_SCALES.CAN_XUAT) {
 			return `/nhap-xuat-ngoai/chinh-sua-xuat?_id=${data.uuid}`;
 		}
+		if (data.scalesType == TYPE_SCALES.CAN_CHUYEN_KHO) {
+			return `/nhap-xuat-ngoai/chinh-sua-chuyen-kho?_id=${data.uuid}`;
+		}
 		if (data.scalesType == TYPE_SCALES.CAN_TRUC_TIEP) {
 			return `/nhap-xuat-ngoai/chinh-sua-xuat-thang?_id=${data.uuid}`;
 		}
+
 		return '/nhap-xuat-ngoai/tat-ca';
 	};
 
@@ -408,7 +412,7 @@ function MainPageAll({}: PropsMainPageAll) {
 						selectedIds={truckPlate}
 						setSelectedIds={setTruckPlate}
 						listData={listTruck?.data?.map((v: any) => ({
-							uuid: v?.licensePlate,
+							uuid: v?.uuid,
 							name: v?.licensePlate,
 						}))}
 						name='Biển số xe'
@@ -571,6 +575,16 @@ function MainPageAll({}: PropsMainPageAll) {
 										<p>Cân xuất</p>
 									</Link>
 									<Link
+										href={'/nhap-xuat-ngoai/them-moi-chuyen-kho'}
+										onClick={() => setOpenCreate(false)}
+										className={styles.item}
+									>
+										<div className={styles.icon}>
+											<AddSquare size={20} />
+										</div>
+										<p>Cân chuyển kho</p>
+									</Link>
+									<Link
 										href={'/nhap-xuat-ngoai/them-moi-xuat-thang'}
 										onClick={() => setOpenCreate(false)}
 										className={styles.item}
@@ -692,6 +706,14 @@ function MainPageAll({}: PropsMainPageAll) {
 								),
 							},
 
+							{
+								title: 'Độ khô (%)',
+								render: (data: any) => <>{data?.drynessAvg || '---'}</>,
+							},
+							{
+								title: 'KL quy khô (Tấn)',
+								render: (data: any) => <>{convertWeight(data?.weightBdmt) || '---'}</>,
+							},
 							{
 								title: 'Quy cách',
 								render: (data: any) => <>{data?.specificationsUu?.name || '---'}</>,

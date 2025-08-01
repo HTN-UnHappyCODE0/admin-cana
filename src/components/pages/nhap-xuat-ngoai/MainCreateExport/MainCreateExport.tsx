@@ -50,7 +50,8 @@ function MainCreateExport({}: PropsMainCreateExport) {
 		fromUuid: '',
 		specificationsUuid: '',
 		warehouseUuid: '',
-		weightIntent: 0,
+		weight1: 0,
+		weight2: 0,
 		timeEnd: null,
 		timeStart: null,
 		description: '',
@@ -58,6 +59,7 @@ function MainCreateExport({}: PropsMainCreateExport) {
 		documentId: '',
 		shipUuid: '',
 		portname: '',
+		dryness: 0,
 	});
 
 	const listCustomer = useQuery([QUERY_KEY.dropdown_khach_hang_xuat], {
@@ -208,7 +210,8 @@ function MainCreateExport({}: PropsMainCreateExport) {
 					shipOutUuid: '',
 					transportType: form?.transportType,
 					timeIntend: null,
-					weightIntent: price(form?.weightIntent),
+					weight1: price(form?.weight1),
+					weight2: price(form?.weight2),
 					customerName: '',
 					billUuid: '',
 					isBatch: TYPE_BATCH.KHONG_CAN,
@@ -232,6 +235,7 @@ function MainCreateExport({}: PropsMainCreateExport) {
 					timeStart: form?.timeStart ? timeSubmit(new Date(form?.timeStart!)) : null,
 					descriptionWs: '',
 					paths: body.paths,
+					dryness: Number(form.dryness),
 				}),
 			}),
 		onSuccess(data) {
@@ -268,8 +272,8 @@ function MainCreateExport({}: PropsMainCreateExport) {
 		if (!form.specificationsUuid) {
 			return toastWarn({msg: 'Vui lòng chọn quy cách!'});
 		}
-		if (!form.weightIntent) {
-			return toastWarn({msg: 'Vui lòng nhập khối lượng cân'});
+		if (Math.abs(Number(form.weight1) - Number(form.weight2)) < 0.01) {
+			return toastWarn({msg: 'Khối lượng cân lần 1 và lần 2 chưa đúng!'});
 		}
 		if (tomorrow < timeStart) {
 			return toastWarn({msg: 'Ngày bắt đầu không hợp lệ!'});
@@ -281,6 +285,9 @@ function MainCreateExport({}: PropsMainCreateExport) {
 
 		if (timeStart > timeEnd) {
 			return toastWarn({msg: 'Ngày kết thúc phải lớn hơn ngày bắt đầu!'});
+		}
+		if (form.dryness < 0 || form.dryness > 100) {
+			return toastWarn({msg: 'Độ khô không hợp lệ!'});
 		}
 		if (imgs.length > 0) {
 			const dataImage = await httpRequest({
@@ -370,7 +377,7 @@ function MainCreateExport({}: PropsMainCreateExport) {
 						</div>
 					</div>
 
-					<div className={clsx('mt')}>
+					<div className={clsx('mt', 'col_2')}>
 						<Select
 							isSearch
 							name='toUuid'
@@ -397,6 +404,16 @@ function MainCreateExport({}: PropsMainCreateExport) {
 								/>
 							))}
 						</Select>
+						<div>
+							<Input
+								name='documentId'
+								value={form.documentId || ''}
+								type='text'
+								max={255}
+								label={<span>Số chứng từ</span>}
+								placeholder='Nhập số chứng từ'
+							/>
+						</div>
 					</div>
 
 					<div className={clsx('mt', 'col_2')}>
@@ -548,28 +565,45 @@ function MainCreateExport({}: PropsMainCreateExport) {
 						</div>
 					</div>
 
-					<div className={clsx('mt', 'col_2')}>
+					<div className={clsx('mt', 'col_3')}>
 						<Input
-							name='weightIntent'
-							value={form.weightIntent || ''}
+							name='weight1'
+							value={form.weight1 || ''}
 							type='text'
 							isMoney
 							unit='KG'
 							label={
 								<span>
-									Khối lượng cân<span style={{color: 'red'}}>*</span>
+									KL cân lần 1 <span style={{color: 'red'}}>*</span>
 								</span>
 							}
-							placeholder='Nhập khối lượng'
+							placeholder='Nhập kL cân lần 1'
 						/>
+
 						<div>
 							<Input
-								name='documentId'
-								value={form.documentId || ''}
+								name='weight2'
+								value={form.weight2 || ''}
 								type='text'
-								max={255}
-								label={<span>Số chứng từ</span>}
-								placeholder='Nhập số chứng từ'
+								isMoney
+								unit='KG'
+								label={
+									<span>
+										KL cân lần 2 <span style={{color: 'red'}}>*</span>
+									</span>
+								}
+								placeholder='Nhập kL cân lần 2'
+							/>
+						</div>
+						<div>
+							<Input
+								name='dryness'
+								value={form.dryness || ''}
+								unit='%'
+								type='number'
+								blur={true}
+								placeholder='Nhập độ khô'
+								label={<span>Độ khô</span>}
 							/>
 						</div>
 					</div>

@@ -52,7 +52,8 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		toUuid: '',
 		productTypeUuid: '',
 		specificationsUuid: '',
-		weightIntent: 0,
+		weight1: 0,
+		weight2: 0,
 		documentId: '',
 		description: '',
 		warehouseUuid: '',
@@ -61,6 +62,8 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		timeEnd: '',
 		batchUuid: '',
 		billUuid: '',
+		code: '',
+		dryness: 0,
 	});
 
 	const {data: detailBatchBill} = useQuery<IDetailBatchBill>([QUERY_KEY.chi_tiet_nhap_xuat_ngoai, _id], {
@@ -84,11 +87,14 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					storageTemporaryUuid: data?.storageTemporaryUu?.uuid || '', //Bãi trung chuyển
 					toUuid: data?.toUu?.uuid, //Khách hàng xuất
 					shipOutUuid: data?.batchsUu?.shipOutUu?.uuid || '', //Đến tàu
-					weightIntent: convertCoin(data?.batchsUu?.weightIntent), //Khối lượng cân
+					weight1: convertCoin(data?.batchsUu?.weight1), //Khối lượng cân lần 1
+					weight2: convertCoin(data?.batchsUu?.weight2), //Khối lượng cân lần 2
 					documentId: data?.documentId || '', //Chứng từ
 					timeStart: moment(data.timeStart).format('yyyy-MM-DD'),
 					timeEnd: moment(data.timeEnd).format('yyyy-MM-DD'),
 					description: data?.description,
+					code: data?.code,
+					dryness: data?.drynessAvg || 0,
 				});
 				setImages(
 					data?.path?.map((v: any) => ({
@@ -261,7 +267,8 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					shipOutUuid: form.shipOutUuid,
 					transportType: form?.transportType,
 					timeIntend: null,
-					weightIntent: price(form?.weightIntent),
+					weight1: price(form?.weight1),
+					weight2: price(form?.weight2),
 					customerName: '',
 					isBatch: TYPE_BATCH.KHONG_CAN,
 					isCreateBatch: 1,
@@ -283,6 +290,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					timeStart: form?.timeStart ? timeSubmit(new Date(form?.timeStart!)) : null,
 					descriptionWs: '',
 					paths: body.paths,
+					dryness: Number(form.dryness),
 				}),
 			}),
 		onSuccess(data) {
@@ -325,9 +333,12 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 		if (!form.toUuid) {
 			return toastWarn({msg: 'Vui lòng chọn khách hàng xuất!'});
 		}
+		if (form.dryness < 0 || form.dryness > 100) {
+			return toastWarn({msg: 'Độ khô không hợp lệ!'});
+		}
 
-		if (!form.weightIntent) {
-			return toastWarn({msg: 'Vui lòng nhập khối lượng cân'});
+		if (Math.abs(Number(form.weight1) - Number(form.weight2)) < 0.01) {
+			return toastWarn({msg: 'Khối lượng cân lần 1 và lần 2 chưa đúng!'});
 		}
 		if (tomorrow < timeStart) {
 			return toastWarn({msg: 'Ngày bắt đầu không hợp lệ!'});
@@ -370,7 +381,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 			<Form form={form} setForm={setForm} onSubmit={handleSubmit}>
 				<div className={styles.header}>
 					<div className={styles.left}>
-						<h4>Chỉnh sửa phiếu xuất thẳng</h4>
+						<h4>Chỉnh sửa phiếu xuất thẳng #{form.code}</h4>
 						<p>Điền đầy đủ các thông tin cân trực tiếp</p>
 					</div>
 					<div className={styles.right}>
@@ -429,7 +440,7 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 						</div>
 					</div>
 
-					<div className={clsx('mt', 'col_2')}>
+					<div className={clsx('mt')}>
 						<Select
 							isSearch
 							name='fromUuid'
@@ -457,7 +468,19 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 								/>
 							))}
 						</Select>
+					</div>
 
+					<div className={clsx('mt', 'col_2')}>
+						<div>
+							<Input
+								name='documentId'
+								value={form.documentId || ''}
+								type='text'
+								max={255}
+								label={<span>Chứng từ </span>}
+								placeholder='Nhập chứng từ'
+							/>
+						</div>
 						<div>
 							<Select
 								isSearch
@@ -667,32 +690,17 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 						</div>
 					</div>
 
-					<div className={clsx('mt', 'col_2')}>
+					<div>
 						<Input
-							name='weightIntent'
-							value={form.weightIntent || ''}
-							type='text'
-							isMoney
-							unit='KG'
-							placeholder='Nhập khối lượng cân'
-							label={
-								<span>
-									Khối lượng cân <span style={{color: 'red'}}>*</span>
-								</span>
-							}
+							name='dryness'
+							value={form.dryness || ''}
+							unit='%'
+							type='number'
+							blur={true}
+							placeholder='Nhập độ khô'
+							label={<span>Độ khô</span>}
 						/>
-						<div>
-							<Input
-								name='documentId'
-								value={form.documentId || ''}
-								type='text'
-								max={255}
-								label={<span>Chứng từ </span>}
-								placeholder='Nhập chứng từ'
-							/>
-						</div>
 					</div>
-
 					<div className={clsx('mt', 'col_2')}>
 						<Input
 							type='date'

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
-import {PropsMainPageImport} from './interfaces';
-import styles from './MainPageImport.module.scss';
+import {PropsMainPageScalesTransfer} from './interfaces';
+import styles from './MainPageScalesTransfer.module.scss';
 import DataWrapper from '~/components/common/DataWrapper';
 import Pagination from '~/components/common/Pagination';
 import {Eye, SaveAdd} from 'iconsax-react';
@@ -53,7 +53,7 @@ import SelectFilterMany from '~/components/common/SelectFilterMany';
 import truckServices from '~/services/truckServices';
 import companyServices from '~/services/companyServices';
 
-function MainPageImport({}: PropsMainPageImport) {
+function MainPageScalesTransfer({}: PropsMainPageScalesTransfer) {
 	const router = useRouter();
 	const [openExportExcel, setOpenExportExcel] = useState<boolean>(false);
 	const [billUuidUpdateShip, setBillUuidUpdateShip] = useState<string | null>(null);
@@ -127,7 +127,7 @@ function MainPageImport({}: PropsMainPageImport) {
 
 	const listBill = useQuery(
 		[
-			QUERY_KEY.table_phieu_can_tat_ca_ngoai,
+			QUERY_KEY.table_phieu_can_chuyen_kho_ngoai,
 			_page,
 			_pageSize,
 			_keyword,
@@ -158,7 +158,7 @@ function MainPageImport({}: PropsMainPageImport) {
 						isPaging: CONFIG_PAGING.IS_PAGING,
 						isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 						typeFind: CONFIG_TYPE_FIND.TABLE,
-						scalesType: [TYPE_SCALES.CAN_NHAP],
+						scalesType: [TYPE_SCALES.CAN_CHUYEN_KHO],
 						state: !!_state
 							? [Number(_state)]
 							: [
@@ -305,7 +305,7 @@ function MainPageImport({}: PropsMainPageImport) {
 					isPaging: CONFIG_PAGING.IS_PAGING,
 					isDescending: CONFIG_DESCENDING.NO_DESCENDING,
 					typeFind: CONFIG_TYPE_FIND.TABLE,
-					scalesType: [TYPE_SCALES.CAN_NHAP],
+					scalesType: [TYPE_SCALES.CAN_CHUYEN_KHO],
 					state: !!_state
 						? [Number(_state)]
 						: [
@@ -538,7 +538,7 @@ function MainPageImport({}: PropsMainPageImport) {
 							w_fit
 							p_8_16
 							bold
-							href={'/nhap-xuat-ngoai/them-moi-nhap'}
+							href={'/nhap-xuat-ngoai/them-moi-chuyen-kho'}
 							icon={<Image alt='icon add' src={icons.add} width={20} height={20} />}
 						>
 							Tạo phiếu
@@ -775,9 +775,9 @@ function MainPageImport({}: PropsMainPageImport) {
 										<IconCustom
 											edit
 											icon={<LuPencil size={22} fontWeight={600} />}
-											tooltip='chỉnh sửa nhập'
+											tooltip='chỉnh sửa chuyển kho'
 											color='#777E90'
-											href={`/nhap-xuat-ngoai/chinh-sua-nhap?_id=${data.uuid}`}
+											href={`/nhap-xuat-ngoai/chinh-sua-chuyen-kho?_id=${data.uuid}`}
 										/>
 
 										<IconCustom
@@ -840,4 +840,4 @@ function MainPageImport({}: PropsMainPageImport) {
 	);
 }
 
-export default MainPageImport;
+export default MainPageScalesTransfer;

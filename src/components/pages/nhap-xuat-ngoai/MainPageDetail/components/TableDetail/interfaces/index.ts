@@ -73,7 +73,6 @@ export interface IWeightSession {
 		code: string;
 		licensePlate: string;
 		status: number;
-		uuid: string;
 	};
 	dryness: any;
 	lstValueSpec: any;

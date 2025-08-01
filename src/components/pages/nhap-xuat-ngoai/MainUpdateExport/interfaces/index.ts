@@ -6,7 +6,8 @@ export interface IFormUpdateExport {
 	specificationsUuid: string;
 	warehouseUuid: string;
 	toUuid: string;
-	weightIntent: number | string;
+	weight1: number | string;
+	weight2: number | string;
 	timeEnd: string | Date;
 	description: string;
 	transportType: number;
@@ -16,4 +17,6 @@ export interface IFormUpdateExport {
 	billUuid: string;
 	shipUuid: string;
 	portname: string;
+	code: string;
+	dryness: number;
 }
