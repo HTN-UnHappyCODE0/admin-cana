@@ -78,8 +78,8 @@ function MainUpdateImport({}: PropsMainUpdateImport) {
 			if (data) {
 				setForm({
 					transportType: data?.transportType,
-					weight1: convertCoin(data?.batchsUu?.weight1),
-					weight2: convertCoin(data?.batchsUu?.weight2),
+					weight1: convertCoin(data?.weight1),
+					weight2: convertCoin(data?.weight2),
 					specificationsUuid: data?.specificationsUu?.uuid,
 					warehouseUuid: data?.toUu?.parentUu?.uuid || '',
 					productTypeUuid: data?.productTypeUu?.uuid,

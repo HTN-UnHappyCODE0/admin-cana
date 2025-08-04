@@ -15,4 +15,5 @@ export interface IFormCreateExport {
 	portname: string;
 	shipUuid: string;
 	dryness: number;
+	weightTotal: number;
 }

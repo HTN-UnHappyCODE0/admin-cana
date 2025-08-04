@@ -132,4 +132,7 @@ export interface IDetailBatchBill {
 		licensePlate: string;
 		uuid: string;
 	};
+	drynessAvg: number;
+	weight1: number;
+	weight2: number;
 }

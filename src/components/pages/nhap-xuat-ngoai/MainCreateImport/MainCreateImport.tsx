@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {use, useEffect, useState} from 'react';
 
 import {IFormCreateImport, PropsMainCreateImport} from './interfaces';
 import styles from './MainCreateImport.module.scss';
@@ -58,6 +58,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 		portname: '',
 		shipUuid: '',
 		dryness: 0,
+		weightTotal: 0,
 	});
 
 	const {data: detailCustomer} = useQuery<IDetailCustomer>([QUERY_KEY.chi_tiet_khach_hang, form.fromUuid], {
@@ -230,6 +231,17 @@ function MainCreateImport({}: PropsMainCreateImport) {
 			return;
 		},
 	});
+
+	// form.weightTotal = trị tuyệt đối form.weight1 - form.weight2 nhân độ khô;
+
+	useEffect(() => {
+		const {weight1, weight2, dryness} = form;
+
+		if (weight1 != null && weight2 != null && dryness != null) {
+			const total = (Math.abs(weight1 - weight2) * dryness) / 100;
+			setForm((prev) => ({...prev, weightTotal: total}));
+		}
+	}, [form.weight1, form.weight2, form.dryness]);
 
 	const handleSubmit = async () => {
 		const today = new Date(timeSubmit(new Date())!);
@@ -626,7 +638,7 @@ function MainCreateImport({}: PropsMainCreateImport) {
 							/>
 						</div>
 					</div> */}
-					<div className={clsx('mt', 'col_3')}>
+					<div className={clsx('mt', 'col_4')}>
 						<Input
 							name='weight1'
 							value={form.weight1 || ''}
@@ -665,6 +677,19 @@ function MainCreateImport({}: PropsMainCreateImport) {
 								blur={true}
 								placeholder='Nhập độ khô'
 								label={<span>Độ khô</span>}
+							/>
+						</div>
+						<div>
+							<Input
+								name='weightTotal'
+								value={form.weightTotal || ''}
+								readOnly={true}
+								type='text'
+								isMoney
+								unit='KG'
+								label={<span>KL quy khô</span>}
+								placeholder='Nhập KL quy khô'
+								disabled={true}
 							/>
 						</div>
 					</div>
