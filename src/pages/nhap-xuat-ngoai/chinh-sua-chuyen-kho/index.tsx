@@ -2,8 +2,7 @@ import Head from 'next/head';
 import {Fragment, ReactElement} from 'react';
 import BaseLayout from '~/components/layouts/BaseLayout';
 import WrapperContainer from '~/components/layouts/WrapperContainer';
-import MainUpdateTransfer from '~/components/pages/lenh-can/MainUpdateTransfer';
-import MainUpdateImport from '~/components/pages/nhap-xuat-ngoai/MainUpdateImport';
+import MainUpdateTransfer from '~/components/pages/nhap-xuat-ngoai/MainUpdateTransfer';
 
 export default function Page() {
 	return (

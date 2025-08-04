@@ -1,5 +1,5 @@
 import {useRouter} from 'next/router';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {IFormCreateTransfer, PropsMainCreateTransfer} from './interfaces';
 import {
 	CONFIG_DESCENDING,
@@ -60,6 +60,7 @@ function MainCreateTransfer({}: PropsMainCreateTransfer) {
 		timeStart: null,
 		timeEnd: null,
 		dryness: 0,
+		weightTotal: 0,
 	});
 
 	const listProductType = useQuery([QUERY_KEY.dropdown_loai_go], {
@@ -300,6 +301,15 @@ function MainCreateTransfer({}: PropsMainCreateTransfer) {
 			return;
 		},
 	});
+
+	useEffect(() => {
+		const {weight1, weight2, dryness} = form;
+
+		if (weight1 != null && weight2 != null && dryness != null) {
+			const total = (Math.abs(weight1 - weight2) * dryness) / 100;
+			setForm((prev) => ({...prev, weightTotal: total}));
+		}
+	}, [form.weight1, form.weight2, form.dryness]);
 
 	const handleSubmit = async () => {
 		const today = new Date(timeSubmit(new Date())!);
@@ -650,6 +660,19 @@ function MainCreateTransfer({}: PropsMainCreateTransfer) {
 								blur={true}
 								placeholder='Nhập độ khô'
 								label={<span>Độ khô</span>}
+							/>
+						</div>
+						<div>
+							<Input
+								name='weightTotal'
+								value={form.weightTotal || ''}
+								readOnly={true}
+								type='text'
+								isMoney
+								unit='KG'
+								label={<span>KL quy khô</span>}
+								placeholder='Nhập KL quy khô'
+								disabled={true}
 							/>
 						</div>
 					</div>

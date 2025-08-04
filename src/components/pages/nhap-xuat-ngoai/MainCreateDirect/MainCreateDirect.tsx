@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {IDetailCustomer, IFormCreateDirect, PropsMainCreateDirect} from './interfaces';
 import styles from './MainCreateDirect.module.scss';
@@ -60,6 +60,7 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 		timeStart: '',
 		timeEnd: '',
 		dryness: 0,
+		weightTotal: 0,
 	});
 
 	const listCustomerFrom = useQuery([QUERY_KEY.dropdown_khach_hang_nhap], {
@@ -258,6 +259,15 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 			return;
 		},
 	});
+
+	useEffect(() => {
+		const {weight1, weight2, dryness} = form;
+
+		if (weight1 != null && weight2 != null && dryness != null) {
+			const total = (Math.abs(weight1 - weight2) * dryness) / 100;
+			setForm((prev) => ({...prev, weightTotal: total}));
+		}
+	}, [form.weight1, form.weight2, form.dryness]);
 
 	const handleSubmit = async () => {
 		const today = new Date(timeSubmit(new Date())!);
@@ -673,6 +683,19 @@ function MainCreateDirect({}: PropsMainCreateDirect) {
 								blur={true}
 								placeholder='Nhập độ khô'
 								label={<span>Độ khô</span>}
+							/>
+						</div>
+						<div>
+							<Input
+								name='weightTotal'
+								value={form.weightTotal || ''}
+								readOnly={true}
+								type='text'
+								isMoney
+								unit='KG'
+								label={<span>KL quy khô</span>}
+								placeholder='Nhập KL quy khô'
+								disabled={true}
 							/>
 						</div>
 					</div>

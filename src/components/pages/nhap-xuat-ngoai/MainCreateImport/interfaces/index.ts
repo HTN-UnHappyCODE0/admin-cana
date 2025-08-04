@@ -18,6 +18,7 @@ export interface IFormCreateImport {
 	portname: string;
 	shipUuid: string;
 	dryness: number;
+	weightTotal: number;
 }
 
 export interface IDetailCustomer {

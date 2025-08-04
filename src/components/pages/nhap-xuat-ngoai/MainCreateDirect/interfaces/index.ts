@@ -18,6 +18,7 @@ export interface IFormCreateDirect {
 	timeStart: string | Date;
 	timeEnd: string | Date;
 	dryness: number;
+	weightTotal: number;
 }
 
 export interface IDetailCustomer {

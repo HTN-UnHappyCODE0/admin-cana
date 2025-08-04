@@ -87,8 +87,8 @@ function MainUpdateDirect({}: PropsMainUpdateDirect) {
 					storageTemporaryUuid: data?.storageTemporaryUu?.uuid || '', //Bãi trung chuyển
 					toUuid: data?.toUu?.uuid, //Khách hàng xuất
 					shipOutUuid: data?.batchsUu?.shipOutUu?.uuid || '', //Đến tàu
-					weight1: convertCoin(data?.batchsUu?.weight1), //Khối lượng cân lần 1
-					weight2: convertCoin(data?.batchsUu?.weight2), //Khối lượng cân lần 2
+					weight1: convertCoin(data?.weight1), //Khối lượng cân lần 1
+					weight2: convertCoin(data?.weight2), //Khối lượng cân lần 2
 					documentId: data?.documentId || '', //Chứng từ
 					timeStart: moment(data.timeStart).format('yyyy-MM-DD'),
 					timeEnd: moment(data.timeEnd).format('yyyy-MM-DD'),

@@ -119,6 +119,10 @@ export enum QUERY_KEY {
 	table_cong_no_phieu_nha_cung_cap,
 	table_lich_su_thanh_toan_doi_tac,
 	table_lich_su_hop_dong,
+	table_phieu_can_thang_ngoai,
+	table_phieu_can_xuat_ngoai,
+	table_phieu_can_tat_ca_ngoai,
+	table_phieu_can_chuyen_kho_ngoai,
 
 	chi_tiet_gia_tien_chinh_sua,
 	chi_tiet_cong_no_phieu,
